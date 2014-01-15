@@ -1,0 +1,241 @@
+
+∂
+	ql2.proto"5
+VersionDummy"%
+Version
+V0_1∂ÙÜ˚
+V0_2·É¬ë"¶
+Query
+type (2.Query.QueryType
+query (2.Term
+token (
+OBSOLETE_noreply (:false
+accepts_r_json (:false(
+global_optargs (2.Query.AssocPair,
+	AssocPair
+key (	
+val (2.Term"@
+	QueryType	
+START
+CONTINUE
+STOP
+NOREPLY_WAIT"`
+Frame
+type (2.Frame.FrameType
+pos (
+opt (	"
+	FrameType
+POS
+OPT"#
+	Backtrace
+frames (2.Frame"™
+Response$
+type (2.Response.ResponseType
+token (
+response (2.Datum
+	backtrace (2
+.Backtrace
+profile (2.Datum"ñ
+ResponseType
+SUCCESS_ATOM
+SUCCESS_SEQUENCE
+SUCCESS_PARTIAL
+WAIT_COMPLETE
+CLIENT_ERROR
+COMPILE_ERROR
+RUNTIME_ERROR"¨
+Datum
+type (2.Datum.DatumType
+r_bool (
+r_num (
+r_str (	
+r_array (2.Datum"
+r_object (2.Datum.AssocPair-
+	AssocPair
+key (	
+val (2.Datum"`
+	DatumType
+
+R_NULL
+
+R_BOOL	
+R_NUM	
+R_STR
+R_ARRAY
+R_OBJECT
+
+R_JSON*êN°ú"Â
+Term
+type (2.Term.TermType
+datum (2.Datum
+args (2.Term 
+optargs (2.Term.AssocPair,
+	AssocPair
+key (	
+val (2.Term"π
+TermType	
+DATUM
+
+MAKE_ARRAY
+MAKE_OBJ
+VAR
+
+
+JAVASCRIPT	
+ERROR
+IMPLICIT_VAR
+DB	
+TABLE
+GET
+GET_ALLN
+EQ
+NE
+LT
+LE
+GT
+GE
+NOT
+ADD
+SUB
+MUL
+DIV
+MOD
+
+APPEND
+PREPENDP
+
+DIFFERENCE_
+
+SET_INSERTX
+SET_INTERSECTIONY
+	SET_UNIONZ
+SET_DIFFERENCE[	
+SLICE
+SKIPF	
+LIMITG
+
+INDEXES_OFW
+CONTAINS]
+	GET_FIELD
+KEYS^
+
+HAS_FIELDS 
+WITH_FIELDS`	
+PLUCK!
+WITHOUT"	
+MERGE#
+BETWEEN$
+
+REDUCE%
+MAP&
+
+FILTER'
+	CONCATMAP(
+ORDERBY)
+DISTINCT*	
+COUNT+
+IS_EMPTYV	
+UNION,
+NTH-
+GROUPED_MAP_REDUCE.
+GROUPBY/
+
+INNER_JOIN0
+
+OUTER_JOIN1
+EQ_JOIN2
+ZIPH
+	INSERT_ATR
+	DELETE_ATS
+	CHANGE_ATT
+	SPLICE_ATU
+	COERCE_TO3
+
+TYPEOF4
+
+UPDATE5
+
+DELETE6
+REPLACE7
+
+INSERT8
+	DB_CREATE9
+DB_DROP:
+DB_LIST;
+TABLE_CREATE<
+
+TABLE_DROP=
+
+TABLE_LIST>	
+SYNCä
+INDEX_CREATEK
+
+INDEX_DROPL
+
+INDEX_LISTM
+INDEX_STATUSã
+
+INDEX_WAITå
+FUNCALL@
+
+BRANCHA
+ANYB
+ALLC
+FOREACHD
+FUNCE
+ASCI
+DESCJ
+INFOO	
+MATCHa
+
+SAMPLEQ
+DEFAULT\
+JSONb
+ISO8601c
+
+TO_ISO8601d
+
+EPOCH_TIMEe
+TO_EPOCH_TIMEf
+NOWg
+IN_TIMEZONEh
+
+DURINGi
+DATEj
+TIME_OF_DAY~
+TIMEZONE	
+YEARÄ
+
+MONTHÅ
+DAYÇ
+DAY_OF_WEEKÉ
+DAY_OF_YEARÑ
+
+HOURSÖ
+MINUTESÜ
+SECONDSá	
+TIMEà
+
+MONDAYk
+TUESDAYl
+	WEDNESDAYm
+THURSDAYn
+
+FRIDAYo
+SATURDAYp
+
+SUNDAYq
+JANUARYr
+FEBRUARYs	
+MARCHt	
+APRILu
+MAYv
+JUNEw
+JULYx
+
+AUGUSTy
+	SEPTEMBERz
+OCTOBER{
+NOVEMBER|
+DECEMBER}
+LITERALâ*êN°ú

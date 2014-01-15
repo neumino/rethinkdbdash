@@ -1,0 +1,30 @@
+{
+  "name": "rethinkdbdash",
+  "version": "0.0.1",
+  "description": "Node driver for RethinkDB",
+  "main": "lib/index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/neumino/rethinkdbdash"
+  },
+  "keywords": [
+    "rethinkdb",
+    "driver"
+  ],
+  "author": "Michel Tu <orphee@gmail.com> (http://justonepixel.com/)",
+  "license": "",
+  "readmeFilename": "README.md",
+  "bugs": {
+    "url": "https://github.com/neumino/rethinkdbdash/issues"
+  },
+  "dependencies":{
+    "node-protobuf": ">= 1.0.10",
+    "bluebird": ">= 1.0.0"
+  },
+}
