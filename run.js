@@ -157,42 +157,6 @@ var run = Promise.coroutine(function* () {
 
 
     /*
-    // Basic chaining
-    try{
-        var result = yield r.expr(1).add(1).run(connection);
-        assert.equal(result, 2);
-
-        var result = yield r.expr(1).add(1).add(1).run(connection);
-        assert.equal(result, 3);
-
-        var result = yield r.expr(1).add(1, 1).run(connection);
-        assert.equal(result, 3);
-
-        var result = yield r.expr(1).sub(1).run(connection);
-        assert.equal(result, 0);
-
-        var result = yield r.expr(1).sub(1, 1).run(connection);
-        assert.equal(result, -1);
-
-        var result = yield r.expr(2).mul(3).run(connection);
-        assert.equal(result, 6);
-
-        var result = yield r.expr(2).mul(3, 4).run(connection);
-        assert.equal(result, 24);
-
-        var result = yield r.expr(24).div(2).run(connection);
-        assert.equal(result, 12);
-
-        var result = yield r.expr(24).div(2, 3).run(connection);
-        assert.equal(result, 4);
-    }
-    catch(e) {
-        console.log(e);
-        throw e;
-    }
-    */
-
-    /*
     // Hitting a table
     try{
         var dbName = guid();
@@ -631,6 +595,7 @@ var run = Promise.coroutine(function* () {
     /*
     // Document manipulation
     try{
+
         var dbName = guid();
         var tableName = guid();
 
@@ -651,16 +616,200 @@ var run = Promise.coroutine(function* () {
 
         var result = yield r.db(dbName).table(tableName).replace(r.row.merge({idCopyReplace: r.row("id")})).run(connection);
         assert.equal(result.replaced, 1);
-
  
+        var result = yield r.expr({a: 0, b: 1, c: 2}).pluck("a", "b").run(connection);
+        assert.deepEqual(result, {a: 0, b: 1});
+
+        var result = yield r.expr([{a: 0, b: 1, c: 2}, {a: 0, b: 10, c: 20}]).pluck("a", "b").run(connection);
+        assert.deepEqual(result, [{a: 0, b: 1}, {a: 0, b: 10}]);
+
+        var result = yield r.expr({a: 0, b: 1, c: 2}).without("c").run(connection);
+        assert.deepEqual(result, {a: 0, b: 1});
+
+        var result = yield r.expr([{a: 0, b: 1, c: 2}, {a: 0, b: 10, c: 20}]).without("a", "c").run(connection);
+        assert.deepEqual(result, [{b: 1}, {b: 10}]);
+
         var result = yield r.expr({a: 0}).merge({b: 1}).run(connection);
         assert.deepEqual(result, {a: 0, b: 1});
+
+        var result = yield r.expr({a: {b: 1}}).merge({a: r.literal({c: 2})}).run(connection);
+        assert.deepEqual(result, {a: {c: 2}});
+
+        var result = yield r.expr([{a: 0}, {a: 1}, {a: 2}]).merge({b: 1}).run(connection);
+        assert.deepEqual(result, [{a: 0, b: 1}, {a: 1, b: 1}, {a: 2, b: 1}]);
+
+        var result = yield r.expr([1,2,3]).append(4).run(connection);
+        assert.deepEqual(result, [1,2,3,4]);
+
+        var result = yield r.expr([1,2,3]).prepend(4).run(connection);
+        assert.deepEqual(result, [4,1,2,3]);
+
+        var result = yield r.expr([1,2,3]).difference([4,2]).run(connection);
+        assert.deepEqual(result, [1, 3]);
+
+        var result = yield r.expr([1,2,3]).setInsert(4).run(connection);
+        assert.deepEqual(result, [1,2,3,4]);
+
+        var result = yield r.expr([1,2,3]).setInsert(2).run(connection);
+        assert.deepEqual(result, [1,2,3]);
+
+        var result = yield r.expr([1,2,3]).setUnion([2,4]).run(connection);
+        assert.deepEqual(result, [1,2,3,4]);
+
+        var result = yield r.expr([1,2,3]).setIntersection([2,4]).run(connection);
+        assert.deepEqual(result, [2]);
+
+        var result = yield r.expr([1,2,3]).setDifference([2,4]).run(connection);
+        assert.deepEqual(result, [1,3]);
+
+        var result = yield r.expr({a:0, b:1})("a").run(connection);
+        assert.equal(result, 0);
+
+        var result = yield r.expr([{a: 0, b: 1, c: 2}, {a: 0, b: 10, c: 20}, {b:1, c:3}]).hasFields("a", "c").run(connection);
+        assert.deepEqual(result, [{a: 0, b: 1, c: 2}, {a: 0, b: 10, c: 20}]);
+
+        var result = yield r.expr([1,2,3,4]).insertAt(0, 2).run(connection);
+        assert.deepEqual(result, [2,1,2,3,4]);
+
+        var result = yield r.expr([1,2,3,4]).spliceAt(1, [9, 9]).run(connection);
+        assert.deepEqual(result, [1,9,9,2,3,4]);
+
+        var result = yield r.expr([1,2,3,4]).deleteAt(1).run(connection);
+        assert.deepEqual(result, [1,3,4]);
+
+        var result = yield r.expr([1,2,3,4]).deleteAt(1, 3).run(connection);
+        assert.deepEqual(result, [1,4]);
+
+        var result = yield r.expr([1,2,3,4]).changeAt(1, 3).run(connection);
+        assert.deepEqual(result, [1,3,3,4]);
+
+        var result = yield r.expr({a:0, b:1, c:2}).keys().orderBy(r.row).run(connection);
+        assert.deepEqual(result, ["a", "b", "c"]);
     }
     catch(e) {
         console.log(e);
         throw e;
     }
     */
+
+
+    /*
+    try{
+        var result = yield r.expr("abc").match("^(ab)").run(connection);
+        assert.equal(result.str, 'ab');
+    }
+    catch(e) {
+        console.log(e);
+        throw e;
+    }
+    */
+
+
+    /*
+    // Basic chaining
+    try{
+        var result = yield r.expr(1).add(1).run(connection);
+        assert.equal(result, 2);
+
+        var result = yield r.expr(1).add(1).add(1).run(connection);
+        assert.equal(result, 3);
+
+        var result = yield r.expr(1).sub(1).run(connection);
+        assert.equal(result, 0);
+
+        var result = yield r.expr(2).mul(3).run(connection);
+        assert.equal(result, 6);
+
+        var result = yield r.expr(24).div(2).run(connection);
+        assert.equal(result, 12);
+
+        var result = yield r.expr(24).mod(7).run(connection);
+        assert.equal(result, 3);
+
+        var result = yield r.expr(true).and(false).run(connection);
+        assert.equal(result, false);
+
+        var result = yield r.expr(true).and(true).run(connection);
+        assert.equal(result, true);
+
+        var result = yield r.expr(true).or(false).run(connection);
+        assert.equal(result, true);
+
+        var result = yield r.expr(false).or(false).run(connection);
+        assert.equal(result, false);
+
+        var result = yield r.expr(1).eq(1).run(connection);
+        assert.equal(result, true);
+
+        var result = yield r.expr(1).eq(2).run(connection);
+        assert.equal(result, false);
+
+        var result = yield r.expr(1).ne(1).run(connection);
+        assert.equal(result, false);
+
+        var result = yield r.expr(1).ne(2).run(connection);
+        assert.equal(result, true);
+
+        var result = yield r.expr(1).gt(2).run(connection);
+        assert.equal(result, false);
+        var result = yield r.expr(2).gt(2).run(connection);
+        assert.equal(result, false);
+        var result = yield r.expr(3).gt(2).run(connection);
+        assert.equal(result, true);
+
+        var result = yield r.expr(1).ge(2).run(connection);
+        assert.equal(result, false);
+        var result = yield r.expr(2).ge(2).run(connection);
+        assert.equal(result, true);
+        var result = yield r.expr(3).ge(2).run(connection);
+        assert.equal(result, true);
+
+        var result = yield r.expr(1).lt(2).run(connection);
+        assert.equal(result, true);
+        var result = yield r.expr(2).lt(2).run(connection);
+        assert.equal(result, false);
+        var result = yield r.expr(3).lt(2).run(connection);
+        assert.equal(result, false);
+
+        var result = yield r.expr(1).le(2).run(connection);
+        assert.equal(result, true);
+        var result = yield r.expr(2).le(2).run(connection);
+        assert.equal(result, true);
+        var result = yield r.expr(3).le(2).run(connection);
+        assert.equal(result, false);
+
+        var result = yield r.expr(true).not().run(connection);
+        assert.equal(result, false);
+        var result = yield r.expr(false).not().run(connection);
+        assert.equal(result, true);
+    }
+    catch(e) {
+        console.log(e);
+        throw e;
+    }
+    */
+
+
+    try{
+        var result = yield r.now().run(connection);
+        assert.equal(result instanceof Date, true)
+        assert.equal((new Date()-result)<1000, true)
+
+        var result = yield r.time(1986, 11, 3, 12, 0, 0, 'Z').run(connection);
+        assert.equal(result instanceof Date, true)
+        //Main author is living in California. Blame JavaScript's date for the +8
+        //Month in JS starts with 0
+        assert.deepEqual(new Date(1986, 10, 3, (12-8)), result)
+
+        var now = new Date();
+        var result = yield r.epochTime(now.getTime()/1000).run(connection);
+        assert.deepEqual(now, result)
+    }
+    catch(e) {
+        console.log(e);
+        throw e;
+    }
+
 
     /*
     // Cursor
