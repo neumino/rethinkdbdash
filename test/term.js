@@ -1,7 +1,7 @@
 //Quick test for all the terms
 
 //var r = require('rethinkdbdash');
-var r = require('./lib');
+var r = require('../lib');
 var Promise = require('bluebird');
 var assert = require('assert');
 
