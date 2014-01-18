@@ -38,7 +38,6 @@ var run = Promise.coroutine(function* () {
         throw e;
     }
 
-    /*
     // Meta operations
     try{
         var dbName = guid();
@@ -82,9 +81,7 @@ var run = Promise.coroutine(function* () {
         console.log(e);
         throw e;
     }
-    */
 
-    /*
     // Index operations
     try{
         var dbName = guid();
@@ -127,10 +124,8 @@ var run = Promise.coroutine(function* () {
         console.log(e);
         throw e;
     }
-    */
 
 
-    /*
     // Datums
     try{
         var result = yield r.expr(1).run(connection);
@@ -153,10 +148,8 @@ var run = Promise.coroutine(function* () {
         console.log(e);
         throw e;
     }
-    */
 
 
-    /*
     // Hitting a table
     try{
         var dbName = guid();
@@ -187,9 +180,7 @@ var run = Promise.coroutine(function* () {
         console.log(e);
         throw e;
     }
-    */
 
-    /*
     // Writes
     try{
         var dbName = guid();
@@ -287,9 +278,7 @@ var run = Promise.coroutine(function* () {
         console.log(e);
         throw e;
     }
-    */
         
-    /*
     // Selecting data
     try{
         var dbName = guid();
@@ -367,9 +356,7 @@ var run = Promise.coroutine(function* () {
         console.log(e);
         throw e;
     }
-    */
 
-    /*
     // Joins
     try{
         var dbName = guid();
@@ -425,9 +412,7 @@ var run = Promise.coroutine(function* () {
         console.log(e);
         throw e;
     }
-    */
 
-    /*
     // Transformations
     try{
         var dbName = guid();
@@ -510,9 +495,7 @@ var run = Promise.coroutine(function* () {
         console.log(e);
         throw e;
     }
-    */
 
-    /*
     // Aggregations
     try{
         var result = yield r.expr([0, 1, 2, 3, 4, 5]).reduce( function(left, right) { return left.add(right) }).run(connection);
@@ -572,9 +555,7 @@ var run = Promise.coroutine(function* () {
         console.log(e);
         throw e;
     }
-    */
 
-    /*
     // Aggregators
     try{
         var result = yield r.expr([{g: 0, val: 2}, {g: 0, val: 3}, {g: 1, val: 10}, {g: 1, val: 20}, {g:2, val: 3}]).groupBy("g", r.count).orderBy("g").run(connection);
@@ -590,9 +571,7 @@ var run = Promise.coroutine(function* () {
         console.log(e);
         throw e;
     }
-    */
 
-    /*
     // Document manipulation
     try{
 
@@ -690,10 +669,8 @@ var run = Promise.coroutine(function* () {
         console.log(e);
         throw e;
     }
-    */
 
 
-    /*
     try{
         var result = yield r.expr("abc").match("^(ab)").run(connection);
         assert.equal(result.str, 'ab');
@@ -702,10 +679,8 @@ var run = Promise.coroutine(function* () {
         console.log(e);
         throw e;
     }
-    */
 
 
-    /*
     // Basic chaining
     try{
         var result = yield r.expr(1).add(1).run(connection);
@@ -787,7 +762,6 @@ var run = Promise.coroutine(function* () {
         console.log(e);
         throw e;
     }
-    */
 
 
     try{
@@ -801,17 +775,112 @@ var run = Promise.coroutine(function* () {
         //Month in JS starts with 0
         assert.deepEqual(new Date(1986, 10, 3, (12-8)), result)
 
+        var result = yield r.time(1986, 11, 3, 'Z').run(connection);
+        var result2 = yield r.time(1986, 11, 3, 0, 0, 0, 'Z').run(connection);
+        assert.equal(result instanceof Date, true)
+
+
         var now = new Date();
         var result = yield r.epochTime(now.getTime()/1000).run(connection);
-        assert.deepEqual(now, result)
+        assert.deepEqual(now, result);
+
+        var result = yield r.ISO8601("1986-11-03T08:30:00-08:00").run(connection);
+        assert(result, new Date(1986, 11, 3, 8, 30, 0, -8));
+
+        var result = yield r.ISO8601("1986-11-03T08:30:00", {defaultTimezone: "-08:00"}).run(connection);
+        assert(result, new Date(1986, 11, 3, 8, 30, 0, -8));
+        
+        var result = yield r.now().inTimezone('-08:00').hours().run(connection);
+        assert(result, (new Date()).getHours());
+
+        var result = yield r.ISO8601("1986-11-03T08:30:00-08:00").timezone().run(connection);
+        assert(result, "-08:00");
+        
+        var result = yield r.now().during(r.time(2013, 12, 1, "Z"), r.now().add(1000)).run(connection);
+        assert.equal(result, true);
+
+        var result = yield r.now().during(r.time(2013, 12, 1, "Z"), r.now(), {leftBound: "closed", rightBound: "closed"}).run(connection);
+        assert.equal(result, true);
+
+        var result = yield r.now().during(r.time(2013, 12, 1, "Z"), r.now(), {leftBound: "closed", rightBound: "open"}).run(connection);
+        assert.equal(result, false);
+
+        var result = yield r.now().date().hours().run(connection);
+        assert.equal(result, 0);
+        var result = yield r.now().date().minutes().run(connection);
+        assert.equal(result, 0);
+        var result = yield r.now().date().seconds().run(connection);
+        assert.equal(result, 0);
+
+        var result = yield r.now().timeOfDay().run(connection);
+        assert(result>0);
+
+        var result = yield r.now().year().run(connection);
+        assert.equal(result, new Date().getFullYear());
+
+        var result = yield r.now().month().run(connection);
+        assert.equal(result, new Date().getMonth()+1);
+
+        var result = yield r.now().day().run(connection);
+        assert.equal(result, new Date().getUTCDate());
+
+        var result = yield r.now().dayOfYear().run(connection);
+        assert(result > (new Date()).getMonth()*28+(new Date()).getUTCDate()-1);
+
+        var result = yield r.now().dayOfWeek().run(connection);
+        assert.equal(result, new Date().getDay());
+
+        var result = yield r.now().toISO8601().run(connection);
+        assert.equal(typeof result, "string");
+
+        var result = yield r.now().toEpochTime().run(connection);
+        assert.equal(typeof result, "number");
     }
     catch(e) {
         console.log(e);
         throw e;
     }
 
+    // Control structures
 
-    /*
+    try{
+        var result = yield r.expr({a: 1}).do( function(doc) { return doc("a") }).run(connection);
+        assert.equal(result, 1);
+
+        var result = yield r.branch(true, 1, 2).run(connection);
+        assert.equal(result, 1);
+
+        var result = yield r.branch(false, 1, 2).run(connection);
+        assert.equal(result, 2);
+
+        var result = yield r.expr({a:1})("b").default("Hello").run(connection);
+        assert.equal(result, "Hello");
+
+        var result = yield r.js("1").run(connection);
+        assert.equal(result, 1);
+
+        var result = yield r.expr(1).coerceTo("STRING").run(connection);
+        assert.equal(result, "1");
+
+        var result = yield r.expr(1).typeOf().run(connection);
+        assert.equal(result, "NUMBER");
+
+        var result = yield r.json('{"a":1}').run(connection);
+        assert.deepEqual(result, {a:1});
+
+    }
+    catch(e) {
+        console.log(e);
+        throw e;
+    }
+
+    try{
+        var result = yield r.error("Custom error").run(connection);
+        console.log("Error: `r.error` should have thrown");
+    }
+    catch(e) {
+    }
+
     // Cursor
     try{
         var dbName = guid();
@@ -865,7 +934,6 @@ var run = Promise.coroutine(function* () {
         console.log(e);
         throw e;
     }
-    */
 
     // Closing the connection
     try{
