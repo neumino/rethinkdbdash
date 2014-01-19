@@ -18,7 +18,7 @@ function guid() {
 var run = Promise.coroutine(function* () {
     var connection, result, dbName, tableName, cursor, i, confirmation, pks, table, query, now
 
-    console.log("Testing datums");
+    console.log("Connecting");
     try{
         connection = yield r.connect();
         assert(connection);
@@ -29,6 +29,8 @@ var run = Promise.coroutine(function* () {
         throw e;
     }
 
+
+    console.log("Testing getField");
     // Get field
     try{
         result = yield r.expr({a: "aaa"}).getField("a").run(connection);
@@ -42,6 +44,8 @@ var run = Promise.coroutine(function* () {
         throw e;
     }
 
+
+    console.log("Testing meta operations");
     // Meta operations
     try{
         dbName = guid();
@@ -86,6 +90,7 @@ var run = Promise.coroutine(function* () {
         throw e;
     }
 
+    console.log("Testing index operations");
     // Index operations
     try{
         dbName = guid();
@@ -130,6 +135,7 @@ var run = Promise.coroutine(function* () {
     }
 
 
+    console.log("Testing datums");
     // Datums
     try{
         result = yield r.expr(1).run(connection);
@@ -154,6 +160,7 @@ var run = Promise.coroutine(function* () {
     }
 
 
+    console.log("Testing with a real table");
     // Hitting a table
     try{
         dbName = guid();
@@ -185,6 +192,7 @@ var run = Promise.coroutine(function* () {
         throw e;
     }
 
+    console.log("Testing writes");
     // Writes
     try{
         dbName = guid();
@@ -283,6 +291,8 @@ var run = Promise.coroutine(function* () {
         throw e;
     }
         
+
+    console.log("Testing selection");
     // Selecting data
     try{
         dbName = guid();
@@ -361,6 +371,8 @@ var run = Promise.coroutine(function* () {
         throw e;
     }
 
+
+    console.log("Testing joins");
     // Joins
     try{
         dbName = guid();
@@ -411,12 +423,16 @@ var run = Promise.coroutine(function* () {
         assert(result[1].right);
         assert(result[2].left);
         assert(result[2].right);
+
+        result = yield r.expr(pks).eqJoin(function(doc) { return doc; }, r.db(dbName).table(tableName)).zip().run(connection);
+        assert.equal(result.length, 3);
     }
     catch(e) {
         console.log(e);
         throw e;
     }
 
+    console.log("Testing transformations");
     // Transformations
     try{
         dbName = guid();
@@ -500,6 +516,7 @@ var run = Promise.coroutine(function* () {
         throw e;
     }
 
+    console.log("Testing aggregations");
     // Aggregations
     try{
         result = yield r.expr([0, 1, 2, 3, 4, 5]).reduce( function(left, right) { return left.add(right) }).run(connection);
@@ -560,6 +577,8 @@ var run = Promise.coroutine(function* () {
         throw e;
     }
 
+
+    console.log("Testing aggregators");
     // Aggregators
     try{
         result = yield r.expr([{g: 0, val: 2}, {g: 0, val: 3}, {g: 1, val: 10}, {g: 1, val: 20}, {g:2, val: 3}]).groupBy("g", r.count).orderBy("g").run(connection);
@@ -576,6 +595,8 @@ var run = Promise.coroutine(function* () {
         throw e;
     }
 
+
+    console.log("Testing document manipulation");
     // Document manipulation
     try{
 
@@ -675,6 +696,7 @@ var run = Promise.coroutine(function* () {
     }
 
 
+    console.log("Testing string");
     try{
         result = yield r.expr("abc").match("^(ab)").run(connection);
         assert.equal(result.str, 'ab');
@@ -685,7 +707,8 @@ var run = Promise.coroutine(function* () {
     }
 
 
-    // Basic chaining
+    console.log("Testing math and logic");
+    // Basic math and logic
     try{
         result = yield r.expr(1).add(1).run(connection);
         assert.equal(result, 2);
@@ -768,6 +791,7 @@ var run = Promise.coroutine(function* () {
     }
 
 
+    console.log("Testing dates");
     try{
         result = yield r.now().run(connection);
         assert.equal(result instanceof Date, true)
@@ -783,7 +807,6 @@ var run = Promise.coroutine(function* () {
         result2 = yield r.time(1986, 11, 3, 0, 0, 0, 'Z').run(connection);
         assert.equal(result instanceof Date, true)
 
-
         now = new Date();
         result = yield r.epochTime(now.getTime()/1000).run(connection);
         assert.deepEqual(now, result);
@@ -795,10 +818,10 @@ var run = Promise.coroutine(function* () {
         assert(result, new Date(1986, 11, 3, 8, 30, 0, -8));
         
         result = yield r.now().inTimezone('-08:00').hours().run(connection);
-        assert(result, (new Date()).getHours());
+        assert.equal(result, (new Date()).getHours());
 
         result = yield r.ISO8601("1986-11-03T08:30:00-08:00").timezone().run(connection);
-        assert(result, "-08:00");
+        assert.equal(result, "-08:00");
         
         result = yield r.now().during(r.time(2013, 12, 1, "Z"), r.now().add(1000)).run(connection);
         assert.equal(result, true);
@@ -832,7 +855,7 @@ var run = Promise.coroutine(function* () {
         assert(result > (new Date()).getMonth()*28+(new Date()).getUTCDate()-1);
 
         result = yield r.now().dayOfWeek().run(connection);
-        assert.equal(result, new Date().getDay());
+        assert.equal(result, new Date().getDay()+1);
 
         result = yield r.now().toISO8601().run(connection);
         assert.equal(typeof result, "string");
@@ -845,8 +868,8 @@ var run = Promise.coroutine(function* () {
         throw e;
     }
 
+    console.log("Testing control structures");
     // Control structures
-
     try{
         result = yield r.expr({a: 1}).do( function(doc) { return doc("a") }).run(connection);
         assert.equal(result, 1);
@@ -885,6 +908,7 @@ var run = Promise.coroutine(function* () {
     catch(e) {
     }
 
+    console.log("Testing cursor");
     // Cursor
     try{
         dbName = guid();
@@ -939,6 +963,7 @@ var run = Promise.coroutine(function* () {
         throw e;
     }
 
+    console.log("Closing connection");
     // Closing the connection
     try{
         confirmation = yield connection.close({noReplyWait: true});
@@ -948,6 +973,8 @@ var run = Promise.coroutine(function* () {
         console.log(e);
         throw e;
     }
+
+    console.log("Tests done.");
 });
 
 run();
