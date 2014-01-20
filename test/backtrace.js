@@ -880,47 +880,16 @@ var run = Promise.coroutine(function* () {
     catch(e) {
         console.log(e.message);
     } 
-    
-
-
-
-
-
-
-
-    //
-
-
-    //console.log(global.back);
-
-    /*
 
     try{
-        result = yield r.expr(1).add("a").run(connection);
+        result = yield r.expr([1,2]).map(r.row.add('eh')).run(connection);
     }
     catch(e) {
-    }
-
-    */
-
-    /*
-    try{
-        result = yield r.db("nonExistingDb").table("test").run(connection);
-        console.log(result);
-    }
-    catch(e) {
-        console.log(e);
-    }
+        console.log(e.message);
+    } 
+   
 
 
-    try{
-        result = yield r.db(dbName).table("nonExistingTable").run(connection);
-        console.log(result);
-    }
-    catch(e) {
-        console.log(e);
-    }
-    */
 
 
     // Closing the connection
