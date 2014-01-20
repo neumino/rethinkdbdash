@@ -953,6 +953,20 @@ var run = Promise.coroutine(function* () {
         //console.log(e.query);
     }
 
+    try{
+        result = yield r.expr(1).add("eh").run(connection);
+    }
+    catch(e) {
+        console.log(e.message);
+    }
+    try{
+        result = yield r.expr({a:r.expr(1).add("eh"), b: 2}).run(connection);
+    }
+    catch(e) {
+        console.log(e.message);
+    }
+
+
 
     // Closing the connection
     try{
@@ -963,6 +977,8 @@ var run = Promise.coroutine(function* () {
         console.log(e);
         throw e;
     }
+
+
 });
 
 run();
