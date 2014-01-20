@@ -965,6 +965,27 @@ var run = Promise.coroutine(function* () {
     catch(e) {
         console.log(e.message);
     }
+    try{
+        result = yield r.expr([1,2,3]).add("eh").run(connection);
+    }
+    catch(e) {
+        console.log(e.message);
+    }
+    try{
+        result = yield r.expr({a:1}).add("eh").run(connection);
+    }
+    catch(e) {
+        console.log(e.message);
+    }
+    try{
+        result = yield r.table("test").map( function(doc) { return r.expr(1).add("eh")}).run(connection);
+    }
+    catch(e) {
+        console.log(e.message);
+    }
+
+
+
 
 
 
