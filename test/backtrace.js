@@ -25,8 +25,6 @@ var run = Promise.coroutine(function* () {
         console.log("Connected");
     }
     catch(e) {
-        console.log(e.message);
-        console.log(e);
         throw e;
     }
 
@@ -42,21 +40,17 @@ var run = Promise.coroutine(function* () {
         assert.deepEqual(result, {created: 1});
     }
     catch(e) {
-        console.log(e.message);
-        console.log(e);
         throw e;
     }
 
     // First test
     try{
         result = yield r.expr(1).add(r.expr([2, 3, 4, r.expr([5, 6, r.expr("a").add(7)])])).run(connection);
+        console.log("Should have thrown an error");
     }
     catch(e) {
-        /*
-        console.log(JSON.stringify(e.query, null, 2));
-        console.log(JSON.stringify(e.frames, null, 2));
-        */
-
+        //console.log(JSON.stringify(e.query, null, 2));
+        //console.log(JSON.stringify(e.frames, null, 2));
         console.log(e.message);
     } 
 
