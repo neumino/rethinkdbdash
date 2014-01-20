@@ -948,10 +948,29 @@ var run = Promise.coroutine(function* () {
     }
     catch(e) {
         console.log(e.message);
-        //console.log(e);
-        //console.log(e.frames);
-        //console.log(e.query);
     }
+    try{
+        result = yield r.db("test").tableCreate("test").run(connection);
+    }
+    catch(e) {
+        console.log(e.message);
+    }
+
+    try{
+        result = yield r.table("test").insert({}).run(connection);
+    }
+    catch(e) {
+        console.log(e.message);
+    }
+
+    try{
+        result = yield r.table("test").replace({a:1}, {durability:r.expr(1).add("heloo")}).run(connection);
+    }
+    catch(e) {
+        console.log(e.message);
+    }
+
+
 
     try{
         result = yield r.expr(1).add("eh").run(connection);
