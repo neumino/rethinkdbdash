@@ -888,15 +888,17 @@ var run = Promise.coroutine(function* () {
         console.log(e.message);
     } 
     try{
-        result = yield r.table("foo").add(1).add(1).add("hello-super-long-string").map( function(doc) {
-            return r.expr([1,2]).map(function(test) {
-                return test("b").mul(test("b")).merge({
+        result = yield r.table("foo").add(1).add(1).add("hello-super-long-string").add("another-long-string").add("one-last-string").map( function(doc) {
+            return r.expr([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]).map(function(test) {
+                return test("b").add("hello-super-long-string").add("another-long-string").add("one-last-string").add("hello-super-long-string").add("another-long-string").add("one-last-string").add("hello-super-long-string").add("another-long-string").add("one-last-string").add("hello-super-long-string").add("another-long-string").add("one-last-string").add("hello-super-long-string").add("another-long-string").add("one-last-string").mul(test("b")).merge({
                     firstName: "xxxxxx",
                     lastName: "yyyy",
                     email: "xxxxx@yyyy.com",
                     phone: "xxx-xxx-xxxx"
                 });
-            })
+            }).add(2).map(function(doc) {
+                return doc.add("hello-super-long-string").add("another-long-string").add("one-last-string").add("hello-super-long-string").add("another-long-string").add("one-last-string").add("hello-super-long-string").add("another-long-string").add("one-last-string").add("hello-super-long-string").add("another-long-string").add("one-last-string").add("hello-super-long-string").add("another-long-string").add("one-last-string")
+            });
         }).run(connection);
     }
     catch(e) {
