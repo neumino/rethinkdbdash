@@ -882,11 +882,30 @@ var run = Promise.coroutine(function* () {
     } 
 
     try{
+        result = yield r.db(dbName).table(tableName).replace({a:1}, {nonValid:true}).run(connection);
+    }
+    catch(e) {
+        console.log(e.message);
+        //console.log(e.query);
+        //console.log(e.frames);
+    } 
+
+
+    try{
+        result = yield r.db(dbName).table(tableName).replace({a:1}, {durability: "softt"}).run(connection);
+    }
+    catch(e) {
+        console.log(e.message);
+    } 
+
+
+    try{
         result = yield r.expr([1,2]).map(r.row.add('eh')).run(connection);
     }
     catch(e) {
         console.log(e.message);
     } 
+
     try{
         result = yield r.table("foo").add(1).add(1).add("hello-super-long-string").add("another-long-string").add("one-last-string").map( function(doc) {
             return r.expr([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]).map(function(test) {
@@ -904,6 +923,35 @@ var run = Promise.coroutine(function* () {
     catch(e) {
         console.log(e.message);
     } 
+
+    try{
+        result = yield r.expr({a:1, b:r.expr(1).add("eh")}).run(connection);
+    }
+    catch(e) {
+        console.log(e.message);
+        //console.log(e.frames);
+        //console.log(e);
+        //console.log(e.query);
+    }
+    try{
+        result = yield r.db(dbName).table(tableName).replace({a:1}, {durability:"soft"}).add(2).run(connection);
+    }
+    catch(e) {
+        console.log(e.message);
+        //console.log(e.frames);
+        //console.log(e);
+        //console.log(e.query);
+    }
+
+    try{
+        result = yield r.db(dbName).table(tableName).replace({a:1}, {durability:r.expr(1).add("heloo")}).run(connection);
+    }
+    catch(e) {
+        console.log(e.message);
+        //console.log(e);
+        //console.log(e.frames);
+        //console.log(e.query);
+    }
 
 
     // Closing the connection
