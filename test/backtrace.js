@@ -887,9 +887,21 @@ var run = Promise.coroutine(function* () {
     catch(e) {
         console.log(e.message);
     } 
-   
-
-
+    try{
+        result = yield r.table("foo").add(1).add(1).add("hello-super-long-string").map( function(doc) {
+            return r.expr([1,2]).map(function(test) {
+                return test("b").mul(test("b")).merge({
+                    firstName: "xxxxxx",
+                    lastName: "yyyy",
+                    email: "xxxxx@yyyy.com",
+                    phone: "xxx-xxx-xxxx"
+                });
+            })
+        }).run(connection);
+    }
+    catch(e) {
+        console.log(e.message);
+    } 
 
 
     // Closing the connection
