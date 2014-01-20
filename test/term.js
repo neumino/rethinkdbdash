@@ -41,7 +41,7 @@ var run = Promise.coroutine(function* () {
     }
     catch(e) {
         console.log(e);
-        throw e;
+        //throw e;
     }
 
 
@@ -87,7 +87,7 @@ var run = Promise.coroutine(function* () {
     }
     catch(e) {
         console.log(e);
-        throw e;
+        //throw e;
     }
 
     console.log("Testing index operations");
@@ -102,36 +102,39 @@ var run = Promise.coroutine(function* () {
         result = yield r.db(dbName).tableCreate(tableName).run(connection);
         assert.deepEqual(result, {created: 1});
 
-        result = yield r.db(dbName).table(tableName).indexCreate("field").run(connection);
+        result = yield r.db(dbName).table(tableName).indexList().run(connection);
+        assert.deepEqual(result, []);
+
+        result = yield r.db(dbName).table(tableName).indexCreate("newField").run(connection);
         assert.deepEqual(result, {created: 1});
 
         result = yield r.db(dbName).table(tableName).indexList().run(connection);
-        assert.deepEqual(result, ["field"]);
+        assert.deepEqual(result, ["newField"]);
 
         result = yield r.db(dbName).table(tableName).indexWait().run(connection);
-        assert.deepEqual(result, [ { index: 'field', ready: true } ]);
+        assert.deepEqual(result, [ { index: 'newField', ready: true } ]);
 
         result = yield r.db(dbName).table(tableName).indexStatus().run(connection);
-        assert.deepEqual(result, [ { index: 'field', ready: true } ]);
+        assert.deepEqual(result, [ { index: 'newField', ready: true } ]);
 
-        result = yield r.db(dbName).table(tableName).indexDrop("field").run(connection);
+        result = yield r.db(dbName).table(tableName).indexDrop("newField").run(connection);
         assert.deepEqual(result, {dropped: 1});
 
-        result = yield r.db(dbName).table(tableName).indexCreate("field", function(doc) { return doc("field") }).run(connection);
+        result = yield r.db(dbName).table(tableName).indexCreate("field1", function(doc) { return doc("field1") }).run(connection);
         assert.deepEqual(result, {created: 1});
 
-        result = yield r.db(dbName).table(tableName).indexWait('field').run(connection);
-        assert.deepEqual(result, [ { index: 'field', ready: true } ]);
+        result = yield r.db(dbName).table(tableName).indexWait('field1').run(connection);
+        assert.deepEqual(result, [ { index: 'field1', ready: true } ]);
 
-        result = yield r.db(dbName).table(tableName).indexStatus('field').run(connection);
-        assert.deepEqual(result, [ { index: 'field', ready: true } ]);
+        result = yield r.db(dbName).table(tableName).indexStatus('field1').run(connection);
+        assert.deepEqual(result, [ { index: 'field1', ready: true } ]);
 
-        result = yield r.db(dbName).table(tableName).indexDrop("field").run(connection);
+        result = yield r.db(dbName).table(tableName).indexDrop("field1").run(connection);
         assert.deepEqual(result, {dropped: 1});
     }
     catch(e) {
-        console.log(e);
-        throw e;
+        console.log((e.message));
+        //throw e;
     }
 
 
@@ -156,7 +159,7 @@ var run = Promise.coroutine(function* () {
     }
     catch(e) {
         console.log(e);
-        throw e;
+        //throw e;
     }
 
 
@@ -189,7 +192,7 @@ var run = Promise.coroutine(function* () {
     }
     catch(e) {
         console.log(e);
-        throw e;
+        //throw e;
     }
 
     console.log("Testing writes");
@@ -288,7 +291,7 @@ var run = Promise.coroutine(function* () {
     }
     catch(e) {
         console.log(e);
-        throw e;
+        //throw e;
     }
         
 
@@ -368,7 +371,7 @@ var run = Promise.coroutine(function* () {
     }
     catch(e) {
         console.log(e);
-        throw e;
+        //throw e;
     }
 
 
@@ -429,7 +432,7 @@ var run = Promise.coroutine(function* () {
     }
     catch(e) {
         console.log(e);
-        throw e;
+        //throw e;
     }
 
     console.log("Testing transformations");
@@ -513,7 +516,7 @@ var run = Promise.coroutine(function* () {
     }
     catch(e) {
         console.log(e);
-        throw e;
+        //throw e;
     }
 
     console.log("Testing aggregations");
@@ -574,7 +577,7 @@ var run = Promise.coroutine(function* () {
     }
     catch(e) {
         console.log(e);
-        throw e;
+        //throw e;
     }
 
 
@@ -592,7 +595,7 @@ var run = Promise.coroutine(function* () {
     }
     catch(e) {
         console.log(e);
-        throw e;
+        //throw e;
     }
 
 
@@ -692,7 +695,7 @@ var run = Promise.coroutine(function* () {
     }
     catch(e) {
         console.log(e);
-        throw e;
+        //throw e;
     }
 
 
@@ -703,7 +706,7 @@ var run = Promise.coroutine(function* () {
     }
     catch(e) {
         console.log(e);
-        throw e;
+        //throw e;
     }
 
 
@@ -787,7 +790,7 @@ var run = Promise.coroutine(function* () {
     }
     catch(e) {
         console.log(e);
-        throw e;
+        //throw e;
     }
 
 
@@ -854,8 +857,8 @@ var run = Promise.coroutine(function* () {
         result = yield r.now().dayOfYear().run(connection);
         assert(result > (new Date()).getMonth()*28+(new Date()).getUTCDate()-1);
 
-        result = yield r.now().dayOfWeek().run(connection);
-        assert.equal(result, new Date().getDay()+1);
+        result = yield r.now().inTimezone('-08:00').dayOfWeek().run(connection);
+        assert.equal(result, new Date().getDay());
 
         result = yield r.now().toISO8601().run(connection);
         assert.equal(typeof result, "string");
@@ -865,7 +868,7 @@ var run = Promise.coroutine(function* () {
     }
     catch(e) {
         console.log(e);
-        throw e;
+        //throw e;
     }
 
     console.log("Testing control structures");
@@ -898,7 +901,7 @@ var run = Promise.coroutine(function* () {
     }
     catch(e) {
         console.log(e);
-        throw e;
+        //throw e;
     }
 
     try{
