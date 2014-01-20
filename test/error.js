@@ -47,6 +47,19 @@ var run = Promise.coroutine(function* () {
         throw e;
     }
 
+    // First test
+    try{
+        result = yield r.expr(1).add(r.expr([2, 3, 4, r.expr([5, 6, r.expr("a").add(7)])])).run(connection);
+    }
+    catch(e) {
+        /*
+        console.log(JSON.stringify(e.query, null, 2));
+        console.log(JSON.stringify(e.frames, null, 2));
+        */
+
+        console.log(e.message);
+    } 
+
     try{
         result = yield r.dbCreate(1).run(connection);
     }
@@ -61,6 +74,7 @@ var run = Promise.coroutine(function* () {
         console.log(e.message);
     } 
 
+
     try{
         result = yield r.dbList().do(function(x) { return x.add("a") }).run(connection);
     }
@@ -68,14 +82,23 @@ var run = Promise.coroutine(function* () {
         console.log(e.message);
     } 
 
+
+    try{
+        result = yield r.expr(2).do(function(x) { return x.add("a") }).run(connection);
+    }
+    catch(e) {
+        console.log(e.message);
+    } 
+
+    //TODO Report broken on the server
     try{
         result = yield r.db(dbName).tableCreate(tableName).run(connection);
     }
     catch(e) {
         console.log(e.message);
     }
-    //TODO r.tableCreate, r.tableDrop, r.tableList
 
+    //TODO Report broken on the server
     try{
         result = yield r.db(dbName).tableDrop("nonExistingTable").run(connection);
     }
@@ -90,6 +113,7 @@ var run = Promise.coroutine(function* () {
         console.log(e.message);
     } 
 
+    //TODO Report broken on the server
     try{
         result = yield r.db(dbName).table(tableName).indexCreate("foo").run(connection);
         result = yield r.db(dbName).table(tableName).indexCreate("foo").run(connection);
@@ -98,6 +122,7 @@ var run = Promise.coroutine(function* () {
         console.log(e.message);
     }
 
+    //TODO Report broken on the server
     try{
         result = yield r.db(dbName).table(tableName).indexDrop("nonExistingIndex").run(connection);
     }
@@ -119,20 +144,22 @@ var run = Promise.coroutine(function* () {
         console.log(e.message);
     } 
 
+    //TODO Report broken on the server
     try{
-        result = yield r.db(dbName).table(tableName).indexWait("foo", "bar").do(function(x) { return x.add("a") }).run(connection);
+        result = yield r.db(dbName).table(tableName).indexWait("foo", "bar").run(connection);
     }
     catch(e) {
         console.log(e.message);
     } 
 
     try{
-        result = yield r.db(dbName).table(tableName).indexStatus().do(function(x) { return x.add("a") }).run(connection);
+        result = yield r.db(dbName).table(tableName).indexStatus().and( r.expr(1).add("a")).run(connection);
     }
     catch(e) {
         console.log(e.message);
     } 
 
+    //TODO Report broken on the server
     try{
         result = yield r.db(dbName).table(tableName).indexStatus("foo", "bar").do(function(x) { return x.add("a") }).run(connection);
     }
@@ -196,6 +223,7 @@ var run = Promise.coroutine(function* () {
         console.log(e.message);
     } 
 
+    //TODO Report broken on the server
     try{
         result = yield r.db(dbName).table("nonExistingTable").run(connection);
     }
@@ -246,6 +274,14 @@ var run = Promise.coroutine(function* () {
     } 
 
     try{
+        result = yield r.expr([1,2,3]).innerJoin(r.expr([1,2,3]), function(left, right) { return r.expr(1).add("str").add(left.eq(right("bar").add(1))) }).run(connection);
+    }
+    catch(e) {
+        console.log(e.message);
+    } 
+
+
+    try{
         result = yield r.expr([1,2,3]).outerJoin( function(left, right) { return left.eq(right("bar").add(1)) }, r.db(dbName).table(tableName)).run(connection);
     }
     catch(e) {
@@ -266,6 +302,7 @@ var run = Promise.coroutine(function* () {
         console.log(e.message);
     } 
 
+    //TODO Report broken on the server
     try{
         result = yield r.expr([1,2,3]).map(function(v) { return v}).add(1).run(connection);
     }
@@ -273,6 +310,7 @@ var run = Promise.coroutine(function* () {
         console.log(e.message);
     } 
 
+    //TODO Report message error broken -- mention has_fields instead of with_fields
     try{
         result = yield r.expr([1,2,3]).withFields("foo", "bar").add(1).run(connection);
     }
@@ -287,6 +325,7 @@ var run = Promise.coroutine(function* () {
         console.log(e.message);
     } 
 
+    //TODO Report orderBy breaks if a field is missing
     try{
         result = yield r.expr([1,2,3]).orderBy("foo").add(1).run(connection);
     }
@@ -321,6 +360,7 @@ var run = Promise.coroutine(function* () {
     catch(e) {
         console.log(e.message);
     } 
+
 
     try{
         result = yield r.expr([1,2,3]).indexesOf("bar").add("Hello").run(connection);
@@ -382,6 +422,14 @@ var run = Promise.coroutine(function* () {
         console.log(e.message);
     } 
 
+    //TODO Report python backtrace broken -- group_by(["foo", "bar"], ...) instead of group_by("foo", "bar", ...)
+    try{
+        result = yield r.expr([1,2,3]).groupBy("foo", r.count).add("Hello").run(connection);
+    }
+    catch(e) {
+        console.log(e.message);
+    } 
+
     try{
         result = yield r.expr([1,2,3]).groupBy("foo", "bar", r.count).add("Hello").run(connection);
     }
@@ -403,6 +451,7 @@ var run = Promise.coroutine(function* () {
         console.log(e.message);
     } 
 
+    //TODO Report could improve error message
     try{
         result = yield r.expr([1,2,3]).contains("foo", "bar").add("Hello").run(connection);
     }
@@ -494,6 +543,7 @@ var run = Promise.coroutine(function* () {
         console.log(e.message);
     } 
 
+    //TODO Backtrace could be improved -- report argument instead of the whole insertAt
     try{
         result = yield r.expr([1,2,3]).insertAt("foo", 2).add("Hello").run(connection);
     }
@@ -501,6 +551,7 @@ var run = Promise.coroutine(function* () {
         console.log(e.message);
     } 
 
+    //TODO Backtrace could be improved -- report argument instead of the whole insertAt
     try{
         result = yield r.expr([1,2,3]).spliceAt("foo", 2).add("Hello").run(connection);
     }
@@ -508,6 +559,7 @@ var run = Promise.coroutine(function* () {
         console.log(e.message);
     } 
 
+    //TODO Backtrace could be improved -- report argument instead of the whole insertAt
     try{
         result = yield r.expr([1,2,3]).deleteAt("foo", 2).add("Hello").run(connection);
     }
@@ -515,6 +567,7 @@ var run = Promise.coroutine(function* () {
         console.log(e.message);
     } 
 
+    //TODO Backtrace could be improved -- report argument instead of the whole insertAt
     try{
         result = yield r.expr([1,2,3]).changeAt("foo", 2).add("Hello").run(connection);
     }
@@ -624,108 +677,127 @@ var run = Promise.coroutine(function* () {
         result = yield r.expr([1,2,3]).le(r.expr("Hello").add(2)).run(connection);
     }
     catch(e) {
+        console.log(e.message);
     } 
 
     try{
         result = yield r.expr([1,2,3]).not().add(r.expr("Hello").add(2)).run(connection);
     }
     catch(e) {
+        console.log(e.message);
     } 
 
     try{
         result = yield r.now().add("Hello").run(connection);
     }
     catch(e) {
+        console.log(e.message);
     } 
 
     try{
         result = yield r.time(1023, 11, 3, 'Z').add("Hello").run(connection);
     }
     catch(e) {
+        console.log(e.message);
     } 
 
     try{
         result = yield r.epochTime(12132131).add("Hello").run(connection);
     }
     catch(e) {
+        console.log(e.message);
     } 
 
     try{
         result = yield r.ISO8601("UnvalidISO961String").add("Hello").run(connection);
     }
     catch(e) {
+        console.log(e.message);
     } 
 
+    //TODO Report server - Could be more precise -- underline arg and not everything
     try{
-        result = yield r.now().inTimezone().add("Hello").run(connection);
+        result = yield r.now().inTimezone('noTimezone').add("Hello").run(connection);
     }
     catch(e) {
+        console.log(e.message);
     } 
 
     try{
         result = yield r.now().timezone().add(true).run(connection);
     }
     catch(e) {
+        console.log(e.message);
     } 
 
     try{
         result = yield r.now().during(r.now(), r.now()).add(true).run(connection);
     }
     catch(e) {
+        console.log(e.message);
     } 
 
     try{
         result = yield r.now().timeOfDay().add(true).run(connection);
     }
     catch(e) {
+        console.log(e.message);
     } 
 
     try{
         result = yield r.now().year().add(true).run(connection);
     }
     catch(e) {
+        console.log(e.message);
     } 
     
     try{
         result = yield r.now().month().add(true).run(connection);
     }
     catch(e) {
+        console.log(e.message);
     } 
 
     try{
         result = yield r.now().day().add(true).run(connection);
     }
     catch(e) {
+        console.log(e.message);
     } 
 
     try{
         result = yield r.now().dayOfWeek().add(true).run(connection);
     }
     catch(e) {
+        console.log(e.message);
     } 
 
     try{
         result = yield r.now().dayOfYear().add(true).run(connection);
     }
     catch(e) {
+        console.log(e.message);
     } 
 
     try{
         result = yield r.now().hours().add(true).run(connection);
     }
     catch(e) {
+        console.log(e.message);
     } 
 
     try{
         result = yield r.now().seconds().add(true).run(connection);
     }
     catch(e) {
+        console.log(e.message);
     } 
 
     try{
         result = yield r.now().toISO8601().add(true).run(connection);
     }
     catch(e) {
+        console.log(e.message);
     } 
 
     try{
@@ -817,17 +889,6 @@ var run = Promise.coroutine(function* () {
     
 
 
-
-
-
-
-
-
-
-
-
- 
- 
 
 
 
