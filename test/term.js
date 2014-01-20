@@ -966,6 +966,42 @@ var run = Promise.coroutine(function* () {
         throw e;
     }
 
+    console.log("Testing arguments in run");
+    // Testing run arguments
+    try{
+        result = yield r.expr(1).run(connection, {useOutdated: true});
+        assert.equal(result, 1);
+
+        result = yield r.expr(1).run(connection, {useOutdated: false});
+        assert.equal(result, 1);
+
+        result = yield r.expr(1).run(connection, {profile: false});
+        assert.equal(result, 1);
+
+        result = yield r.expr(1).run(connection, {profile: true});
+        assert.equal(result, 1);
+
+        result = yield r.expr(1).run(connection, {durability: false});
+        assert.equal(result, 1);
+
+        result = yield r.expr(1).run(connection, {durability: false});
+        assert.equal(result, 1);
+
+        result = yield r.expr(1).run(connection, {db: "test"});
+        assert.equal(result, 1);
+    }
+    catch(e) {
+        console.log(e);
+    }
+
+    try{
+        r.expr(1).run(connection, {noReply: true});
+    }
+    catch(e) {
+        console.log(e);
+    }
+
+
     console.log("Closing connection");
     // Closing the connection
     try{
