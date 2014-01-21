@@ -24,6 +24,7 @@
   "bugs": {
     "url": "https://github.com/neumino/rethinkdbdash/issues"
   },
+  "engines" : { "node" : ">=0.11.10" },
   "dependencies":{
     "protobufjs": ">= 2.0.3",
     "bluebird": ">= 1.0.0"
