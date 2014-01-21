@@ -16,7 +16,7 @@ app.use(function *(){
     var connection = yield r.connect();
     var result = yield r.table("foo").get("bar").run(connection);
 
-    this.body = result;
+    this.body = JSON.stringify(result);
 });
 
 app.listen(3000);
