@@ -922,16 +922,6 @@ var run = Promise.coroutine(function* () {
     }
 
     try{
-        result = yield r.error().run(connection);
-        throw new Error("An error should have been thrown before.");
-    }
-    catch(e) {
-        assert(e instanceof r.Error.ReqlDriverError);
-        assert(e instanceof Error);
-        assert.equal(e.message, "First argument of `error` cannot be undefined.");
-    }
-
-    try{
         result = yield r.expr({})("").default().run(connection);
         throw new Error("An error should have been thrown before.");
     }
