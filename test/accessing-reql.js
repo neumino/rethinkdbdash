@@ -143,6 +143,32 @@ It("`reconnect` should work with options", function* (done) {
 })
 
 
+It("`noReplyWait` should throw", function* (done) {
+    try{
+        var result = yield connection.noReplyWait()
+    }
+    catch(e) {
+        if (e.message === "Did you mean to use `noreplyWait` instead of `noReplyWait`?") {
+            done();
+        }
+        else {
+            done(e);
+        }
+    }
+
+})
+It("`noreplyWait` should work", function* (done) {
+    try{
+        var result = yield connection.noreplyWait()
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
+
+
  
 It("`run` should take an argument", function* (done) {
     try {
