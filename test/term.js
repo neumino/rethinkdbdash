@@ -30,6 +30,7 @@ var run = Promise.coroutine(function* () {
     }
 
 
+    /*
     console.log("Testing getField");
     // Get field
     try{
@@ -969,6 +970,7 @@ var run = Promise.coroutine(function* () {
         throw e;
     }
 
+    */
     console.log("Testing arguments in run");
     // Testing run arguments
     try{
@@ -982,7 +984,7 @@ var run = Promise.coroutine(function* () {
         assert.equal(result, 1);
 
         result = yield r.expr(1).run(connection, {profile: true});
-        assert.equal(result, 1);
+        assert.equal(result.value, 1);
 
         result = yield r.expr(1).run(connection, {durability: false});
         assert.equal(result, 1);
