@@ -67,8 +67,8 @@ It("`run` should use the default database", function* (done) {
 })
 It("`use` should work", function* (done) {
     try{
-        dbName = guid();
-        tableName = guid();
+        dbName = uuid();
+        tableName = uuid();
 
         result = yield r.dbCreate(dbName).run(connection);
         assert.deepEqual(result, {created: 1});
@@ -114,6 +114,11 @@ It("`reconnect` should work", function* (done) {
  
 It("`run` should take an argument", function* (done) {
     try {
+        connection.close();
+        assert(connection);
+        connection = yield r.connect();
+        assert(connection);
+
         var result = yield r.expr(1).run(connection, {useOutdated: true});
         assert.equal(result, 1);
 
@@ -132,20 +137,18 @@ It("`run` should take an argument", function* (done) {
         result = yield r.expr(1).run(connection, {durability: false});
         assert.equal(result, 1);
 
-        result = yield r.expr(1).run(connection, {db: "test"});
-        assert.equal(result, 1);
-
-
         done();
     }
     catch(e) {
+        console.log(e.message);
         done(e);
     }
 })
 
+
 It("`r()` should be a shortcut for r.expr()", function* (done) {
     try {
-        result = yield r(1).run(connection);
+        var result = yield r(1).run(connection);
         assert.deepEqual(result, 1)
         done();
     }
@@ -156,7 +159,7 @@ It("`r()` should be a shortcut for r.expr()", function* (done) {
 
 It("`timeFormat` should work", function* (done) {
     try {
-        result = yield r.now().run(connection);
+        var result = yield r.now().run(connection);
         assert(result instanceof Date);
 
         result = yield r.now().run(connection, {timeFormat: 'native'});
@@ -175,7 +178,7 @@ It("`timeFormat` should work", function* (done) {
 
 It("`profile` should work", function* (done) {
     try{
-        result = yield r.expr(true).run(connection, {profile: false});
+        var result = yield r.expr(true).run(connection, {profile: false});
         assert(result)
 
         result = yield r.expr(true).run(connection, {profile: true});
@@ -184,15 +187,11 @@ It("`profile` should work", function* (done) {
 
         result = yield r.expr(true).run(connection, {profile: false});
         assert.equal(result, true)
+
+        done();
     }
     catch(e){
         console.log(e);
-    }
-
-
-    }
-    catch(e) {
-        done(e);
     }
 })
 

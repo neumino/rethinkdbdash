@@ -7,6 +7,7 @@ var assert = require('assert');
 var uuid = util.uuid;
 var connection; // global connection
 var dbName;
+var cursor;
 
 function It(testName, generatorFn) {
     it(testName, function(done) {
@@ -41,7 +42,7 @@ It("Init for `cursor.js`", function* (done) {
 
 It("`table` should return a cursor", function* (done) {
     try {
-        var cursor = yield r.db(dbName).table(tableName).run(connection);
+        cursor = yield r.db(dbName).table(tableName).run(connection);
         assert(cursor);
         assert(cursor.hasNext, true);
 
