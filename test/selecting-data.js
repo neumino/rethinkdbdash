@@ -59,7 +59,7 @@ It("`table` should work", function* (done) {
 
         result = yield r.db(dbName).table(tableName).run(connection);
         result = yield result.toArray();
-        assert.equal(result.length, 0)
+        assert.equal(result.length, 100)
         done();
     }
     catch(e) {
@@ -187,7 +187,7 @@ It("`filter` should work -- with an object -- looking for an undefined field", f
 
 It("`filter` should work -- with an anonymous function", function* (done) {
     try {
-        cursor = yield r.db(dbName).table(tableName).filter(function(doc) { return doc("field").eq(10) }).run(connection);
+        result = yield r.db(dbName).table(tableName).filter(function(doc) { return doc("field").eq(10) }).run(connection);
         assert(result);
         result = yield result.toArray();
         assert.equal(result.length, 20);
