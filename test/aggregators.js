@@ -46,6 +46,31 @@ It("`r.count` should count", function* (done) {
         done(e);
     }
 })
+It("`r.sum` should count", function* (done) {
+    try {
+        var result = yield r.expr([{g: 0, val: 2}, {g: 0, val: 3}, {g: 1, val: 10}, {g: 1, val: 20}, {g:2, val: 3}]).groupBy("g", r.sum("val")).orderBy("g").run(connection);
+        result = yield result.toArray();
+        assert.deepEqual(result, [{group: {g: 0}, reduction:5 }, {group: {g: 1 }, reduction: 30}, {group: {g: 2 }, reduction: 3}]);
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+It("`r.avg` should count", function* (done) {
+    try {
+        var result = yield r.expr([{g: 0, val: 2}, {g: 0, val: 3}, {g: 1, val: 10}, {g: 1, val: 20}, {g:2, val: 3}]).groupBy("g", r.avg("val")).orderBy("g").run(connection);
+        result = yield result.toArray();
+        assert.deepEqual(result, [{group: {g: 0}, reduction:2.5 }, {group: {g: 1 }, reduction: 15}, {group: {g: 2 }, reduction: 3}]);
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
 
 
 It("End for `aggregators.js`", function* (done) {
