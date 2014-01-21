@@ -55,12 +55,14 @@ var run = Promise.coroutine(function* () {
         assert.deepEqual(result, {created: 1});
 
         result = yield r.dbList().run(connection);
+        result = yield result.toArray();
         assert(result.length > 0);
 
         result = yield r.db(dbName).tableCreate(tableName).run(connection);
         assert.deepEqual(result, {created: 1});
 
         result = yield r.db(dbName).tableList().run(connection);
+        result = yield result.toArray();
         assert(result.length > 0);
 
         result = yield r.db(dbName).tableDrop(tableName).run(connection);
@@ -103,18 +105,22 @@ var run = Promise.coroutine(function* () {
         assert.deepEqual(result, {created: 1});
 
         result = yield r.db(dbName).table(tableName).indexList().run(connection);
+        result = yield result.toArray();
         assert.deepEqual(result, []);
 
         result = yield r.db(dbName).table(tableName).indexCreate("newField").run(connection);
         assert.deepEqual(result, {created: 1});
 
         result = yield r.db(dbName).table(tableName).indexList().run(connection);
+        result = yield result.toArray();
         assert.deepEqual(result, ["newField"]);
 
         result = yield r.db(dbName).table(tableName).indexWait().run(connection);
+        result = yield result.toArray();
         assert.deepEqual(result, [ { index: 'newField', ready: true } ]);
 
         result = yield r.db(dbName).table(tableName).indexStatus().run(connection);
+        result = yield result.toArray();
         assert.deepEqual(result, [ { index: 'newField', ready: true } ]);
 
         result = yield r.db(dbName).table(tableName).indexDrop("newField").run(connection);
@@ -124,9 +130,11 @@ var run = Promise.coroutine(function* () {
         assert.deepEqual(result, {created: 1});
 
         result = yield r.db(dbName).table(tableName).indexWait('field1').run(connection);
+        result = yield result.toArray();
         assert.deepEqual(result, [ { index: 'field1', ready: true } ]);
 
         result = yield r.db(dbName).table(tableName).indexStatus('field1').run(connection);
+        result = yield result.toArray();
         assert.deepEqual(result, [ { index: 'field1', ready: true } ]);
 
         result = yield r.db(dbName).table(tableName).indexDrop("field1").run(connection);
@@ -151,6 +159,7 @@ var run = Promise.coroutine(function* () {
         assert.equal(result, "Hello");
 
         result = yield r.expr([0, 1, 2]).run(connection);
+        result = yield result.toArray();
         assert.deepEqual(result, [0, 1, 2]);
 
 
@@ -318,11 +327,13 @@ var run = Promise.coroutine(function* () {
         table = r.db(dbName).table(tableName);
         query = table.getAll.apply(table, pks);
         result = yield query.run(connection);
+        result = yield result.toArray();
         assert.equal(result.length, 100);
 
         table = r.db(dbName).table(tableName);
         query = table.getAll.apply(table, pks.slice(0, 50));
         result = yield query.run(connection);
+        result = yield result.toArray();
         assert.equal(result.length, 50);
 
         result = yield r.db(dbName).table(tableName).update({field: 0}).run(connection);
@@ -335,6 +346,7 @@ var run = Promise.coroutine(function* () {
         assert.deepEqual(result, {created: 1});
 
         result = yield r.db(dbName).table(tableName).indexWait("field").run(connection);
+        result = yield result.toArray();
         assert.deepEqual(result, [{"index":"field","ready":true}]);
 
         cursor = yield r.db(dbName).table(tableName).getAll(10, {index: "field"}).run(connection);
@@ -347,6 +359,7 @@ var run = Promise.coroutine(function* () {
         assert.deepEqual(result, {created: 1});
 
         result = yield r.db(dbName).table(tableName).indexWait("fieldAddOne").run(connection);
+        result = yield result.toArray();
         assert.deepEqual(result, [{"index":"fieldAddOne","ready":true}]);
 
         cursor = yield r.db(dbName).table(tableName).getAll(11, {index: "fieldAddOne"}).run(connection);
@@ -392,6 +405,7 @@ var run = Promise.coroutine(function* () {
         assert.equal(result.inserted, 3)
 
         result = yield r.expr([1,2,3]).innerJoin(r.db(dbName).table(tableName), function(left, right) { return left.eq(right("val")) }).run(connection);
+        result = yield result.toArray();
         assert.equal(result.length, 3);
         assert(result[0].left);
         assert(result[0].right);
@@ -401,6 +415,7 @@ var run = Promise.coroutine(function* () {
         assert(result[2].right);
 
         result = yield r.expr([1,2,3]).outerJoin(r.db(dbName).table(tableName), function(left, right) { return left.eq(right("val")) }).run(connection);
+        result = yield result.toArray();
         assert.equal(result.length, 3);
         assert(result[0].left);
         assert(result[0].right);
@@ -410,6 +425,7 @@ var run = Promise.coroutine(function* () {
         assert(result[2].right);
 
         result = yield r.expr(pks).eqJoin(function(doc) { return doc; }, r.db(dbName).table(tableName)).run(connection);
+        result = yield result.toArray();
         assert.equal(result.length, 3);
         assert(result[0].left);
         assert(result[0].right);
@@ -419,6 +435,7 @@ var run = Promise.coroutine(function* () {
         assert(result[2].right);
 
         result = yield r.expr(pks).eqJoin(r.row, r.db(dbName).table(tableName)).run(connection);
+        result = yield result.toArray();
         assert.equal(result.length, 3);
         assert(result[0].left);
         assert(result[0].right);
@@ -428,6 +445,7 @@ var run = Promise.coroutine(function* () {
         assert(result[2].right);
 
         result = yield r.expr(pks).eqJoin(function(doc) { return doc; }, r.db(dbName).table(tableName)).zip().run(connection);
+        result = yield result.toArray();
         assert.equal(result.length, 3);
     }
     catch(e) {
@@ -453,53 +471,68 @@ var run = Promise.coroutine(function* () {
         pks = result.generated_keys;
 
         result = yield r.expr([1,2,3]).map(r.row).run(connection);
+        result = yield result.toArray();
         assert.deepEqual(result, [1,2,3]);
 
         result = yield r.expr([1,2,3]).map(r.row.add(1)).run(connection);
+        result = yield result.toArray();
         assert.deepEqual(result, [2, 3, 4]);
 
         result = yield r.expr([1,2,3]).map(function(doc) { return doc.add(2)}).run(connection);
+        result = yield result.toArray();
         assert.deepEqual(result, [3, 4, 5]);
 
         result = yield r.expr([{a: 0, b: 1, c: 2}, {a: 4, b: 4, c: 5}, {a:9, b:2, c:0}]).withFields("a").run(connection);
+        result = yield result.toArray();
         assert.deepEqual(result, [{a: 0}, {a: 4}, {a: 9}]);
 
         result = yield r.expr([{a: 0, b: 1, c: 2}, {a: 4, b: 4, c: 5}, {a:9, b:2, c:0}]).withFields("a", "c").run(connection);
+        result = yield result.toArray();
         assert.deepEqual(result, [{a: 0, c: 2}, {a: 4, c: 5}, {a:9, c:0}]);
 
         result = yield r.expr([[1], [2], [3]]).concatMap(function(doc) { return doc}).run(connection);
+        result = yield result.toArray();
         assert.deepEqual(result, [1, 2, 3]);
 
         result = yield r.expr([[1], [2], [3]]).concatMap(r.row).run(connection);
+        result = yield result.toArray();
         assert.deepEqual(result, [1, 2, 3]);
 
         result = yield r.expr([{a:23}, {a:10}, {a:0}, {a:100}]).orderBy(r.row("a")).run(connection);
+        result = yield result.toArray();
         assert.deepEqual(result, [{a:0}, {a:10}, {a:23}, {a:100}]);
 
         result = yield r.db(dbName).table(tableName).orderBy({index: "id"}).run(connection);
+        result = yield result.toArray();
         for(i=0; i<result.length-1; i++) {
             assert(result[i].id < result[i+1].id);
         }
 
         result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).skip(3).run(connection);
+        result = yield result.toArray();
         assert.deepEqual(result, [3, 4, 5, 6, 7, 8, 9]);
 
         result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).limit(3).run(connection);
+        result = yield result.toArray();
         assert.deepEqual(result, [0, 1, 2]);
 
         result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).slice(3, 5).run(connection);
+        result = yield result.toArray();
         assert.deepEqual(result, [3, 4]);
 
         result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).nth(3).run(connection);
         assert.deepEqual(result, 3);
 
         result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).indexesOf(3).run(connection);
+        result = yield result.toArray();
         assert.equal(result, 3);
 
         result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).indexesOf(r.row.eq(3)).run(connection);
+        result = yield result.toArray();
         assert.equal(result, 3);
 
         result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).indexesOf(function(doc) { return doc.eq(3)}).run(connection);
+        result = yield result.toArray();
         assert.equal(result, 3);
 
         result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).isEmpty().run(connection);
@@ -509,9 +542,11 @@ var run = Promise.coroutine(function* () {
         assert.equal(result, true);
 
         result = yield r.expr([0, 1, 2]).union([3, 4, 5]).run(connection);
+        result = yield result.toArray();
         assert.deepEqual(result, [0, 1, 2, 3, 4, 5]);
 
         result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).sample(2).run(connection);
+        result = yield result.toArray();
         assert.equal(result.length, 2);
     }
     catch(e) {
@@ -541,23 +576,28 @@ var run = Promise.coroutine(function* () {
                 function(doc) { return doc("g") },
                 function(doc) { return doc("val") },
                 function(left, right) { return left.add(right) }).orderBy("group").run(connection);
+        result = yield result.toArray();
         assert.deepEqual(result, [{group: 0, reduction: 5}, {group: 1, reduction: 30}, {group: 2, reduction: 3}])
 
         result = yield r.expr([{g: 0, val: 2}, {g: 0, val: 3}, {g: 1, val: 10}, {g: 1, val: 20}, {g:2, val: 3}]).groupedMapReduce(
                 function(doc) { return doc("g") },
                 function(doc) { return doc("val") },
                 function(left, right) { return left.add(right) }, 10).orderBy("group").run(connection);
+        result = yield result.toArray();
         assert(result[0].reduction > 5);
         assert(result[1].reduction > 30);
         assert(result[2].reduction > 3);
 
         result = yield r.expr([{g: 0, val: 2}, {g: 0, val: 3}, {g: 1, val: 10}, {g: 1, val: 20}, {g:2, val: 3}]).groupBy("g", r.count).orderBy("g").run(connection);
+        result = yield result.toArray();
         assert.deepEqual(result, [{group: {g: 0}, reduction:2 }, {group: {g: 1 }, reduction: 2}, {group: {g: 2 }, reduction: 1}]);
 
         result = yield r.expr([{g: 0, val: 2}, {g: 0, val: 3}, {g: 1, val: 10}, {g: 1, val: 20}, {g:2, val: 3}]).groupBy("g", r.sum("val")).orderBy("g").run(connection);
+        result = yield result.toArray();
         assert.deepEqual(result, [{group: {g: 0}, reduction:5 }, {group: {g: 1 }, reduction: 30}, {group: {g: 2 }, reduction: 3}]);
 
         result = yield r.expr([{g: 0, val: 2}, {g: 0, val: 3}, {g: 1, val: 10}, {g: 1, val: 20}, {g:2, val: 3}]).groupBy("g", r.avg("val")).orderBy("g").run(connection);
+        result = yield result.toArray();
         assert.deepEqual(result, [{group: {g: 0}, reduction:2.5 }, {group: {g: 1 }, reduction: 15}, {group: {g: 2 }, reduction: 3}]);
 
         result = yield r.expr([1,2,3]).contains(2).run(connection);
@@ -585,12 +625,15 @@ var run = Promise.coroutine(function* () {
     // Aggregators
     try{
         result = yield r.expr([{g: 0, val: 2}, {g: 0, val: 3}, {g: 1, val: 10}, {g: 1, val: 20}, {g:2, val: 3}]).groupBy("g", r.count).orderBy("g").run(connection);
+        result = yield result.toArray();
         assert.deepEqual(result, [{group: {g: 0}, reduction:2 }, {group: {g: 1 }, reduction: 2}, {group: {g: 2 }, reduction: 1}]);
 
         result = yield r.expr([{g: 0, val: 2}, {g: 0, val: 3}, {g: 1, val: 10}, {g: 1, val: 20}, {g:2, val: 3}]).groupBy("g", r.sum("val")).orderBy("g").run(connection);
+        result = yield result.toArray();
         assert.deepEqual(result, [{group: {g: 0}, reduction:5 }, {group: {g: 1 }, reduction: 30}, {group: {g: 2 }, reduction: 3}]);
 
         result = yield r.expr([{g: 0, val: 2}, {g: 0, val: 3}, {g: 1, val: 10}, {g: 1, val: 20}, {g:2, val: 3}]).groupBy("g", r.avg("val")).orderBy("g").run(connection);
+        result = yield result.toArray();
         assert.deepEqual(result, [{group: {g: 0}, reduction:2.5 }, {group: {g: 1 }, reduction: 15}, {group: {g: 2 }, reduction: 3}]);
     }
     catch(e) {
@@ -628,12 +671,14 @@ var run = Promise.coroutine(function* () {
         assert.deepEqual(result, {a: 0, b: 1});
 
         result = yield r.expr([{a: 0, b: 1, c: 2}, {a: 0, b: 10, c: 20}]).pluck("a", "b").run(connection);
+        result = yield result.toArray();
         assert.deepEqual(result, [{a: 0, b: 1}, {a: 0, b: 10}]);
 
         result = yield r.expr({a: 0, b: 1, c: 2}).without("c").run(connection);
         assert.deepEqual(result, {a: 0, b: 1});
 
         result = yield r.expr([{a: 0, b: 1, c: 2}, {a: 0, b: 10, c: 20}]).without("a", "c").run(connection);
+        result = yield result.toArray();
         assert.deepEqual(result, [{b: 1}, {b: 10}]);
 
         result = yield r.expr({a: 0}).merge({b: 1}).run(connection);
@@ -643,54 +688,70 @@ var run = Promise.coroutine(function* () {
         assert.deepEqual(result, {a: {c: 2}});
 
         result = yield r.expr([{a: 0}, {a: 1}, {a: 2}]).merge({b: 1}).run(connection);
+        result = yield result.toArray();
         assert.deepEqual(result, [{a: 0, b: 1}, {a: 1, b: 1}, {a: 2, b: 1}]);
 
         result = yield r.expr([1,2,3]).append(4).run(connection);
+        result = yield result.toArray();
         assert.deepEqual(result, [1,2,3,4]);
 
         result = yield r.expr([1,2,3]).prepend(4).run(connection);
+        result = yield result.toArray();
         assert.deepEqual(result, [4,1,2,3]);
 
         result = yield r.expr([1,2,3]).difference([4,2]).run(connection);
+        result = yield result.toArray();
         assert.deepEqual(result, [1, 3]);
 
         result = yield r.expr([1,2,3]).setInsert(4).run(connection);
+        result = yield result.toArray();
         assert.deepEqual(result, [1,2,3,4]);
 
         result = yield r.expr([1,2,3]).setInsert(2).run(connection);
+        result = yield result.toArray();
         assert.deepEqual(result, [1,2,3]);
 
         result = yield r.expr([1,2,3]).setUnion([2,4]).run(connection);
+        result = yield result.toArray();
         assert.deepEqual(result, [1,2,3,4]);
 
         result = yield r.expr([1,2,3]).setIntersection([2,4]).run(connection);
+        result = yield result.toArray();
         assert.deepEqual(result, [2]);
 
         result = yield r.expr([1,2,3]).setDifference([2,4]).run(connection);
+        result = yield result.toArray();
         assert.deepEqual(result, [1,3]);
 
         result = yield r.expr({a:0, b:1})("a").run(connection);
         assert.equal(result, 0);
 
         result = yield r.expr([{a: 0, b: 1, c: 2}, {a: 0, b: 10, c: 20}, {b:1, c:3}]).hasFields("a", "c").run(connection);
+        result = yield result.toArray();
         assert.deepEqual(result, [{a: 0, b: 1, c: 2}, {a: 0, b: 10, c: 20}]);
 
         result = yield r.expr([1,2,3,4]).insertAt(0, 2).run(connection);
+        result = yield result.toArray();
         assert.deepEqual(result, [2,1,2,3,4]);
 
         result = yield r.expr([1,2,3,4]).spliceAt(1, [9, 9]).run(connection);
+        result = yield result.toArray();
         assert.deepEqual(result, [1,9,9,2,3,4]);
 
         result = yield r.expr([1,2,3,4]).deleteAt(1).run(connection);
+        result = yield result.toArray();
         assert.deepEqual(result, [1,3,4]);
 
         result = yield r.expr([1,2,3,4]).deleteAt(1, 3).run(connection);
+        result = yield result.toArray();
         assert.deepEqual(result, [1,4]);
 
         result = yield r.expr([1,2,3,4]).changeAt(1, 3).run(connection);
+        result = yield result.toArray();
         assert.deepEqual(result, [1,3,3,4]);
 
         result = yield r.expr({a:0, b:1, c:2}).keys().orderBy(r.row).run(connection);
+        result = yield result.toArray();
         assert.deepEqual(result, ["a", "b", "c"]);
     }
     catch(e) {
@@ -870,6 +931,7 @@ var run = Promise.coroutine(function* () {
         assert.equal(result, 1)
 
         result = yield r.expr([r.monday, r.tuesday, r.wednesday, r.thursday, r.friday, r.saturday, r.sunday, r.january, r.february, r.march, r.april, r.may, r.june, r.july, r.august, r.september, r.october, r.november, r.december]).run(connection);
+        result = yield result.toArray();
         assert.deepEqual(result, [1,2,3,4,5,6,7, 1,2,3,4,5,6,7,8,9,10,11,12]);
     }
     catch(e) {
