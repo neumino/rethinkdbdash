@@ -211,3 +211,56 @@ It("`tableDrop` should throw if no argument is given", function* (done) {
         }
     }
 })
+
+
+It("index operations", function* (done) {
+    try {
+        dbName = uuid();
+        tableName = uuid();
+
+        var result = yield r.dbCreate(dbName).run(connection);
+        assert.deepEqual(result, {created: 1});
+
+        result = yield r.db(dbName).tableCreate(tableName).run(connection);
+        assert.deepEqual(result, {created: 1});
+
+        result = yield r.db(dbName).table(tableName).indexCreate("newField").run(connection);
+        assert.deepEqual(result, {created: 1});
+
+        result = yield r.db(dbName).table(tableName).indexList().run(connection);
+        result = yield result.toArray();
+        assert.deepEqual(result, ["newField"]);
+
+        result = yield r.db(dbName).table(tableName).indexWait().run(connection);
+        result = yield result.toArray();
+        assert.deepEqual(result, [ { index: 'newField', ready: true } ]);
+
+        result = yield r.db(dbName).table(tableName).indexStatus().run(connection);
+        result = yield result.toArray();
+        assert.deepEqual(result, [ { index: 'newField', ready: true } ]);
+
+        result = yield r.db(dbName).table(tableName).indexDrop("newField").run(connection);
+        assert.deepEqual(result, {dropped: 1});
+
+        result = yield r.db(dbName).table(tableName).indexCreate("field1", function(doc) { return doc("field1") }).run(connection);
+        assert.deepEqual(result, {created: 1});
+
+        result = yield r.db(dbName).table(tableName).indexWait('field1').run(connection);
+        result = yield result.toArray();
+        assert.deepEqual(result, [ { index: 'field1', ready: true } ]);
+
+        result = yield r.db(dbName).table(tableName).indexStatus('field1').run(connection);
+        result = yield result.toArray();
+        assert.deepEqual(result, [ { index: 'field1', ready: true } ]);
+
+        result = yield r.db(dbName).table(tableName).indexDrop("field1").run(connection);
+        assert.deepEqual(result, {dropped: 1});
+
+        done();
+    }
+    catch(e) {
+        done(e)
+    }
+})
+
+
