@@ -50,7 +50,7 @@ It("`run` should use the default database", function* (done) {
         result = yield r.db(dbName).tableCreate(tableName).run(connection);
         assert.deepEqual(result, {created: 1});
 
-        connection.close();
+        result = yield connection.close();
 
         connection = yield r.connect({db: dbName});
         assert(connection);
@@ -93,7 +93,7 @@ It("`reconnect` should work", function* (done) {
         result = yield r.expr(1).run(connection);
         assert.equal(result, 1);
 
-        connection.close();
+        result = yield connection.close();
 
         assert(connection);
         connection = yield connection.reconnect();
@@ -110,11 +110,43 @@ It("`reconnect` should work", function* (done) {
         done(e);
     }
 })
+It("`reconnect` should work with options", function* (done) {
+    try{
+        result = yield r.expr(1).run(connection);
+        assert.equal(result, 1);
+
+        assert(connection);
+        connection = yield connection.reconnect({noreplyWait: true});
+        assert(connection);
+
+        result = yield r.expr(1).run(connection);
+        assert.equal(result, 1);
+
+        connection = yield connection.reconnect({noreplyWait: false});
+        assert(connection);
+
+        result = yield r.expr(1).run(connection);
+        assert.equal(result, 1);
+
+        connection = yield connection.reconnect();
+        assert(connection);
+
+        result = yield r.expr(1).run(connection);
+        assert.equal(result, 1);
+
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
 
  
 It("`run` should take an argument", function* (done) {
     try {
-        connection.close();
+        result = yield connection.close();
         assert(connection);
         connection = yield r.connect();
         assert(connection);
