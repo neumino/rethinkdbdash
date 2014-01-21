@@ -39,7 +39,19 @@ It("`add` should work", function* (done) {
         done(e);
     }
 })
-
+It("`add` should throw if no argument has been passed", function* (done) {
+    try {
+        result = yield r.expr(1).add().run(connection);
+    }
+    catch(e) {
+        if (e.message === "First argument of `add` cannot be undefined after:\nr.expr(1)") {
+            done();
+        }
+        else {
+            done(e);
+        }
+    }
+})
 It("`sub` should work", function* (done) {
     try {
         result = yield r.expr(1).sub(1).run(connection);
@@ -51,7 +63,19 @@ It("`sub` should work", function* (done) {
         done(e);
     }
 })
-
+It("`sub` should throw if no argument has been passed", function* (done) {
+    try {
+        result = yield r.expr(1).sub().run(connection);
+    }
+    catch(e) {
+        if (e.message === "First argument of `sub` cannot be undefined after:\nr.expr(1)") {
+            done();
+        }
+        else {
+            done(e);
+        }
+    }
+})
 It("`mul` should work", function* (done) {
     try {
         result = yield r.expr(2).mul(3).run(connection);
@@ -63,7 +87,19 @@ It("`mul` should work", function* (done) {
         done(e);
     }
 })
-
+It("`mul` should throw if no argument has been passed", function* (done) {
+    try {
+        result = yield r.expr(1).mul().run(connection);
+    }
+    catch(e) {
+        if (e.message === "First argument of `mul` cannot be undefined after:\nr.expr(1)") {
+            done();
+        }
+        else {
+            done(e);
+        }
+    }
+})
 It("`div` should work", function* (done) {
     try {
         result = yield r.expr(24).div(2).run(connection);
@@ -75,7 +111,19 @@ It("`div` should work", function* (done) {
         done(e);
     }
 })
-
+It("`div` should throw if no argument has been passed", function* (done) {
+    try {
+        result = yield r.expr(1).div().run(connection);
+    }
+    catch(e) {
+        if (e.message === "First argument of `div` cannot be undefined after:\nr.expr(1)") {
+            done();
+        }
+        else {
+            done(e);
+        }
+    }
+})
 It("`mod` should work", function* (done) {
     try {
         result = yield r.expr(24).mod(7).run(connection);
@@ -87,7 +135,6 @@ It("`mod` should work", function* (done) {
         done(e);
     }
 })
-
 It("`and` should work", function* (done) {
     try {
         result = yield r.expr(true).and(false).run(connection);
@@ -102,7 +149,19 @@ It("`and` should work", function* (done) {
         done(e);
     }
 })
-
+It("`mod` should throw if no argument has been passed", function* (done) {
+    try {
+        result = yield r.expr(1).mod().run(connection);
+    }
+    catch(e) {
+        if (e.message === "First argument of `mod` cannot be undefined after:\nr.expr(1)") {
+            done();
+        }
+        else {
+            done(e);
+        }
+    }
+})
 It("`or` should work", function* (done) {
     try {
         result = yield r.expr(true).or(false).run(connection);
@@ -117,7 +176,19 @@ It("`or` should work", function* (done) {
         done(e);
     }
 })
-
+It("`or` should throw if no argument has been passed", function* (done) {
+    try {
+        result = yield r.expr(1).or().run(connection);
+    }
+    catch(e) {
+        if (e.message === "First argument of `or` cannot be undefined after:\nr.expr(1)") {
+            done();
+        }
+        else {
+            done(e);
+        }
+    }
+})
 It("`eq` should work", function* (done) {
     try {
         result = yield r.expr(1).eq(1).run(connection);
@@ -132,7 +203,19 @@ It("`eq` should work", function* (done) {
         done(e);
     }
 })
-
+It("`eq` should throw if no argument has been passed", function* (done) {
+    try {
+        result = yield r.expr(1).eq().run(connection);
+    }
+    catch(e) {
+        if (e.message === "First argument of `eq` cannot be undefined after:\nr.expr(1)") {
+            done();
+        }
+        else {
+            done(e);
+        }
+    }
+})
 It("`ne` should work", function* (done) {
     try {
         result = yield r.expr(1).ne(1).run(connection);
@@ -147,7 +230,19 @@ It("`ne` should work", function* (done) {
         done(e);
     }
 })
-
+It("`ne` should throw if no argument has been passed", function* (done) {
+    try {
+        result = yield r.expr(1).ne().run(connection);
+    }
+    catch(e) {
+        if (e.message === "First argument of `ne` cannot be undefined after:\nr.expr(1)") {
+            done();
+        }
+        else {
+            done(e);
+        }
+    }
+})
 It("`gt` should work", function* (done) {
     try {
         result = yield r.expr(1).gt(2).run(connection);
@@ -163,7 +258,19 @@ It("`gt` should work", function* (done) {
         done(e);
     }
 })
-
+It("`gt` should throw if no argument has been passed", function* (done) {
+    try {
+        result = yield r.expr(1).gt().run(connection);
+    }
+    catch(e) {
+        if (e.message === "First argument of `gt` cannot be undefined after:\nr.expr(1)") {
+            done();
+        }
+        else {
+            done(e);
+        }
+    }
+})
 It("`ge` should work", function* (done) {
     try {
         result = yield r.expr(1).ge(2).run(connection);
@@ -177,6 +284,19 @@ It("`ge` should work", function* (done) {
     }
     catch(e) {
         done(e);
+    }
+})
+It("`ge` should throw if no argument has been passed", function* (done) {
+    try {
+        result = yield r.expr(1).ge().run(connection);
+    }
+    catch(e) {
+        if (e.message === "First argument of `ge` cannot be undefined after:\nr.expr(1)") {
+            done();
+        }
+        else {
+            done(e);
+        }
     }
 })
 
@@ -195,7 +315,19 @@ It("`lt` should work", function* (done) {
         done(e);
     }
 })
-
+It("`lt` should throw if no argument has been passed", function* (done) {
+    try {
+        result = yield r.expr(1).lt().run(connection);
+    }
+    catch(e) {
+        if (e.message === "First argument of `lt` cannot be undefined after:\nr.expr(1)") {
+            done();
+        }
+        else {
+            done(e);
+        }
+    }
+})
 It("`le` should work", function* (done) {
     try {
         result = yield r.expr(1).le(2).run(connection);
@@ -211,7 +343,19 @@ It("`le` should work", function* (done) {
         done(e);
     }
 })
-
+It("`le` should throw if no argument has been passed", function* (done) {
+    try {
+        result = yield r.expr(1).le().run(connection);
+    }
+    catch(e) {
+        if (e.message === "First argument of `le` cannot be undefined after:\nr.expr(1)") {
+            done();
+        }
+        else {
+            done(e);
+        }
+    }
+})
 It("`not` should work", function* (done) {
     try {
         result = yield r.expr(true).not().run(connection);

@@ -62,7 +62,19 @@ It("`r.time` should return a date -- just with a date", function* (done) {
         done(e);
     }
 })
-
+It("`r.time` should throw if no argument has been given", function* (done) {
+    try{
+        result = yield r.time().run(connection);
+    }
+    catch(e) {
+        if (e.message, "First argument of `time` cannot be undefined.") {
+            done()
+        }
+        else{
+            done(e);
+        }
+    }
+})
 It("`epochTime` should work", function* (done) {
     try {
         now = new Date();
@@ -75,7 +87,19 @@ It("`epochTime` should work", function* (done) {
         done(e);
     }
 })
-
+It("`r.epochTime` should throw if no argument has been given", function* (done) {
+    try{
+        result = yield r.epochTime().run(connection);
+    }
+    catch(e) {
+        if (e.message, "First argument of `epochTime` cannot be undefined.") {
+            done()
+        }
+        else{
+            done(e);
+        }
+    }
+})
 It("`ISO8601` should work", function* (done) {
     try {
         result = yield r.ISO8601("1986-11-03T08:30:00-08:00").run(connection);
@@ -98,6 +122,19 @@ It("`ISO8601` should work with a timezone", function* (done) {
         done(e);
     }
 })
+It("`r.ISO8601` should throw if no argument has been given", function* (done) {
+    try{
+        result = yield r.ISO8601().run(connection);
+    }
+    catch(e) {
+        if (e.message, "First argument of `ISO8601` cannot be undefined.") {
+            done()
+        }
+        else{
+            done(e);
+        }
+    }
+})
 
 It("`inTimezone` should work", function* (done) {
     try {
@@ -108,6 +145,19 @@ It("`inTimezone` should work", function* (done) {
     }
     catch(e) {
         done(e);
+    }
+})
+It("`inTimezone` should throw if no argument has been given", function* (done) {
+    try{
+        result = yield r.now().inTimezone().run(connection);
+    }
+    catch(e) {
+        if (e.message, "First argument of `inTimezone` cannot be undefined after:\nr.now()") {
+            done()
+        }
+        else{
+            done(e);
+        }
     }
 })
 
@@ -140,7 +190,32 @@ It("`during` should work", function* (done) {
         done(e);
     }
 })
-
+It("`during` should throw if no argument has been given", function* (done) {
+    try{
+        result = yield r.now().during().run(connection);
+    }
+    catch(e) {
+        if (e.message, "First argument of `during` cannot be undefined after:\nr.now()") {
+            done()
+        }
+        else{
+            done(e);
+        }
+    }
+})
+It("`during` should throw if no argument has been given", function* (done) {
+    try{
+        result = yield r.now().during(1).run(connection);
+    }
+    catch(e) {
+        if (e.message, "Second argument of `during` cannot be undefined after:\nr.now()") {
+            done()
+        }
+        else{
+            done(e);
+        }
+    }
+})
 It("`date` should work", function* (done) {
     try {
         result = yield r.now().date().hours().run(connection);

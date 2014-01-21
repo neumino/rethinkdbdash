@@ -153,6 +153,20 @@ It("`insert` should work - testing upsert false`", function* (done) {
         done(e);
     }
 })
+It("`replace` should throw if no argument is given", function* (done) {
+    try{
+        result = yield r.db(dbName).table(tableName).replace().run(connection);
+    }
+    catch(e) {
+        if (e.message === "First argument of `replace` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
 
 It("`delete` should work`", function* (done) {
     try {
@@ -339,6 +353,19 @@ It("`update` should work - returnVals false`", function* (done) {
     }
     catch(e) {
         done(e);
+    }
+})
+It("`update` should throw if no argument is given", function* (done) {
+    try{
+        result = yield r.db(dbName).table(tableName).update().run(connection);
+    }
+    catch(e) {
+        if (e.message === "First argument of `update` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+            done()
+        }
+        else {
+            done(e);
+        }
     }
 })
 

@@ -35,6 +35,19 @@ It("`match` should work", function* (done) {
         done(e);
     }
 })
+It("`match` should throw if no arguement has been passed", function* (done) {
+    try {
+        result = yield r.expr("foo").match().run(connection);
+    }
+    catch(e) {
+        if (e.message === "First argument of `match` cannot be undefined after:\nr.expr(\"foo\")") {
+            done();
+        }
+        else {
+            done(e);
+        }
+    }
+})
 
 
 It("End for `document-manipulation.js`", function* (done) {

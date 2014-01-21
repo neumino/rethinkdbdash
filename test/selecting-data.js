@@ -77,6 +77,22 @@ It("`get` should work", function* (done) {
         done(e);
     }
 })
+It("`get` should throw if no argument is passed", function* (done) {
+    try {
+        result = yield r.db(dbName).table(tableName).get().run(connection);
+    }
+    catch(e) {
+        assert(e instanceof r.Error.ReqlDriverError);
+        assert(e instanceof Error);
+        if (e.message === "First argument of `get` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+            done();
+        }
+        else{
+            done(e);
+        }
+    }
+})
+
 It("`getAll` should work with multiple values - primary key", function* (done) {
     try {
         var table = r.db(dbName).table(tableName);
@@ -142,6 +158,21 @@ It("`getAll` should work with multiple values - secondary index 2", function* (d
         done(e);
     }
 })
+It("`getAll` should throw if no argument is passed", function* (done) {
+    try {
+        result = yield r.db(dbName).table(tableName).getAll().run(connection);
+    }
+    catch(e) {
+        assert(e instanceof r.Error.ReqlDriverError);
+        assert(e instanceof Error);
+        if (e.message === "First argument of `getAll` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+            done();
+        }
+        else{
+            done(e);
+        }
+    }
+})
 
 It("`between` should wrok -- secondary index", function* (done) {
     try {
@@ -154,6 +185,22 @@ It("`between` should wrok -- secondary index", function* (done) {
     }
     catch(e) {
         done(e);
+    }
+})
+
+It("`between` should throw if no argument is passed", function* (done) {
+    try {
+        result = yield r.db(dbName).table(tableName).between().run(connection);
+    }
+    catch(e) {
+        assert(e instanceof r.Error.ReqlDriverError);
+        assert(e instanceof Error);
+        if (e.message === "First argument of `between` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+            done();
+        }
+        else{
+            done(e);
+        }
     }
 })
 
@@ -236,6 +283,21 @@ It("`filter` should work -- default false", function* (done) {
             done()
         }
         else {
+            done(e);
+        }
+    }
+})
+It("`filter` should throw if no argument is passed", function* (done) {
+    try {
+        result = yield r.db(dbName).table(tableName).filter().run(connection);
+    }
+    catch(e) {
+        assert(e instanceof r.Error.ReqlDriverError);
+        assert(e instanceof Error);
+        if (e.message === "First argument of `filter` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+            done();
+        }
+        else{
             done(e);
         }
     }

@@ -264,3 +264,32 @@ It("index operations", function* (done) {
 })
 
 
+It("`indexCreate` should throw if no argument is passed", function* (done) {
+    try {
+        result = yield r.db(dbName).table(tableName).indexCreate().run(connection);
+    }
+    catch(e) {
+        if (e.message === "First argument of `indexCreate` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+            done();
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+It("`indexDrop` should throw if no argument is passed", function* (done) {
+    try {
+        result = yield r.db(dbName).table(tableName).indexDrop().run(connection);
+    }
+    catch(e) {
+        if (e.message === "First argument of `indexDrop` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+            done();
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+

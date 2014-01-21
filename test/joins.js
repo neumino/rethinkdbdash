@@ -91,6 +91,33 @@ It("`innerJoin` should return -- stream-stream", function* (done) {
         done(e);
     }
 })
+It("`innerJoin` should throw if no sequence", function* (done) {
+    try {
+        result = yield r.db(dbName).table(tableName).innerJoin().run(connection);
+    }
+    catch(e) {
+        if (e.message === "First argument of `innerJoin` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+            done();
+        }
+        else {
+            done(e);
+        }
+    }
+})
+It("`innerJoin` should throw if no predicate", function* (done) {
+    try {
+        result = yield r.db(dbName).table(tableName).innerJoin(r.expr([1,2,3])).run(connection);
+    }
+    catch(e) {
+        if (e.message === "Second argument of `innerJoin` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+            done();
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
 
 It("`outerJoin` should return -- array-array", function* (done) {
     try {
@@ -160,6 +187,33 @@ It("`outerJoin` should return -- stream-stream", function* (done) {
         done(e);
     }
 })
+It("`outerJoin` should throw if no sequence", function* (done) {
+    try {
+        result = yield r.db(dbName).table(tableName).outerJoin().run(connection);
+    }
+    catch(e) {
+        if (e.message === "First argument of `outerJoin` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+            done();
+        }
+        else {
+            done(e);
+        }
+    }
+})
+It("`outerJoin` should throw if no predicate", function* (done) {
+    try {
+        result = yield r.db(dbName).table(tableName).outerJoin(r.expr([1,2,3])).run(connection);
+    }
+    catch(e) {
+        if (e.message === "Second argument of `outerJoin` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+            done();
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
 
 It("`eqJoin` should return -- pk -- array-stream - function", function* (done) {
     try {
@@ -214,6 +268,32 @@ It("`eqJoin` should return -- secondary index -- array-stream - r.row", function
     }
     catch(e) {
         done(e);
+    }
+})
+It("`eqJoin` should throw if no argument", function* (done) {
+    try {
+        result = yield r.db(dbName).table(tableName).eqJoin().run(connection);
+    }
+    catch(e) {
+        if (e.message === "First argument of `eqJoin` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+            done();
+        }
+        else {
+            done(e);
+        }
+    }
+})
+It("`eqJoin` should throw if no sequence", function* (done) {
+    try {
+        result = yield r.db(dbName).table(tableName).eqJoin("id").run(connection);
+    }
+    catch(e) {
+        if (e.message === "Second argument of `eqJoin` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+            done();
+        }
+        else {
+            done(e);
+        }
     }
 })
 

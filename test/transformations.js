@@ -76,6 +76,20 @@ It("`map` should work on array -- function", function* (done) {
         done(e);
     }
 })
+It("`map` should throw if no argument has been passed", function* (done) {
+    try {
+        result = yield r.db(dbName).table(tableName).map().run(connection);
+    }
+    catch(e) {
+        if (e.message, "First argument of `map` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
 It("`withFields` should work on array -- single field", function* (done) {
     try {
         var result = yield r.expr([{a: 0, b: 1, c: 2}, {a: 4, b: 4, c: 5}, {a:9, b:2, c:0}]).withFields("a").run(connection);
@@ -100,7 +114,19 @@ It("`withFields` should work on array -- multiple field", function* (done) {
         done(e);
     }
 })
-
+It("`withFields` should throw if no argument has been passed", function* (done) {
+    try {
+        result = yield r.db(dbName).table(tableName).withFields().run(connection);
+    }
+    catch(e) {
+        if (e.message, "First argument of `withFields` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
 It("`concatMap` should work on array -- function", function* (done) {
     try {
         var result = yield r.expr([[1, 2], [3], [4]]).concatMap(function(doc) { return doc}).run(connection);
@@ -125,6 +151,20 @@ It("`concatMap` should work on array -- r.row", function* (done) {
         done(e);
     }
 })
+It("`concatMap` should throw if no argument has been passed", function* (done) {
+    try {
+        result = yield r.db(dbName).table(tableName).concatMap().run(connection);
+    }
+    catch(e) {
+        if (e.message, "First argument of `concatMap` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
 
 It("`orderBy` should work on array -- string", function* (done) {
     try {
@@ -205,7 +245,19 @@ It("`orderBy` should work on a two fields", function* (done) {
         done(e);
     }
 })
-
+It("`orderBy` should throw if no argument has been passed", function* (done) {
+    try {
+        result = yield r.db(dbName).table(tableName).orderBy().run(connection);
+    }
+    catch(e) {
+        if (e.message, "First argument of `orderBy` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
 It("`skip` should work", function* (done) {
     try {
         var result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).skip(3).run(connection);
@@ -216,6 +268,19 @@ It("`skip` should work", function* (done) {
     }
     catch(e) {
         done(e);
+    }
+})
+It("`skip` should throw if no argument has been passed", function* (done) {
+    try {
+        result = yield r.db(dbName).table(tableName).skip().run(connection);
+    }
+    catch(e) {
+        if (e.message, "First argument of `skip` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+            done()
+        }
+        else {
+            done(e);
+        }
     }
 })
 
@@ -229,6 +294,19 @@ It("`limit` should work", function* (done) {
     }
     catch(e) {
         done(e);
+    }
+})
+It("`limit` should throw if no argument has been passed", function* (done) {
+    try {
+        result = yield r.db(dbName).table(tableName).limit().run(connection);
+    }
+    catch(e) {
+        if (e.message, "First argument of `limit` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+            done()
+        }
+        else {
+            done(e);
+        }
     }
 })
 It("`slice` should work", function* (done) {
@@ -271,7 +349,19 @@ It("`slice` should work -- with options", function* (done) {
         done(e);
     }
 })
-
+It("`slice` should throw if no argument has been passed", function* (done) {
+    try {
+        result = yield r.db(dbName).table(tableName).slice().run(connection);
+    }
+    catch(e) {
+        if (e.message, "First argument of `slice` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
 It("`nth` should work", function* (done) {
     try {
         var result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).nth(3).run(connection);
@@ -281,6 +371,19 @@ It("`nth` should work", function* (done) {
     }
     catch(e) {
         done(e);
+    }
+})
+It("`nth` should throw if no argument has been passed", function* (done) {
+    try {
+        result = yield r.db(dbName).table(tableName).nth().run(connection);
+    }
+    catch(e) {
+        if (e.message, "First argument of `nth` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+            done()
+        }
+        else {
+            done(e);
+        }
     }
 })
 It("`indexesOf` should work - datum", function* (done) {
@@ -319,6 +422,19 @@ It("`indexesOf` should work - function", function* (done) {
         done(e);
     }
 })
+It("`indexesOf` should throw if no argument has been passed", function* (done) {
+    try {
+        result = yield r.db(dbName).table(tableName).indexesOf().run(connection);
+    }
+    catch(e) {
+        if (e.message, "First argument of `indexesOf` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
 It("`isEmpty` should work", function* (done) {
     try {
         var result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).isEmpty().run(connection);
@@ -346,6 +462,19 @@ It("`union` should work", function* (done) {
         done(e);
     }
 })
+It("`union` should throw if no argument has been passed", function* (done) {
+    try {
+        result = yield r.db(dbName).table(tableName).union().run(connection);
+    }
+    catch(e) {
+        if (e.message, "First argument of `union` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
 It("`sample` should work", function* (done) {
     try{
         var result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).sample(2).run(connection);
@@ -371,12 +500,19 @@ It("`sample` should throw if given -1", function* (done) {
         }
     }
 })
-
-
-
-
-
-
+It("`sample` should throw if no argument has been passed", function* (done) {
+    try {
+        result = yield r.db(dbName).table(tableName).sample().run(connection);
+    }
+    catch(e) {
+        if (e.message, "First argument of `sample` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
 
 
 It("End for `transformations.js`", function* (done) {

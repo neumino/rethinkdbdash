@@ -37,6 +37,21 @@ It("`do` should work", function* (done) {
     }
 })
 
+It("`do` should throw if no argument has been given", function* (done) {
+    try{
+        result = yield r.expr(1).do().run(connection);
+    }
+    catch(e) {
+        if (e.message, "First argument of `do` cannot be undefined after:\nr.expr(1)") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+
 It("`branch` should work", function* (done) {
     try {
         result = yield r.branch(true, 1, 2).run(connection);
@@ -51,6 +66,46 @@ It("`branch` should work", function* (done) {
         done(e);
     }
 })
+It("`branch` should throw if no argument has been given", function* (done) {
+    try{
+        result = yield r.branch().run(connection);
+    }
+    catch(e) {
+        if (e.message, "First argument of `branch` cannot be undefined.") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+It("`branch` should throw if just one argument has been given", function* (done) {
+    try{
+        result = yield r.branch(true).run(connection);
+    }
+    catch(e) {
+        if (e.message, "Second argument of `branch` cannot be undefined.") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+It("`branch` should throw if just two arguments have been given", function* (done) {
+    try{
+        result = yield r.branch(true, true).run(connection);
+    }
+    catch(e) {
+        if (e.message, "Third argument of `branch` cannot be undefined.") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
 
 It("`default` should work", function* (done) {
     try {
@@ -63,6 +118,20 @@ It("`default` should work", function* (done) {
         done(e);
     }
 })
+It("`default` should throw if no argument has been given", function* (done) {
+    try{
+        result = yield r.expr({})("").default().run(connection);
+    }
+    catch(e) {
+        if (e.message, "First argument of `default` cannot be undefined after:\nr.expr({})(\"\")") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
 
 It("`r.js` should work", function* (done) {
     try {
@@ -75,6 +144,20 @@ It("`r.js` should work", function* (done) {
         done(e);
     }
 })
+It("`js` should throw if no argument has been given", function* (done) {
+    try{
+        result = yield r.js().run(connection);
+    }
+    catch(e) {
+        if (e.message, "First argument of `js` cannot be undefined.") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
 
 It("`coerceTo` should work", function* (done) {
     try {
@@ -85,6 +168,19 @@ It("`coerceTo` should work", function* (done) {
     }
     catch(e) {
         done(e);
+    }
+})
+It("`coerceTo` should throw if no argument has been given", function* (done) {
+    try{
+        result = yield r.expr(1).coerceTo().run(connection);
+    }
+    catch(e) {
+        if (e.message, "First argument of `coerceTo` cannot be undefined after:\nr.expr(1)") {
+            done()
+        }
+        else {
+            done(e);
+        }
     }
 })
 
@@ -114,6 +210,20 @@ It("`json` should work", function* (done) {
         done(e);
     }
 })
+It("`json` should throw if no argument has been given", function* (done) {
+    try{
+        result = yield r.json().run(connection);
+    }
+    catch(e) {
+        if (e.message, "First argument of `json` cannot be undefined.") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
 
 It("`exprJSON` should work", function* (done) {
     try {
@@ -124,6 +234,19 @@ It("`exprJSON` should work", function* (done) {
     }
     catch(e) {
         done(e);
+    }
+})
+It("`exprJSON` should throw if no argument has been given", function* (done) {
+    try{
+        result = yield r.exprJSON().run(connection);
+    }
+    catch(e) {
+        if (e.message, "First argument of `json` cannot be undefined.") {
+            done()
+        }
+        else {
+            done(e);
+        }
     }
 })
 
