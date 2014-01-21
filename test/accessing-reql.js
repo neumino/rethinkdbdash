@@ -131,10 +131,10 @@ It("`run` should take an argument", function* (done) {
         result = yield r.expr(1).run(connection, {profile: true});
         assert.equal(result.value, 1);
 
-        result = yield r.expr(1).run(connection, {durability: false});
+        result = yield r.expr(1).run(connection, {durability: "soft"});
         assert.equal(result, 1);
 
-        result = yield r.expr(1).run(connection, {durability: false});
+        result = yield r.expr(1).run(connection, {durability: "hard"});
         assert.equal(result, 1);
 
         done();
@@ -142,6 +142,20 @@ It("`run` should take an argument", function* (done) {
     catch(e) {
         console.log(e.message);
         done(e);
+    }
+})
+
+It("`run` should throw on an unrecongized argument", function* (done) {
+    try {
+        var result = yield r.expr(1).run(connection, {db: "db"});
+    }
+    catch(e) {
+        if (e.message === "Unrecognized option in `run`. Available options are useOutdated <bool>, durability <string>, noreply <bool>, timeFormat <string>, profile <bool>.") {
+            done();
+        }
+        else{
+            done(e);
+        }
     }
 })
 
