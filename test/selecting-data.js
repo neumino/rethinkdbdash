@@ -35,10 +35,26 @@ It("Init for `selecting-data.js`", function* (done) {
     }
 })
 
-It("`insert` should work for a single document", function* (done) {
+It("`db` should work", function* (done) {
     try {
         var result = yield r.db(dbName).info().run(connection);
         assert.deepEqual(result, {name: dbName, type: "DB"});
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
+It("`table` should work", function* (done) {
+    try {
+        var result = yield r.db(dbName).table(tableName).info().run(connection);
+        assert.deepEqual(result,  {db:{name: dbName,type:"DB"},indexes:[],name: tableName, primary_key:"id",type:"TABLE"})
+
+        result = yield r.db(dbName).table(tableName).run(connection);
+        result = yield result.toArray();
+        assert.equal(result.length, 0)
         done();
     }
     catch(e) {
