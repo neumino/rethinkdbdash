@@ -35,6 +35,275 @@ It("`r.now` should return a date", function* (done) {
         done(e);
     }
 })
+It("`r.time` should return a date -- with date and time", function* (done) {
+    try{
+        result = yield r.time(1986, 11, 3, 12, 0, 0, 'Z').run(connection);
+        assert.equal(result instanceof Date, true)
+        //Main author is living in California. Blame JavaScript's date for the +8
+        //Month in JS starts with 0
+        assert.deepEqual(new Date(1986, 10, 3, (12-8)), result)
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
+It("`r.time` should return a date -- just with a date", function* (done) {
+    try {
+        result = yield r.time(1986, 11, 3, 'Z').run(connection);
+        result2 = yield r.time(1986, 11, 3, 0, 0, 0, 'Z').run(connection);
+        assert.equal(result instanceof Date, true)
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
+It("`epochTime` should work", function* (done) {
+    try {
+        now = new Date();
+        result = yield r.epochTime(now.getTime()/1000).run(connection);
+        assert.deepEqual(now, result);
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
+It("`ISO8601` should work", function* (done) {
+    try {
+        result = yield r.ISO8601("1986-11-03T08:30:00-08:00").run(connection);
+        assert(result, new Date(1986, 11, 3, 8, 30, 0, -8));
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+It("`ISO8601` should work with a timezone", function* (done) {
+    try {
+        result = yield r.ISO8601("1986-11-03T08:30:00", {defaultTimezone: "-08:00"}).run(connection);
+        assert(result, new Date(1986, 11, 3, 8, 30, 0, -8));
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
+It("`inTimezone` should work", function* (done) {
+    try {
+        result = yield r.now().inTimezone('-08:00').hours().run(connection);
+        assert.equal(result, (new Date()).getHours());
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
+It("`timezone` should work", function* (done) {
+    try {
+        result = yield r.ISO8601("1986-11-03T08:30:00-08:00").timezone().run(connection);
+        assert.equal(result, "-08:00");
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
+It("`during` should work", function* (done) {
+    try {
+        result = yield r.now().during(r.time(2013, 12, 1, "Z"), r.now().add(1000)).run(connection);
+        assert.equal(result, true);
+
+        result = yield r.now().during(r.time(2013, 12, 1, "Z"), r.now(), {leftBound: "closed", rightBound: "closed"}).run(connection);
+        assert.equal(result, true);
+
+        result = yield r.now().during(r.time(2013, 12, 1, "Z"), r.now(), {leftBound: "closed", rightBound: "open"}).run(connection);
+        assert.equal(result, false);
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
+It("`date` should work", function* (done) {
+    try {
+        result = yield r.now().date().hours().run(connection);
+        assert.equal(result, 0);
+        result = yield r.now().date().minutes().run(connection);
+        assert.equal(result, 0);
+        result = yield r.now().date().seconds().run(connection);
+        assert.equal(result, 0);
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
+It("`timeOfDay` should work", function* (done) {
+    try {
+        result = yield r.now().timeOfDay().run(connection);
+        assert(result>0);
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
+It("`year` should work", function* (done) {
+    try {
+        result = yield r.now().year().run(connection);
+        assert.equal(result, new Date().getFullYear());
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
+It("`month` should work", function* (done) {
+    try {
+        result = yield r.now().month().run(connection);
+        assert.equal(result, new Date().getMonth()+1);
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
+It("`day` should work", function* (done) {
+    try {
+        result = yield r.now().day().run(connection);
+        assert.equal(result, new Date().getUTCDate());
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
+It("`dayOfYear` should work", function* (done) {
+    try {
+        result = yield r.now().dayOfYear().run(connection);
+        assert(result > (new Date()).getMonth()*28+(new Date()).getUTCDate()-1);
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
+It("`dayOfWeek` should work", function* (done) {
+    try {
+        result = yield r.now().inTimezone('-08:00').dayOfWeek().run(connection);
+        assert.equal(result, new Date().getDay());
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
+It("`toISO8601` should work", function* (done) {
+    try {
+        result = yield r.now().toISO8601().run(connection);
+        assert.equal(typeof result, "string");
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
+It("`toEpochTime` should work", function* (done) {
+    try {
+        result = yield r.now().toEpochTime().run(connection);
+        assert.equal(typeof result, "number");
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
+It("Constant terms should work", function* (done) {
+    try {
+        result = yield r.monday.run(connection);
+        assert.equal(result, 1)
+
+        result = yield r.expr([r.monday, r.tuesday, r.wednesday, r.thursday, r.friday, r.saturday, r.sunday, r.january, r.february, r.march, r.april, r.may, r.june, r.july, r.august, r.september, r.october, r.november, r.december]).run(connection);
+        result = yield result.toArray();
+        assert.deepEqual(result, [1,2,3,4,5,6,7, 1,2,3,4,5,6,7,8,9,10,11,12]);
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
+It("`tochange` should work", function* (done) {
+    try {
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
+It("`tochange` should work", function* (done) {
+    try {
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
+It("`tochange` should work", function* (done) {
+    try {
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
+It("`tochange` should work", function* (done) {
+    try {
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
 
 
 It("End for `document-manipulation.js`", function* (done) {
