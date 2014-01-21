@@ -29,7 +29,7 @@ var Promise = require('blubird');
 var r = require('rethinkdbdash');
 
 var run = Promise.coroutine(function* () {
-    var connection, result, dbName, tableName, cursor, i, confirmation, pks, table, query, now
+    var connection, result
 
     try{
         connection = yield r.connect();
