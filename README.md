@@ -12,8 +12,6 @@ Example wih koa:
 var app = require('koa')();
 var r = require('rethinkdbdash');
 
-// response
-
 app.use(function *(){
     var connection = yield r.connect();
     var result = yield r.table("foo").get("bar").run(connection);
@@ -27,6 +25,9 @@ app.listen(3000);
 Example with bluebird:
 
 ```js
+var Promise = require('blubird');
+var r = require('rethinkdbdash');
+
 var run = Promise.coroutine(function* () {
     var connection, result, dbName, tableName, cursor, i, confirmation, pks, table, query, now
 
