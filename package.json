@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha --harmony-generators"
   },
   "repository": {
     "type": "git",
@@ -15,7 +15,8 @@
   },
   "keywords": [
     "rethinkdb",
-    "driver"
+    "driver",
+    "nodejs"
   ],
   "author": "Michel Tu <orphee@gmail.com> (http://justonepixel.com/)",
   "license": "",
@@ -24,7 +25,10 @@
     "url": "https://github.com/neumino/rethinkdbdash/issues"
   },
   "dependencies":{
-    "node-protobuf": ">= 1.0.10",
+    "protobufjs": ">= 2.0.3",
     "bluebird": ">= 1.0.0"
   },
+  "devDependencies": {
+    "mocha": ">= 1.11.0"
+  }
 }

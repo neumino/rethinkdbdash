@@ -2,6 +2,7 @@ rethinkdbdash
 =============
 
 An attempt for another JavaScript driver for RethinkDB
+__Note:__ Still in development.
 
 Use
 =============
@@ -52,6 +53,8 @@ var run = Promise.coroutine(function* () {
 
 Run tests
 ============
+
+Update `test/config.js` if your RethinkDB instance doesn't run on the default parameters.
 
 Run
 ```
