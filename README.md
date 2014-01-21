@@ -50,6 +50,14 @@ var run = Promise.coroutine(function* () {
 })
 ```
 
+Run tests
+============
+
+Run
+```
+mocha --harmony-generators
+```
+
 
 What's different?
 =============
