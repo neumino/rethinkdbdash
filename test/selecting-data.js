@@ -227,6 +227,20 @@ It("`filter` should work -- default false", function* (done) {
     }
 })
 
+It("`filter` should work -- default false", function* (done) {
+    try{
+        result = yield r.expr([{a:1}, {}]).filter(r.row("a"), {default: r.error()}).run(connection);
+    }
+    catch(e) {
+        if (e.message.match(/^No attribute `a` in object:/)) {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
 
 
 

@@ -105,6 +105,9 @@ It("`json` should work", function* (done) {
         result = yield r.json('{"a":1}').run(connection);
         assert.deepEqual(result, {a:1});
 
+        result = yield r.json("{}").run(connection);
+        assert.deepEqual(result, {})
+
         done();
     }
     catch(e) {

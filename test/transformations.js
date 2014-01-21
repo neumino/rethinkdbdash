@@ -78,7 +78,7 @@ It("`map` should work on array -- function", function* (done) {
 })
 It("`withFields` should work on array -- single field", function* (done) {
     try {
-        result = yield r.expr([{a: 0, b: 1, c: 2}, {a: 4, b: 4, c: 5}, {a:9, b:2, c:0}]).withFields("a").run(connection);
+        var result = yield r.expr([{a: 0, b: 1, c: 2}, {a: 4, b: 4, c: 5}, {a:9, b:2, c:0}]).withFields("a").run(connection);
         result = yield result.toArray();
         assert.deepEqual(result, [{a: 0}, {a: 4}, {a: 9}]);
 
@@ -90,7 +90,7 @@ It("`withFields` should work on array -- single field", function* (done) {
 })
 It("`withFields` should work on array -- multiple field", function* (done) {
     try {
-        result = yield r.expr([{a: 0, b: 1, c: 2}, {a: 4, b: 4, c: 5}, {a:9, b:2, c:0}]).withFields("a", "c").run(connection);
+        var result = yield r.expr([{a: 0, b: 1, c: 2}, {a: 4, b: 4, c: 5}, {a:9, b:2, c:0}]).withFields("a", "c").run(connection);
         result = yield result.toArray();
         assert.deepEqual(result, [{a: 0, c: 2}, {a: 4, c: 5}, {a:9, c:0}]);
 
@@ -103,7 +103,7 @@ It("`withFields` should work on array -- multiple field", function* (done) {
 
 It("`concatMap` should work on array -- function", function* (done) {
     try {
-        result = yield r.expr([[1, 2], [3], [4]]).concatMap(function(doc) { return doc}).run(connection);
+        var result = yield r.expr([[1, 2], [3], [4]]).concatMap(function(doc) { return doc}).run(connection);
         result = yield result.toArray();
         assert.deepEqual(result, [1, 2, 3, 4]);
 
@@ -115,7 +115,7 @@ It("`concatMap` should work on array -- function", function* (done) {
 })
 It("`concatMap` should work on array -- r.row", function* (done) {
     try {
-        result = yield r.expr([[1, 2], [3], [4]]).concatMap(r.row).run(connection);
+        var result = yield r.expr([[1, 2], [3], [4]]).concatMap(r.row).run(connection);
         result = yield result.toArray();
         assert.deepEqual(result, [1, 2, 3, 4]);
 
@@ -128,7 +128,7 @@ It("`concatMap` should work on array -- r.row", function* (done) {
 
 It("`orderBy` should work on array -- string", function* (done) {
     try {
-        result = yield r.expr([{a:23}, {a:10}, {a:0}, {a:100}]).orderBy("a").run(connection);
+        var result = yield r.expr([{a:23}, {a:10}, {a:0}, {a:100}]).orderBy("a").run(connection);
         result = yield result.toArray();
         assert.deepEqual(result, [{a:0}, {a:10}, {a:23}, {a:100}]);
 
@@ -141,7 +141,7 @@ It("`orderBy` should work on array -- string", function* (done) {
 
 It("`orderBy` should work on array -- r.row", function* (done) {
     try {
-        result = yield r.expr([{a:23}, {a:10}, {a:0}, {a:100}]).orderBy(r.row("a")).run(connection);
+        var result = yield r.expr([{a:23}, {a:10}, {a:0}, {a:100}]).orderBy(r.row("a")).run(connection);
         result = yield result.toArray();
         assert.deepEqual(result, [{a:0}, {a:10}, {a:23}, {a:100}]);
 
@@ -154,7 +154,7 @@ It("`orderBy` should work on array -- r.row", function* (done) {
 
 It("`orderBy` should work on a table -- pk", function* (done) {
     try {
-        result = yield r.db(dbName).table(tableName).orderBy({index: "id"}).run(connection);
+        var result = yield r.db(dbName).table(tableName).orderBy({index: "id"}).run(connection);
         result = yield result.toArray();
         for(i=0; i<result.length-1; i++) {
             assert(result[i].id < result[i+1].id);
@@ -168,7 +168,7 @@ It("`orderBy` should work on a table -- pk", function* (done) {
 })
 It("`orderBy` should work on a table -- secondary", function* (done) {
     try {
-        result = yield r.db(dbName).table(tableName).orderBy({index: "val"}).run(connection);
+        var result = yield r.db(dbName).table(tableName).orderBy({index: "val"}).run(connection);
         result = yield result.toArray();
         for(i=0; i<result.length-1; i++) {
             assert(result[i].val < result[i+1].val);
@@ -180,10 +180,35 @@ It("`orderBy` should work on a table -- secondary", function* (done) {
         done(e);
     }
 })
+It("`orderBy` should work on a two fields", function* (done) {
+    try {
+        var dbName = uuid();
+        var tableName = uuid();
+
+        var result = yield r.dbCreate(dbName).run(connection);
+        assert.deepEqual(result, {created: 1});
+
+        result = yield r.db(dbName).tableCreate(tableName).run(connection);
+        assert.deepEqual(result, {created: 1});
+
+        result = yield r.db(dbName).table(tableName).insert([{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")},{a: r.js("Math.random()")}]).run(connection);
+        assert.deepEqual(result.inserted, 98);
+
+        result = yield r.db(dbName).table(tableName).orderBy("id", "a").run(connection);
+        result = yield result.toArray();
+        assert(Array.isArray(result));
+        assert(result[0].id<result[1].id);
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
 
 It("`skip` should work", function* (done) {
     try {
-        result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).skip(3).run(connection);
+        var result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).skip(3).run(connection);
         result = yield result.toArray();
         assert.deepEqual(result, [3, 4, 5, 6, 7, 8, 9]);
 
@@ -196,7 +221,7 @@ It("`skip` should work", function* (done) {
 
 It("`limit` should work", function* (done) {
     try {
-        result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).limit(3).run(connection);
+        var result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).limit(3).run(connection);
         result = yield result.toArray();
         assert.deepEqual(result, [0, 1, 2]);
 
@@ -208,7 +233,7 @@ It("`limit` should work", function* (done) {
 })
 It("`slice` should work", function* (done) {
     try {
-        result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).slice(3, 5).run(connection);
+        var result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).slice(3, 5).run(connection);
         result = yield result.toArray();
         assert.deepEqual(result, [3, 4]);
 
@@ -218,9 +243,38 @@ It("`slice` should work", function* (done) {
         done(e);
     }
 })
+It("`slice` should work -- with options", function* (done) {
+    try {
+        var result = yield r.expr([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22, 23]).slice(5, 10, {rightBound:'closed'}).run(connection);
+        result = yield result.toArray();
+        assert.deepEqual(result, [5, 6, 7, 8, 9, 10]);
+
+        result = yield r.expr([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22, 23]).slice(5, 10, {rightBound:'open'}).run(connection);
+        result = yield result.toArray();
+        assert.deepEqual(result, [5, 6, 7, 8, 9]);
+
+        result = yield r.expr([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22, 23]).slice(5, 10, {leftBound:'open'}).run(connection);
+        result = yield result.toArray();
+        assert.deepEqual(result, [6, 7, 8, 9]);
+
+        result = yield r.expr([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22, 23]).slice(5, 10, {leftBound:'closed'}).run(connection);
+        result = yield result.toArray();
+        assert.deepEqual(result, [5, 6, 7, 8, 9]);
+
+        result = yield r.expr([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22, 23]).slice(5, 10, {leftBound:'closed', rightBound: 'closed'}).run(connection);
+        result = yield result.toArray();
+        assert.deepEqual(result, [5, 6, 7, 8, 9, 10]);
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
 It("`nth` should work", function* (done) {
     try {
-        result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).nth(3).run(connection);
+        var result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).nth(3).run(connection);
         assert(result, 3);
 
         done();
@@ -231,7 +285,7 @@ It("`nth` should work", function* (done) {
 })
 It("`indexesOf` should work - datum", function* (done) {
     try {
-        result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).nth(3).run(connection);
+        var result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).nth(3).run(connection);
         assert(result, 3);
 
         done();
@@ -243,7 +297,7 @@ It("`indexesOf` should work - datum", function* (done) {
 
 It("`indexesOf` should work - r.row", function* (done) {
     try {
-        result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).indexesOf(r.row.eq(3)).run(connection);
+        var result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).indexesOf(r.row.eq(3)).run(connection);
         result = yield result.toArray();
         assert.equal(result, 3);
 
@@ -255,7 +309,7 @@ It("`indexesOf` should work - r.row", function* (done) {
 })
 It("`indexesOf` should work - function", function* (done) {
     try {
-        result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).indexesOf(function(doc) { return doc.eq(3)}).run(connection);
+        var result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).indexesOf(function(doc) { return doc.eq(3)}).run(connection);
         result = yield result.toArray();
         assert.equal(result, 3);
 
@@ -267,7 +321,7 @@ It("`indexesOf` should work - function", function* (done) {
 })
 It("`isEmpty` should work", function* (done) {
     try {
-        result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).isEmpty().run(connection);
+        var result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).isEmpty().run(connection);
         assert.equal(result, false);
 
         result = yield r.expr([]).isEmpty().run(connection);
@@ -282,7 +336,7 @@ It("`isEmpty` should work", function* (done) {
 
 It("`union` should work", function* (done) {
     try{
-        result = yield r.expr([0, 1, 2]).union([3, 4, 5]).run(connection);
+        var result = yield r.expr([0, 1, 2]).union([3, 4, 5]).run(connection);
         result = yield result.toArray();
         assert.deepEqual(result, [0, 1, 2, 3, 4, 5]);
 
@@ -294,7 +348,7 @@ It("`union` should work", function* (done) {
 })
 It("`sample` should work", function* (done) {
     try{
-        result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).sample(2).run(connection);
+        var result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).sample(2).run(connection);
         result = yield result.toArray();
         assert.equal(result.length, 2);
 
@@ -304,6 +358,20 @@ It("`sample` should work", function* (done) {
         done(e);
     }
 })
+It("`sample` should throw if given -1", function* (done) {
+    try{
+        var result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).sample(-1).run(connection);
+    }
+    catch(e) {
+        if (e.message.match("Number of items to sample must be non-negative, got `-1`")) {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
 
 
 
