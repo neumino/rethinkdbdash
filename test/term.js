@@ -30,7 +30,6 @@ var run = Promise.coroutine(function* () {
     }
 
 
-    /*
     console.log("Testing getField");
     // Get field
     try{
@@ -867,7 +866,10 @@ var run = Promise.coroutine(function* () {
         result = yield r.now().toEpochTime().run(connection);
         assert.equal(typeof result, "number");
 
-        result = r.expr([r.monday, r.tuesday, r.wednesday, r.thursday, r.friday, r.saturday, r.sunday, r.january, r.february, r.march, r.april, r.may, r.june, r.july, r.august, r.september, r.october, r.november, r.december]).run(connection);
+        result = yield r.monday.run(connection);
+        assert.equal(result, 1)
+
+        result = yield r.expr([r.monday, r.tuesday, r.wednesday, r.thursday, r.friday, r.saturday, r.sunday, r.january, r.february, r.march, r.april, r.may, r.june, r.july, r.august, r.september, r.october, r.november, r.december]).run(connection);
         assert.deepEqual(result, [1,2,3,4,5,6,7, 1,2,3,4,5,6,7,8,9,10,11,12]);
     }
     catch(e) {
@@ -970,7 +972,6 @@ var run = Promise.coroutine(function* () {
         throw e;
     }
 
-    */
     console.log("Testing arguments in run");
     // Testing run arguments
     try{
