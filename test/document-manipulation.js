@@ -46,6 +46,20 @@ It("`r.row` should work in a map", function* (done) {
         done(e);
     }
 })
+It("`(...)` should work", function* (done) {
+    try {
+        var result = yield r.expr({a: "aaa"}).getField("a").run(connection);
+        assert.equal(result, "aaa");
+
+        result = yield r.expr({b: "bbb"})("b").run(connection);
+        assert.equal(result, "bbb");
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
 
 
 It("End for `document-manipulation.js`", function* (done) {
