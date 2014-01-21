@@ -89,12 +89,12 @@ It("'`tableCreate` should create a table'", function* (done) {
 })
 It("'`tableCreate` should create a table -- primaryKey'", function* (done) {
     try {
-        tableName = uuid(); // export to the global scope
+        tableName = uuid();
 
         var result = yield r.db(dbName).tableCreate(tableName, {primaryKey: "foo"}).run(connection);
         assert.deepEqual(result, {created:1});
 
-        var result = yield r.db(dbName).table(tableName).info().run(connection);
+        result = yield r.db(dbName).table(tableName).info().run(connection);
         assert(result.primary_key, "foo");
 
         done();
@@ -103,8 +103,43 @@ It("'`tableCreate` should create a table -- primaryKey'", function* (done) {
         done(e);
     }
 })
-//TODO Test more arguments
-//TODO Test invalid string
+It("'`tableCreate` should create a table -- all args'", function* (done) {
+    try {
+        tableName = uuid();
+
+        var result = yield r.db(dbName).tableCreate(tableName, {cacheSize: 1024*1024*1024, durability: "soft", primaryKey: "foo"}).run(connection);
+        assert.deepEqual(result, {created:1}); // We can't really check other parameters...
+
+        result = yield r.db(dbName).table(tableName).info().run(connection);
+        assert(result.primary_key, "foo");
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+It("'`tableCreate` should create a table -- non valid args'", function* (done) {
+    try {
+        tableName = uuid();
+
+        var result = yield r.db(dbName).tableCreate(tableName, {nonValidArg: true}).run(connection);
+        assert.deepEqual(result, {created:1}); // We can't really check other parameters...
+
+        result = yield r.db(dbName).table(tableName).info().run(connection);
+        assert(result.primary_key, "foo");
+
+        done();
+    }
+    catch(e) {
+        if (e.message === 'Unrecognized optional argument `nonValidArg`.') {
+            done()
+        }
+        else {
+            done(e)
+        }
+    }
+})
 It("`tableCreate` should throw if no argument is given", function* (done) {
     try {
         var result = yield r.db(dbName).tableCreate().run(connection);
@@ -118,12 +153,29 @@ It("`tableCreate` should throw if no argument is given", function* (done) {
         }
     }
 })
+It("'`tableCreate` should throw is the name contains special char'", function* (done) {
+    try {
+        var result = yield r.db(dbName).tableCreate("-_-").run(connection);
+    }
+    catch(e) {
+        if (e.message.match(/Database name `-_-` invalid \(Use A-Za-z0-9_ only\)/)) { done(); }
+        else { done(e); }
+    }
+})
 
 
 
 It("`tableDrop` should drop a table", function* (done) {
     try {
-        var result = yield r.db(dbName).tableDrop(tableName).run(connection);
+        tableName = uuid();
+
+        var result = yield r.db(dbName).tableCreate(tableName).run(connection);
+        assert.deepEqual(result, {created:1});
+
+        result = yield r.db(dbName).tableList().run(connection);
+        result = yield result.toArray();
+
+        result = yield r.db(dbName).tableDrop(tableName).run(connection);
         assert.deepEqual(result, {dropped:1});
 
         result = yield r.db(dbName).tableList().run(connection);
@@ -145,6 +197,7 @@ It("`tableDrop` should drop a table", function* (done) {
         done(e);
     }
 })
+
 It("`tableDrop` should throw if no argument is given", function* (done) {
     try {
         var result = yield r.db(dbName).tableDrop().run(connection);

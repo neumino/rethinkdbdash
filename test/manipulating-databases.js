@@ -65,7 +65,15 @@ It("`dbCreate` should throw if no argument is given", function* (done) {
         }
     }
 })
-//TODO test invalid string
+It("'`dbCreate` should throw is the name contains special char'", function* (done) {
+    try {
+        var result = yield r.db("-_-").run(connection);
+    }
+    catch(e) {
+        if (e.message.match(/Database name `-_-` invalid \(Use A-Za-z0-9_ only\)/)) { done(); }
+        else { done(e); }
+    }
+})
 It("`dbList` should show the database we created", function* (done) {
     try {
         var result = yield r.dbList().run(connection);
