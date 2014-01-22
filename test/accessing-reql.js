@@ -268,6 +268,88 @@ It("`profile` should work", function* (done) {
 })
 
 
+It("`connection` should extend events.Emitter and emit an error if the server failed to parse the protobuf message", function* (done) {
+    try{
+        connection.addListener('error', function() {
+            done();
+        });
+
+        var result = yield r.expr(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .run(connection);
+    }
+    catch(e){
+        done(e);
+    }
+})
+
 
 It("End for `cursor.js`", function* (done) {
     try {
