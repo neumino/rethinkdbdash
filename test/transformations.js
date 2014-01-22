@@ -258,6 +258,33 @@ It("`orderBy` should throw if no argument has been passed", function* (done) {
         }
     }
 })
+It("`desc` is not defined after a term", function* (done) {
+    try {
+        var result = yield r.expr(1).desc("foo").run(connection);
+    }
+    catch(e) {
+        if (e.message === "`desc` is not defined after:\nr.expr(1)") {
+            done()
+        }
+        else {
+            done(e)
+        }
+    }
+})
+It("`asc` is not defined after a term", function* (done) {
+    try {
+        var result = yield r.expr(1).asc("foo").run(connection);
+    }
+    catch(e) {
+        if (e.message === "`asc` is not defined after:\nr.expr(1)") {
+            done()
+        }
+        else {
+            done(e)
+        }
+    }
+})
+
 It("`skip` should work", function* (done) {
     try {
         var result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).skip(3).run(connection);

@@ -105,8 +105,19 @@ It("`branch` should throw if just two arguments have been given", function* (don
         }
     }
 })
-
-
+It("`branch` is not defined after a term", function* (done) {
+    try {
+        var result = yield r.expr(1).branch(true, true, true).run(connection);
+    }
+    catch(e) {
+        if (e.message === "`branch` is not defined after:\nr.expr(1)") {
+            done()
+        }
+        else {
+            done(e)
+        }
+    }
+})
 It("`default` should work", function* (done) {
     try {
         result = yield r.expr({a:1})("b").default("Hello").run(connection);
@@ -116,6 +127,19 @@ It("`default` should work", function* (done) {
     }
     catch(e) {
         done(e);
+    }
+})
+It("`error` is not defined after a term", function* (done) {
+    try {
+        var result = yield r.expr(1).error("error").run(connection);
+    }
+    catch(e) {
+        if (e.message === "`error` is not defined after:\nr.expr(1)") {
+            done()
+        }
+        else {
+            done(e)
+        }
     }
 })
 It("`default` should throw if no argument has been given", function* (done) {
@@ -144,6 +168,20 @@ It("`r.js` should work", function* (done) {
         done(e);
     }
 })
+It("`js` is not defined after a term", function* (done) {
+    try {
+        var result = yield r.expr(1).js("foo").run(connection);
+    }
+    catch(e) {
+        if (e.message === "`js` is not defined after:\nr.expr(1)") {
+            done()
+        }
+        else {
+            done(e)
+        }
+    }
+})
+
 It("`js` should throw if no argument has been given", function* (done) {
     try{
         result = yield r.js().run(connection);
@@ -222,6 +260,20 @@ It("`json` should throw if no argument has been given", function* (done) {
         }
     }
 })
+It("`json` is not defined after a term", function* (done) {
+    try {
+        var result = yield r.expr(1).json("1").run(connection);
+    }
+    catch(e) {
+        if (e.message === "`json` is not defined after:\nr.expr(1)") {
+            done()
+        }
+        else {
+            done(e)
+        }
+    }
+})
+
 It("`exprJSON` should throw if no argument has been given", function* (done) {
     try{
         result = yield r.exprJSON().run(connection);

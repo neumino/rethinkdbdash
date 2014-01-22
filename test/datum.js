@@ -48,6 +48,19 @@ It("All raws datum shoul be defined", function* (done) {
         done(e);
     }
 })
+It("`expr` is not defined after a term", function* (done) {
+    try {
+        var result = yield r.expr(1).expr("foo").run(connection);
+    }
+    catch(e) {
+        if (e.message === "`expr` is not defined after:\nr.expr(1)") {
+            done()
+        }
+        else {
+            done(e)
+        }
+    }
+})
 It("`r.exprJSON` should work", function* (done) {
     try {
         assert(r.exprJSON([{}, {}])._self.type === "JSON");

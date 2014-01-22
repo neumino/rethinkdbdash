@@ -65,7 +65,33 @@ It("`dbCreate` should throw if no argument is given", function* (done) {
         }
     }
 })
-It("'`dbCreate` should throw is the name contains special char'", function* (done) {
+It("`dbCreate` is not defined after a term", function* (done) {
+    try {
+        var result = yield r.expr(1).dbCreate("foo").run(connection);
+    }
+    catch(e) {
+        if (e.message === "`dbCreate` is not defined after:\nr.expr(1)") {
+            done()
+        }
+        else {
+            done(e)
+        }
+    }
+})
+It("`dbCreate` is not defined after a term", function* (done) {
+    try {
+        var result = yield r.expr(1).db("foo").run(connection);
+    }
+    catch(e) {
+        if (e.message === "`db` is not defined after:\nr.expr(1)") {
+            done()
+        }
+        else {
+            done(e)
+        }
+    }
+})
+It("'`db` should throw is the name contains special char'", function* (done) {
     try {
         var result = yield r.db("-_-").run(connection);
     }
@@ -119,6 +145,34 @@ It("`dbDrop` should throw if no argument is given", function* (done) {
         }
     }
 })
+It("`dbDrop` is not defined after a term", function* (done) {
+    try {
+        var result = yield r.expr(1).dbDrop("foo").run(connection);
+    }
+    catch(e) {
+        if (e.message === "`dbDrop` is not defined after:\nr.expr(1)") {
+            done()
+        }
+        else {
+            done(e)
+        }
+    }
+})
+It("`dbList` is not defined after a term", function* (done) {
+    try {
+        var result = yield r.expr(1).dbList("foo").run(connection);
+    }
+    catch(e) {
+        if (e.message === "`dbList` is not defined after:\nr.expr(1)") {
+            done()
+        }
+        else {
+            done(e)
+        }
+    }
+})
+
+
 It("`dbList` shouldn't show the database we dropped", function* (done) {
     try {
         var result = yield r.dbList().run(connection);

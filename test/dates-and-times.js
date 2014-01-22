@@ -51,6 +51,20 @@ It("`r.now` should return a date", function* (done) {
         done(e);
     }
 })
+It("`now` is not defined after a term", function* (done) {
+    try {
+        var result = yield r.expr(1).now("foo").run(connection);
+    }
+    catch(e) {
+        if (e.message === "`now` is not defined after:\nr.expr(1)") {
+            done()
+        }
+        else {
+            done(e)
+        }
+    }
+})
+
 It("`r.time` should return a date -- with date and time", function* (done) {
     try{
         var now = new Date();
@@ -93,6 +107,20 @@ It("`r.time` should throw if no argument has been given", function* (done) {
         }
     }
 })
+It("`time` is not defined after a term", function* (done) {
+    try {
+        var result = yield r.expr(1).time(1, 2, 3, 'Z').run(connection);
+    }
+    catch(e) {
+        if (e.message === "`time` is not defined after:\nr.expr(1)") {
+            done()
+        }
+        else {
+            done(e)
+        }
+    }
+})
+
 It("`epochTime` should work", function* (done) {
     try {
         now = new Date();
@@ -118,6 +146,20 @@ It("`r.epochTime` should throw if no argument has been given", function* (done) 
         }
     }
 })
+It("`epochTime` is not defined after a term", function* (done) {
+    try {
+        var result = yield r.expr(1).epochTime(Date.now()).run(connection);
+    }
+    catch(e) {
+        if (e.message === "`epochTime` is not defined after:\nr.expr(1)") {
+            done()
+        }
+        else {
+            done(e)
+        }
+    }
+})
+
 It("`ISO8601` should work", function* (done) {
     try {
         result = yield r.ISO8601("1986-11-03T08:30:00-08:00").run(connection);
@@ -153,6 +195,20 @@ It("`r.ISO8601` should throw if no argument has been given", function* (done) {
         }
     }
 })
+It("`ISO8601` is not defined after a term", function* (done) {
+    try {
+        var result = yield r.expr(1).ISO8601('validISOstring').run(connection);
+    }
+    catch(e) {
+        if (e.message === "`ISO8601` is not defined after:\nr.expr(1)") {
+            done()
+        }
+        else {
+            done(e)
+        }
+    }
+})
+
 
 It("`inTimezone` should work", function* (done) {
     try {

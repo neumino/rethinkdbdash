@@ -137,6 +137,19 @@ It("`merge` should work", function* (done) {
         done(e);
     }
 })
+It("`literal` is not defined after a term", function* (done) {
+    try {
+        var result = yield r.expr(1).literal("foo").run(connection);
+    }
+    catch(e) {
+        if (e.message === "`literal` is not defined after:\nr.expr(1)") {
+            done()
+        }
+        else {
+            done(e)
+        }
+    }
+})
 It("`merge` should throw if no argument has been passed", function* (done) {
     try {
         result = yield r.db(dbName).table(tableName).merge().run(connection);
