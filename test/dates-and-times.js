@@ -37,15 +37,17 @@ It("`r.now` should return a date", function* (done) {
 })
 It("`r.time` should return a date -- with date and time", function* (done) {
     try{
+        var now = new Date();
         result = yield r.time(1986, 11, 3, 12, 0, 0, 'Z').run(connection);
         assert.equal(result instanceof Date, true)
-        //Main author is living in California. Blame JavaScript's date for the +8
-        //Month in JS starts with 0
-        assert.deepEqual(new Date(1986, 10, 3, (12-8)), result)
+
+        result = yield r.time(1986, 11, 3, 12, 20, 0, 'Z').minutes().run(connection);
+        assert.equal(result, 20)
 
         done();
     }
     catch(e) {
+        console.log(e.message);
         done(e);
     }
 })
@@ -138,8 +140,8 @@ It("`r.ISO8601` should throw if no argument has been given", function* (done) {
 
 It("`inTimezone` should work", function* (done) {
     try {
-        result = yield r.now().inTimezone('-08:00').hours().run(connection);
-        assert.equal(result, (new Date()).getHours());
+        result = yield r.now().inTimezone('-08:00').hours().eq(r.now().inTimezone('-09:00').hours().add(1)).run(connection);
+        assert.equal(result, true);
 
         done();
     }
