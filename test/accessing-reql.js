@@ -14,6 +14,37 @@ function It(testName, generatorFn) {
     })
 }
 
+It("Testing `run` without connection", function* (done) {
+    try {
+        r.expr(1).run()
+    }
+    catch(e) {
+        if (e.message === '`run` was called without a connection after:\nr.expr(1)') {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+It("Testing `run` without connection", function* (done) {
+    try {
+        connection = yield r.connect();
+        assert(connection);
+        connection.close()
+        r.expr(1).run(connection)
+    }
+    catch(e) {
+        if (e.message === '`run` was called with a closed connection after:\nr.expr(1)') {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+
 It("Init for `cursor.js`", function* (done) {
     try {
         connection = yield r.connect();
