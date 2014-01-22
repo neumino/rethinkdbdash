@@ -35,24 +35,57 @@ It("Init for `document-manipulation.js`", function* (done) {
     }
 })
 
-It("`r.row` should work", function* (done) {
+It("`r.row` should work - 1", function* (done) {
     try {
         var result = yield r.expr([1,2,3]).map(r.row).run(connection);
         result = yield result.toArray();
         assert.deepEqual(result, [1,2,3]);
+        done()
+    }
+    catch(e) {
+        done(e);
+    }
+})
 
+It("`r.row` should work - 2", function* (done) {
+    try {
         result = yield r.db(dbName).table(tableName).insert({}).run(connection);
         assert.equal(result.inserted, 1);
 
         result = yield r.db(dbName).table(tableName).update({idCopyUpdate: r.row("id")}).run(connection);
         assert.equal(result.replaced, 1);
 
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+It("`r.row` should work - 3", function* (done) {
+    try {
         result = yield r.db(dbName).table(tableName).replace(r.row).run(connection);
         assert.equal(result.replaced, 0);
 
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+It("`r.row` should work - 4", function* (done) {
+    try {
         result = yield r.db(dbName).table(tableName).replace(r.row.merge({idCopyReplace: r.row("id")})).run(connection);
         assert.equal(result.replaced, 1);
-        
+ 
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
+It("`r.row` should work - 5", function* (done) {
+    try {
         result = yield r.db(dbName).table(tableName).delete().run(connection);
         assert.equal(result.deleted, 1);
 
@@ -62,6 +95,7 @@ It("`r.row` should work", function* (done) {
         done(e);
     }
 })
+
 It("`pluck` should work", function* (done) {
     try {
         result = yield r.expr({a: 0, b: 1, c: 2}).pluck("a", "b").run(connection);
