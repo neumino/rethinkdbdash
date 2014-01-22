@@ -1,5 +1,5 @@
 module.exports = {
-    host: "localhost",
-    port: 28015,
+    host: process.env['WERCKER_RETHINKDB_HOST'] || "localhost",
+    port: process.env['WERCKER_RETHINKDB_PORT'] || 28015,
     authKey: ""
 }
