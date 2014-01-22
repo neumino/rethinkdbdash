@@ -66,6 +66,36 @@ It("`table` should work", function* (done) {
         done(e);
     }
 })
+It("`table` should work with useOutdated", function* (done) {
+    try {
+        result = yield r.db(dbName).table(tableName, {useOutdated: true}).run(connection);
+        result = yield result.toArray();
+        assert.equal(result.length, 100)
+
+        result = yield r.db(dbName).table(tableName, {useOutdated: false}).run(connection);
+        result = yield result.toArray();
+        assert.equal(result.length, 100)
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+It("`table` should throw with non valid otpions", function* (done) {
+    try {
+        result = yield r.db(dbName).table(tableName, {nonValidKey: false}).run(connection);
+    }
+    catch(e) {
+        if (e.message === 'Unrecognized option `nonValidKey` in `table` after:\nr.db("'+dbName+'")\nAvailable option is useOutdated <bool>') {
+            done();
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
 It("`get` should work", function* (done) {
     try {
         var result = yield r.db(dbName).table(tableName).get(pks[0]).run(connection);
@@ -187,7 +217,19 @@ It("`between` should wrok -- secondary index", function* (done) {
         done(e);
     }
 })
+It("`between` should wrok -- all args", function* (done) {
+    try {
+        result = yield r.db(dbName).table(tableName).between(5, 20, {index: "fieldAddOne", leftBound: "open", rightBound: "closed"}).run(connection);
+        assert(result);
+        result = yield result.toArray();
+        assert.equal(result.length, 20);
 
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
 It("`between` should throw if no argument is passed", function* (done) {
     try {
         result = yield r.db(dbName).table(tableName).between().run(connection);
@@ -196,6 +238,21 @@ It("`between` should throw if no argument is passed", function* (done) {
         assert(e instanceof r.Error.ReqlDriverError);
         assert(e instanceof Error);
         if (e.message === "First argument of `between` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+            done();
+        }
+        else{
+            done(e);
+        }
+    }
+})
+It("`between` should throw if non valid arg", function* (done) {
+    try {
+        result = yield r.db(dbName).table(tableName).between(1, 2, {nonValidKey: true}).run(connection);
+    }
+    catch(e) {
+        assert(e instanceof r.Error.ReqlDriverError);
+        assert(e instanceof Error);
+        if (e.message === 'Unrecognized option `nonValidKey` in `between` after:\nr.db("'+dbName+'").table("'+tableName+'")\nAvailable options are index <string>, leftBound <string>, rightBound <string>') {
             done();
         }
         else{
@@ -295,6 +352,19 @@ It("`filter` should throw if no argument is passed", function* (done) {
         assert(e instanceof r.Error.ReqlDriverError);
         assert(e instanceof Error);
         if (e.message === "First argument of `filter` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+            done();
+        }
+        else{
+            done(e);
+        }
+    }
+})
+It("`filter` should throw with a non valid option", function* (done) {
+    try {
+        result = yield r.db(dbName).table(tableName).filter(true, {nonValidKey: false}).run(connection);
+    }
+    catch(e) {
+        if (e.message.match(/^Unrecognized option `nonValidKey` in `filter` after:/)) {
             done();
         }
         else{

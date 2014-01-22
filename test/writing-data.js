@@ -153,6 +153,32 @@ It("`insert` should work - testing upsert false`", function* (done) {
         done(e);
     }
 })
+It("`insert` should throw if no argument is given", function* (done) {
+    try{
+        result = yield r.db(dbName).table(tableName).insert().run(connection);
+    }
+    catch(e) {
+        if (e.message === "First argument of `insert` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+It("`insert` should throw if non valid option", function* (done) {
+    try{
+        result = yield r.db(dbName).table(tableName).insert({}, {nonValidKey: true}).run(connection);
+    }
+    catch(e) {
+        if (e.message === 'Unrecognized option `nonValidKey` in `insert` after:\nr.db("'+dbName+'").table("'+tableName+'")\nAvailable options are returnVals <bool>, durability <string>, upsert <bool>') {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
 It("`replace` should throw if no argument is given", function* (done) {
     try{
         result = yield r.db(dbName).table(tableName).replace().run(connection);
@@ -166,7 +192,19 @@ It("`replace` should throw if no argument is given", function* (done) {
         }
     }
 })
-
+It("`replace` should throw if non valid option", function* (done) {
+    try{
+        result = yield r.db(dbName).table(tableName).replace({}, {nonValidKey: true}).run(connection);
+    }
+    catch(e) {
+        if (e.message === 'Unrecognized option `nonValidKey` in `replace` after:\nr.db("'+dbName+'").table("'+tableName+'")\nAvailable options are returnVals <bool>, durability <string>, nonAtomic <bool>') {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
 
 It("`delete` should work`", function* (done) {
     try {
@@ -232,7 +270,19 @@ It("`delete` should work -- hard durability`", function* (done) {
         done(e);
     }
 })
-
+It("`delete` should throw if non valid option", function* (done) {
+    try{
+        result = yield r.db(dbName).table(tableName).delete({nonValidKey: true}).run(connection);
+    }
+    catch(e) {
+        if (e.message === 'Unrecognized option `nonValidKey` in `delete` after:\nr.db("'+dbName+'").table("'+tableName+'")\nAvailable options are returnVals <bool>, durability <string>') {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
 It("`update` should work - point update`", function* (done) {
     try {
         var result = yield r.db(dbName).table(tableName).delete().run(connection);
@@ -368,6 +418,19 @@ It("`update` should throw if no argument is given", function* (done) {
         }
     }
 })
+It("`update` should throw if non valid option", function* (done) {
+    try{
+        result = yield r.db(dbName).table(tableName).update({}, {nonValidKey: true}).run(connection);
+    }
+    catch(e) {
+        if (e.message === 'Unrecognized option `nonValidKey` in `update` after:\nr.db("'+dbName+'").table("'+tableName+'")\nAvailable options are returnVals <bool>, durability <string>, nonAtomic <bool>') {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
 
 It("`replace` should work - point replace`", function* (done) {
     try {
@@ -491,10 +554,6 @@ It("`replace` should work - returnVals false`", function* (done) {
         done(e);
     }
 })
-
-
-
-
 
 
 It("End for `writing-data.js`", function* (done) {

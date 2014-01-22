@@ -283,6 +283,20 @@ It("`eqJoin` should throw if no argument", function* (done) {
         }
     }
 })
+It("`eqJoin` should throw with a non valid key", function* (done) {
+    try {
+        result = yield r.expr([1,2,3]).eqJoin(r.row, r.db(dbName).table(tableName), {nonValidKey: "val"}).run(connection);
+    }
+    catch(e) {
+        if (e.message === "Unrecognized option `nonValidKey` in `eqJoin` after:\nr.expr([1, 2, 3])\nAvailable option is index <string>") {
+            done();
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
 It("`eqJoin` should throw if no sequence", function* (done) {
     try {
         result = yield r.db(dbName).table(tableName).eqJoin("id").run(connection);

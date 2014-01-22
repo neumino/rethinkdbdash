@@ -198,7 +198,6 @@ It("`run` should take an argument", function* (done) {
         done();
     }
     catch(e) {
-        console.log(e.message);
         done(e);
     }
 })
@@ -208,7 +207,7 @@ It("`run` should throw on an unrecongized argument", function* (done) {
         var result = yield r.expr(1).run(connection, {db: "db"});
     }
     catch(e) {
-        if (e.message === "Unrecognized option in `run`. Available options are useOutdated <bool>, durability <string>, noreply <bool>, timeFormat <string>, profile <bool>.") {
+        if (e.message === "Unrecognized option `db` in `run`. Available options are useOutdated <bool>, durability <string>, noreply <bool>, timeFormat <string>, profile <bool>.") {
             done();
         }
         else{
@@ -263,7 +262,6 @@ It("`profile` should work", function* (done) {
         done();
     }
     catch(e){
-        console.log(e);
     }
 })
 

@@ -119,20 +119,14 @@ It("'`tableCreate` should create a table -- all args'", function* (done) {
         done(e);
     }
 })
-It("'`tableCreate` should create a table -- non valid args'", function* (done) {
+It("'`tableCreate` should throw -- non valid args'", function* (done) {
     try {
         tableName = uuid();
 
         var result = yield r.db(dbName).tableCreate(tableName, {nonValidArg: true}).run(connection);
-        assert.deepEqual(result, {created:1}); // We can't really check other parameters...
-
-        result = yield r.db(dbName).table(tableName).info().run(connection);
-        assert(result.primary_key, "foo");
-
-        done();
     }
     catch(e) {
-        if (e.message === 'Unrecognized optional argument `nonValidArg`.') {
+        if (e.message === 'Unrecognized option `nonValidArg` in `tableCreate`. Available options are primaryKey <string>, durability <string>, cacheSize <nunber>, datancenter <string>.') {
             done()
         }
         else {

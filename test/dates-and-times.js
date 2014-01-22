@@ -25,10 +25,26 @@ It("Init for `document-manipulation.js`", function* (done) {
     }
 })
 
+
 It("`r.now` should return a date", function* (done) {
     try {
         var result = yield r.now().run(connection);
         assert(result instanceof Date);
+
+        result = yield r.expr({a: r.now()}).run(connection);
+        assert(result.a instanceof Date);
+
+        result = yield r.expr([r.now()]).run(connection);
+        result = yield result.toArray();
+        assert(result[0] instanceof Date);
+
+        result = yield r.expr([{}, {a: r.now()}]).run(connection);
+        result = yield result.toArray();
+        assert(result[1].a instanceof Date);
+
+        result = yield r.expr({b: [{}, {a: r.now()}]}).run(connection);
+        assert(result.b[1].a instanceof Date);
+
         done();
     }
     catch(e) {

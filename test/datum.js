@@ -48,3 +48,106 @@ It("All raws datum shoul be defined", function* (done) {
         done(e);
     }
 })
+It("`r.exprJSON` should work", function* (done) {
+    try {
+        assert(r.exprJSON([{}, {}])._self.type === "JSON");
+        assert(r.exprJSON([{}, {a: {b: {c: "hello"}}}])._self.type === "JSON");
+        assert(r.exprJSON([{}, {a: new Date()}])._self.type === "MAKE_ARRAY");
+        assert(r.exprJSON([{}, {a: r.expr(1)}])._self.type === "MAKE_ARRAY");
+        assert(r.exprJSON(2)._self.type === "JSON");
+        assert(r.exprJSON("hello")._self.type === "JSON");
+        assert(r.exprJSON(true)._self.type === "JSON");
+        assert(r.exprJSON(null)._self.type === "JSON");
+        assert(r.exprJSON({})._self.type === "JSON");
+        assert(r.exprJSON([])._self.type === "JSON");
+        assert(r.exprJSON({c: 1, a: {b: 1}})._self.type === "JSON");
+
+        
+        var result = yield r.exprJSON([{}, {}]).run(connection);
+        result = yield result.toArray();
+        assert.deepEqual(result, [{}, {}]);
+
+        result = yield r.exprJSON([{}, {a: {b: {c: "hello"}}}]).run(connection);
+        result = yield result.toArray();
+        assert.deepEqual(result, [{}, {a: {b: {c: "hello"}}}]);
+
+        var now = new Date()
+        result = yield r.exprJSON([{}, {a: now}]).run(connection);
+        result = yield result.toArray();
+        assert.deepEqual(result, [{}, {a: now}]);
+
+        result = yield r.exprJSON([{}, {a: r.expr(1)}]).run(connection);
+        result = yield result.toArray();
+        assert.deepEqual(result, [{}, {a: 1}]);
+
+        result = yield r.exprJSON(2).run(connection);
+        assert.deepEqual(result, 2);
+
+        result = yield r.exprJSON("hello").run(connection);
+        assert.deepEqual(result, "hello");
+
+        result = yield r.exprJSON(true).run(connection);
+        assert.deepEqual(result,true );
+
+        result = yield r.exprJSON(null).run(connection);
+        assert.deepEqual(result, null);
+
+        result = yield r.exprJSON({}).run(connection);
+        assert.deepEqual(result, {});
+
+        result = yield r.exprJSON(r.expr({})).run(connection);
+        assert.deepEqual(result,{} );
+
+        result = yield r.exprJSON([]).run(connection);
+        result = yield result.toArray();
+        assert.deepEqual(result, []);
+
+        result = yield r.exprJSON({c: 1, a: {b: 1}}).run(connection);
+        assert.deepEqual(result, {c: 1, a: {b: 1}});
+
+
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
+
+
+
+
+/*
+
+It("Null char in string - 1", function* (done) {
+    try{
+        result = yield r.expr("T\u0000EST").run(connection);
+        assert.equal(result, "T\u0000EST");
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+It("Null char in string - 2", function* (done) {
+    try{
+        result = yield r.json(JSON.stringify("T\u0000EST")).run(connection);
+        assert.equal(result, JSON.stringify("T\u0000EST"));
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+It("Null char in string - 3", function* (done) {
+    try{
+        result = yield r.json("T\u0000EST").run(connection);
+        assert.equal(result, "T\u0000EST");
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+*/

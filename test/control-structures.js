@@ -195,10 +195,9 @@ It("`typeOf` should work", function* (done) {
         done(e);
     }
 })
-
 It("`json` should work", function* (done) {
     try {
-        result = yield r.json('{"a":1}').run(connection);
+        result = yield r.json(JSON.stringify({a:1})).run(connection);
         assert.deepEqual(result, {a:1});
 
         result = yield r.json("{}").run(connection);
@@ -221,19 +220,6 @@ It("`json` should throw if no argument has been given", function* (done) {
         else {
             done(e);
         }
-    }
-})
-
-
-It("`exprJSON` should work", function* (done) {
-    try {
-        result = yield r.exprJSON('{"a":1}').run(connection);
-        assert.deepEqual(result, {a:1});
-
-        done();
-    }
-    catch(e) {
-        done(e);
     }
 })
 It("`exprJSON` should throw if no argument has been given", function* (done) {
@@ -260,5 +246,3 @@ It("End for `document-manipulation.js`", function* (done) {
         done(e);
     }
 })
-
-
