@@ -50,7 +50,7 @@ It("`add` should throw if no argument has been passed", function* (done) {
         result = yield r.expr(1).add().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `add` cannot be undefined after:\nr.expr(1)") {
+        if (e.message === "`add` takes at least 1 argument, 0 provided after:\nr.expr(1)") {
             done();
         }
         else {
@@ -64,7 +64,7 @@ It("`add` should throw if no argument has been passed -- r.add", function* (done
         result = yield r.add().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `r.add` cannot be undefined.") {
+        if (e.message === "`r.add` takes at least 2 arguments, 0 provided.") {
             done();
         }
         else {
@@ -77,7 +77,7 @@ It("`add` should throw if just one argument has been passed -- r.add", function*
         result = yield r.add(1).run(connection);
     }
     catch(e) {
-        if (e.message === "Second argument of `r.add` cannot be undefined.") {
+        if (e.message === "`r.add` takes at least 2 arguments, 1 provided.") {
             done();
         }
         else {
@@ -105,7 +105,7 @@ It("`sub` should throw if no argument has been passed", function* (done) {
         result = yield r.expr(1).sub().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `sub` cannot be undefined after:\nr.expr(1)") {
+        if (e.message === "`sub` takes at least 1 argument, 0 provided after:\nr.expr(1)") {
             done();
         }
         else {
@@ -118,7 +118,7 @@ It("`sub` should throw if no argument has been passed -- r.sub", function* (done
         result = yield r.sub().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `r.sub` cannot be undefined.") {
+        if (e.message === "`r.sub` takes at least 2 arguments, 0 provided.") {
             done();
         }
         else {
@@ -131,7 +131,7 @@ It("`sub` should throw if just one argument has been passed -- r.sub", function*
         result = yield r.sub(1).run(connection);
     }
     catch(e) {
-        if (e.message === "Second argument of `r.sub` cannot be undefined.") {
+        if (e.message === "`r.sub` takes at least 2 arguments, 1 provided.") {
             done();
         }
         else {
@@ -158,7 +158,7 @@ It("`mul` should throw if no argument has been passed", function* (done) {
         result = yield r.expr(1).mul().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `mul` cannot be undefined after:\nr.expr(1)") {
+        if (e.message === "`mul` takes at least 1 argument, 0 provided after:\nr.expr(1)") {
             done();
         }
         else {
@@ -171,7 +171,7 @@ It("`mul` should throw if no argument has been passed -- r.mul", function* (done
         result = yield r.mul().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `r.mul` cannot be undefined.") {
+        if (e.message === "`r.mul` takes at least 2 arguments, 0 provided.") {
             done();
         }
         else {
@@ -184,7 +184,7 @@ It("`mul` should throw if just one argument has been passed -- r.mul", function*
         result = yield r.mul(1).run(connection);
     }
     catch(e) {
-        if (e.message === "Second argument of `r.mul` cannot be undefined.") {
+        if (e.message === "`r.mul` takes at least 2 arguments, 1 provided.") {
             done();
         }
         else {
@@ -211,7 +211,7 @@ It("`div` should throw if no argument has been passed", function* (done) {
         result = yield r.expr(1).div().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `div` cannot be undefined after:\nr.expr(1)") {
+        if (e.message === "`div` takes at least 1 argument, 0 provided after:\nr.expr(1)") {
             done();
         }
         else {
@@ -224,7 +224,7 @@ It("`div` should throw if no argument has been passed -- r.div", function* (done
         result = yield r.div().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `r.div` cannot be undefined.") {
+        if (e.message === "`r.div` takes at least 2 arguments, 0 provided.") {
             done();
         }
         else {
@@ -237,7 +237,7 @@ It("`div` should throw if just one argument has been passed -- r.div", function*
         result = yield r.div(1).run(connection);
     }
     catch(e) {
-        if (e.message === "Second argument of `r.div` cannot be undefined.") {
+        if (e.message === "`r.div` takes at least 2 arguments, 1 provided.") {
             done();
         }
         else {
@@ -256,6 +256,7 @@ It("`mod` should work", function* (done) {
         done();
     }
     catch(e) {
+        console.log(e.message);
         done(e);
     }
 })
@@ -264,7 +265,7 @@ It("`mod` should throw if no argument has been passed", function* (done) {
         result = yield r.expr(1).mod().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `mod` cannot be undefined after:\nr.expr(1)") {
+        if (e.message === "`mod` takes 1 argument, 0 provided after:\nr.expr(1)") {
             done();
         }
         else {
@@ -277,7 +278,7 @@ It("`mod` should throw if more than two arguments -- r.mod", function* (done) {
         result = yield r.mod(24, 7, 2).run(connection);
     }
     catch(e) {
-        if (e.message === "Too many arguments for `r.mod`.") {
+        if (e.message === "`r.mod` takes 2 arguments, 3 provided.") {
             done();
         }
         else {
@@ -310,7 +311,7 @@ It("`and` should throw if no argument has been passed", function* (done) {
         result = yield r.expr(1).and().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `and` cannot be undefined after:\nr.expr(1)") {
+        if (e.message === "`and` takes at least 1 argument, 0 provided after:\nr.expr(1)") {
             done();
         }
         else {
@@ -323,7 +324,7 @@ It("`and` should throw if no argument has been passed -- r.and", function* (done
         result = yield r.and().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `r.and` cannot be undefined.") {
+        if (e.message === "`r.and` takes at least 2 arguments, 0 provided.") {
             done();
         }
         else {
@@ -336,7 +337,7 @@ It("`and` should throw if just one argument has been passed -- r.and", function*
         result = yield r.and(1).run(connection);
     }
     catch(e) {
-        if (e.message === "Second argument of `r.and` cannot be undefined.") {
+        if (e.message === "`r.and` takes at least 2 arguments, 1 provided.") {
             done();
         }
         else {
@@ -368,7 +369,7 @@ It("`or` should throw if no argument has been passed", function* (done) {
         result = yield r.expr(1).or().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `or` cannot be undefined after:\nr.expr(1)") {
+        if (e.message === "`or` takes at least 1 argument, 0 provided after:\nr.expr(1)") {
             done();
         }
         else {
@@ -381,7 +382,7 @@ It("`or` should throw if no argument has been passed -- r.or", function* (done) 
         result = yield r.or().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `r.or` cannot be undefined.") {
+        if (e.message === "`r.or` takes at least 2 arguments, 0 provided.") {
             done();
         }
         else {
@@ -394,7 +395,7 @@ It("`or` should throw if just one argument has been passed -- r.or", function* (
         result = yield r.or(1).run(connection);
     }
     catch(e) {
-        if (e.message === "Second argument of `r.or` cannot be undefined.") {
+        if (e.message === "`r.or` takes at least 2 arguments, 1 provided.") {
             done();
         }
         else {
@@ -427,7 +428,7 @@ It("`eq` should throw if no argument has been passed", function* (done) {
         result = yield r.expr(1).eq().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `eq` cannot be undefined after:\nr.expr(1)") {
+        if (e.message === "`eq` takes at least 1 argument, 0 provided after:\nr.expr(1)") {
             done();
         }
         else {
@@ -440,7 +441,7 @@ It("`eq` should throw if no argument has been passed -- r.eq", function* (done) 
         result = yield r.eq().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `r.eq` cannot be undefined.") {
+        if (e.message === "`r.eq` takes at least 2 arguments, 0 provided.") {
             done();
         }
         else {
@@ -453,7 +454,7 @@ It("`eq` should throw if just one argument has been passed -- r.eq", function* (
         result = yield r.eq(1).run(connection);
     }
     catch(e) {
-        if (e.message === "Second argument of `r.eq` cannot be undefined.") {
+        if (e.message === "`r.eq` takes at least 2 arguments, 1 provided.") {
             done();
         }
         else {
@@ -487,7 +488,7 @@ It("`ne` should throw if no argument has been passed", function* (done) {
         result = yield r.expr(1).ne().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `ne` cannot be undefined after:\nr.expr(1)") {
+        if (e.message === "`ne` takes at least 1 argument, 0 provided after:\nr.expr(1)") {
             done();
         }
         else {
@@ -500,7 +501,7 @@ It("`ne` should throw if no argument has been passed -- r.ne", function* (done) 
         result = yield r.ne().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `r.ne` cannot be undefined.") {
+        if (e.message === "`r.ne` takes at least 2 arguments, 0 provided.") {
             done();
         }
         else {
@@ -513,7 +514,7 @@ It("`ne` should throw if just one argument has been passed -- r.ne", function* (
         result = yield r.ne(1).run(connection);
     }
     catch(e) {
-        if (e.message === "Second argument of `r.ne` cannot be undefined.") {
+        if (e.message === "`r.ne` takes at least 2 arguments, 1 provided.") {
             done();
         }
         else {
@@ -547,7 +548,7 @@ It("`gt` should throw if no argument has been passed", function* (done) {
         result = yield r.expr(1).gt().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `gt` cannot be undefined after:\nr.expr(1)") {
+        if (e.message === "`gt` takes at least 1 argument, 0 provided after:\nr.expr(1)") {
             done();
         }
         else {
@@ -560,7 +561,7 @@ It("`gt` should throw if no argument has been passed -- r.gt", function* (done) 
         result = yield r.gt().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `r.gt` cannot be undefined.") {
+        if (e.message === "`r.gt` takes at least 2 arguments, 0 provided.") {
             done();
         }
         else {
@@ -573,7 +574,7 @@ It("`gt` should throw if just one argument has been passed -- r.gt", function* (
         result = yield r.gt(1).run(connection);
     }
     catch(e) {
-        if (e.message === "Second argument of `r.gt` cannot be undefined.") {
+        if (e.message === "`r.gt` takes at least 2 arguments, 1 provided.") {
             done();
         }
         else {
@@ -610,7 +611,7 @@ It("`ge` should throw if no argument has been passed", function* (done) {
         result = yield r.expr(1).ge().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `ge` cannot be undefined after:\nr.expr(1)") {
+        if (e.message === "`ge` takes at least 1 argument, 0 provided after:\nr.expr(1)") {
             done();
         }
         else {
@@ -623,7 +624,7 @@ It("`ge` should throw if no argument has been passed -- r.ge", function* (done) 
         result = yield r.ge().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `r.ge` cannot be undefined.") {
+        if (e.message === "`r.ge` takes at least 2 arguments, 0 provided.") {
             done();
         }
         else {
@@ -636,7 +637,7 @@ It("`ge` should throw if just one argument has been passed -- r.ge", function* (
         result = yield r.ge(1).run(connection);
     }
     catch(e) {
-        if (e.message === "Second argument of `r.ge` cannot be undefined.") {
+        if (e.message === "`r.ge` takes at least 2 arguments, 1 provided.") {
             done();
         }
         else {
@@ -673,7 +674,7 @@ It("`lt` should throw if no argument has been passed", function* (done) {
         result = yield r.expr(1).lt().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `lt` cannot be undefined after:\nr.expr(1)") {
+        if (e.message === "`lt` takes at least 1 argument, 0 provided after:\nr.expr(1)") {
             done();
         }
         else {
@@ -686,7 +687,7 @@ It("`lt` should throw if no argument has been passed -- r.lt", function* (done) 
         result = yield r.lt().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `r.lt` cannot be undefined.") {
+        if (e.message === "`r.lt` takes at least 2 arguments, 0 provided.") {
             done();
         }
         else {
@@ -699,7 +700,7 @@ It("`lt` should throw if just one argument has been passed -- r.lt", function* (
         result = yield r.lt(1).run(connection);
     }
     catch(e) {
-        if (e.message === "Second argument of `r.lt` cannot be undefined.") {
+        if (e.message === "`r.lt` takes at least 2 arguments, 1 provided.") {
             done();
         }
         else {
@@ -736,7 +737,7 @@ It("`le` should throw if no argument has been passed", function* (done) {
         result = yield r.expr(1).le().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `le` cannot be undefined after:\nr.expr(1)") {
+        if (e.message === "`le` takes at least 1 argument, 0 provided after:\nr.expr(1)") {
             done();
         }
         else {
@@ -749,7 +750,7 @@ It("`le` should throw if no argument has been passed -- r.le", function* (done) 
         result = yield r.le().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `r.le` cannot be undefined.") {
+        if (e.message === "`r.le` takes at least 2 arguments, 0 provided.") {
             done();
         }
         else {
@@ -762,7 +763,7 @@ It("`le` should throw if just one argument has been passed -- r.le", function* (
         result = yield r.le(1).run(connection);
     }
     catch(e) {
-        if (e.message === "Second argument of `r.le` cannot be undefined.") {
+        if (e.message === "`r.le` takes at least 2 arguments, 1 provided.") {
             done();
         }
         else {

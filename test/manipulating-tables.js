@@ -139,7 +139,7 @@ It("`tableCreate` should throw if no argument is given", function* (done) {
         var result = yield r.db(dbName).tableCreate().run(connection);
     }
     catch(e) {
-        if (e.message === 'First argument of `tableCreate` cannot be undefined after:\nr.db("'+dbName+'")') {
+        if (e.message === '`tableCreate` takes at least 1 argument, 0 provided after:\nr.db("'+dbName+'")') {
             done()
         }
         else {
@@ -197,7 +197,7 @@ It("`tableDrop` should throw if no argument is given", function* (done) {
         var result = yield r.db(dbName).tableDrop().run(connection);
     }
     catch(e) {
-        if (e.message === 'First argument of `tableDrop` cannot be undefined after:\nr.db("'+dbName+'")') {
+        if (e.message === '`tableDrop` takes 1 argument, 0 provided after:\nr.db("'+dbName+'")') {
             done()
         }
         else {
@@ -263,7 +263,7 @@ It("`indexCreate` should throw if no argument is passed", function* (done) {
         result = yield r.db(dbName).table(tableName).indexCreate().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `indexCreate` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message === '`indexCreate` takes at least 1 argument, 0 provided after:\nr.db("'+dbName+'").table("'+tableName+'")') {
             done();
         }
         else {
@@ -277,7 +277,7 @@ It("`indexDrop` should throw if no argument is passed", function* (done) {
         result = yield r.db(dbName).table(tableName).indexDrop().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `indexDrop` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message === '`indexDrop` takes 1 argument, 0 provided after:\nr.db("'+dbName+'").table("'+tableName+'")') {
             done();
         }
         else {

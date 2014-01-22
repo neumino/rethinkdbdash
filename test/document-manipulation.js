@@ -82,7 +82,7 @@ It("`pluck` should throw if no argument has been passed", function* (done) {
         result = yield r.db(dbName).table(tableName).pluck().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `pluck` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message === "`pluck` takes at least 1 argument, 0 provided after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
             done();
         }
         else {
@@ -111,7 +111,7 @@ It("`without` should throw if no argument has been passed", function* (done) {
         result = yield r.db(dbName).table(tableName).without().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `without` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message === "`without` takes at least 1 argument, 0 provided after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
             done();
         }
         else {
@@ -155,7 +155,7 @@ It("`merge` should throw if no argument has been passed", function* (done) {
         result = yield r.db(dbName).table(tableName).merge().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `merge` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message === "`merge` takes 1 argument, 0 provided after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
             done();
         }
         else {
@@ -168,7 +168,7 @@ It("`literal` should throw if no argument has been passed", function* (done) {
         result = yield r.db(dbName).table(tableName).literal().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `literal` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message === "`literal` takes 1 argument, 0 provided after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
             done();
         }
         else {
@@ -193,7 +193,7 @@ It("`append` should throw if no argument has been passed", function* (done) {
         result = yield r.db(dbName).table(tableName).append().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `append` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message === "`append` takes 1 argument, 0 provided after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
             done();
         }
         else {
@@ -218,7 +218,7 @@ It("`prepend` should throw if no argument has been passed", function* (done) {
         result = yield r.db(dbName).table(tableName).prepend().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `prepend` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message === "`prepend` takes 1 argument, 0 provided after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
             done();
         }
         else {
@@ -243,7 +243,7 @@ It("`difference` should throw if no argument has been passed", function* (done) 
         result = yield r.db(dbName).table(tableName).difference().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `difference` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message === "`difference` takes 1 argument, 0 provided after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
             done();
         }
         else {
@@ -272,7 +272,7 @@ It("`setInsert` should throw if no argument has been passed", function* (done) {
         result = yield r.db(dbName).table(tableName).setInsert().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `setInsert` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message === "`setInsert` takes 1 argument, 0 provided after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
             done();
         }
         else {
@@ -297,7 +297,7 @@ It("`setUnion` should throw if no argument has been passed", function* (done) {
         result = yield r.db(dbName).table(tableName).setUnion().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `setUnion` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message === "`setUnion` takes 1 argument, 0 provided after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
             done();
         }
         else {
@@ -323,7 +323,7 @@ It("`setIntersection` should throw if no argument has been passed", function* (d
         result = yield r.db(dbName).table(tableName).setIntersection().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `setIntersection` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message === "`setIntersection` takes 1 argument, 0 provided after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
             done();
         }
         else {
@@ -349,7 +349,7 @@ It("`setDifference` should throw if no argument has been passed", function* (don
         result = yield r.db(dbName).table(tableName).setDifference().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `setDifference` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message === "`setDifference` takes 1 argument, 0 provided after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
             done();
         }
         else {
@@ -381,7 +381,7 @@ It("`(...)` should throw if no argument has been passed", function* (done) {
         result = yield r.db(dbName).table(tableName)().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `(...)` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message === "`(...)` takes 1 argument, 0 provided.") {
             done();
         }
         else {
@@ -394,7 +394,7 @@ It("`getField` should throw if no argument has been passed", function* (done) {
         result = yield r.db(dbName).table(tableName).getField().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `(...)` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message === '`(...)` takes 1 argument, 0 provided after:\nr.db("'+dbName+'").table("'+tableName+'")') {
             done();
         }
         else {
@@ -419,7 +419,7 @@ It("`hasFields` should throw if no argument has been passed", function* (done) {
         result = yield r.db(dbName).table(tableName).hasFields().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `hasFields` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message === '`hasFields` takes at least 1 argument, 0 provided after:\nr.db("'+dbName+'").table("'+tableName+'")') {
             done();
         }
         else {
@@ -449,7 +449,7 @@ It("`insertAt` should throw if no argument has been passed", function* (done) {
         result = yield r.db(dbName).table(tableName).insertAt().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `insertAt` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message === '`insertAt` takes 2 arguments, 0 provided after:\nr.db("'+dbName+'").table("'+tableName+'")') {
             done();
         }
         else {
@@ -474,7 +474,7 @@ It("`spliceAt` should throw if no argument has been passed", function* (done) {
         result = yield r.db(dbName).table(tableName).spliceAt().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `spliceAt` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message === '`spliceAt` takes at least 1 argument, 0 provided after:\nr.db("'+dbName+'").table("'+tableName+'")') {
             done();
         }
         else {
@@ -503,7 +503,20 @@ It("`deleteAt` should throw if no argument has been passed", function* (done) {
         result = yield r.db(dbName).table(tableName).deleteAt().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `deleteAt` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message === '`deleteAt` takes at least 1 argument, 0 provided after:\nr.db("'+dbName+'").table("'+tableName+'")') {
+            done();
+        }
+        else {
+            done(e);
+        }
+    }
+})
+It("`deleteAt` should throw if too many arguments", function* (done) {
+    try {
+        result = yield r.db(dbName).table(tableName).deleteAt(1, 1, 1, 1).run(connection);
+    }
+    catch(e) {
+        if (e.message === '`deleteAt` takes at most 2 arguments, 4 provided after:\nr.db("'+dbName+'").table("'+tableName+'")') {
             done();
         }
         else {
@@ -528,7 +541,7 @@ It("`changeAt` should throw if no argument has been passed", function* (done) {
         result = yield r.db(dbName).table(tableName).changeAt().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `changeAt` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message === '`changeAt` takes at least 1 argument, 0 provided after:\nr.db("'+dbName+'").table("'+tableName+'")') {
             done();
         }
         else {

@@ -57,7 +57,7 @@ It("`dbCreate` should throw if no argument is given", function* (done) {
         var result = yield r.dbCreate().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `dbCreate` cannot be undefined.") {
+        if (e.message === "`dbCreate` takes 1 argument, 0 provided.") {
             done()
         }
         else {
@@ -134,10 +134,23 @@ It("`dbDrop` should drop a table", function* (done) {
 })
 It("`dbDrop` should throw if no argument is given", function* (done) {
     try {
+        var result = yield r.dbDrop("foo", "bar", "ette").run(connection);
+    }
+    catch(e) {
+        if (e.message === "`dbDrop` takes 1 argument, 3 provided.") {
+            done()
+        }
+        else {
+            done(e)
+        }
+    }
+})
+It("`dbDrop` should throw if no argument is given", function* (done) {
+    try {
         var result = yield r.dbDrop().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `dbDrop` cannot be undefined.") {
+        if (e.message === "`dbDrop` takes 1 argument, 0 provided.") {
             done()
         }
         else {

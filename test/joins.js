@@ -96,7 +96,7 @@ It("`innerJoin` should throw if no sequence", function* (done) {
         result = yield r.db(dbName).table(tableName).innerJoin().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `innerJoin` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message === "`innerJoin` takes 2 arguments, 0 provided after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
             done();
         }
         else {
@@ -109,7 +109,7 @@ It("`innerJoin` should throw if no predicate", function* (done) {
         result = yield r.db(dbName).table(tableName).innerJoin(r.expr([1,2,3])).run(connection);
     }
     catch(e) {
-        if (e.message === "Second argument of `innerJoin` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message === "`innerJoin` takes 2 arguments, 1 provided after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
             done();
         }
         else {
@@ -192,7 +192,7 @@ It("`outerJoin` should throw if no sequence", function* (done) {
         result = yield r.db(dbName).table(tableName).outerJoin().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `outerJoin` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message === "`outerJoin` takes 2 arguments, 0 provided after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
             done();
         }
         else {
@@ -205,7 +205,7 @@ It("`outerJoin` should throw if no predicate", function* (done) {
         result = yield r.db(dbName).table(tableName).outerJoin(r.expr([1,2,3])).run(connection);
     }
     catch(e) {
-        if (e.message === "Second argument of `outerJoin` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message === "`outerJoin` takes 2 arguments, 1 provided after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
             done();
         }
         else {
@@ -275,7 +275,7 @@ It("`eqJoin` should throw if no argument", function* (done) {
         result = yield r.db(dbName).table(tableName).eqJoin().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `eqJoin` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message === "`eqJoin` takes at least 2 arguments, 0 provided after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
             done();
         }
         else {
@@ -302,7 +302,20 @@ It("`eqJoin` should throw if no sequence", function* (done) {
         result = yield r.db(dbName).table(tableName).eqJoin("id").run(connection);
     }
     catch(e) {
-        if (e.message === "Second argument of `eqJoin` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message === "`eqJoin` takes at least 2 arguments, 1 provided after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+            done();
+        }
+        else {
+            done(e);
+        }
+    }
+})
+It("`eqJoin` should throw if too many arguments", function* (done) {
+    try {
+        result = yield r.db(dbName).table(tableName).eqJoin(1, 1, 1, 1, 1).run(connection);
+    }
+    catch(e) {
+        if (e.message === "`eqJoin` takes at most 3 arguments, 5 provided after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
             done();
         }
         else {

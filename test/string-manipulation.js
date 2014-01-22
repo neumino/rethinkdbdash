@@ -40,7 +40,7 @@ It("`match` should throw if no arguement has been passed", function* (done) {
         result = yield r.expr("foo").match().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `match` cannot be undefined after:\nr.expr(\"foo\")") {
+        if (e.message === "`match` takes 1 argument, 0 provided after:\nr.expr(\"foo\")") {
             done();
         }
         else {

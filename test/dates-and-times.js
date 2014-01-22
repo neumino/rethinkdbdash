@@ -77,7 +77,6 @@ It("`r.time` should return a date -- with date and time", function* (done) {
         done();
     }
     catch(e) {
-        console.log(e.message);
         done(e);
     }
 })
@@ -99,7 +98,7 @@ It("`r.time` should throw if no argument has been given", function* (done) {
         result = yield r.time().run(connection);
     }
     catch(e) {
-        if (e.message, "First argument of `time` cannot be undefined.") {
+        if (e.message === "`r.time` called with 0 argument.\n`r.time` takes 4 or 7 arguments") {
             done()
         }
         else{
@@ -107,6 +106,20 @@ It("`r.time` should throw if no argument has been given", function* (done) {
         }
     }
 })
+It("`r.time` should throw if no 5 arguments", function* (done) {
+    try{
+        result = yield r.time(1, 1, 1, 1, 1).run(connection);
+    }
+    catch(e) {
+        if (e.message === "`r.time` called with 5 arguments.\n`r.time` takes 4 or 7 arguments") {
+            done()
+        }
+        else{
+            done(e);
+        }
+    }
+})
+
 It("`time` is not defined after a term", function* (done) {
     try {
         var result = yield r.expr(1).time(1, 2, 3, 'Z').run(connection);
@@ -138,7 +151,7 @@ It("`r.epochTime` should throw if no argument has been given", function* (done) 
         result = yield r.epochTime().run(connection);
     }
     catch(e) {
-        if (e.message, "First argument of `epochTime` cannot be undefined.") {
+        if (e.message === "`r.epochTime` takes 1 argument, 0 provided.") {
             done()
         }
         else{
@@ -187,7 +200,7 @@ It("`r.ISO8601` should throw if no argument has been given", function* (done) {
         result = yield r.ISO8601().run(connection);
     }
     catch(e) {
-        if (e.message, "First argument of `ISO8601` cannot be undefined.") {
+        if (e.message === "`r.ISO8601` takes at least 1 argument, 0 provided.") {
             done()
         }
         else{
@@ -195,6 +208,20 @@ It("`r.ISO8601` should throw if no argument has been given", function* (done) {
         }
     }
 })
+It("`r.ISO8601` should throw if too many arguments", function* (done) {
+    try{
+        result = yield r.ISO8601(1, 1, 1).run(connection);
+    }
+    catch(e) {
+        if (e.message === "`r.ISO8601` takes at most 2 arguments, 3 provided.") {
+            done()
+        }
+        else{
+            done(e);
+        }
+    }
+})
+
 It("`ISO8601` is not defined after a term", function* (done) {
     try {
         var result = yield r.expr(1).ISO8601('validISOstring').run(connection);
@@ -226,7 +253,7 @@ It("`inTimezone` should throw if no argument has been given", function* (done) {
         result = yield r.now().inTimezone().run(connection);
     }
     catch(e) {
-        if (e.message, "First argument of `inTimezone` cannot be undefined after:\nr.now()") {
+        if (e.message === "`inTimezone` takes 1 argument, 0 provided after:\nr.now()") {
             done()
         }
         else{
@@ -269,7 +296,7 @@ It("`during` should throw if no argument has been given", function* (done) {
         result = yield r.now().during().run(connection);
     }
     catch(e) {
-        if (e.message, "First argument of `during` cannot be undefined after:\nr.now()") {
+        if (e.message === "`during` takes at least 2 arguments, 0 provided after:\nr.now()") {
             done()
         }
         else{
@@ -277,12 +304,12 @@ It("`during` should throw if no argument has been given", function* (done) {
         }
     }
 })
-It("`during` should throw if no argument has been given", function* (done) {
+It("`during` should throw if just one argument has been given", function* (done) {
     try{
         result = yield r.now().during(1).run(connection);
     }
     catch(e) {
-        if (e.message, "Second argument of `during` cannot be undefined after:\nr.now()") {
+        if (e.message === "`during` takes at least 2 arguments, 1 provided after:\nr.now()") {
             done()
         }
         else{
@@ -290,6 +317,20 @@ It("`during` should throw if no argument has been given", function* (done) {
         }
     }
 })
+It("`during` should throw if too many arguments", function* (done) {
+    try{
+        result = yield r.now().during(1, 1, 1, 1, 1).run(connection);
+    }
+    catch(e) {
+        if (e.message === "`during` takes at most 3 arguments, 5 provided after:\nr.now()") {
+            done()
+        }
+        else{
+            done(e);
+        }
+    }
+})
+
 It("`date` should work", function* (done) {
     try {
         result = yield r.now().date().hours().run(connection);

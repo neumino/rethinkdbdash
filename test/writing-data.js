@@ -158,7 +158,7 @@ It("`insert` should throw if no argument is given", function* (done) {
         result = yield r.db(dbName).table(tableName).insert().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `insert` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message === "`insert` takes at least 1 argument, 0 provided after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
             done()
         }
         else {
@@ -184,7 +184,7 @@ It("`replace` should throw if no argument is given", function* (done) {
         result = yield r.db(dbName).table(tableName).replace().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `replace` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message === "`replace` takes at least 1 argument, 0 provided after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
             done()
         }
         else {
@@ -410,7 +410,7 @@ It("`update` should throw if no argument is given", function* (done) {
         result = yield r.db(dbName).table(tableName).update().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `update` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message === "`update` takes at least 1 argument, 0 provided after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
             done()
         }
         else {

@@ -67,7 +67,7 @@ It("`reduce` should throw if no argument has been passed", function* (done) {
         result = yield r.db(dbName).table(tableName).reduce().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `reduce` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message === "`reduce` takes at least 1 argument, 0 provided after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
             done()
         }
         else {
@@ -140,7 +140,7 @@ It("`groupedMapReduce` should throw if no argument has been passed", function* (
         result = yield r.db(dbName).table(tableName).groupedMapReduce().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `groupedMapReduce` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message === "`groupedMapReduce` takes at least 3 arguments, 0 provided after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
             done()
         }
         else {
@@ -153,7 +153,7 @@ It("`groupedMapReduce` should throw if just one argument has been passed", funct
         result = yield r.db(dbName).table(tableName).groupedMapReduce(r.row).run(connection);
     }
     catch(e) {
-        if (e.message === "Second argument of `groupedMapReduce` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message === "`groupedMapReduce` takes at least 3 arguments, 1 provided after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
             done()
         }
         else {
@@ -166,7 +166,7 @@ It("`groupedMapReduce` should throw if just two argument has been passed", funct
         result = yield r.db(dbName).table(tableName).groupedMapReduce(r.row, r.row).run(connection);
     }
     catch(e) {
-        if (e.message === "Third argument of `groupedMapReduce` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message === "`groupedMapReduce` takes at least 3 arguments, 2 provided after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
             done()
         }
         else {
@@ -243,7 +243,7 @@ It("`groupBy` should throw if no argument has been passed", function* (done) {
         result = yield r.db(dbName).table(tableName).groupBy().run(connection);
     }
     catch(e) {
-        if (e.message === "First argument of `groupBy` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message === "`groupBy` takes at least 2 arguments, 0 provided after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
             done()
         }
         else {
@@ -256,7 +256,7 @@ It("`groupBy` should throw if no aggregator has been passed", function* (done) {
         result = yield r.db(dbName).table(tableName).groupBy("foo").run(connection);
     }
     catch(e) {
-        if (e.message === "Second argument of `groupBy` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message === "`groupBy` takes at least 2 arguments, 1 provided after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
             done()
         }
         else {
@@ -292,6 +292,19 @@ It("`contains` should work ", function* (done) {
     }
     catch(e) {
         done(e);
+    }
+})
+It("`contains` should throw if called without arguments", function* (done) {
+    try {
+        result = yield r.db(dbName).table(tableName).contains().run(connection);
+    }
+    catch(e) {
+        if (e.message === "`contains` takes at least 1 argument, 0 provided after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+            done()
+        }
+        else {
+            done(e);
+        }
     }
 })
 

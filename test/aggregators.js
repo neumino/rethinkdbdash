@@ -70,6 +70,62 @@ It("`r.avg` should count", function* (done) {
         done(e);
     }
 })
+It("`r.sum` should throw if too many arguments", function* (done) {
+    try {
+        var result = yield r.db(dbName).table(tableName).groupBy("g", r.sum("val", "foo")).run(connection);
+    }
+    catch(e) {
+        if (e.message === "`r.sum` takes 1 argument, 2 provided.") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+It("`r.avg` should throw if too many arguments", function* (done) {
+    try {
+        var result = yield r.db(dbName).table(tableName).groupBy("g", r.avg("val", "foo")).run(connection);
+    }
+    catch(e) {
+        if (e.message === "`r.avg` takes 1 argument, 2 provided.") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+It("`r.sum` should throw if no arg", function* (done) {
+    try {
+        var result = yield r.db(dbName).table(tableName).groupBy("g", r.sum()).run(connection);
+    }
+    catch(e) {
+        if (e.message === "`r.sum` takes 1 argument, 0 provided.") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+It("`r.avg` should throw if no arg", function* (done) {
+    try {
+        var result = yield r.db(dbName).table(tableName).groupBy("g", r.avg()).run(connection);
+    }
+    catch(e) {
+        if (e.message === "`r.avg` takes 1 argument, 0 provided.") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+
+
 
 
 

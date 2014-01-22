@@ -114,7 +114,7 @@ It("`get` should throw if no argument is passed", function* (done) {
     catch(e) {
         assert(e instanceof r.Error.ReqlDriverError);
         assert(e instanceof Error);
-        if (e.message === "First argument of `get` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message === '`get` takes 1 argument, 0 provided after:\nr.db("'+dbName+'").table("'+tableName+'")') {
             done();
         }
         else{
@@ -195,7 +195,7 @@ It("`getAll` should throw if no argument is passed", function* (done) {
     catch(e) {
         assert(e instanceof r.Error.ReqlDriverError);
         assert(e instanceof Error);
-        if (e.message === "First argument of `getAll` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message === "`getAll` takes at least 1 argument, 0 provided after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
             done();
         }
         else{
@@ -237,7 +237,7 @@ It("`between` should throw if no argument is passed", function* (done) {
     catch(e) {
         assert(e instanceof r.Error.ReqlDriverError);
         assert(e instanceof Error);
-        if (e.message === "First argument of `between` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message === "`between` takes at least 2 arguments, 0 provided after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
             done();
         }
         else{
@@ -351,7 +351,7 @@ It("`filter` should throw if no argument is passed", function* (done) {
     catch(e) {
         assert(e instanceof r.Error.ReqlDriverError);
         assert(e instanceof Error);
-        if (e.message === "First argument of `filter` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message === "`filter` takes at least 1 argument, 0 provided after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
             done();
         }
         else{
