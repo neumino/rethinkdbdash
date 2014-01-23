@@ -53,6 +53,16 @@ var run = Promise.coroutine(function* () {
 })
 ```
 
+Note: You have to start node with the `--harmony` flag.
+
+
+Install
+============
+- Build node 0.11.10 from source (binary won't work with node-protobuf (some libraries are not properly linked)
+- Install https://github.com/atnnn/node-protobuf
+- Install rethinkdbdash
+
+
 Run tests
 ============
 
@@ -76,5 +86,4 @@ What's different?
 
 
 Roadmap
-- Port node-protobuf to node 11.10 and switch the protobuf backend
-- Automatic tests or port RethinkDB's polyglot tests
+- Pool
