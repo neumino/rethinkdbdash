@@ -158,12 +158,26 @@ It("`merge` should work", function* (done) {
         result = yield r.expr({a: 0}).merge({b: 1}).run(connection);
         assert.deepEqual(result, {a: 0, b: 1});
 
-        result = yield r.expr({a: {b: 1}}).merge({a: r.literal({c: 2})}).run(connection);
-        assert.deepEqual(result, {a: {c: 2}});
-
         result = yield r.expr([{a: 0}, {a: 1}, {a: 2}]).merge({b: 1}).run(connection);
         result = yield result.toArray();
         assert.deepEqual(result, [{a: 0, b: 1}, {a: 1, b: 1}, {a: 2, b: 1}]);
+
+        result = yield r.expr({a: 0, c: {l: "tt"}}).merge({b: {c: {d: {e: "fff"}}, k: "pp"}}).run(connection);
+        assert.deepEqual(result, {a: 0, b: {c: {d: {e: "fff"}}, k: "pp"}, c: {l:"tt"}});
+
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
+It("`literal` should work", function* (done) {
+    try {
+        var data = r.expr({a: {b: 1}}).merge({a: r.literal({c: 2})})._self
+        result = yield r.expr({a: {b: 1}}).merge({a: r.literal({c: 2})}).run(connection);
+        assert.deepEqual(result, {a: {c: 2}});
 
         done();
     }

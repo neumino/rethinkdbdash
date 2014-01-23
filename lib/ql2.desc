@@ -1,5 +1,5 @@
 
-¿
+“
 	ql2.proto"5
 VersionDummy"%
 Version
@@ -64,7 +64,7 @@
 R_ARRAY
 R_OBJECT
 
-R_JSON*êN°ú"Ô
+R_JSON*êN°ú"Å
 Term
 type (2.Term.TermType
 datum (2.Datum
@@ -72,7 +72,7 @@
 optargs (2.Term.AssocPair,
 	AssocPair
 key (	
-val (2.Term"√
+val (2.Term"’
 TermType	
 DATUM
 
@@ -186,7 +186,9 @@ INDEX_WAITå
 ASCI
 DESCJ
 INFOO	
-MATCHa
+MATCHa
+UPCASEç
+DOWNCASEé
 
 SAMPLEQ
 DEFAULT\
@@ -238,5 +240,4 @@ EPOCH_TIMEe
 OCTOBER{
 NOVEMBER|
 DECEMBER}
-LITERALâ
-FOO≤*êN°ú
+LITERALâ*êN°ú
