@@ -8,6 +8,7 @@ var uuid = util.uuid;
 var connection; // global connection
 var dbName;
 var cursor;
+var numDocs = 3100;
 
 function It(testName, generatorFn) {
     it(testName, function(done) {
@@ -29,10 +30,18 @@ It("Init for `cursor.js`", function* (done) {
         var result = yield r.db(dbName).tableCreate(tableName).run(connection);
         assert.deepEqual(result, {created:1});
 
-        result = yield r.db(dbName).table(tableName).insert(eval('['+new Array(100).join('{}, ')+'{}]')).run(connection);
-        assert.equal(result.inserted, 100);
-        pks = result.generated_keys;
 
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+It("Inserting batch", function* (done) {
+    try {
+        result = yield r.db(dbName).table(tableName).insert(eval('['+new Array(numDocs).join('{}, ')+'{}]')).run(connection);
+        assert.equal(result.inserted, numDocs);
+        pks = result.generated_keys;
         done();
     }
     catch(e) {
@@ -75,7 +84,7 @@ It("`next` should work -- testing common pattern", function* (done) {
             assert(result);
             i++;
         }
-        assert.equal(100, i);
+        assert.equal(numDocs, i);
         done();
     }
     catch(e) {
@@ -86,7 +95,7 @@ It("`toArray` should work", function* (done) {
     try {
         cursor = yield r.db(dbName).table(tableName).run(connection);
         result = yield cursor.toArray();
-        assert.equal(result.length, 100);
+        assert.equal(result.length, numDocs);
 
         done();
     }
