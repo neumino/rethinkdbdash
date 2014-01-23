@@ -239,7 +239,13 @@ It("`ISO8601` is not defined after a term", function* (done) {
 
 It("`inTimezone` should work", function* (done) {
     try {
-        result = yield r.now().inTimezone('-08:00').hours().eq(r.now().inTimezone('-09:00').hours().add(1)).run(connection);
+        result = yield r.now().inTimezone('-08:00').hours().do(function(h) {
+            return r.branch(
+                h.eq(0),
+                r.expr(23).eq(r.now().inTimezone('-09:00').hours()),
+                h.eq(r.now().inTimezone('-09:00').hours().add(1))
+            )
+        }).run(connection)
         assert.equal(result, true);
 
         done();
