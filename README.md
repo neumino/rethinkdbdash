@@ -58,9 +58,12 @@ Note: You have to start node with the `--harmony` flag.
 
 Install
 ============
-- Build node 0.11.10 from source (binary won't work with node-protobuf (some libraries are not properly linked)
-- Install https://github.com/atnnn/node-protobuf
-- Install rethinkdbdash
+- Build node 0.11.10 (checkout `v0.11.10-release`) from source (binary won't work with node-protobuf (some libraries are not properly linked).
+- Install rethinkdbdash with `npm`.
+
+```
+npm install rethinkdbdash
+```
 
 
 Run tests

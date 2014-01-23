@@ -1,6 +1,6 @@
 {
   "name": "rethinkdbdash",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Node driver for RethinkDB",
   "main": "lib/index.js",
   "directories": {
