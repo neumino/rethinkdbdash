@@ -218,7 +218,8 @@ It("`run` should take an argument", function* (done) {
         assert.equal(result, 1);
 
         result = yield r.expr(1).run(connection, {profile: true});
-        assert.equal(result.value, 1);
+        assert(result.profile);
+        assert.equal(result.result, 1);
 
         result = yield r.expr(1).run(connection, {durability: "soft"});
         assert.equal(result, 1);
@@ -285,7 +286,7 @@ It("`profile` should work", function* (done) {
 
         result = yield r.expr(true).run(connection, {profile: true});
         assert(result.profile)
-        assert.equal(result.value, true)
+        assert.equal(result.result, true)
 
         result = yield r.expr(true).run(connection, {profile: false});
         assert.equal(result, true)
