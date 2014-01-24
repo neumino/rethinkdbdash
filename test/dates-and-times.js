@@ -356,7 +356,7 @@ It("`date` should work", function* (done) {
 It("`timeOfDay` should work", function* (done) {
     try {
         result = yield r.now().timeOfDay().run(connection);
-        assert(result>0);
+        assert(result>=0);
 
         done();
     }
@@ -367,7 +367,7 @@ It("`timeOfDay` should work", function* (done) {
 
 It("`year` should work", function* (done) {
     try {
-        result = yield r.now().year().run(connection);
+        result = yield r.now().inTimezone(new Date().toString().match(' GMT([^ ]*)')[1]).year().run(connection);
         assert.equal(result, new Date().getFullYear());
 
         done();
@@ -379,7 +379,7 @@ It("`year` should work", function* (done) {
 
 It("`month` should work", function* (done) {
     try {
-        result = yield r.now().month().run(connection);
+        result = yield r.now().inTimezone(new Date().toString().match(' GMT([^ ]*)')[1]).month().run(connection);
         assert.equal(result, new Date().getMonth()+1);
 
         done();
@@ -391,8 +391,8 @@ It("`month` should work", function* (done) {
 
 It("`day` should work", function* (done) {
     try {
-        result = yield r.now().day().run(connection);
-        assert.equal(result, new Date().getUTCDate());
+        result = yield r.now().inTimezone(new Date().toString().match(' GMT([^ ]*)')[1]).day().run(connection);
+        assert.equal(result, new Date().getDate());
 
         done();
     }
@@ -403,8 +403,8 @@ It("`day` should work", function* (done) {
 
 It("`dayOfYear` should work", function* (done) {
     try {
-        result = yield r.now().dayOfYear().run(connection);
-        assert(result > (new Date()).getMonth()*28+(new Date()).getUTCDate()-1);
+        result = yield r.now().inTimezone(new Date().toString().match(' GMT([^ ]*)')[1]).dayOfYear().run(connection);
+        assert(result > (new Date()).getMonth()*28+(new Date()).getDate()-1);
 
         done();
     }
@@ -415,7 +415,7 @@ It("`dayOfYear` should work", function* (done) {
 
 It("`dayOfWeek` should work", function* (done) {
     try {
-        result = yield r.now().inTimezone('-08:00').dayOfWeek().run(connection);
+        result = yield r.now().inTimezone(new Date().toString().match(' GMT([^ ]*)')[1]).dayOfWeek().run(connection);
         assert.equal(result, new Date().getDay());
 
         done();
