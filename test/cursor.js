@@ -9,8 +9,8 @@ var connection; // global connection
 var dbName;
 var tableName, tableName2
 var cursor;
-var numDocs = 10000;
-var smallNumDocs = 100;
+var numDocs = 100;
+var smallNumDocs = 5;
 
 function It(testName, generatorFn) {
     it(testName, function(done) {
@@ -20,21 +20,15 @@ function It(testName, generatorFn) {
 
 It("Init for `cursor.js`", function* (done) {
     try {
-        connection = yield r.connect();
+        connection = yield r.connect({batch_conf: 10});
         assert(connection);
 
         dbName = uuid();
         tableName = uuid(); // Big table to test partial sequence
         tableName2 = uuid(); // small table to test success sequence
 
-        var result = yield r.dbCreate(dbName).run(connection);
-        assert.deepEqual(result, {created:1});
-
-        result = yield r.db(dbName).tableCreate(tableName).run(connection);
-        assert.deepEqual(result, {created:1});
-
-        result = yield r.db(dbName).tableCreate(tableName2).run(connection);
-        assert.deepEqual(result, {created:1});
+        var result = yield [r.dbCreate(dbName).run(connection), r.db(dbName).tableCreate(tableName).run(connection), r.db(dbName).tableCreate(tableName2).run(connection)]
+        assert.deepEqual(result, [{created:1}, {created:1}, {created:1}]);
 
         done();
     }
@@ -51,7 +45,6 @@ It("Inserting batch - table 1", function* (done) {
         done();
     }
     catch(e) {
-        console.log(e);
         done(e);
     }
 })
@@ -68,22 +61,14 @@ It("Inserting batch - table 2", function* (done) {
 })
 It("Inserting batch", function* (done) {
     try {
-        //Making bigger documents to retrieve multiple batches
+        // Add a date
         result = yield r.db(dbName).table(tableName).update({
-            "foo": uuid(),
-            "fooo": uuid(),
-            "foooo": uuid(),
-            "fooooo": uuid(),
-            "foooooo": uuid(),
-            "fooooooo": uuid(),
-            "foooooooo": uuid(),
-            "fooooooooo": uuid(),
-            "foooooooooo": uuid(),
             date: r.now()
         }).run(connection);
         done();
     }
     catch(e) {
+        console.log(e.message);
         done(e);
     }
 })
@@ -232,13 +217,24 @@ It("`toArray` should work - 2", function* (done) {
     }
 })
 
+It("`cursor.close` should return a promise", function* (done) {
+    try {
+        cursor = yield r.db(dbName).table(tableName2).run(connection);
+        yield cursor.close();
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
 It("cursor shouldn't have circular reference", function* (done) {
     try {
+        cursor = yield r.db(dbName).table(tableName).run(connection);
         cursor2 = yield r.db(dbName).table(tableName2).run(connection);
-        cursor = yield r.db(dbName).table(tableName2).run(connection);
         JSON.stringify(cursor);
-        cursor.close();
-        cursor2.close();
+        JSON.stringify(cursor2);
+        yield cursor.close();
+        yield cursor2.close();
         done();
     }
     catch(e) {
@@ -247,7 +243,6 @@ It("cursor shouldn't have circular reference", function* (done) {
 })
 
 
-/*
 // This test is not working for now -- need more data? Server bug?
 It("Remove the field `val` in some docs", function* (done) {
     var i=0;
@@ -256,10 +251,10 @@ It("Remove the field `val` in some docs", function* (done) {
         //assert.equal(result.replaced, numDocs);
 
         result = yield r.db(dbName).table(tableName)
-            //.orderBy({index: r.desc("id")}).limit(10).replace(r.row.without("val"))
-            .sample(1).replace(r.row.without("val"))
+            .orderBy({index: r.desc("id")}).limit(5).replace(r.row.without("val"))
+            //.sample(1).replace(r.row.without("val"))
             .run(connection);
-        assert.equal(result.replaced, 1);
+        assert.equal(result.replaced, 5);
         done();
     }
     catch(e) {
@@ -270,11 +265,11 @@ It("Remove the field `val` in some docs", function* (done) {
 It("`next` should error when hitting an error -- not on the first batch", function* (done) {
     var i=0;
     try {
-
         cursor = yield r.db(dbName).table(tableName)
-            //.orderBy({index: "id"})
+            .orderBy({index: "id"})
             .map(r.row("val").add(1))
             .run(connection);
+
         assert(cursor);
         while(cursor.hasNext()) {
             result = yield cursor.next();
@@ -282,15 +277,14 @@ It("`next` should error when hitting an error -- not on the first batch", functi
         }
     }
     catch(e) {
-        assert(i>0);
-        if ((i === numDocs-10) && (e.message.match(/^No attribute `val` in object/))) {
+        if ((i > 0) && (e.message.match(/^No attribute `val` in object/))) {
+            done()
         }
         else {
             done(e);
         }
     }
 })
-*/
 
 It("End for `cursor.js`", function* (done) {
     try {

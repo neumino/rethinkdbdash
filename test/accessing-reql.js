@@ -19,7 +19,7 @@ It("Testing `run` without connection", function* (done) {
         r.expr(1).run()
     }
     catch(e) {
-        if (e.message === '`run` was called without a connection after:\nr.expr(1)') {
+        if (e.message === '`run` was called without a connection and no pool has been created after:\nr.expr(1)') {
             done()
         }
         else {
