@@ -21,7 +21,7 @@ var options = {
 
 It("`createPool` should create a pool and `getPool` should return it", function* (done) {
     try {
-        r.createPool(options);
+        r = r.createPool(options);
         assert(r.getPool())
         assert.equal(r.getPool().getLength(), 2)
         done();
