@@ -14,10 +14,10 @@ Example wih koa:
 ```js
 var app = require('koa')();
 var r = require('rethinkdbdash');
+r.createPool();
 
 app.use(function *(){
-    var connection = yield r.connect();
-    var result = yield r.table("foo").get("bar").run(connection);
+    var result = yield r.table("foo").get("bar").run();
 
     this.body = JSON.stringify(result);
 });
@@ -30,26 +30,18 @@ Example with bluebird:
 ```js
 var Promise = require('blubird');
 var r = require('rethinkdbdash');
+r.createPool();
 
 var run = Promise.coroutine(function* () {
-    var connection, result
+    var result
 
     try{
-        connection = yield r.connect();
-    }
-    catch(e) {
-        console.log(e);
-    }
-
-    try{
-        result = yield r.table("foo").get("bar").run(connection);
+        result = yield r.table("foo").get("bar").run();
         console.log(JSON.stringify(result, null, 2));
     }
     catch(e) {
         console.log(e);
     }
-
-    connection.close();
 })
 ```
 
