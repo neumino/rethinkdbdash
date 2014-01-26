@@ -382,13 +382,17 @@ It("`connection` should extend events.Emitter and emit an error if the server fa
 })
 
 
-It("End for `cursor.js`", function* (done) {
+It("Test error message when running a query on a closed connection", function* (done) {
     try {
-        connection.close();
-
-        done();
+        yield connection.close();
+        yield r.expr(1).run(connection)
     }
     catch(e) {
-        done(e);
+        if (e.message.match('`run` was called with a closed connection after:')) {
+            done();
+        }
+        else {
+            done(e);
+        }
     }
 })
