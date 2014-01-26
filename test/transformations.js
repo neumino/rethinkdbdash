@@ -74,7 +74,7 @@ It("`map` should throw if no argument has been passed", function* (done) {
         result = yield r.db(dbName).table(tableName).map().run();
     }
     catch(e) {
-        if (e.message, "First argument of `map` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message.match(/^`map` takes 1 argument, 0 provided after/) ){
             done()
         }
         else {
@@ -112,7 +112,7 @@ It("`withFields` should throw if no argument has been passed", function* (done) 
         result = yield r.db(dbName).table(tableName).withFields().run();
     }
     catch(e) {
-        if (e.message, "First argument of `withFields` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message.match(/^`withFields` takes at least 1 argument, 0 provided after/) ){
             done()
         }
         else {
@@ -149,7 +149,7 @@ It("`concatMap` should throw if no argument has been passed", function* (done) {
         result = yield r.db(dbName).table(tableName).concatMap().run();
     }
     catch(e) {
-        if (e.message, "First argument of `concatMap` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message.match(/^`concatMap` takes 1 argument, 0 provided after/) ){
             done()
         }
         else {
@@ -243,7 +243,7 @@ It("`orderBy` should throw if no argument has been passed", function* (done) {
         result = yield r.db(dbName).table(tableName).orderBy().run();
     }
     catch(e) {
-        if (e.message, "First argument of `orderBy` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message.match(/^`orderBy` takes at least 1 argument, 0 provided after/) ){
             done()
         }
         else {
@@ -295,7 +295,7 @@ It("`skip` should throw if no argument has been passed", function* (done) {
         result = yield r.db(dbName).table(tableName).skip().run();
     }
     catch(e) {
-        if (e.message, "First argument of `skip` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message.match(/^`skip` takes 1 argument, 0 provided after/) ){
             done()
         }
         else {
@@ -321,7 +321,7 @@ It("`limit` should throw if no argument has been passed", function* (done) {
         result = yield r.db(dbName).table(tableName).limit().run();
     }
     catch(e) {
-        if (e.message, "First argument of `limit` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message.match(/^`limit` takes 1 argument, 0 provided after/) ){
             done()
         }
         else {
@@ -374,7 +374,7 @@ It("`slice` should throw if no argument has been passed", function* (done) {
         result = yield r.db(dbName).table(tableName).slice().run();
     }
     catch(e) {
-        if (e.message, "First argument of `slice` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message.match(/^`slice` takes at least 1 argument, 0 provided after/) ){
             done()
         }
         else {
@@ -398,7 +398,7 @@ It("`nth` should throw if no argument has been passed", function* (done) {
         result = yield r.db(dbName).table(tableName).nth().run();
     }
     catch(e) {
-        if (e.message, "First argument of `nth` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message.match(/^`nth` takes 1 argument, 0 provided after/) ){
             done()
         }
         else {
@@ -447,7 +447,7 @@ It("`indexesOf` should throw if no argument has been passed", function* (done) {
         result = yield r.db(dbName).table(tableName).indexesOf().run();
     }
     catch(e) {
-        if (e.message, "First argument of `indexesOf` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message.match(/^`indexesOf` takes 1 argument, 0 provided after/) ){
             done()
         }
         else {
@@ -487,7 +487,7 @@ It("`union` should throw if no argument has been passed", function* (done) {
         result = yield r.db(dbName).table(tableName).union().run();
     }
     catch(e) {
-        if (e.message, "First argument of `union` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message.match(/^`union` takes 1 argument, 0 provided after/) ){
             done()
         }
         else {
@@ -525,7 +525,7 @@ It("`sample` should throw if no argument has been passed", function* (done) {
         result = yield r.db(dbName).table(tableName).sample().run();
     }
     catch(e) {
-        if (e.message, "First argument of `sample` cannot be undefined after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message.match(/^`sample` takes 1 argument, 0 provided after/) ){
             done()
         }
         else {

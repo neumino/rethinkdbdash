@@ -25,7 +25,7 @@ It("`do` should throw if no argument has been given", function* (done) {
         result = yield r.expr(1).do().run();
     }
     catch(e) {
-        if (e.message, "First argument of `do` cannot be undefined after:\nr.expr(1)") {
+        if (e.message.match(/^`do` takes 1 argument, 0 provided after:/)) {
             done()
         }
         else {
@@ -54,7 +54,7 @@ It("`branch` should throw if no argument has been given", function* (done) {
         result = yield r.branch().run();
     }
     catch(e) {
-        if (e.message, "First argument of `branch` cannot be undefined.") {
+        if (e.message.match(/^`r.branch` takes 3 arguments, 0 provided/)) {
             done()
         }
         else {
@@ -67,7 +67,7 @@ It("`branch` should throw if just one argument has been given", function* (done)
         result = yield r.branch(true).run();
     }
     catch(e) {
-        if (e.message, "Second argument of `branch` cannot be undefined.") {
+        if (e.message.match(/^`r.branch` takes 3 arguments, 1 provided/)) {
             done()
         }
         else {
@@ -80,7 +80,7 @@ It("`branch` should throw if just two arguments have been given", function* (don
         result = yield r.branch(true, true).run();
     }
     catch(e) {
-        if (e.message, "Third argument of `branch` cannot be undefined.") {
+        if (e.message.match(/^`r.branch` takes 3 arguments, 2 provided/)) {
             done()
         }
         else {
@@ -98,6 +98,41 @@ It("`branch` is not defined after a term", function* (done) {
         }
         else {
             done(e)
+        }
+    }
+})
+It("`forEach` should work", function* (done) {
+    try{
+        var dbName = uuid();
+        var tableName = uuid();
+
+        var result = yield r.dbCreate(dbName).run();
+        assert.deepEqual(result, {created:1}) 
+
+        var result = yield r.db(dbName).tableCreate(tableName).run();
+        assert.deepEqual(result, {created:1}) 
+
+        var result = yield r.expr([{foo: "bar"}, {foo: "foo"}]).forEach(function(doc) {
+            return r.db(dbName).table(tableName).insert(doc)
+        }).run();
+        assert.equal(result.inserted, 2);
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+It("`forEach` should throw if not given a function", function* (done) {
+    try{
+        var result = yield r.expr([{foo: "bar"}, {foo: "foo"}]).forEach().run();
+    }
+    catch(e) {
+        if (e.message.match(/^`forEach` takes 1 argument, 0 provided after/)) {
+            done();
+        }
+        else {
+            done(e);
         }
     }
 })
@@ -130,7 +165,7 @@ It("`default` should throw if no argument has been given", function* (done) {
         result = yield r.expr({})("").default().run();
     }
     catch(e) {
-        if (e.message, "First argument of `default` cannot be undefined after:\nr.expr({})(\"\")") {
+        if (e.message.match(/^`default` takes 1 argument, 0 provided after/)) {
             done()
         }
         else {
@@ -170,7 +205,7 @@ It("`js` should throw if no argument has been given", function* (done) {
         result = yield r.js().run();
     }
     catch(e) {
-        if (e.message, "First argument of `js` cannot be undefined.") {
+        if (e.message.match(/^`r.js` takes 1 argument, 0 provided/)) {
             done()
         }
         else {
@@ -196,7 +231,7 @@ It("`coerceTo` should throw if no argument has been given", function* (done) {
         result = yield r.expr(1).coerceTo().run();
     }
     catch(e) {
-        if (e.message, "First argument of `coerceTo` cannot be undefined after:\nr.expr(1)") {
+        if (e.message.match(/^`coerceTo` takes 1 argument, 0 provided/)) {
             done()
         }
         else {
@@ -235,7 +270,7 @@ It("`json` should throw if no argument has been given", function* (done) {
         result = yield r.json().run();
     }
     catch(e) {
-        if (e.message, "First argument of `json` cannot be undefined.") {
+        if (e.message === "`r.json` takes 1 argument, 0 provided.") {
             done()
         }
         else {
@@ -248,7 +283,7 @@ It("`json` is not defined after a term", function* (done) {
         var result = yield r.expr(1).json("1").run();
     }
     catch(e) {
-        if (e.message === "`json` is not defined after:\nr.expr(1)") {
+        if (e.message.match(/^`json` is not defined after/)) {
             done()
         }
         else {
@@ -262,7 +297,7 @@ It("`exprJSON` should throw if no argument has been given", function* (done) {
         result = yield r.exprJSON().run();
     }
     catch(e) {
-        if (e.message, "First argument of `json` cannot be undefined.") {
+        if (e.message === "`r.exprJSON` takes at least 1 argument, 0 provided.") {
             done()
         }
         else {
