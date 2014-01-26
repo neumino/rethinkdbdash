@@ -50,7 +50,7 @@ Note: You have to start node with the `--harmony` flag.
 ### Install ###
 =============
 - Build node 0.11.10 (checkout `v0.11.10-release`) from source.  
-Binaries won't work with `node-protobuf` -- some libraries are not properly linked).
+Binaries won't work with `node-protobuf` -- some libraries are not properly linked.
 - Install rethinkdbdash with `npm`.
 
 ```
@@ -88,11 +88,9 @@ takes a callback.
 Example with `yield` - 1:
 ```js
 try{
-    var connection = yield r.connect();
-    var cursor = yield r.table("foo").run(connection);
+    var cursor = yield r.table("foo").run();
     var result = yield cursor.toArray();
     //process(result);
-    yield connection.close();
 }
 else {
     console.log(e.message);
@@ -102,14 +100,12 @@ else {
 Example with `yield` - 2:
 ```js
 try{
-    var connection = yield r.connect();
-    var cursor = yield r.table("foo").run(connection);
+    var cursor = yield r.table("foo").run();
     var row;
     while(cursor.hasNext()) {
         row = yield cursor.next();
         //process(row);
     }
-    yield connection.close();
 }
 else {
     console.log(e.message);
@@ -118,7 +114,7 @@ else {
 
 Example `then` and `error`:
 ```js
-r.connect().then(function(connection) {
+r.table("foo).run().then(function(connection) {
     //...
 }).error(function(e) {
     console.log(e.mssage)
@@ -131,8 +127,10 @@ Rethinkdbdash will return a cursor as long as your result is a sequence.
 
 ```
 var cursor = yield r.expr([1, 2, 3]).run()
-//console.log(JSON.stringify(cursor)) // will not print [1, 2, 3]
+console.log(JSON.stringify(cursor)) // will *not* print [1, 2, 3]
+
 var result = yield cursor.toArray();
+console.log(JSON.stringify(result)) // Will print [1, 2, 3]
 ```
 
 
@@ -161,17 +159,17 @@ catch(e) {
 
 Get the number of connections
 ```js
-yield r.getPool().getLength();
+r.getPool().getLength();
 ```
 
 Get the number of available connections
 ```js
-yield r.getPool().getAvailableLength();
+r.getPool().getAvailableLength();
 ```
 
 Drain the pool
 ```js
-yield r.getPool().drain();
+r.getPool().drain();
 ```
 
 
