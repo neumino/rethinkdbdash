@@ -17,6 +17,9 @@ var options = {
     min: 2,
     max: 10,
     buffer: 2,
+    host: config.host,
+    port: config.port,
+    authKey: config.authKey
 };
 
 It("`createPool` should create a pool and `getPool` should return it", function* (done) {

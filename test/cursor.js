@@ -1,5 +1,5 @@
 var config = require('./config.js');
-var r = require('../lib')();
+var r = require('../lib')(config);
 var util = require('./util.js');
 var Promise = require('bluebird');
 var assert = require('assert');
@@ -260,7 +260,7 @@ It("Remove the field `val` in some docs", function* (done) {
 It("`next` should error when hitting an error -- not on the first batch", function* (done) {
     var i=0;
     try {
-        connection = yield r.connect({batch_conf: 10});
+        connection = yield r.connect({batch_conf: 10, host: config.host, port: config.port, authKey: config.authKey});
         assert(connection);
 
         cursor = yield r.db(dbName).table(tableName)

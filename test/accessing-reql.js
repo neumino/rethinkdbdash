@@ -29,7 +29,7 @@ It("Testing `run` without connection", function* (done) {
 })
 It("Testing `run` with connection", function* (done) {
     try {
-        connection = yield r.connect();
+        connection = yield r.connect(config);
         assert(connection);
         connection.close()
         yield r.expr(1).run(connection)
@@ -47,7 +47,7 @@ It("Testing `run` with connection", function* (done) {
 
 It("Init for `cursor.js`", function* (done) {
     try {
-        connection = yield r.connect();
+        connection = yield r.connect(config);
         assert(connection);
 
         dbName = uuid();
@@ -83,7 +83,7 @@ It("`run` should use the default database", function* (done) {
 
         result = yield connection.close();
 
-        connection = yield r.connect({db: dbName});
+        connection = yield r.connect({db: dbName, host: config.host, port: config.port, authKey: config.authKey});
         assert(connection);
 
         result = yield r.tableList().run(connection);
@@ -205,7 +205,7 @@ It("`run` should take an argument", function* (done) {
     try {
         result = yield connection.close();
         assert(connection);
-        connection = yield r.connect();
+        connection = yield r.connect(config);
         assert(connection);
 
         var result = yield r.expr(1).run(connection, {useOutdated: true});
