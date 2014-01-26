@@ -69,15 +69,17 @@ mentionned, please read the
 
 
 
-The differences are for these methods:
+The differences are:
 
 - Module name
+
 Import `rethinkdbdash`:
 ```
 var r = require('rethinkdbdash');
 ```
 
 - Promises
+
 Rethinkdbdash will return a promise when a method with the official driver takes a callback.
 
 Example with `yield`:
@@ -103,6 +105,7 @@ r.connect().then(function(connection) {
 ```
 
 - Connection pool
+
 Rethinkdbdash implements a connection pool. You can create one with `r.createPool`.
 Then you can call `run` without any arguments, or just with options.
 
@@ -129,6 +132,7 @@ __Note__: If a query returns a cursor, the connection will not be released as lo
 cursor hasn't fetch everything or has been closed.
 
 - Errors
+
 In case an error occured because the server cannot parse the protobuf message, the
 official driver emits an `error` on the connection.
 Rethinkdbdash emits an error and reject all queries running on this connection and
@@ -136,6 +140,7 @@ eventually close the connection. This is the only way now to avoid having some
 part of your program hang forever.
 
 - Maximum nesting depth
+
 The maximum nesting depth is your documents are by default 100 (instead of 20).
 You can change this setting with
 ```
