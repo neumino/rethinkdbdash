@@ -8,7 +8,7 @@ A Node.js driver for RethinkDB with promises, connection pool.
 ### Quick start ###
 =============
 
-Example wih koa:
+Example wih [koa](https://github.com/koajs/koa):
 
 ```js
 var app = require('koa')();
@@ -24,7 +24,7 @@ app.use(function *(){
 app.listen(3000);
 ```
 
-Example with bluebird:
+Example with [bluebird](https://github.com/petkaantonov/bluebird):
 
 ```js
 var Promise = require('blubird');
@@ -49,8 +49,8 @@ Note: You have to start node with the `--harmony` flag.
 
 ### Install ###
 =============
-- Build node 0.11.10 (checkout `v0.11.10-release`) from source (binaries won't work with
-`node-protobuf` -- some libraries are not properly linked).
+- Build node 0.11.10 (checkout `v0.11.10-release`) from source.  
+Binaries won't work with `node-protobuf` -- some libraries are not properly linked).
 - Install rethinkdbdash with `npm`.
 
 ```
@@ -73,7 +73,7 @@ The differences are:
 
 #### Module name ####
 
-Import `rethinkdbdash`:
+Import rethinkdbdash:
 ```
 var r = require('rethinkdbdash');
 ```
@@ -85,12 +85,30 @@ var r = require('rethinkdbdash');
 Rethinkdbdash will return a bluebird promise when a method with the official driver
 takes a callback.
 
-Example with `yield`:
+Example with `yield` - 1:
 ```js
 try{
     var connection = yield r.connect();
     var cursor = yield r.table("foo").run(connection);
     var result = yield cursor.toArray();
+    //process(result);
+    yield connection.close();
+}
+else {
+    console.log(e.message);
+}
+```
+
+Example with `yield` - 2:
+```js
+try{
+    var connection = yield r.connect();
+    var cursor = yield r.table("foo").run(connection);
+    var row;
+    while(cursor.hasNext()) {
+        row = yield cursor.next();
+        //process(row);
+    }
     yield connection.close();
 }
 else {
@@ -107,6 +125,15 @@ r.connect().then(function(connection) {
 })
 ```
 
+#### Cursor ####
+
+Rethinkdbdash will return a cursor as long as your result is a sequence.
+
+```
+var cursor = yield r.expr([1, 2, 3]).run()
+//console.log(JSON.stringify(cursor)) // will not print [1, 2, 3]
+var result = yield cursor.toArray();
+```
 
 
 #### Connection pool ####
@@ -180,10 +207,10 @@ r.setNestingLevel(<number>)
 ```
 
 - Performance
-The tree representation of the query is built step by step and stored which avoid
-recomputing it if the query is re-run.
 
-- `exprJSON`, internal method used by `insert` is more efficient.
+The tree representation of the query is built step by step and stored which avoid
+recomputing it if the query is re-run.  
+`exprJSON`, internal method used by `insert`, is more efficient in the worst case (`O(n)`).
 
 
 ### Run tests ###
@@ -197,7 +224,7 @@ mocha --harmony-generators
 ```
 
 
-Tests are also being run on wercker
+Tests are also being run on [wercker](http://wercker.com/):
 - Builds: [https://app.wercker.com/#applications/52dffe8ba4acb3ef16010ef8/tab](https://github.com/neumino/box-rethinkdbdash)
 - Box: 
   - Github: [https://github.com/neumino/box-rethinkdbdash](https://github.com/neumino/box-rethinkdbdash)
