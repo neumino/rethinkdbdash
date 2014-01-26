@@ -132,6 +132,22 @@ catch(e) {
 }
 ```
 
+Get the number of connections
+```js
+yield r.getPool().getLength();
+```
+
+Get the number of available connections
+```js
+yield r.getPool().getAvailableLength();
+```
+
+Drain the pool
+```js
+yield r.getPool().drain();
+```
+
+
 __Note__: If a query returns a cursor, the connection will not be released as long as the
 cursor hasn't fetch everything or has been closed.
 
@@ -139,12 +155,13 @@ cursor hasn't fetch everything or has been closed.
 #### Errors ####
 - Better backtraces
 
-Long backtraces are split on multiple lines.
+Long backtraces are split on multiple lines.  
 In case the driver cannot parse the query, it will provide a better location of the error.
 
 - Different handling for queries that cannot be parsed on the server.
+
 In case an error occured because the server cannot parse the protobuf message, the
-official driver emits an `error` on the connection.
+official driver emits an `error` on the connection.  
 Rethinkdbdash emits an error and rejects all queries running on this connection and
 close the connection. This is the only way now to avoid having some part of your
 program hang forever.
