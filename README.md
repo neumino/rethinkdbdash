@@ -5,6 +5,9 @@ rethinkdbdash
 
 A Node.js driver for RethinkDB with promises and a connection pool.
 
+Status: Beta
+
+
 ### Quick start ###
 =============
 
@@ -28,7 +31,6 @@ Example with [bluebird](https://github.com/petkaantonov/bluebird):
 ```js
 var Promise = require('blubird');
 var r = require('rethinkdbdash')();
-r.createPool();
 
 var run = Promise.coroutine(function* () {
     var result
@@ -50,6 +52,7 @@ Note: You have to start node with the `--harmony` flag.
 =============
 - Build node 0.11.10 (checkout `v0.11.10-release`) from source.  
 Binaries won't work with `node-protobuf` -- some libraries are not properly linked.
+- Install the `libprotobuf` binary and development files (required to build `node-protobuf` in the next step).
 - Install rethinkdbdash with `npm`.
 
 ```
@@ -132,18 +135,6 @@ r.table("foo).run().then(function(connection) {
 })
 ```
 
-#### Cursor ####
-
-Rethinkdbdash will return a cursor as long as your result is a sequence.
-
-```
-var cursor = yield r.expr([1, 2, 3]).run()
-console.log(JSON.stringify(cursor)) // will *not* print [1, 2, 3]
-
-var result = yield cursor.toArray();
-console.log(JSON.stringify(result)) // Will print [1, 2, 3]
-```
-
 
 #### Connection pool ####
 
@@ -154,6 +145,7 @@ If you do not want to use a connection pool, iniitialize rethinkdbdash with `{po
 var r = require('rethinkdbdash)({pool: false});
 ```
 
+You can provide options for the connection pool with the following syntax:
 ```js
 var r = require('rethinkdbdash')({
     min: <number>, // minimum number of connections in the pool, default 50
@@ -192,6 +184,21 @@ __Note__: If a query returns a cursor, the connection will not be released as lo
 cursor hasn't fetch everything or has been closed.
 
 
+
+
+#### Cursor ####
+
+Rethinkdbdash will return a cursor as long as your result is a sequence.
+
+```
+var cursor = yield r.expr([1, 2, 3]).run()
+console.log(JSON.stringify(cursor)) // will *not* print [1, 2, 3]
+
+var result = yield cursor.toArray();
+console.log(JSON.stringify(result)) // Will print [1, 2, 3]
+```
+
+
 #### Errors ####
 - Better backtraces
 
@@ -225,6 +232,13 @@ The tree representation of the query is built step by step and stored which avoi
 recomputing it if the query is re-run.  
 `exprJSON`, internal method used by `insert`, is more efficient in the worst case (`O(n)`).
 
+- Connection
+
+If you do not wish to use rethinkdbdash connection pool, you can implement yours. The
+connections created with rethinkdbdash will emit a "release" event when they receive an
+error, an atom, or the end (or full) sequence.
+
+A connection can also emit a "timeout" event if the underlying connection times out.
 
 ### Run tests ###
 ============
