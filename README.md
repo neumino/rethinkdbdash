@@ -9,7 +9,7 @@ Status: Beta
 
 
 ### Quick start ###
-=============
+-------------
 
 Example wih [koa](https://github.com/koajs/koa):
 
@@ -49,7 +49,7 @@ Note: You have to start node with the `--harmony` flag.
 
 
 ### Install ###
-=============
+-------------
 - Build node 0.11.10 (checkout `v0.11.10-release`) from source.  
 Binaries won't work with `node-protobuf` -- some libraries are not properly linked.
 - Install the `libprotobuf` binary and development files (required to build `node-protobuf` in the next step).
@@ -61,7 +61,7 @@ npm install rethinkdbdash
 
 
 ### Documentation ###
-=============
+-------------
 While rethinkdbdash has almost the same syntax as the official driver, there are still
 a few differences.
 
@@ -241,7 +241,7 @@ error, an atom, or the end (or full) sequence.
 A connection can also emit a "timeout" event if the underlying connection times out.
 
 ### Run tests ###
-============
+-------------
 
 Update `test/config.js` if your RethinkDB instance doesn't run on the default parameters.
 
