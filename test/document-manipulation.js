@@ -161,6 +161,10 @@ It("`merge` should work", function* (done) {
         result = yield r.expr({a: 0, c: {l: "tt"}}).merge({b: {c: {d: {e: "fff"}}, k: "pp"}}).run();
         assert.deepEqual(result, {a: 0, b: {c: {d: {e: "fff"}}, k: "pp"}, c: {l:"tt"}});
 
+        result = yield r.expr({a: 1}).merge({date: r.now()}).run();
+        assert.equal(result.a, 1)
+        assert(result.date instanceof Date)
+
 
         done();
     }
