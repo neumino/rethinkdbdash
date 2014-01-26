@@ -3,7 +3,7 @@ rethinkdbdash
 
 <a href="https://app.wercker.com/project/bykey/10e69719c2031f4995798ddb9221c398"><img alt="Wercker status" src="https://app.wercker.com/status/10e69719c2031f4995798ddb9221c398/m" align="right" /></a>
 
-A Node.js driver for RethinkDB with promises, connection pool.
+A Node.js driver for RethinkDB with promises and a connection pool.
 
 ### Quick start ###
 =============
