@@ -1,11 +1,10 @@
 var config = require('./config.js');
-var r = require('../lib');
+var r = require('../lib')();
 var util = require('./util.js');
 var Promise = require('bluebird');
 var assert = require('assert');
 
 var uuid = util.uuid;
-var connection; // global connection
 var dbName;
 
 function It(testName, generatorFn) {
@@ -16,9 +15,7 @@ function It(testName, generatorFn) {
 
 It("Init for `manipulating-databases.js`", function* (done) {
     try {
-        connection = yield r.connect();
-        assert(connection);
-        var result = yield r.expr(1).run(connection);
+        var result = yield r.expr(1).run();
         assert(result, 1);
         done();
     }
@@ -29,7 +26,7 @@ It("Init for `manipulating-databases.js`", function* (done) {
 
 It("`dbList` should return a cursor", function* (done) {
     try {
-        var result = yield r.dbList().run(connection);
+        var result = yield r.dbList().run();
         var result = yield result.toArray();
         assert(Array.isArray(result));
         done();
@@ -43,7 +40,7 @@ It("'`dbCreate` should create a database'", function* (done) {
     try {
         dbName = uuid(); // export to the global scope
 
-        var result = yield r.dbCreate(dbName).run(connection);
+        var result = yield r.dbCreate(dbName).run();
         assert.deepEqual(result, {created:1});
 
         done();
@@ -54,7 +51,7 @@ It("'`dbCreate` should create a database'", function* (done) {
 })
 It("`dbCreate` should throw if no argument is given", function* (done) {
     try {
-        var result = yield r.dbCreate().run(connection);
+        var result = yield r.dbCreate().run();
     }
     catch(e) {
         if (e.message === "`dbCreate` takes 1 argument, 0 provided.") {
@@ -67,7 +64,7 @@ It("`dbCreate` should throw if no argument is given", function* (done) {
 })
 It("`dbCreate` is not defined after a term", function* (done) {
     try {
-        var result = yield r.expr(1).dbCreate("foo").run(connection);
+        var result = yield r.expr(1).dbCreate("foo").run();
     }
     catch(e) {
         if (e.message === "`dbCreate` is not defined after:\nr.expr(1)") {
@@ -80,7 +77,7 @@ It("`dbCreate` is not defined after a term", function* (done) {
 })
 It("`dbCreate` is not defined after a term", function* (done) {
     try {
-        var result = yield r.expr(1).db("foo").run(connection);
+        var result = yield r.expr(1).db("foo").run();
     }
     catch(e) {
         if (e.message === "`db` is not defined after:\nr.expr(1)") {
@@ -93,7 +90,7 @@ It("`dbCreate` is not defined after a term", function* (done) {
 })
 It("'`db` should throw is the name contains special char'", function* (done) {
     try {
-        var result = yield r.db("-_-").run(connection);
+        var result = yield r.db("-_-").run();
     }
     catch(e) {
         if (e.message.match(/Database name `-_-` invalid \(Use A-Za-z0-9_ only\)/)) { done(); }
@@ -102,7 +99,7 @@ It("'`db` should throw is the name contains special char'", function* (done) {
 })
 It("`dbList` should show the database we created", function* (done) {
     try {
-        var result = yield r.dbList().run(connection);
+        var result = yield r.dbList().run();
         var result = yield result.toArray();
         assert(Array.isArray(result));
 
@@ -123,7 +120,7 @@ It("`dbList` should show the database we created", function* (done) {
 })
 It("`dbDrop` should drop a table", function* (done) {
     try {
-        var result = yield r.dbDrop(dbName).run(connection);
+        var result = yield r.dbDrop(dbName).run();
         assert.deepEqual(result, {dropped:1});
 
         done();
@@ -134,7 +131,7 @@ It("`dbDrop` should drop a table", function* (done) {
 })
 It("`dbDrop` should throw if no argument is given", function* (done) {
     try {
-        var result = yield r.dbDrop("foo", "bar", "ette").run(connection);
+        var result = yield r.dbDrop("foo", "bar", "ette").run();
     }
     catch(e) {
         if (e.message === "`dbDrop` takes 1 argument, 3 provided.") {
@@ -147,7 +144,7 @@ It("`dbDrop` should throw if no argument is given", function* (done) {
 })
 It("`dbDrop` should throw if no argument is given", function* (done) {
     try {
-        var result = yield r.dbDrop().run(connection);
+        var result = yield r.dbDrop().run();
     }
     catch(e) {
         if (e.message === "`dbDrop` takes 1 argument, 0 provided.") {
@@ -160,7 +157,7 @@ It("`dbDrop` should throw if no argument is given", function* (done) {
 })
 It("`dbDrop` is not defined after a term", function* (done) {
     try {
-        var result = yield r.expr(1).dbDrop("foo").run(connection);
+        var result = yield r.expr(1).dbDrop("foo").run();
     }
     catch(e) {
         if (e.message === "`dbDrop` is not defined after:\nr.expr(1)") {
@@ -173,7 +170,7 @@ It("`dbDrop` is not defined after a term", function* (done) {
 })
 It("`dbList` is not defined after a term", function* (done) {
     try {
-        var result = yield r.expr(1).dbList("foo").run(connection);
+        var result = yield r.expr(1).dbList("foo").run();
     }
     catch(e) {
         if (e.message === "`dbList` is not defined after:\nr.expr(1)") {
@@ -188,7 +185,7 @@ It("`dbList` is not defined after a term", function* (done) {
 
 It("`dbList` shouldn't show the database we dropped", function* (done) {
     try {
-        var result = yield r.dbList().run(connection);
+        var result = yield r.dbList().run();
         var result = yield result.toArray();
         assert(Array.isArray(result));
 
@@ -207,15 +204,3 @@ It("`dbList` shouldn't show the database we dropped", function* (done) {
         done(e);
     }
 })
-
-It("End for `manipulating-databases.js`", function* (done) {
-    try {
-        connection.close();
-        done();
-    }
-    catch(e) {
-        done(e);
-    }
-})
-
-

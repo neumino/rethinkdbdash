@@ -12,8 +12,7 @@ Example wih [koa](https://github.com/koajs/koa):
 
 ```js
 var app = require('koa')();
-var r = require('rethinkdbdash');
-r.createPool();
+var r = require('rethinkdbdash')();
 
 app.use(function *(){
     var result = yield r.table("foo").get("bar").run();
@@ -28,7 +27,7 @@ Example with [bluebird](https://github.com/petkaantonov/bluebird):
 
 ```js
 var Promise = require('blubird');
-var r = require('rethinkdbdash');
+var r = require('rethinkdbdash')();
 r.createPool();
 
 var run = Promise.coroutine(function* () {
@@ -75,9 +74,21 @@ The differences are:
 
 Import rethinkdbdash:
 ```
-var r = require('rethinkdbdash');
+var r = require('rethinkdbdash')(options);
 ```
 
+`options` can be:
+- `{pool: false}`
+- the options for the connection pool, which can be:
+```js
+{
+    min: <number>, // minimum number of connections in the pool, default 50
+    max: <number>, // maximum number of connections in the pool, default 1000
+    bufferSize: <number>, // minimum number of connections available in the pool, default 50
+    timeoutError: <number>, // wait time before reconnecting in case of an error (in ms), default 1000
+    timeoutGb: <number>, // how long the pool keep a connection that hasn't been used (in ms), default 60*60*1000
+}
+```
 
 
 #### Promises ####
@@ -136,18 +147,22 @@ console.log(JSON.stringify(result)) // Will print [1, 2, 3]
 
 #### Connection pool ####
 
-Rethinkdbdash implements a connection pool. You can create one with `r.createPool`.
-Then you can call `run` without any arguments, or just with options.
+Rethinkdbdash implements a connection pool and is created by default.
+
+If you do not want to use a connection pool, iniitialize rethinkdbdash with `{pool: false}` like that:
+```
+var r = require('rethinkdbdash)({pool: false});
+```
 
 ```js
-var r = require('rethinkdbdash');
-r.createPool({
+var r = require('rethinkdbdash')({
     min: <number>, // minimum number of connections in the pool, default 50
     max: <number>, // maximum number of connections in the pool, default 1000
     bufferSize: <number>, // minimum number of connections available in the pool, default 50
     timeoutError: <number>, // wait time before reconnecting in case of an error (in ms), default 1000
     timeoutGb: <number>, // how long the pool keep a connection that hasn't been used (in ms), default 60*60*1000
 });
+
 try {
     var cursor = yield r.table("foo").run();
     var result = yield cursor.toArray(); // The connection used in the cursor will be released when all the data will be retrieved
@@ -227,3 +242,9 @@ Tests are also being run on [wercker](http://wercker.com/):
 - Box: 
   - Github: [https://github.com/neumino/box-rethinkdbdash](https://github.com/neumino/box-rethinkdbdash)
   - Wercker builds: [https://app.wercker.com/#applications/52dffc65a4acb3ef16010b60/tab](https://app.wercker.com/#applications/52dffc65a4acb3ef16010b60/tab)
+
+
+### Roadmap ###
+============
+- Clean tests (refactor `It`)
+- Add better tests for backtraces

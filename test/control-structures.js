@@ -1,11 +1,10 @@
 var config = require('./config.js');
-var r = require('../lib');
+var r = require('../lib')();
 var util = require('./util.js');
 var Promise = require('bluebird');
 var assert = require('assert');
 
 var uuid = util.uuid;
-var connection; // global connection
 var dbName;
 
 function It(testName, generatorFn) {
@@ -14,20 +13,9 @@ function It(testName, generatorFn) {
     })
 }
 
-It("Init for `document-manipulation.js`", function* (done) {
-    try {
-        connection = yield r.connect();
-        assert(connection);
-        done();
-    }
-    catch(e) {
-        done(e);
-    }
-})
-
 It("`do` should work", function* (done) {
     try {
-        result = yield r.expr({a: 1}).do( function(doc) { return doc("a") }).run(connection);
+        result = yield r.expr({a: 1}).do( function(doc) { return doc("a") }).run();
         assert.equal(result, 1);
 
         done();
@@ -39,7 +27,7 @@ It("`do` should work", function* (done) {
 
 It("`do` should throw if no argument has been given", function* (done) {
     try{
-        result = yield r.expr(1).do().run(connection);
+        result = yield r.expr(1).do().run();
     }
     catch(e) {
         if (e.message, "First argument of `do` cannot be undefined after:\nr.expr(1)") {
@@ -54,10 +42,10 @@ It("`do` should throw if no argument has been given", function* (done) {
 
 It("`branch` should work", function* (done) {
     try {
-        result = yield r.branch(true, 1, 2).run(connection);
+        result = yield r.branch(true, 1, 2).run();
         assert.equal(result, 1);
 
-        result = yield r.branch(false, 1, 2).run(connection);
+        result = yield r.branch(false, 1, 2).run();
         assert.equal(result, 2);
 
         done();
@@ -68,7 +56,7 @@ It("`branch` should work", function* (done) {
 })
 It("`branch` should throw if no argument has been given", function* (done) {
     try{
-        result = yield r.branch().run(connection);
+        result = yield r.branch().run();
     }
     catch(e) {
         if (e.message, "First argument of `branch` cannot be undefined.") {
@@ -81,7 +69,7 @@ It("`branch` should throw if no argument has been given", function* (done) {
 })
 It("`branch` should throw if just one argument has been given", function* (done) {
     try{
-        result = yield r.branch(true).run(connection);
+        result = yield r.branch(true).run();
     }
     catch(e) {
         if (e.message, "Second argument of `branch` cannot be undefined.") {
@@ -94,7 +82,7 @@ It("`branch` should throw if just one argument has been given", function* (done)
 })
 It("`branch` should throw if just two arguments have been given", function* (done) {
     try{
-        result = yield r.branch(true, true).run(connection);
+        result = yield r.branch(true, true).run();
     }
     catch(e) {
         if (e.message, "Third argument of `branch` cannot be undefined.") {
@@ -107,7 +95,7 @@ It("`branch` should throw if just two arguments have been given", function* (don
 })
 It("`branch` is not defined after a term", function* (done) {
     try {
-        var result = yield r.expr(1).branch(true, true, true).run(connection);
+        var result = yield r.expr(1).branch(true, true, true).run();
     }
     catch(e) {
         if (e.message === "`branch` is not defined after:\nr.expr(1)") {
@@ -120,7 +108,7 @@ It("`branch` is not defined after a term", function* (done) {
 })
 It("`default` should work", function* (done) {
     try {
-        result = yield r.expr({a:1})("b").default("Hello").run(connection);
+        result = yield r.expr({a:1})("b").default("Hello").run();
         assert.equal(result, "Hello");
 
         done();
@@ -131,7 +119,7 @@ It("`default` should work", function* (done) {
 })
 It("`error` is not defined after a term", function* (done) {
     try {
-        var result = yield r.expr(1).error("error").run(connection);
+        var result = yield r.expr(1).error("error").run();
     }
     catch(e) {
         if (e.message === "`error` is not defined after:\nr.expr(1)") {
@@ -144,7 +132,7 @@ It("`error` is not defined after a term", function* (done) {
 })
 It("`default` should throw if no argument has been given", function* (done) {
     try{
-        result = yield r.expr({})("").default().run(connection);
+        result = yield r.expr({})("").default().run();
     }
     catch(e) {
         if (e.message, "First argument of `default` cannot be undefined after:\nr.expr({})(\"\")") {
@@ -159,7 +147,7 @@ It("`default` should throw if no argument has been given", function* (done) {
 
 It("`r.js` should work", function* (done) {
     try {
-        result = yield r.js("1").run(connection);
+        result = yield r.js("1").run();
         assert.equal(result, 1);
 
         done();
@@ -170,7 +158,7 @@ It("`r.js` should work", function* (done) {
 })
 It("`js` is not defined after a term", function* (done) {
     try {
-        var result = yield r.expr(1).js("foo").run(connection);
+        var result = yield r.expr(1).js("foo").run();
     }
     catch(e) {
         if (e.message === "`js` is not defined after:\nr.expr(1)") {
@@ -184,7 +172,7 @@ It("`js` is not defined after a term", function* (done) {
 
 It("`js` should throw if no argument has been given", function* (done) {
     try{
-        result = yield r.js().run(connection);
+        result = yield r.js().run();
     }
     catch(e) {
         if (e.message, "First argument of `js` cannot be undefined.") {
@@ -199,7 +187,7 @@ It("`js` should throw if no argument has been given", function* (done) {
 
 It("`coerceTo` should work", function* (done) {
     try {
-        result = yield r.expr(1).coerceTo("STRING").run(connection);
+        result = yield r.expr(1).coerceTo("STRING").run();
         assert.equal(result, "1");
 
         done();
@@ -210,7 +198,7 @@ It("`coerceTo` should work", function* (done) {
 })
 It("`coerceTo` should throw if no argument has been given", function* (done) {
     try{
-        result = yield r.expr(1).coerceTo().run(connection);
+        result = yield r.expr(1).coerceTo().run();
     }
     catch(e) {
         if (e.message, "First argument of `coerceTo` cannot be undefined after:\nr.expr(1)") {
@@ -224,7 +212,7 @@ It("`coerceTo` should throw if no argument has been given", function* (done) {
 
 It("`typeOf` should work", function* (done) {
     try {
-        result = yield r.expr(1).typeOf().run(connection);
+        result = yield r.expr(1).typeOf().run();
         assert.equal(result, "NUMBER");
 
         done();
@@ -235,10 +223,10 @@ It("`typeOf` should work", function* (done) {
 })
 It("`json` should work", function* (done) {
     try {
-        result = yield r.json(JSON.stringify({a:1})).run(connection);
+        result = yield r.json(JSON.stringify({a:1})).run();
         assert.deepEqual(result, {a:1});
 
-        result = yield r.json("{}").run(connection);
+        result = yield r.json("{}").run();
         assert.deepEqual(result, {})
 
         done();
@@ -249,7 +237,7 @@ It("`json` should work", function* (done) {
 })
 It("`json` should throw if no argument has been given", function* (done) {
     try{
-        result = yield r.json().run(connection);
+        result = yield r.json().run();
     }
     catch(e) {
         if (e.message, "First argument of `json` cannot be undefined.") {
@@ -262,7 +250,7 @@ It("`json` should throw if no argument has been given", function* (done) {
 })
 It("`json` is not defined after a term", function* (done) {
     try {
-        var result = yield r.expr(1).json("1").run(connection);
+        var result = yield r.expr(1).json("1").run();
     }
     catch(e) {
         if (e.message === "`json` is not defined after:\nr.expr(1)") {
@@ -276,7 +264,7 @@ It("`json` is not defined after a term", function* (done) {
 
 It("`exprJSON` should throw if no argument has been given", function* (done) {
     try{
-        result = yield r.exprJSON().run(connection);
+        result = yield r.exprJSON().run();
     }
     catch(e) {
         if (e.message, "First argument of `json` cannot be undefined.") {
@@ -285,16 +273,5 @@ It("`exprJSON` should throw if no argument has been given", function* (done) {
         else {
             done(e);
         }
-    }
-})
-
-
-It("End for `document-manipulation.js`", function* (done) {
-    try {
-        connection.close();
-        done();
-    }
-    catch(e) {
-        done(e);
     }
 })

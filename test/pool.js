@@ -1,5 +1,5 @@
 var config = require('./config.js');
-var r = require('../lib');
+var r = require('../lib')({pool: false});
 var util = require('./util.js');
 var Promise = require('bluebird');
 var assert = require('assert');

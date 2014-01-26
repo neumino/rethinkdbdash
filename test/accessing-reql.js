@@ -1,5 +1,5 @@
 var config = require('./config.js');
-var r = require('../lib');
+var r = require('../lib')({pool: false});
 var util = require('./util.js');
 var Promise = require('bluebird');
 var assert = require('assert');
@@ -27,12 +27,12 @@ It("Testing `run` without connection", function* (done) {
         }
     }
 })
-It("Testing `run` without connection", function* (done) {
+It("Testing `run` with connection", function* (done) {
     try {
         connection = yield r.connect();
         assert(connection);
         connection.close()
-        r.expr(1).run(connection)
+        yield r.expr(1).run(connection)
     }
     catch(e) {
         if (e.message === '`run` was called with a closed connection after:\nr.expr(1)') {
@@ -397,5 +397,3 @@ It("End for `cursor.js`", function* (done) {
         done(e);
     }
 })
-
-

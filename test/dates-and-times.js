@@ -1,11 +1,10 @@
 var config = require('./config.js');
-var r = require('../lib');
+var r = require('../lib')();
 var util = require('./util.js');
 var Promise = require('bluebird');
 var assert = require('assert');
 
 var uuid = util.uuid;
-var connection; // global connection
 var dbName;
 
 function It(testName, generatorFn) {
@@ -14,35 +13,23 @@ function It(testName, generatorFn) {
     })
 }
 
-It("Init for `document-manipulation.js`", function* (done) {
-    try {
-        connection = yield r.connect();
-        assert(connection);
-        done();
-    }
-    catch(e) {
-        done(e);
-    }
-})
-
-
 It("`r.now` should return a date", function* (done) {
     try {
-        var result = yield r.now().run(connection);
+        var result = yield r.now().run();
         assert(result instanceof Date);
 
-        result = yield r.expr({a: r.now()}).run(connection);
+        result = yield r.expr({a: r.now()}).run();
         assert(result.a instanceof Date);
 
-        result = yield r.expr([r.now()]).run(connection);
+        result = yield r.expr([r.now()]).run();
         result = yield result.toArray();
         assert(result[0] instanceof Date);
 
-        result = yield r.expr([{}, {a: r.now()}]).run(connection);
+        result = yield r.expr([{}, {a: r.now()}]).run();
         result = yield result.toArray();
         assert(result[1].a instanceof Date);
 
-        result = yield r.expr({b: [{}, {a: r.now()}]}).run(connection);
+        result = yield r.expr({b: [{}, {a: r.now()}]}).run();
         assert(result.b[1].a instanceof Date);
 
         done();
@@ -53,7 +40,7 @@ It("`r.now` should return a date", function* (done) {
 })
 It("`now` is not defined after a term", function* (done) {
     try {
-        var result = yield r.expr(1).now("foo").run(connection);
+        var result = yield r.expr(1).now("foo").run();
     }
     catch(e) {
         if (e.message === "`now` is not defined after:\nr.expr(1)") {
@@ -68,10 +55,10 @@ It("`now` is not defined after a term", function* (done) {
 It("`r.time` should return a date -- with date and time", function* (done) {
     try{
         var now = new Date();
-        result = yield r.time(1986, 11, 3, 12, 0, 0, 'Z').run(connection);
+        result = yield r.time(1986, 11, 3, 12, 0, 0, 'Z').run();
         assert.equal(result instanceof Date, true)
 
-        result = yield r.time(1986, 11, 3, 12, 20, 0, 'Z').minutes().run(connection);
+        result = yield r.time(1986, 11, 3, 12, 20, 0, 'Z').minutes().run();
         assert.equal(result, 20)
 
         done();
@@ -83,8 +70,8 @@ It("`r.time` should return a date -- with date and time", function* (done) {
 
 It("`r.time` should return a date -- just with a date", function* (done) {
     try {
-        result = yield r.time(1986, 11, 3, 'Z').run(connection);
-        result2 = yield r.time(1986, 11, 3, 0, 0, 0, 'Z').run(connection);
+        result = yield r.time(1986, 11, 3, 'Z').run();
+        result2 = yield r.time(1986, 11, 3, 0, 0, 0, 'Z').run();
         assert.equal(result instanceof Date, true)
 
         done();
@@ -95,7 +82,7 @@ It("`r.time` should return a date -- just with a date", function* (done) {
 })
 It("`r.time` should throw if no argument has been given", function* (done) {
     try{
-        result = yield r.time().run(connection);
+        result = yield r.time().run();
     }
     catch(e) {
         if (e.message === "`r.time` called with 0 argument.\n`r.time` takes 4 or 7 arguments") {
@@ -108,7 +95,7 @@ It("`r.time` should throw if no argument has been given", function* (done) {
 })
 It("`r.time` should throw if no 5 arguments", function* (done) {
     try{
-        result = yield r.time(1, 1, 1, 1, 1).run(connection);
+        result = yield r.time(1, 1, 1, 1, 1).run();
     }
     catch(e) {
         if (e.message === "`r.time` called with 5 arguments.\n`r.time` takes 4 or 7 arguments") {
@@ -122,7 +109,7 @@ It("`r.time` should throw if no 5 arguments", function* (done) {
 
 It("`time` is not defined after a term", function* (done) {
     try {
-        var result = yield r.expr(1).time(1, 2, 3, 'Z').run(connection);
+        var result = yield r.expr(1).time(1, 2, 3, 'Z').run();
     }
     catch(e) {
         if (e.message === "`time` is not defined after:\nr.expr(1)") {
@@ -137,7 +124,7 @@ It("`time` is not defined after a term", function* (done) {
 It("`epochTime` should work", function* (done) {
     try {
         now = new Date();
-        result = yield r.epochTime(now.getTime()/1000).run(connection);
+        result = yield r.epochTime(now.getTime()/1000).run();
         assert.deepEqual(now, result);
 
         done();
@@ -148,7 +135,7 @@ It("`epochTime` should work", function* (done) {
 })
 It("`r.epochTime` should throw if no argument has been given", function* (done) {
     try{
-        result = yield r.epochTime().run(connection);
+        result = yield r.epochTime().run();
     }
     catch(e) {
         if (e.message === "`r.epochTime` takes 1 argument, 0 provided.") {
@@ -161,7 +148,7 @@ It("`r.epochTime` should throw if no argument has been given", function* (done) 
 })
 It("`epochTime` is not defined after a term", function* (done) {
     try {
-        var result = yield r.expr(1).epochTime(Date.now()).run(connection);
+        var result = yield r.expr(1).epochTime(Date.now()).run();
     }
     catch(e) {
         if (e.message === "`epochTime` is not defined after:\nr.expr(1)") {
@@ -175,7 +162,7 @@ It("`epochTime` is not defined after a term", function* (done) {
 
 It("`ISO8601` should work", function* (done) {
     try {
-        result = yield r.ISO8601("1986-11-03T08:30:00-08:00").run(connection);
+        result = yield r.ISO8601("1986-11-03T08:30:00-08:00").run();
         assert(result, new Date(1986, 11, 3, 8, 30, 0, -8));
 
         done();
@@ -186,7 +173,7 @@ It("`ISO8601` should work", function* (done) {
 })
 It("`ISO8601` should work with a timezone", function* (done) {
     try {
-        result = yield r.ISO8601("1986-11-03T08:30:00", {defaultTimezone: "-08:00"}).run(connection);
+        result = yield r.ISO8601("1986-11-03T08:30:00", {defaultTimezone: "-08:00"}).run();
         assert(result, new Date(1986, 11, 3, 8, 30, 0, -8));
 
         done();
@@ -197,7 +184,7 @@ It("`ISO8601` should work with a timezone", function* (done) {
 })
 It("`r.ISO8601` should throw if no argument has been given", function* (done) {
     try{
-        result = yield r.ISO8601().run(connection);
+        result = yield r.ISO8601().run();
     }
     catch(e) {
         if (e.message === "`r.ISO8601` takes at least 1 argument, 0 provided.") {
@@ -210,7 +197,7 @@ It("`r.ISO8601` should throw if no argument has been given", function* (done) {
 })
 It("`r.ISO8601` should throw if too many arguments", function* (done) {
     try{
-        result = yield r.ISO8601(1, 1, 1).run(connection);
+        result = yield r.ISO8601(1, 1, 1).run();
     }
     catch(e) {
         if (e.message === "`r.ISO8601` takes at most 2 arguments, 3 provided.") {
@@ -224,7 +211,7 @@ It("`r.ISO8601` should throw if too many arguments", function* (done) {
 
 It("`ISO8601` is not defined after a term", function* (done) {
     try {
-        var result = yield r.expr(1).ISO8601('validISOstring').run(connection);
+        var result = yield r.expr(1).ISO8601('validISOstring').run();
     }
     catch(e) {
         if (e.message === "`ISO8601` is not defined after:\nr.expr(1)") {
@@ -245,7 +232,7 @@ It("`inTimezone` should work", function* (done) {
                 r.expr(23).eq(r.now().inTimezone('-09:00').hours()),
                 h.eq(r.now().inTimezone('-09:00').hours().add(1))
             )
-        }).run(connection)
+        }).run()
         assert.equal(result, true);
 
         done();
@@ -256,7 +243,7 @@ It("`inTimezone` should work", function* (done) {
 })
 It("`inTimezone` should throw if no argument has been given", function* (done) {
     try{
-        result = yield r.now().inTimezone().run(connection);
+        result = yield r.now().inTimezone().run();
     }
     catch(e) {
         if (e.message === "`inTimezone` takes 1 argument, 0 provided after:\nr.now()") {
@@ -270,7 +257,7 @@ It("`inTimezone` should throw if no argument has been given", function* (done) {
 
 It("`timezone` should work", function* (done) {
     try {
-        result = yield r.ISO8601("1986-11-03T08:30:00-08:00").timezone().run(connection);
+        result = yield r.ISO8601("1986-11-03T08:30:00-08:00").timezone().run();
         assert.equal(result, "-08:00");
 
         done();
@@ -282,13 +269,13 @@ It("`timezone` should work", function* (done) {
 
 It("`during` should work", function* (done) {
     try {
-        result = yield r.now().during(r.time(2013, 12, 1, "Z"), r.now().add(1000)).run(connection);
+        result = yield r.now().during(r.time(2013, 12, 1, "Z"), r.now().add(1000)).run();
         assert.equal(result, true);
 
-        result = yield r.now().during(r.time(2013, 12, 1, "Z"), r.now(), {leftBound: "closed", rightBound: "closed"}).run(connection);
+        result = yield r.now().during(r.time(2013, 12, 1, "Z"), r.now(), {leftBound: "closed", rightBound: "closed"}).run();
         assert.equal(result, true);
 
-        result = yield r.now().during(r.time(2013, 12, 1, "Z"), r.now(), {leftBound: "closed", rightBound: "open"}).run(connection);
+        result = yield r.now().during(r.time(2013, 12, 1, "Z"), r.now(), {leftBound: "closed", rightBound: "open"}).run();
         assert.equal(result, false);
 
         done();
@@ -299,7 +286,7 @@ It("`during` should work", function* (done) {
 })
 It("`during` should throw if no argument has been given", function* (done) {
     try{
-        result = yield r.now().during().run(connection);
+        result = yield r.now().during().run();
     }
     catch(e) {
         if (e.message === "`during` takes at least 2 arguments, 0 provided after:\nr.now()") {
@@ -312,7 +299,7 @@ It("`during` should throw if no argument has been given", function* (done) {
 })
 It("`during` should throw if just one argument has been given", function* (done) {
     try{
-        result = yield r.now().during(1).run(connection);
+        result = yield r.now().during(1).run();
     }
     catch(e) {
         if (e.message === "`during` takes at least 2 arguments, 1 provided after:\nr.now()") {
@@ -325,7 +312,7 @@ It("`during` should throw if just one argument has been given", function* (done)
 })
 It("`during` should throw if too many arguments", function* (done) {
     try{
-        result = yield r.now().during(1, 1, 1, 1, 1).run(connection);
+        result = yield r.now().during(1, 1, 1, 1, 1).run();
     }
     catch(e) {
         if (e.message === "`during` takes at most 3 arguments, 5 provided after:\nr.now()") {
@@ -339,11 +326,11 @@ It("`during` should throw if too many arguments", function* (done) {
 
 It("`date` should work", function* (done) {
     try {
-        result = yield r.now().date().hours().run(connection);
+        result = yield r.now().date().hours().run();
         assert.equal(result, 0);
-        result = yield r.now().date().minutes().run(connection);
+        result = yield r.now().date().minutes().run();
         assert.equal(result, 0);
-        result = yield r.now().date().seconds().run(connection);
+        result = yield r.now().date().seconds().run();
         assert.equal(result, 0);
 
         done();
@@ -355,7 +342,7 @@ It("`date` should work", function* (done) {
 
 It("`timeOfDay` should work", function* (done) {
     try {
-        result = yield r.now().timeOfDay().run(connection);
+        result = yield r.now().timeOfDay().run();
         assert(result>=0);
 
         done();
@@ -367,7 +354,7 @@ It("`timeOfDay` should work", function* (done) {
 
 It("`year` should work", function* (done) {
     try {
-        result = yield r.now().inTimezone(new Date().toString().match(' GMT([^ ]*)')[1]).year().run(connection);
+        result = yield r.now().inTimezone(new Date().toString().match(' GMT([^ ]*)')[1]).year().run();
         assert.equal(result, new Date().getFullYear());
 
         done();
@@ -379,7 +366,7 @@ It("`year` should work", function* (done) {
 
 It("`month` should work", function* (done) {
     try {
-        result = yield r.now().inTimezone(new Date().toString().match(' GMT([^ ]*)')[1]).month().run(connection);
+        result = yield r.now().inTimezone(new Date().toString().match(' GMT([^ ]*)')[1]).month().run();
         assert.equal(result, new Date().getMonth()+1);
 
         done();
@@ -391,7 +378,7 @@ It("`month` should work", function* (done) {
 
 It("`day` should work", function* (done) {
     try {
-        result = yield r.now().inTimezone(new Date().toString().match(' GMT([^ ]*)')[1]).day().run(connection);
+        result = yield r.now().inTimezone(new Date().toString().match(' GMT([^ ]*)')[1]).day().run();
         assert.equal(result, new Date().getDate());
 
         done();
@@ -403,7 +390,7 @@ It("`day` should work", function* (done) {
 
 It("`dayOfYear` should work", function* (done) {
     try {
-        result = yield r.now().inTimezone(new Date().toString().match(' GMT([^ ]*)')[1]).dayOfYear().run(connection);
+        result = yield r.now().inTimezone(new Date().toString().match(' GMT([^ ]*)')[1]).dayOfYear().run();
         assert(result > (new Date()).getMonth()*28+(new Date()).getDate()-1);
 
         done();
@@ -415,7 +402,7 @@ It("`dayOfYear` should work", function* (done) {
 
 It("`dayOfWeek` should work", function* (done) {
     try {
-        result = yield r.now().inTimezone(new Date().toString().match(' GMT([^ ]*)')[1]).dayOfWeek().run(connection);
+        result = yield r.now().inTimezone(new Date().toString().match(' GMT([^ ]*)')[1]).dayOfWeek().run();
         if (result === 7) result = 0;
         assert.equal(result, new Date().getDay());
 
@@ -428,7 +415,7 @@ It("`dayOfWeek` should work", function* (done) {
 
 It("`toISO8601` should work", function* (done) {
     try {
-        result = yield r.now().toISO8601().run(connection);
+        result = yield r.now().toISO8601().run();
         assert.equal(typeof result, "string");
 
         done();
@@ -440,7 +427,7 @@ It("`toISO8601` should work", function* (done) {
 
 It("`toEpochTime` should work", function* (done) {
     try {
-        result = yield r.now().toEpochTime().run(connection);
+        result = yield r.now().toEpochTime().run();
         assert.equal(typeof result, "number");
 
         done();
@@ -452,10 +439,10 @@ It("`toEpochTime` should work", function* (done) {
 
 It("Constant terms should work", function* (done) {
     try {
-        result = yield r.monday.run(connection);
+        result = yield r.monday.run();
         assert.equal(result, 1)
 
-        result = yield r.expr([r.monday, r.tuesday, r.wednesday, r.thursday, r.friday, r.saturday, r.sunday, r.january, r.february, r.march, r.april, r.may, r.june, r.july, r.august, r.september, r.october, r.november, r.december]).run(connection);
+        result = yield r.expr([r.monday, r.tuesday, r.wednesday, r.thursday, r.friday, r.saturday, r.sunday, r.january, r.february, r.march, r.april, r.may, r.june, r.july, r.august, r.september, r.october, r.november, r.december]).run();
         result = yield result.toArray();
         assert.deepEqual(result, [1,2,3,4,5,6,7, 1,2,3,4,5,6,7,8,9,10,11,12]);
 
@@ -465,52 +452,4 @@ It("Constant terms should work", function* (done) {
         done(e);
     }
 })
-
-It("`tochange` should work", function* (done) {
-    try {
-        done();
-    }
-    catch(e) {
-        done(e);
-    }
-})
-
-It("`tochange` should work", function* (done) {
-    try {
-        done();
-    }
-    catch(e) {
-        done(e);
-    }
-})
-
-It("`tochange` should work", function* (done) {
-    try {
-        done();
-    }
-    catch(e) {
-        done(e);
-    }
-})
-
-It("`tochange` should work", function* (done) {
-    try {
-        done();
-    }
-    catch(e) {
-        done(e);
-    }
-})
-
-
-It("End for `document-manipulation.js`", function* (done) {
-    try {
-        connection.close();
-        done();
-    }
-    catch(e) {
-        done(e);
-    }
-})
-
 
