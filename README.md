@@ -83,7 +83,7 @@ var r = require('rethinkdbdash');
 Rethinkdbdash will return a promise when a method with the official driver takes a callback.
 
 Example with `yield`:
-```
+```js
 try{
     var connection = yield r.connect();
     var cursor = yield r.table("foo").run(connection);
@@ -96,7 +96,7 @@ else {
 ```
 
 Example `then` and `error`:
-```
+```js
 r.connect().then(function(connection) {
     //...
 }).error(function(e) {
@@ -109,7 +109,7 @@ r.connect().then(function(connection) {
 Rethinkdbdash implements a connection pool. You can create one with `r.createPool`.
 Then you can call `run` without any arguments, or just with options.
 
-```
+```js
 var r = require('rethinkdbdash');
 r.createPool({
     min: <number>, // minimum number of connections in the pool
@@ -143,7 +143,7 @@ part of your program hang forever.
 
 The maximum nesting depth is your documents are by default 100 (instead of 20).
 You can change this setting with
-```
+```js
 r.setNestingLevel(<number>)
 ```
 
