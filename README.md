@@ -76,13 +76,14 @@ The differences are:
 #### Module name ####
 
 Import rethinkdbdash:
-```
+```js
 var r = require('rethinkdbdash')(options);
 ```
 
 `options` can be:
 - `{pool: false}` -- if you do not want to use a connection pool.
 - the options for the connection pool, which can be:
+
 ```js
 {
     min: <number>, // minimum number of connections in the pool, default 50
@@ -191,7 +192,7 @@ cursor hasn't fetch everything or has been closed.
 Rethinkdbdash does not extend `Array` with methods and returns a cursor as long as your
 result is a sequence.
 
-```
+```js
 var cursor = yield r.expr([1, 2, 3]).run()
 console.log(JSON.stringify(cursor)) // does *not* print [1, 2, 3]
 
@@ -253,7 +254,7 @@ mocha --harmony-generators
 
 
 Tests are also being run on [wercker](http://wercker.com/):
-- Builds: [https://app.wercker.com/#applications/52dffe8ba4acb3ef16010ef8/tab](https://github.com/neumino/box-rethinkdbdash)
+- Builds: [https://app.wercker.com/#applications/52dffe8ba4acb3ef16010ef8/tab](https://app.wercker.com/#applications/52dffe8ba4acb3ef16010ef8/tab)
 - Box: 
   - Github: [https://github.com/neumino/box-rethinkdbdash](https://github.com/neumino/box-rethinkdbdash)
   - Wercker builds: [https://app.wercker.com/#applications/52dffc65a4acb3ef16010b60/tab](https://app.wercker.com/#applications/52dffc65a4acb3ef16010b60/tab)
