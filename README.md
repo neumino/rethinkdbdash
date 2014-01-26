@@ -6,7 +6,7 @@ rethinkdbdash
 A Node.js driver for RethinkDB with promises and a connection pool.
 
 ### Quick start ###
-=============
+-------------
 
 Example wih [koa](https://github.com/koajs/koa):
 
@@ -48,7 +48,7 @@ Note: You have to start node with the `--harmony` flag.
 
 
 ### Install ###
-=============
+-------------
 - Build node 0.11.10 (checkout `v0.11.10-release`) from source.  
 Binaries won't work with `node-protobuf` -- some libraries are not properly linked.
 - Install rethinkdbdash with `npm`.
@@ -59,7 +59,7 @@ npm install rethinkdbdash
 
 
 ### Documentation ###
-=============
+-------------
 While rethinkdbdash has almost the same syntax as the official driver, there are still
 a few differences.
 
@@ -212,7 +212,7 @@ recomputing it if the query is re-run.
 
 
 ### Run tests ###
-============
+-------------
 
 Update `test/config.js` if your RethinkDB instance doesn't run on the default parameters.
 
