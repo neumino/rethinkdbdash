@@ -156,10 +156,103 @@ It("The pool should shrink if a connection is not used for some time", function*
             assert.equal(r.getPool().getLength(), options.min)
             done()
         },400)
-
     }
     catch(e) {
         done(e);
     }
 });
+
+It("The pool should remove a connection if it errored", function* (done) {
+    try{
+        r.getPool().setOptions({timeoutGb: 60*60*1000});
+
+        var result = yield [r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run()]
+
+        assert.deepEqual(result, [1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
+
+        // This query will make the error return an error -1
+        var result = yield r.expr(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+            .run()
+
+
+    }
+    catch(e) {
+        if ((true) || (e.message === "Client is buggy (failed to deserialize protobuf)")) {
+            // We expect the connection that errored to get closed in the next second
+            setTimeout(function() {
+                assert.equal(r.getPool().getAvailableLength(), options.max-1)
+                assert.equal(r.getPool().getLength(), options.max-1)
+                done()
+            }, 1000)
+        }
+        else {
+            done(e);
+        }
+
+    }
+});
+
+It("`pool.drain` should eventually remove all the connections", function* (done) {
+    try{
+        yield r.getPool().drain();
+
+        assert.equal(r.getPool().getAvailableLength(), 0)
+        assert.equal(r.getPool().getLength(), 0)
+
+        done()
+    }
+    catch(e) {
+        done(e);
+    }
+});
+
 

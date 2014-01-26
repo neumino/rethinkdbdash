@@ -189,6 +189,36 @@ it("Test dequeue - a little of everything", function() {
     assert(q.getLength(), size*2-10-10)
 })
 
+it("Test dequeue - toArray", function() {
+    var q = new Dequeue(initSize);
+    for(var i=0; i<10; i++) {
+        q.unshift(i);
+    }
+    for(var i=0; i<10; i++) {
+        q.push(i+100);
+    }
+    assert.deepEqual(q.toArray(), [9,8,7,6,5,4,3,2,1,0,100,101,102,103,104,105,106,107,108,109]);
+
+})
+it("Test dequeue - delete", function() {
+    var q = new Dequeue(initSize);
+    for(var i=0; i<10; i++) {
+        q.unshift(i);
+    }
+    for(var i=0; i<10; i++) {
+        q.push(i+100);
+    }
+    q.delete(5)
+    assert.deepEqual(q.toArray(), [9,8,7,6,5,3,2,1,0,100,101,102,103,104,105,106,107,108,109]);
+
+    q.delete(0)
+    assert.deepEqual(q.toArray(), [8,7,6,5,3,2,1,0,100,101,102,103,104,105,106,107,108,109]);
+
+    q.delete(0)
+    assert.deepEqual(q.toArray(), [7,6,5,3,2,1,0,100,101,102,103,104,105,106,107,108,109]);
+
+
+})
 
 
 it("Test dequeue - shift returns undefined if no element", function() {

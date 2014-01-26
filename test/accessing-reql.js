@@ -376,7 +376,13 @@ It("`connection` should extend events.Emitter and emit an error if the server fa
             .run(connection);
     }
     catch(e){
-        done(e);
+        if (e.message === "Client is buggy (failed to deserialize protobuf).\nClosing all outstanding queries...") {
+            //done will be called by the listener on "error"
+            //done()
+        }
+        else {
+            done(e);
+        }
     }
 })
 

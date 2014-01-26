@@ -126,11 +126,60 @@ It("`r.exprJSON` should work", function* (done) {
         done(e);
     }
 })
+It("`r.expr` should take a nestingLevel value and throw if the nesting level is reached", function* (done) {
+    try {
+        r.expr({a :{b: {c: {d: 1}}}}, 2)
+    }
+    catch(e) {
+        if (e.message === "Nesting depth limit exceeded.\nYou probably have a circular reference somewhere.") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
 
 
-
-
-
+It("`r.exprJSON` should take a nestingLevel value and throw if the nesting level is reached", function* (done) {
+    try {
+        r.exprJSON({a :{b: {c: {d: 1}}}}, 2)
+    }
+    catch(e) {
+        if (e.message === "Nesting depth limit exceeded.\nYou probably have a circular reference somewhere.") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+It("`r.exprJSON` should throw when r.setNestingLevel is used with a small value", function* (done) {
+    try {
+        r.setNestingLevel(2);
+        r.exprJSON({a :{b: {c: {d: 1}}}})
+    }
+    catch(e) {
+        if (e.message === "Nesting depth limit exceeded.\nYou probably have a circular reference somewhere.") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+It("`r.expr` should work when setNestingLevel set back the value to 100", function* (done) {
+    try {
+        r.setNestingLevel(100);
+        var result = yield r.expr({a :{b: {c: {d: 1}}}}).run(connection);
+        assert.deepEqual(result, {a :{b: {c: {d: 1}}}})
+        done();
+    }
+    catch(e) {
+        console.log(e.message);
+        done(e);
+    }
+})
 /*
 
 It("Null char in string - 1", function* (done) {
