@@ -62,11 +62,11 @@ npm install rethinkdbdash
 
 ### Documentation ###
 -------------
-While rethinkdbdash has almost the same syntax as the official driver, there are still
+While rethinkdbdash uses almost the same syntax as the official driver, there are still
 a few differences.
 
-This section will reference all the differences. For all the other methods not
-mentionned, please read the
+This section references all the differences. For all the other methods not
+mentionned here, please refer to the
 [official driver's documentation](http://www.rethinkdb.com/api/javascript/).
 
 
@@ -81,7 +81,7 @@ var r = require('rethinkdbdash')(options);
 ```
 
 `options` can be:
-- `{pool: false}`
+- `{pool: false}` -- if you do not want to use a connection pool.
 - the options for the connection pool, which can be:
 ```js
 {
@@ -96,7 +96,7 @@ var r = require('rethinkdbdash')(options);
 
 #### Promises ####
 
-Rethinkdbdash will return a bluebird promise when a method with the official driver
+Rethinkdbdash returns a bluebird promise when a method with the official driver
 takes a callback.
 
 Example with `yield` - 1:
@@ -188,14 +188,15 @@ cursor hasn't fetch everything or has been closed.
 
 #### Cursor ####
 
-Rethinkdbdash will return a cursor as long as your result is a sequence.
+Rethinkdbdash does not extend `Array` with methods and returns a cursor as long as your
+result is a sequence.
 
 ```
 var cursor = yield r.expr([1, 2, 3]).run()
-console.log(JSON.stringify(cursor)) // will *not* print [1, 2, 3]
+console.log(JSON.stringify(cursor)) // does *not* print [1, 2, 3]
 
 var result = yield cursor.toArray();
-console.log(JSON.stringify(result)) // Will print [1, 2, 3]
+console.log(JSON.stringify(result)) // print [1, 2, 3]
 ```
 
 
@@ -203,7 +204,7 @@ console.log(JSON.stringify(result)) // Will print [1, 2, 3]
 - Better backtraces
 
 Long backtraces are split on multiple lines.  
-In case the driver cannot parse the query, it will provide a better location of the error.
+In case the driver cannot parse the query, it provides a better location of the error.
 
 - Different handling for queries that cannot be parsed on the server.
 
@@ -235,7 +236,7 @@ recomputing it if the query is re-run.
 - Connection
 
 If you do not wish to use rethinkdbdash connection pool, you can implement yours. The
-connections created with rethinkdbdash will emit a "release" event when they receive an
+connections created with rethinkdbdash emits a "release" event when they receive an
 error, an atom, or the end (or full) sequence.
 
 A connection can also emit a "timeout" event if the underlying connection times out.
