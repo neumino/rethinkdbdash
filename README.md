@@ -42,7 +42,7 @@ var run = Promise.coroutine(function* () {
     catch(e) {
         console.log(e);
     }
-})
+})()
 ```
 
 Note: You have to start node with the `--harmony` flag.
