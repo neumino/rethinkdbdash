@@ -1,7 +1,7 @@
 {
   "name": "rethinkdbdash",
-  "version": "0.0.2",
-  "description": "Node driver for RethinkDB",
+  "version": "1.11.0",
+  "description": "A Node.js driver for RethinkDB with promises and a connection pool",
   "main": "lib/index.js",
   "directories": {
     "test": "test"
@@ -19,12 +19,12 @@
     "nodejs"
   ],
   "author": "Michel Tu <orphee@gmail.com> (http://justonepixel.com/)",
-  "license": "",
+  "license": "MIT",
   "readmeFilename": "README.md",
   "bugs": {
     "url": "https://github.com/neumino/rethinkdbdash/issues"
   },
-  "engines" : { "node" : ">=0.11.10" },
+  "engines" : { "node" : ">= 0.11.9" },
   "dependencies":{
     "node-protobuf": "git://github.com/atnnn/node-protobuf.git",
     "bluebird": ">= 1.0.0"
