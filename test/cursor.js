@@ -1,15 +1,15 @@
 var config = require('./config.js');
 var r = require('../lib')(config);
 var util = require('./util.js');
-var Promise = require('bluebird');
 var assert = require('assert');
 
 var uuid = util.uuid;
-var dbName;
-var tableName, tableName2
-var cursor;
-var numDocs = 100;
-var smallNumDocs = 5;
+var It = util.It
+
+var dbName, tableName, tableName2, cursor;
+
+var numDocs = 100; // Number of documents in the "big table" used to test the SUCCESS_PARTIAL 
+var smallNumDocs = 5; // Number of documents in the "small table"
 
 function It(testName, generatorFn) {
     it(testName, function(done) {

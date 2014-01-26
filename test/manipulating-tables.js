@@ -1,17 +1,14 @@
-var config = require('./config.js');
-var r = require('../lib')(config);
-var util = require('./util.js');
-var Promise = require('bluebird');
+var config = require(__dirname+'/config.js');
+var r = require(__dirname+'/../lib')(config);
+var util = require(__dirname+'/util.js');
 var assert = require('assert');
+
+var uuid = util.uuid;
+var It = util.It;
 
 var uuid = util.uuid;
 var dbName, tableName;
 
-function It(testName, generatorFn) {
-    it(testName, function(done) {
-        Promise.coroutine(generatorFn)(done);
-    })
-}
 
 It("Init for `manipulating-tables.js`", function* (done) {
     try {

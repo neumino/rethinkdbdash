@@ -1,18 +1,14 @@
-var config = require('./config.js');
-var r = require('../lib')({pool: false});
-var util = require('./util.js');
-var Promise = require('bluebird');
+var config = require(__dirname+'/config.js');
+var r = require(__dirname+'/../lib')({pool: false});
+var util = require(__dirname+'/util.js');
 var assert = require('assert');
 
 var uuid = util.uuid;
-var connection; // global connection
-var dbName;
+var It = util.It;
 
-function It(testName, generatorFn) {
-    it(testName, function(done) {
-        Promise.coroutine(generatorFn)(done);
-    })
-}
+var uuid = util.uuid;
+var dbName, tableName;
+
 var options = {
     min: 2,
     max: 10,

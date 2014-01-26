@@ -1,17 +1,13 @@
-var config = require('./config.js');
-var r = require('../lib')(config);
-var util = require('./util.js');
-var Promise = require('bluebird');
+var config = require(__dirname+'/config.js');
+var r = require(__dirname+'/../lib')(config);
+var util = require(__dirname+'/util.js');
 var assert = require('assert');
 
 var uuid = util.uuid;
-var dbName;
+var It = util.It;
 
-function It(testName, generatorFn) {
-    it(testName, function(done) {
-        Promise.coroutine(generatorFn)(done);
-    })
-}
+var uuid = util.uuid;
+var dbName, tableName;
 
 It("Init for `document-manipulation.js`", function* (done) {
     try {
