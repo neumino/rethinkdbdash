@@ -416,6 +416,7 @@ It("`dayOfYear` should work", function* (done) {
 It("`dayOfWeek` should work", function* (done) {
     try {
         result = yield r.now().inTimezone(new Date().toString().match(' GMT([^ ]*)')[1]).dayOfWeek().run(connection);
+        if (result === 7) result = 0;
         assert.equal(result, new Date().getDay());
 
         done();
