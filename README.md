@@ -3,10 +3,9 @@ rethinkdbdash
 
 <a href="https://app.wercker.com/project/bykey/10e69719c2031f4995798ddb9221c398"><img alt="Wercker status" src="https://app.wercker.com/status/10e69719c2031f4995798ddb9221c398/m" align="right" /></a>
 
-An attempt for another JavaScript driver for RethinkDB
-__Note:__ Still in development.
+A Node.js driver for RethinkDB with promises, connection pool.
 
-Use
+### Quick start ###
 =============
 
 Example wih koa:
@@ -48,8 +47,8 @@ var run = Promise.coroutine(function* () {
 Note: You have to start node with the `--harmony` flag.
 
 
-Install
-============
+### Install ###
+=============
 - Build node 0.11.10 (checkout `v0.11.10-release`) from source (binaries won't work with
 `node-protobuf` -- some libraries are not properly linked).
 - Install rethinkdbdash with `npm`.
@@ -58,8 +57,9 @@ Install
 npm install rethinkdbdash
 ```
 
-Documentation
-============
+
+### Documentation ###
+=============
 While rethinkdbdash has almost the same syntax as the official driver, there are still
 a few differences.
 
@@ -71,16 +71,19 @@ mentionned, please read the
 
 The differences are:
 
-- Module name
+#### Module name ####
 
 Import `rethinkdbdash`:
 ```
 var r = require('rethinkdbdash');
 ```
 
-- Promises
 
-Rethinkdbdash will return a promise when a method with the official driver takes a callback.
+
+#### Promises ####
+
+Rethinkdbdash will return a bluebird promise when a method with the official driver
+takes a callback.
 
 Example with `yield`:
 ```js
@@ -104,7 +107,9 @@ r.connect().then(function(connection) {
 })
 ```
 
-- Connection pool
+
+
+#### Connection pool ####
 
 Rethinkdbdash implements a connection pool. You can create one with `r.createPool`.
 Then you can call `run` without any arguments, or just with options.
@@ -112,16 +117,15 @@ Then you can call `run` without any arguments, or just with options.
 ```js
 var r = require('rethinkdbdash');
 r.createPool({
-    min: <number>, // minimum number of connections in the pool
-    max: <number>, // maximum number of connections in the pool
-    bufferSize: <number>, // minimum number of connections available in the pool
-    timeoutError: <number>, // wait time before reconnecting in case of an error (in ms)
-    timeoutGb: <number>, // how long the pool keep a connection that hasn't been used (in ms)
+    min: <number>, // minimum number of connections in the pool, default 50
+    max: <number>, // maximum number of connections in the pool, default 1000
+    bufferSize: <number>, // minimum number of connections available in the pool, default 50
+    timeoutError: <number>, // wait time before reconnecting in case of an error (in ms), default 1000
+    timeoutGb: <number>, // how long the pool keep a connection that hasn't been used (in ms), default 60*60*1000
 });
 try {
-    var result = yield r.table("foo").run();
-    var cursor = yield r.table("foo").run(connection);
-    var result = yield cursor.toArray();
+    var cursor = yield r.table("foo").run();
+    var result = yield cursor.toArray(); // The connection used in the cursor will be released when all the data will be retrieved
 }
 catch(e) {
     console.log(e.message);
@@ -131,23 +135,41 @@ catch(e) {
 __Note__: If a query returns a cursor, the connection will not be released as long as the
 cursor hasn't fetch everything or has been closed.
 
-- Errors
 
+#### Errors ####
+- Better backtraces
+
+Long backtraces are split on multiple lines.
+In case the driver cannot parse the query, it will provide a better location of the error.
+
+- Different handling for queries that cannot be parsed on the server.
 In case an error occured because the server cannot parse the protobuf message, the
 official driver emits an `error` on the connection.
-Rethinkdbdash emits an error and reject all queries running on this connection and
-eventually close the connection. This is the only way now to avoid having some
-part of your program hang forever.
+Rethinkdbdash emits an error and rejects all queries running on this connection and
+close the connection. This is the only way now to avoid having some part of your
+program hang forever.
+
+
+#### Miscellaneous ####
+
 
 - Maximum nesting depth
 
-The maximum nesting depth is your documents are by default 100 (instead of 20).
+The maximum nesting depth is your documents is by default 100 (instead of 20).
 You can change this setting with
+
 ```js
 r.setNestingLevel(<number>)
 ```
 
-Run tests
+- Performance
+The tree representation of the query is built step by step and stored which avoid
+recomputing it if the query is re-run.
+
+- `exprJSON`, internal method used by `insert` is more efficient.
+
+
+### Run tests ###
 ============
 
 Update `test/config.js` if your RethinkDB instance doesn't run on the default parameters.
@@ -158,16 +180,8 @@ mocha --harmony-generators
 ```
 
 
-What's different?
-=============
-
-- Promises with bluebird
-- ReqlDriverError instances partially contain the query that leat to the error
-- The query object is built little by little
-- Long backtraces are split on multiple lines
-- Not supported for browser
-- Tested with Node 11.10 - Should work with Node >= 10.4
-
-
-Roadmap
-- Pool
+Tests are also being run on wercker
+- Builds: [https://app.wercker.com/#applications/52dffe8ba4acb3ef16010ef8/tab](https://github.com/neumino/box-rethinkdbdash)
+- Box: 
+  - Github: [https://github.com/neumino/box-rethinkdbdash](https://github.com/neumino/box-rethinkdbdash)
+  - Wercker builds: [https://app.wercker.com/#applications/52dffc65a4acb3ef16010b60/tab](https://app.wercker.com/#applications/52dffc65a4acb3ef16010b60/tab)
