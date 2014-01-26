@@ -260,5 +260,4 @@ Tests are also being run on [wercker](http://wercker.com/):
 
 ### Roadmap ###
 ============
-- Clean tests (refactor `It`)
 - Add better tests for backtraces
