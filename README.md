@@ -100,7 +100,7 @@ var r = require('rethinkdbdash')(options);
 Rethinkdbdash returns a bluebird promise when a method with the official driver
 takes a callback.
 
-Example with `yield` - 1:
+Example 1 with `yield`:
 ```js
 try{
     var cursor = yield r.table("foo").run();
@@ -112,7 +112,7 @@ else {
 }
 ```
 
-Example with `yield` - 2:
+Example 2 with `yield`:
 ```js
 try{
     var cursor = yield r.table("foo").run();
@@ -127,9 +127,9 @@ else {
 }
 ```
 
-Example `then` and `error`:
+Example with `then` and `error`:
 ```js
-r.table("foo).run().then(function(connection) {
+r.table("foo").run().then(function(connection) {
     //...
 }).error(function(e) {
     console.log(e.mssage)
@@ -142,7 +142,7 @@ r.table("foo).run().then(function(connection) {
 Rethinkdbdash implements a connection pool and is created by default.
 
 If you do not want to use a connection pool, iniitialize rethinkdbdash with `{pool: false}` like that:
-```
+```js
 var r = require('rethinkdbdash)({pool: false});
 ```
 
@@ -232,7 +232,7 @@ r.setNestingLevel(<number>)
 
 The tree representation of the query is built step by step and stored which avoid
 recomputing it if the query is re-run.  
-`exprJSON`, internal method used by `insert`, is more efficient in the worst case (`O(n)`).
+`exprJSON`, internal method used by `insert`, is more efficient in the worst case.
 
 - Connection
 
