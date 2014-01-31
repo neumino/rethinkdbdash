@@ -3532,39 +3532,3 @@ It('Test backtrace for r.expr({a:1}).add("eh")', function* (done) {
 
 
 
-/*
-Frames:
-[ { type: 'POS', pos: 1 }, { type: 'POS', pos: 1 } ]
-
-Error:
-Expected type NUMBER but found STRING. in:
-r.table("test").map(function(var_1) {
-    return r.expr(1).add("eh")
-           ^^^^^^^^^^^^^^^^^^^
-})
-*/
-It('Test backtrace for r.table("test").map( function(doc) { return r.expr(1).add("eh")})', function* (done) {
-    try {
-        r.nextVarId=1;
-        yield r.table("test").map( function(doc) { return r.expr(1).add("eh")}).run()
-        done(new Error("Should have thrown an error"))
-    }
-    catch(e) {
-        if (e.message === "Expected type NUMBER but found STRING. in:\nr.table(\"test\").map(function(var_1) {\n    return r.expr(1).add(\"eh\")\n           ^^^^^^^^^^^^^^^^^^^\n})\n") {
-            done()
-        }
-        else {
-            done(e);
-        }
-    }
-})
-
-
-
-
-
-
-
-
-
-
