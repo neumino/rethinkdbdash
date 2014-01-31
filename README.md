@@ -262,4 +262,4 @@ Tests are also being run on [wercker](http://wercker.com/):
 
 ### Roadmap ###
 ============
-- Add better tests for backtraces
+- Pre-serialize a query (not sure if possible though)
