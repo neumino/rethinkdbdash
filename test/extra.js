@@ -22,3 +22,14 @@ It("Anonymous function should throw if they return undefined", function* (done) 
         }
     }
 })
+
+It("toString should work", function* (done) {
+    try {
+        assert.equal(r.expr(1).add(2).toString(), "r.expr(1).add(2)");
+        assert.equal(r.expr(1).toString(), "r.expr(1)");
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
