@@ -251,6 +251,52 @@ It("index operations", function* (done) {
 })
 
 
+It("`indexCreate` should work with options", function* (done) {
+    try {
+        result = yield r.db(dbName).table(tableName).indexCreate("foo", {multi: true}).run();
+        assert.deepEqual(result, {created: 1});
+
+        result = yield r.db(dbName).table(tableName).indexCreate("foo1", r.row("foo"), {multi: true}).run();
+        assert.deepEqual(result, {created: 1});
+
+        result = yield r.db(dbName).table(tableName).indexCreate("foo2", function(doc) { return doc("foo")}, {multi: true}).run();
+        assert.deepEqual(result, {created: 1});
+
+        result = yield r.db(dbName).table(tableName).insert({foo: ["bar1", "bar2"]}).run()
+        assert.equal(result.inserted, 1); 
+        result = yield r.db(dbName).table(tableName).insert({foo: ["bar1", "bar3"]}).run()
+        assert.equal(result.inserted, 1); 
+
+        result = yield r.db(dbName).table(tableName).getAll("bar1", {index: "foo"}).count().run()
+        assert.equal(result, 2)
+        result = yield r.db(dbName).table(tableName).getAll("bar1", {index: "foo1"}).count().run()
+        assert.equal(result, 2)
+        result = yield r.db(dbName).table(tableName).getAll("bar1", {index: "foo2"}).count().run()
+        assert.equal(result, 2)
+
+        result = yield r.db(dbName).table(tableName).getAll("bar2", {index: "foo"}).count().run()
+        assert.equal(result, 1)
+        result = yield r.db(dbName).table(tableName).getAll("bar2", {index: "foo1"}).count().run()
+        assert.equal(result, 1)
+        result = yield r.db(dbName).table(tableName).getAll("bar2", {index: "foo2"}).count().run()
+        assert.equal(result, 1)
+
+        result = yield r.db(dbName).table(tableName).getAll("bar3", {index: "foo"}).count().run()
+        assert.equal(result, 1)
+        result = yield r.db(dbName).table(tableName).getAll("bar3", {index: "foo1"}).count().run()
+        assert.equal(result, 1)
+        result = yield r.db(dbName).table(tableName).getAll("bar3", {index: "foo2"}).count().run()
+        assert.equal(result, 1)
+
+        done()
+
+    }
+    catch(e) {
+        done(e)
+    }
+
+})
+
 It("`indexCreate` should throw if no argument is passed", function* (done) {
     try {
         result = yield r.db(dbName).table(tableName).indexCreate().run();
