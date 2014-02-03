@@ -42,7 +42,7 @@ var run = Promise.coroutine(function* () {
     catch(e) {
         console.log(e);
     }
-})()
+})();
 ```
 
 Note: You have to start node with the `--harmony` flag.
@@ -182,7 +182,7 @@ r.getPool().drain();
 
 
 __Note__: If a query returns a cursor, the connection will not be released as long as the
-cursor hasn't fetch everything or has been closed.
+cursor hasn't fetched everything or has been closed.
 
 
 
