@@ -117,6 +117,24 @@ It("`r.exprJSON` should work", function* (done) {
         done(e);
     }
 })
+It("`r.exprJSON` should work if the object is not JSON serializable", function* (done) {
+    try {
+        var now = new Date()
+        result = yield r.exprJSON([1, now]).run();
+        result = yield result.toArray();
+        assert.deepEqual(result, [1, now]);
+
+        result = yield r.exprJSON({c: 1, a: now}).run();
+        assert.deepEqual(result, {c: 1, a: now});
+
+        done()
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
+
 It("`r.expr` should take a nestingLevel value and throw if the nesting level is reached", function* (done) {
     try {
         r.expr({a :{b: {c: {d: 1}}}}, 2)
