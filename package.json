@@ -1,13 +1,13 @@
 {
   "name": "rethinkdbdash",
-  "version": "1.11.7",
+  "version": "1.11.8",
   "description": "A Node.js driver for RethinkDB with promises and a connection pool",
   "main": "lib/index.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "test": "mocha --harmony-generators -t 5000"
+    "test": "mocha --harmony-generators -t 10000"
   },
   "repository": {
     "type": "git",
