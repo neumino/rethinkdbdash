@@ -29,7 +29,7 @@ app.listen(3000);
 Example with [bluebird](https://github.com/petkaantonov/bluebird):
 
 ```js
-var Promise = require('blubird');
+var Promise = require('bluebird');
 var r = require('rethinkdbdash')();
 
 var run = Promise.coroutine(function* () {
