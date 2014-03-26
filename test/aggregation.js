@@ -120,3 +120,109 @@ It("`contains` should throw if called without arguments", function* (done) {
         }
     }
 })
+
+It("`sum` should work ", function* (done) {
+    try{
+        result = yield r.expr([1,2,3]).sum().run();
+        assert.equal(result, 6);
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
+It("`sum` should throw if called with arguments", function* (done) {
+    try {
+        result = yield r.expr([1,2,3]).sum(1).run();
+    }
+    catch(e) {
+        if (e.message === "`sum` takes 0 argument, 1 provided after:\nr.expr([1, 2, 3])") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+It("`avg` should work ", function* (done) {
+    try{
+        result = yield r.expr([1,2,3]).avg().run();
+        assert.equal(result, 2);
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
+It("`avg` should throw if called with arguments", function* (done) {
+    try {
+        result = yield r.expr([1,2,3]).avg(1).run();
+    }
+    catch(e) {
+        if (e.message === "`avg` takes 0 argument, 1 provided after:\nr.expr([1, 2, 3])") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+It("`min` should work ", function* (done) {
+    try{
+        result = yield r.expr([1,2,3]).min().run();
+        assert.equal(result, 1);
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
+It("`min` should throw if called with arguments", function* (done) {
+    try {
+        result = yield r.expr([1,2,3]).min(1).run();
+    }
+    catch(e) {
+        if (e.message === "`min` takes 0 argument, 1 provided after:\nr.expr([1, 2, 3])") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+It("`max` should work ", function* (done) {
+    try{
+        result = yield r.expr([1,2,3]).max().run();
+        assert.equal(result, 3);
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
+It("`max` should throw if called with arguments", function* (done) {
+    try {
+        result = yield r.expr([1,2,3]).max(1).run();
+    }
+    catch(e) {
+        if (e.message === "`max` takes 0 argument, 1 provided after:\nr.expr([1, 2, 3])") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+
