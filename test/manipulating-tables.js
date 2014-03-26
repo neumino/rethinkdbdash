@@ -100,7 +100,7 @@ It("'`tableCreate` should create a table -- all args'", function* (done) {
     try {
         tableName = uuid();
 
-        var result = yield r.db(dbName).tableCreate(tableName, {cacheSize: 1024*1024*1024, durability: "soft", primaryKey: "foo"}).run();
+        var result = yield r.db(dbName).tableCreate(tableName, {durability: "soft", primaryKey: "foo"}).run();
         assert.deepEqual(result, {created:1}); // We can't really check other parameters...
 
         result = yield r.db(dbName).table(tableName).info().run();
@@ -119,7 +119,7 @@ It("'`tableCreate` should throw -- non valid args'", function* (done) {
         var result = yield r.db(dbName).tableCreate(tableName, {nonValidArg: true}).run();
     }
     catch(e) {
-        if (e.message === 'Unrecognized option `nonValidArg` in `tableCreate`. Available options are primaryKey <string>, durability <string>, cacheSize <nunber>, datancenter <string>.') {
+        if (e.message === 'Unrecognized option `nonValidArg` in `tableCreate`. Available options are primaryKey <string>, durability <string>, datancenter <string>.') {
             done()
         }
         else {
@@ -145,7 +145,7 @@ It("'`tableCreate` should throw is the name contains special char'", function* (
         var result = yield r.db(dbName).tableCreate("-_-").run();
     }
     catch(e) {
-        if (e.message.match(/Database name `-_-` invalid \(Use A-Za-z0-9_ only\)/)) { done(); }
+        if (e.message.match(/Table name `-_-` invalid \(Use A-Za-z0-9_ only\)/)) { done(); }
         else { done(e); }
     }
 })
