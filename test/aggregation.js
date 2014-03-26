@@ -43,7 +43,7 @@ It("`reduce` should throw if no argument has been passed", function* (done) {
         result = yield r.db(dbName).table(tableName).reduce().run();
     }
     catch(e) {
-        if (e.message === "`reduce` takes at least 1 argument, 0 provided after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message === "`reduce` takes 1 argument, 0 provided after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
             done()
         }
         else {
