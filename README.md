@@ -5,7 +5,7 @@ rethinkdbdash
 
 A Node.js driver for RethinkDB with promises and a connection pool.
 
-Status: Beta
+Status: Beta, currently works only with Node 0.11.10 (because of `node-protobuf`)
 
 
 ### Quick start ###
@@ -97,7 +97,7 @@ var r = require('rethinkdbdash')(options);
 
 #### Promises ####
 
-Rethinkdbdash returns a bluebird promise when a method with the official driver
+Rethinkdbdash returns a bluebird promise when a method in the official driver
 takes a callback.
 
 Example 1 with `yield`:
@@ -143,7 +143,7 @@ Rethinkdbdash implements a connection pool and is created by default.
 
 If you do not want to use a connection pool, iniitialize rethinkdbdash with `{pool: false}` like that:
 ```js
-var r = require('rethinkdbdash)({pool: false});
+var r = require('rethinkdbdash')({pool: false});
 ```
 
 You can provide options for the connection pool with the following syntax:
