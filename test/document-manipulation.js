@@ -66,7 +66,9 @@ It("`r.row` should work - 3", function* (done) {
 })
 It("`r.row` should work - 4", function* (done) {
     try {
-        result = yield r.db(dbName).table(tableName).replace(r.row.merge({idCopyReplace: r.row("id")})).run();
+        result = yield r.db(dbName).table(tableName).replace(function(doc) {
+            return doc.merge({idCopyReplace: doc("id")})
+        }).run();
         assert.equal(result.replaced, 1);
  
         done();
@@ -161,6 +163,24 @@ It("`merge` should work", function* (done) {
         assert.equal(result.a, 1)
         assert(result.date instanceof Date)
 
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+It("`merge` should take an anonymous function", function* (done) {
+    try {
+        result = yield r.expr({a: 0}).merge(function(doc) {
+            return {b: doc("a").add(1)}
+        }).run();
+        assert.deepEqual(result, {a: 0, b: 1});
+
+        result = yield r.expr({a: 0}).merge({
+            b: r.row("a").add(1)
+        }).run();
+        assert.deepEqual(result, {a: 0, b: 1});
 
         done();
     }
