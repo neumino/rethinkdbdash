@@ -2,6 +2,7 @@ var config = require(__dirname+'/config.js');
 var r = require(__dirname+'/../lib')(config);
 var util = require(__dirname+'/util.js');
 var assert = require('assert');
+var Promise = require('bluebird');
 
 var uuid = util.uuid;
 var It = util.It;
@@ -149,6 +150,11 @@ It("`getAll` should work with multiple values - secondary index 1", function* (d
         result = yield result.toArray();
         assert.deepEqual(result, [{"index":"field","ready":true}]);
 
+        // Yield one second -- See https://github.com/rethinkdb/rethinkdb/issues/2170
+        var p = new Promise(function(resolve, reject) {
+            setTimeout(function() { resolve() }, 1000)
+        });
+        yield p;
         result = yield r.db(dbName).table(tableName).getAll(10, {index: "field"}).run();
         assert(result);
         result = yield result.toArray();
@@ -168,6 +174,12 @@ It("`getAll` should work with multiple values - secondary index 2", function* (d
         result = yield r.db(dbName).table(tableName).indexWait("fieldAddOne").run();
         result = yield result.toArray();
         assert.deepEqual(result, [{"index":"fieldAddOne","ready":true}]);
+
+        // Yield one second -- See https://github.com/rethinkdb/rethinkdb/issues/2170
+        var p = new Promise(function(resolve, reject) {
+            setTimeout(function() { resolve() }, 1000)
+        });
+        yield p;
 
         result = yield r.db(dbName).table(tableName).getAll(11, {index: "fieldAddOne"}).run();
         assert(result);
