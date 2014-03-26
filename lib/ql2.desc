@@ -1,5 +1,5 @@
 
-“
+à
 	ql2.proto"5
 VersionDummy"%
 Version
@@ -64,7 +64,7 @@
 R_ARRAY
 R_OBJECT
 
-R_JSON*êN°ú"Å
+R_JSON*êN°ú"∑
 Term
 type (2.Term.TermType
 datum (2.Datum
@@ -72,7 +72,7 @@
 optargs (2.Term.AssocPair,
 	AssocPair
 key (	
-val (2.Term"’
+val (2.Term"ã
 TermType	
 DATUM
 
@@ -117,7 +117,8 @@ SET_INSERTX
 INDEXES_OFW
 CONTAINS]
 	GET_FIELD
-KEYS^
+KEYS^
+OBJECTè
 
 HAS_FIELDS 
 WITH_FIELDS`	
@@ -136,9 +137,7 @@ HAS_FIELDS 
 COUNT+
 IS_EMPTYV	
 UNION,
-NTH-
-GROUPED_MAP_REDUCE.
-GROUPBY/
+NTH-
 
 INNER_JOIN0
 
@@ -240,4 +239,13 @@ EPOCH_TIMEe
 OCTOBER{
 NOVEMBER|
 DECEMBER}
-LITERALâ*êN°ú
+LITERALâ
+
+GROUPê
+SUMë
+AVGí
+MINì
+MAXî
+
+SPLITï
+UNGROUPñ*êN°ú
