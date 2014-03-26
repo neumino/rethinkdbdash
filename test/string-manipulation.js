@@ -33,3 +33,24 @@ It("`match` should throw if no arguement has been passed", function* (done) {
         }
     }
 })
+It("`upcase` should work", function* (done) {
+    try {
+        var result = yield r.expr("helLo").upcase().run();
+        assert.equal(result, "HELLO");
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+It("`downcase` should work", function* (done) {
+    try {
+        var result = yield r.expr("HElLo").downcase().run();
+        assert.equal(result, "hello");
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
