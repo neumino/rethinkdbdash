@@ -618,3 +618,15 @@ It("`keys` throw on a string", function* (done) {
         }
     }
 })
+It("`object` should work", function* (done) {
+    try {
+        result = yield r.object("a", 1, r.expr("2"), "foo").run();
+        assert.deepEqual(result, {"a": 1, "2": "foo"});
+
+        done()
+    }
+    catch(e) {
+        console.log(e)
+        done(e);
+    }
+})
