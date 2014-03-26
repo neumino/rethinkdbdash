@@ -234,7 +234,7 @@ It("`run` should throw on an unrecongized argument", function* (done) {
         var result = yield r.expr(1).run(connection, {db: "db"});
     }
     catch(e) {
-        if (e.message === "Unrecognized option `db` in `run`. Available options are useOutdated <bool>, durability <string>, noreply <bool>, timeFormat <string>, profile <bool>.") {
+        if (e.message === "Unrecognized option `db` in `run`. Available options are useOutdated <bool>, durability <string>, noreply <bool>, timeFormat <string>, groupFormat: <string>, profile <bool>.") {
             done();
         }
         else{
@@ -265,6 +265,20 @@ It("`timeFormat` should work", function* (done) {
 
         result = yield r.now().run(connection, {timeFormat: 'raw'});
         assert.equal(result.$reql_type$, "TIME")
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
+It("`groupFormat` should work", function* (done) {
+    try {
+        result = yield r.expr([{name: "Michel", grownUp: true},{name: "Laurent", grownUp: true},
+            {name: "Sophie", grownUp: true},{name: "Luke", grownUp: false},{name: "Mino", grownUp: false}]).group('grownUp').run(connection, {groupFormat: "raw"});
+
+        assert.deepEqual(result, { "$reql_type$": "GROUPED_DATA", "data": [ [ false, [ { "grownUp": false, "name": "Luke" }, { "grownUp": false, "name": "Mino" } ] ], [ true, [ { "grownUp": true, "name": "Michel" }, { "grownUp": true, "name": "Laurent" }, { "grownUp": true, "name": "Sophie" } ] ] ] })
 
         done();
     }

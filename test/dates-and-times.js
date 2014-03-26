@@ -450,3 +450,16 @@ It("Constant terms should work", function* (done) {
     }
 })
 
+It("`epochTime` should work", function* (done) {
+    try {
+        now = new Date();
+        result = yield r.epochTime(now.getTime()/1000).run({timeFormat: "raw"});
+        assert.equal(result.$reql_type$, "TIME")
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+

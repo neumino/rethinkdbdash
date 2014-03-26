@@ -9,7 +9,7 @@ var dbName = util.uuid()
 var tableName = util.uuid()
 
 var query;
-query = 'r.expr([1,2,3]).concatMap(function(v) { return v}).add(1)'
+query = 'r.expr(1).do(function(v) { return r.object("a") })'
 
 Promise.coroutine(function* () {
     try {

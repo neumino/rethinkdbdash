@@ -77,6 +77,51 @@ It("`count` should work -- filter ", function* (done) {
         done(e);
     }
 })
+It("`group` should work ", function* (done) {
+    try {
+        result = yield r.expr([{name: "Michel", grownUp: true},{name: "Laurent", grownUp: true},
+            {name: "Sophie", grownUp: true},{name: "Luke", grownUp: false},{name: "Mino", grownUp: false}]).group('grownUp').run();
+        result = yield result.toArray();
+        result.sort();
+
+        assert.deepEqual(result, [ { "group": false, "reduction": [ { "grownUp": false, "name": "Luke" }, { "grownUp": false, "name": "Mino" } ] }, { "group": true, "reduction": [ { "grownUp": true, "name": "Michel" }, { "grownUp": true, "name": "Laurent" }, { "grownUp": true, "name": "Sophie" } ] } ])
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+It("`groupFormat` should work -- with raw", function* (done) {
+    try {
+        result = yield r.expr([{name: "Michel", grownUp: true},{name: "Laurent", grownUp: true},
+            {name: "Sophie", grownUp: true},{name: "Luke", grownUp: false},{name: "Mino", grownUp: false}]).group('grownUp').run({groupFormat: "raw"});
+
+        assert.deepEqual(result, { "$reql_type$": "GROUPED_DATA", "data": [ [ false, [ { "grownUp": false, "name": "Luke" }, { "grownUp": false, "name": "Mino" } ] ], [ true, [ { "grownUp": true, "name": "Michel" }, { "grownUp": true, "name": "Laurent" }, { "grownUp": true, "name": "Sophie" } ] ] ] })
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
+
+It("`ungroup` should work ", function* (done) {
+    try {
+        result = yield r.expr([{name: "Michel", grownUp: true},{name: "Laurent", grownUp: true},
+            {name: "Sophie", grownUp: true},{name: "Luke", grownUp: false},{name: "Mino", grownUp: false}]).group('grownUp').ungroup().run();
+        result = yield result.toArray();
+        result.sort();
+
+        assert.deepEqual(result, [ { "group": false, "reduction": [ { "grownUp": false, "name": "Luke" }, { "grownUp": false, "name": "Mino" } ] }, { "group": true, "reduction": [ { "grownUp": true, "name": "Michel" }, { "grownUp": true, "name": "Laurent" }, { "grownUp": true, "name": "Sophie" } ] } ])
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
 
 It("`contains` should work ", function* (done) {
     try{

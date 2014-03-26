@@ -3387,3 +3387,290 @@ It('Test backtrace for r.expr({a:1}).add("eh")', function* (done) {
 
 
 
+/*
+Frames:
+[ { type: 'POS', pos: 1 } ]
+
+Error:
+Cannot perform get_field on a non-object non-sequence `1`. in:
+r.expr([1, 2, 3]).group("foo")
+                        ^^^^^
+*/
+It('Test backtrace for r.expr([1,2,3]).group("foo")', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.expr([1,2,3]).group("foo").run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Cannot perform get_field on a non-object non-sequence `1`. in:\nr.expr([1, 2, 3]).group(\"foo\")\n                        ^^^^^ \n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+/*
+Frames:
+[ { type: 'POS', pos: 0 } ]
+
+Error:
+Expected type GROUPED_DATA but found DATUM:
+[1, 2, 3] in:
+r.expr([1, 2, 3]).ungroup()
+^^^^^^^^^^^^^^^^^
+*/
+It('Test backtrace for r.expr([1,2,3]).ungroup()', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.expr([1,2,3]).ungroup().run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Expected type GROUPED_DATA but found DATUM:\n[1, 2, 3] in:\nr.expr([1, 2, 3]).ungroup()\n^^^^^^^^^^^^^^^^^          \n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+/*
+Frames:
+[]
+
+Error:
+Expected type NUMBER but found STRING. in:
+r.expr([1, 2, 3, "hello"]).sum()
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+*/
+It('Test backtrace for r.expr([1,2,3,"hello"]).sum()', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.expr([1,2,3,"hello"]).sum().run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Expected type NUMBER but found STRING. in:\nr.expr([1, 2, 3, \"hello\"]).sum()\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+
+/*
+Frames:
+[]
+
+Error:
+Expected type NUMBER but found STRING. in:
+r.expr([1, 2, 3, "hello"]).avg()
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+*/
+It('Test backtrace for r.expr([1,2,3,"hello"]).avg()', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.expr([1,2,3,"hello"]).avg().run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Expected type NUMBER but found STRING. in:\nr.expr([1, 2, 3, \"hello\"]).avg()\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+
+/*
+Frames:
+[]
+
+Error:
+Cannot take the min of an empty stream.  (If you passed `min` a field name, it may be that no elements of the stream had that field.) in:
+r.expr([]).min()
+^^^^^^^^^^^^^^^^
+*/
+It('Test backtrace for r.expr([]).min()', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.expr([]).min().run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Cannot take the min of an empty stream.  (If you passed `min` a field name, it may be that no elements of the stream had that field.) in:\nr.expr([]).min()\n^^^^^^^^^^^^^^^^\n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+/*
+Frames:
+[]
+
+Error:
+Cannot take the max of an empty stream.  (If you passed `max` a field name, it may be that no elements of the stream had that field.) in:
+r.expr([]).max()
+^^^^^^^^^^^^^^^^
+*/
+It('Test backtrace for r.expr([]).max()', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.expr([]).max().run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Cannot take the max of an empty stream.  (If you passed `max` a field name, it may be that no elements of the stream had that field.) in:\nr.expr([]).max()\n^^^^^^^^^^^^^^^^\n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+/*
+Frames:
+[]
+
+Error:
+Cannot take the average of an empty stream.  (If you passed `avg` a field name, it may be that no elements of the stream had that field.) in:
+r.expr([]).avg()
+^^^^^^^^^^^^^^^^
+*/
+It('Test backtrace for r.expr([]).avg()', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.expr([]).avg().run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Cannot take the average of an empty stream.  (If you passed `avg` a field name, it may be that no elements of the stream had that field.) in:\nr.expr([]).avg()\n^^^^^^^^^^^^^^^^\n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+
+/*
+Frames:
+[ { type: 'POS', pos: 0 } ]
+
+Error:
+Expected type STRING but found NUMBER. in:
+r.expr(1).upcase()
+^^^^^^^^^
+*/
+It('Test backtrace for r.expr(1).upcase()', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.expr(1).upcase().run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Expected type STRING but found NUMBER. in:\nr.expr(1).upcase()\n^^^^^^^^^         \n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+/*
+Frames:
+[ { type: 'POS', pos: 0 } ]
+
+Error:
+Expected type STRING but found NUMBER. in:
+r.expr(1).downcase()
+^^^^^^^^^
+*/
+It('Test backtrace for r.expr(1).downcase()', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.expr(1).downcase().run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Expected type STRING but found NUMBER. in:\nr.expr(1).downcase()\n^^^^^^^^^           \n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+/*
+Frames:
+[ { type: 'POS', pos: 0 },
+  { type: 'POS', pos: 1 },
+  { type: 'POS', pos: 0 } ]
+
+Error:
+Expected type STRING but found NUMBER. in:
+r.expr(1).do(function(var_1) {
+    return r.expr(1).object(2)
+           ^^^^^^^^^          
+})
+*/
+It('Test backtrace for r.expr(1).do(function(v) { return r.object(1, 2) })', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.expr(1).do(function(v) { return r.object(1, 2) }).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Expected type STRING but found NUMBER. in:\nr.expr(1).do(function(var_1) {\n    return r.expr(1).object(2)\n           ^^^^^^^^^          \n})\n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+
+/*
+Frames:
+[ { type: 'POS', pos: 0 }, { type: 'POS', pos: 1 } ]
+
+Error:
+OBJECT expects an even number of arguments (but found 1). in:
+r.expr(1).do(function(var_1) {
+    return r.expr("a").object()
+           ^^^^^^^^^^^^^^^^^^^^
+})
+*/
+It('Test backtrace for r.expr(1).do(function(v) { return r.object("a") })', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.expr(1).do(function(v) { return r.object("a") }).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "OBJECT expects an even number of arguments (but found 1). in:\nr.expr(1).do(function(var_1) {\n    return r.expr(\"a\").object()\n           ^^^^^^^^^^^^^^^^^^^^\n})\n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+
