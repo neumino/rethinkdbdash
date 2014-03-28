@@ -59,7 +59,7 @@ Binaries won't work with `node-protobuf` -- some libraries are not properly link
 npm install rethinkdbdash
 ```
 
-  To use the `yield` functionality of rethinkdbdash, you must be running __node 0.11.9__ or higher for generator support, and must run node(1)
+  __Please Note:__ To use the `yield` functionality of rethinkdbdash, you must be running __node 0.11.9__ or higher for generator support, and must run node(1)
   with the `--harmony` flag. If you don't like typing this, add an alias to your shell profile:
 
 ```
