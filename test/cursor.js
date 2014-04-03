@@ -284,3 +284,23 @@ It("`next` should error when hitting an error -- not on the first batch", functi
         }
     }
 })
+
+It("`createReadStream` should emit a data event for each item in the cursor", function* (done) {
+  var i = 0;
+
+  var cursor = yield r.expr(["a", "b", "c"]).run();
+  var stream = cursor.createReadStream();
+
+  stream.on('data', function(data) {
+    i++;
+    if(i==3) {
+      try {
+        assert(i == 3);
+      } catch(e) {
+        done(e);
+      } finally {
+        done();
+      }
+    }
+  });
+})
