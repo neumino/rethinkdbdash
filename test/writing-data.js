@@ -159,6 +159,17 @@ It("`insert` should throw if no argument is given", function* (done) {
         }
     }
 })
+It("`insert` work with dates", function* (done) {
+    try {
+        result = yield r.db(dbName).table(tableName).insert([{name: "Michel", age: 27, birthdate: new Date()}, {name: "Sophie", age: 23}]).run()
+        assert.deepEqual(result.inserted, 2);
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
 It("`insert` should throw if non valid option", function* (done) {
     try{
         result = yield r.db(dbName).table(tableName).insert({}, {nonValidKey: true}).run();
