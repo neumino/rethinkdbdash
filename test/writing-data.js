@@ -159,7 +159,17 @@ It("`insert` should throw if no argument is given", function* (done) {
         }
     }
 })
-It("`insert` work with dates", function* (done) {
+It("`insert` work with dates - 1", function* (done) {
+    try {
+        result = yield r.db(dbName).table(tableName).insert({name: "Michel", age: 27, birthdate: new Date()}).run()
+        assert.deepEqual(result.inserted, 1);
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+It("`insert` work with dates - 2", function* (done) {
     try {
         result = yield r.db(dbName).table(tableName).insert([{name: "Michel", age: 27, birthdate: new Date()}, {name: "Sophie", age: 23}]).run()
         assert.deepEqual(result.inserted, 2);
