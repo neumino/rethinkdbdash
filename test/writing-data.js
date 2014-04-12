@@ -179,6 +179,34 @@ It("`insert` work with dates - 2", function* (done) {
         done(e);
     }
 })
+It("`insert` work with dates - 3", function* (done) {
+    try {
+        result = yield r.db(dbName).table(tableName).insert({
+            field: 'test',
+            field2: { nested: 'test' },
+            date: new Date()
+        }).run()
+        assert.deepEqual(result.inserted, 1);
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+It("`insert` work with dates - 4", function* (done) {
+    try {
+        result = yield r.db(dbName).table(tableName).insert({
+            field: 'test',
+            field2: { nested: 'test' },
+            date: r.now()
+        }).run()
+        assert.deepEqual(result.inserted, 1);
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
 
 It("`insert` should throw if non valid option", function* (done) {
     try{
