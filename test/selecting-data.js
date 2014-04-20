@@ -166,6 +166,21 @@ It("`getAll` should work with multiple values - secondary index 1", function* (d
         done(e);
     }
 })
+It("`getAll` should return native dates (and cursor should handle them)", function* (done) {
+    try {
+        result = yield r.db(dbName).table(tableName).insert({field: -1, date: r.now()}).run();
+        result = yield r.db(dbName).table(tableName).getAll(-1, {index: "field"}).run();
+        result = yield result.toArray();
+        assert(result[0].date instanceof Date);
+        // Clean for later
+        result = yield r.db(dbName).table(tableName).getAll(-1, {index: "field"}).delete().run();
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
 It("`getAll` should work with multiple values - secondary index 2", function* (done) {
     try {
         result = yield r.db(dbName).table(tableName).indexCreate("fieldAddOne", function(doc) { return doc("field").add(1) }).run();
