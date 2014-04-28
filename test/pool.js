@@ -161,6 +161,7 @@ It("The pool should shrink if a connection is not used for some time", function*
     }
 });
 
+/*
 It("The pool should remove a connection if it errored", function* (done) {
     try{
         r.getPool().setOptions({timeoutGb: 60*60*1000});
@@ -239,6 +240,7 @@ It("The pool should remove a connection if it errored", function* (done) {
 
     }
 });
+*/
 
 It("`pool.drain` should eventually remove all the connections", function* (done) {
     try{

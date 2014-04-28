@@ -306,7 +306,7 @@ It("`profile` should work", function* (done) {
     }
 })
 
-
+/* Since 1.13, the token is stored oustide the query, so this error shouldn't happen anymore
 It("`connection` should extend events.Emitter and emit an error if the server failed to parse the protobuf message", function* (done) {
     try{
         connection.addListener('error', function() {
@@ -394,6 +394,7 @@ It("`connection` should extend events.Emitter and emit an error if the server fa
         }
     }
 })
+*/
 
 
 It("Test error message when running a query on a closed connection", function* (done) {

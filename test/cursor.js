@@ -23,8 +23,10 @@ It("Init for `cursor.js`", function* (done) {
         tableName = uuid(); // Big table to test partial sequence
         tableName2 = uuid(); // small table to test success sequence
 
-        var result = yield [r.dbCreate(dbName).run(), r.db(dbName).tableCreate(tableName).run(), r.db(dbName).tableCreate(tableName2).run()]
-        assert.deepEqual(result, [{created:1}, {created:1}, {created:1}]);
+        var result = yield r.dbCreate(dbName).run()
+        assert.deepEqual(result, {created:1});
+        result = yield [r.db(dbName).tableCreate(tableName).run(), r.db(dbName).tableCreate(tableName2).run()]
+        assert.deepEqual(result, [{created:1}, {created:1}]);
 
         done();
     }
@@ -32,7 +34,6 @@ It("Init for `cursor.js`", function* (done) {
         done(e);
     }
 })
-
 It("Inserting batch - table 1", function* (done) {
     try {
         result = yield r.db(dbName).table(tableName).insert(eval('['+new Array(numDocs).join('{}, ')+'{}]')).run();
@@ -64,7 +65,6 @@ It("Inserting batch", function* (done) {
         done();
     }
     catch(e) {
-        console.log(e.message);
         done(e);
     }
 })

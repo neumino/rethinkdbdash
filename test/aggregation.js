@@ -269,5 +269,3 @@ It("`max` should throw if called with arguments", function* (done) {
         }
     }
 })
-
-

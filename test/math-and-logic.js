@@ -240,7 +240,6 @@ It("`mod` should work", function* (done) {
         done();
     }
     catch(e) {
-        console.log(e.message);
         done(e);
     }
 })

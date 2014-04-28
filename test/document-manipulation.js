@@ -630,7 +630,7 @@ It("`keys` throw on a string", function* (done) {
         result = yield r.expr("hello").keys().orderBy(r.row).run();
     }
     catch(e) {
-        if (e.message.match(/^Expected type OBJECT but found STRING. in/)) {
+        if (e.message.match(/^Expected type OBJECT but found STRING in/)) {
             done();
         }
         else {
@@ -646,7 +646,6 @@ It("`object` should work", function* (done) {
         done()
     }
     catch(e) {
-        console.log(e)
         done(e);
     }
 })

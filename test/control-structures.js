@@ -199,7 +199,6 @@ It("`js` is not defined after a term", function* (done) {
         }
     }
 })
-
 It("`js` should throw if no argument has been given", function* (done) {
     try{
         result = yield r.js().run();
@@ -288,20 +287,6 @@ It("`json` is not defined after a term", function* (done) {
         }
         else {
             done(e)
-        }
-    }
-})
-
-It("`exprJSON` should throw if no argument has been given", function* (done) {
-    try{
-        result = yield r.exprJSON().run();
-    }
-    catch(e) {
-        if (e.message === "`r.exprJSON` takes at least 1 argument, 0 provided.") {
-            done()
-        }
-        else {
-            done(e);
         }
     }
 })

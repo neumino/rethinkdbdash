@@ -54,119 +54,9 @@ It("`expr` is not defined after a term", function* (done) {
         }
     }
 })
-It("`r.exprJSON` should work", function* (done) {
-    try {
-        assert(r.exprJSON([{}, {}])._self.type === "JSON");
-        assert(r.exprJSON([{}, {a: {b: {c: "hello"}}}])._self.type === "JSON");
-        assert(r.exprJSON([{}, {a: new Date()}])._self.type === "MAKE_ARRAY");
-        assert(r.exprJSON([{}, {a: r.expr(1)}])._self.type === "MAKE_ARRAY");
-        assert(r.exprJSON(2)._self.type === "JSON");
-        assert(r.exprJSON("hello")._self.type === "JSON");
-        assert(r.exprJSON(true)._self.type === "JSON");
-        assert(r.exprJSON(null)._self.type === "JSON");
-        assert(r.exprJSON({})._self.type === "JSON");
-        assert(r.exprJSON([])._self.type === "JSON");
-        assert(r.exprJSON({c: 1, a: {b: 1}})._self.type === "JSON");
-
-        
-        var result = yield r.exprJSON([{}, {}]).run();
-        result = yield result.toArray();
-        assert.deepEqual(result, [{}, {}]);
-
-        result = yield r.exprJSON([{}, {a: {b: {c: "hello"}}}]).run();
-        result = yield result.toArray();
-        assert.deepEqual(result, [{}, {a: {b: {c: "hello"}}}]);
-
-        var now = new Date()
-        result = yield r.exprJSON([{}, {a: now}]).run();
-        result = yield result.toArray();
-        assert.deepEqual(result, [{}, {a: now}]);
-
-        result = yield r.exprJSON([{}, {a: r.expr(1)}]).run();
-        result = yield result.toArray();
-        assert.deepEqual(result, [{}, {a: 1}]);
-
-        result = yield r.exprJSON(2).run();
-        assert.deepEqual(result, 2);
-
-        result = yield r.exprJSON("hello").run();
-        assert.deepEqual(result, "hello");
-
-        result = yield r.exprJSON(true).run();
-        assert.deepEqual(result,true );
-
-        result = yield r.exprJSON(null).run();
-        assert.deepEqual(result, null);
-
-        result = yield r.exprJSON({}).run();
-        assert.deepEqual(result, {});
-
-        result = yield r.exprJSON(r.expr({})).run();
-        assert.deepEqual(result,{} );
-
-        result = yield r.exprJSON([]).run();
-        result = yield result.toArray();
-        assert.deepEqual(result, []);
-
-        result = yield r.exprJSON({c: 1, a: {b: 1}}).run();
-        assert.deepEqual(result, {c: 1, a: {b: 1}});
-
-        done();
-    }
-    catch(e) {
-        done(e);
-    }
-})
-It("`r.exprJSON` should work if the object is not JSON serializable", function* (done) {
-    try {
-        var now = new Date()
-        result = yield r.exprJSON([1, now]).run();
-        result = yield result.toArray();
-        assert.deepEqual(result, [1, now]);
-
-        result = yield r.exprJSON({c: 1, a: now}).run();
-        assert.deepEqual(result, {c: 1, a: now});
-
-        done()
-    }
-    catch(e) {
-        done(e);
-    }
-})
-
-
 It("`r.expr` should take a nestingLevel value and throw if the nesting level is reached", function* (done) {
     try {
         r.expr({a :{b: {c: {d: 1}}}}, 2)
-    }
-    catch(e) {
-        if (e.message === "Nesting depth limit exceeded.\nYou probably have a circular reference somewhere.") {
-            done()
-        }
-        else {
-            done(e);
-        }
-    }
-})
-
-
-It("`r.exprJSON` should take a nestingLevel value and throw if the nesting level is reached", function* (done) {
-    try {
-        r.exprJSON({a :{b: {c: {d: 1}}}}, 2)
-    }
-    catch(e) {
-        if (e.message === "Nesting depth limit exceeded.\nYou probably have a circular reference somewhere.") {
-            done()
-        }
-        else {
-            done(e);
-        }
-    }
-})
-It("`r.exprJSON` should throw when r.setNestingLevel is used with a small value", function* (done) {
-    try {
-        r.setNestingLevel(2);
-        r.exprJSON({a :{b: {c: {d: 1}}}})
     }
     catch(e) {
         if (e.message === "Nesting depth limit exceeded.\nYou probably have a circular reference somewhere.") {
@@ -185,7 +75,6 @@ It("`r.expr` should work when setNestingLevel set back the value to 100", functi
         done();
     }
     catch(e) {
-        console.log(e.message);
         done(e);
     }
 })
