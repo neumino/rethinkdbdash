@@ -7,17 +7,17 @@ var uuid = util.uuid;
 var It = util.It;
 
 var uuid = util.uuid;
-var dbName, tableName;
+var dbName, tableName, result;
 
 It("Init for `document-manipulation.js`", function* (done) {
     try {
         dbName = uuid();
         tableName = uuid();
 
-        var result = yield r.dbCreate(dbName).run();
+        result = yield r.dbCreate(dbName).run();
         assert.deepEqual(result, {created:1});
 
-        var result = yield r.db(dbName).tableCreate(tableName).run();
+        result = yield r.db(dbName).tableCreate(tableName).run();
         assert.deepEqual(result, {created:1});
 
         done();
@@ -29,7 +29,7 @@ It("Init for `document-manipulation.js`", function* (done) {
 
 It("`r.row` should work - 1", function* (done) {
     try {
-        var result = yield r.expr([1,2,3]).map(r.row).run();
+        result = yield r.expr([1,2,3]).map(r.row).run();
         result = yield result.toArray();
         assert.deepEqual(result, [1,2,3]);
         done()
@@ -203,7 +203,7 @@ It("`literal` should work", function* (done) {
 })
 It("`literal` is not defined after a term", function* (done) {
     try {
-        var result = yield r.expr(1).literal("foo").run();
+        result = yield r.expr(1).literal("foo").run();
     }
     catch(e) {
         if (e.message === "`literal` is not defined after:\nr.expr(1)") {

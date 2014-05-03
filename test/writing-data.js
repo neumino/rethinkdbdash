@@ -7,7 +7,7 @@ var uuid = util.uuid;
 var It = util.It;
 
 var uuid = util.uuid;
-var dbName, tableName;
+var dbName, tableName, result;
 
 
 It("Init for `writing-data.js`", function* (done) {
@@ -15,10 +15,10 @@ It("Init for `writing-data.js`", function* (done) {
         dbName = uuid();
         tableName = uuid();
 
-        var result = yield r.dbCreate(dbName).run();
+        result = yield r.dbCreate(dbName).run();
         assert.deepEqual(result, {created:1});
 
-        var result = yield r.db(dbName).tableCreate(tableName).run();
+        result = yield r.db(dbName).tableCreate(tableName).run();
         assert.deepEqual(result, {created:1});
 
         done();
@@ -109,7 +109,7 @@ It("`insert` should work - with durability soft`", function* (done) {
 })
 It("`insert` should work - with durability hard`", function* (done) {
     try {
-        var result = yield r.db(dbName).table(tableName).insert({}, {durability: "hard"}).run();
+        result = yield r.db(dbName).table(tableName).insert({}, {durability: "hard"}).run();
         assert.equal(result.inserted, 1);
 
         done();
@@ -120,7 +120,7 @@ It("`insert` should work - with durability hard`", function* (done) {
 })
 It("`insert` should work - testing upsert true`", function* (done) {
     try {
-        var result = yield r.db(dbName).table(tableName).insert({}, {upsert: true}).run();
+        result = yield r.db(dbName).table(tableName).insert({}, {upsert: true}).run();
         assert.equal(result.inserted, 1);
 
         result = yield r.db(dbName).table(tableName).insert({id: result.generated_keys[0], val:1}, {upsert: true}).run();
@@ -134,7 +134,7 @@ It("`insert` should work - testing upsert true`", function* (done) {
 })
 It("`insert` should work - testing upsert false`", function* (done) {
     try {
-        var result = yield r.db(dbName).table(tableName).insert({}, {upsert: false}).run();
+        result = yield r.db(dbName).table(tableName).insert({}, {upsert: false}).run();
         assert.equal(result.inserted, 1);
 
         result = yield r.db(dbName).table(tableName).insert({id: result.generated_keys[0], val:1}, {upsert: false}).run();
@@ -250,7 +250,7 @@ It("`replace` should throw if non valid option", function* (done) {
 
 It("`delete` should work`", function* (done) {
     try {
-        var result = yield r.db(dbName).table(tableName).delete().run();
+        result = yield r.db(dbName).table(tableName).delete().run();
         assert(result.deleted > 0);
 
         result = yield r.db(dbName).table(tableName).delete().run();
@@ -265,7 +265,7 @@ It("`delete` should work`", function* (done) {
 
 It("`delete` should work -- soft durability`", function* (done) {
     try {
-        var result = yield r.db(dbName).table(tableName).delete().run();
+        result = yield r.db(dbName).table(tableName).delete().run();
         assert(result);
         result = yield r.db(dbName).table(tableName).insert({}).run();
         assert(result);
@@ -291,7 +291,7 @@ It("`delete` should work -- soft durability`", function* (done) {
 
 It("`delete` should work -- hard durability`", function* (done) {
     try {
-        var result = yield r.db(dbName).table(tableName).delete().run();
+        result = yield r.db(dbName).table(tableName).delete().run();
         assert(result);
         result = yield r.db(dbName).table(tableName).insert({}).run();
         assert(result);
@@ -327,7 +327,7 @@ It("`delete` should throw if non valid option", function* (done) {
 })
 It("`update` should work - point update`", function* (done) {
     try {
-        var result = yield r.db(dbName).table(tableName).delete().run();
+        result = yield r.db(dbName).table(tableName).delete().run();
         assert(result);
         result = yield r.db(dbName).table(tableName).insert({id: 1}).run();
         assert(result);
@@ -347,7 +347,7 @@ It("`update` should work - point update`", function* (done) {
 
 It("`update` should work - range update`", function* (done) {
     try {
-        var result = yield r.db(dbName).table(tableName).delete().run();
+        result = yield r.db(dbName).table(tableName).delete().run();
         assert(result);
         result = yield r.db(dbName).table(tableName).insert([{id: 1}, {id: 2}]).run();
         assert(result);
@@ -369,7 +369,7 @@ It("`update` should work - range update`", function* (done) {
 
 It("`update` should work - soft durability`", function* (done) {
     try {
-        var result = yield r.db(dbName).table(tableName).delete().run();
+        result = yield r.db(dbName).table(tableName).delete().run();
         assert(result);
         result = yield r.db(dbName).table(tableName).insert({id: 1}).run();
         assert(result);
@@ -388,7 +388,7 @@ It("`update` should work - soft durability`", function* (done) {
 })
 It("`update` should work - hard durability`", function* (done) {
     try {
-        var result = yield r.db(dbName).table(tableName).delete().run();
+        result = yield r.db(dbName).table(tableName).delete().run();
         assert(result);
         result = yield r.db(dbName).table(tableName).insert({id: 1}).run();
         assert(result);
@@ -407,7 +407,7 @@ It("`update` should work - hard durability`", function* (done) {
 })
 It("`update` should work - returnVals true", function* (done) {
     try {
-        var result = yield r.db(dbName).table(tableName).delete().run();
+        result = yield r.db(dbName).table(tableName).delete().run();
         assert(result);
         result = yield r.db(dbName).table(tableName).insert({id: 1}).run();
         assert(result);
@@ -428,7 +428,7 @@ It("`update` should work - returnVals true", function* (done) {
 })
 It("`update` should work - returnVals false`", function* (done) {
     try {
-        var result = yield r.db(dbName).table(tableName).delete().run();
+        result = yield r.db(dbName).table(tableName).delete().run();
         assert(result);
         result = yield r.db(dbName).table(tableName).insert({id: 1}).run();
         assert(result);
@@ -476,7 +476,7 @@ It("`update` should throw if non valid option", function* (done) {
 
 It("`replace` should work - point replace`", function* (done) {
     try {
-        var result = yield r.db(dbName).table(tableName).delete().run();
+        result = yield r.db(dbName).table(tableName).delete().run();
         assert(result);
         result = yield r.db(dbName).table(tableName).insert({id: 1}).run();
         assert(result);
@@ -496,7 +496,7 @@ It("`replace` should work - point replace`", function* (done) {
 
 It("`replace` should work - range replace`", function* (done) {
     try {
-        var result = yield r.db(dbName).table(tableName).delete().run();
+        result = yield r.db(dbName).table(tableName).delete().run();
         assert(result);
         result = yield r.db(dbName).table(tableName).insert([{id: 1}, {id: 2}]).run();
         assert(result);
@@ -518,7 +518,7 @@ It("`replace` should work - range replace`", function* (done) {
 
 It("`replace` should work - soft durability`", function* (done) {
     try {
-        var result = yield r.db(dbName).table(tableName).delete().run();
+        result = yield r.db(dbName).table(tableName).delete().run();
         assert(result);
         result = yield r.db(dbName).table(tableName).insert({id: 1}).run();
         assert(result);
@@ -537,7 +537,7 @@ It("`replace` should work - soft durability`", function* (done) {
 })
 It("`replace` should work - hard durability`", function* (done) {
     try {
-        var result = yield r.db(dbName).table(tableName).delete().run();
+        result = yield r.db(dbName).table(tableName).delete().run();
         assert(result);
         result = yield r.db(dbName).table(tableName).insert({id: 1}).run();
         assert(result);
@@ -556,7 +556,7 @@ It("`replace` should work - hard durability`", function* (done) {
 })
 It("`replace` should work - returnVals true", function* (done) {
     try {
-        var result = yield r.db(dbName).table(tableName).delete().run();
+        result = yield r.db(dbName).table(tableName).delete().run();
         assert(result);
         result = yield r.db(dbName).table(tableName).insert({id: 1}).run();
         assert(result);
@@ -577,7 +577,7 @@ It("`replace` should work - returnVals true", function* (done) {
 })
 It("`replace` should work - returnVals false`", function* (done) {
     try {
-        var result = yield r.db(dbName).table(tableName).delete().run();
+        result = yield r.db(dbName).table(tableName).delete().run();
         assert(result);
         result = yield r.db(dbName).table(tableName).insert({id: 1}).run();
         assert(result);

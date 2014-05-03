@@ -7,12 +7,12 @@ var uuid = util.uuid;
 var It = util.It;
 
 var uuid = util.uuid;
-var dbName, tableName;
+var dbName, tableName, result, result2;
 
 
 It("`r.now` should return a date", function* (done) {
     try {
-        var result = yield r.now().run();
+        result = yield r.now().run();
         assert(result instanceof Date);
 
         result = yield r.expr({a: r.now()}).run();
@@ -37,7 +37,7 @@ It("`r.now` should return a date", function* (done) {
 })
 It("`now` is not defined after a term", function* (done) {
     try {
-        var result = yield r.expr(1).now("foo").run();
+        result = yield r.expr(1).now("foo").run();
     }
     catch(e) {
         if (e.message === "`now` is not defined after:\nr.expr(1)") {
@@ -106,7 +106,7 @@ It("`r.time` should throw if no 5 arguments", function* (done) {
 
 It("`time` is not defined after a term", function* (done) {
     try {
-        var result = yield r.expr(1).time(1, 2, 3, 'Z').run();
+        result = yield r.expr(1).time(1, 2, 3, 'Z').run();
     }
     catch(e) {
         if (e.message === "`time` is not defined after:\nr.expr(1)") {
@@ -120,7 +120,7 @@ It("`time` is not defined after a term", function* (done) {
 
 It("`epochTime` should work", function* (done) {
     try {
-        now = new Date();
+        var now = new Date();
         result = yield r.epochTime(now.getTime()/1000).run();
         assert.deepEqual(now, result);
 
@@ -145,7 +145,7 @@ It("`r.epochTime` should throw if no argument has been given", function* (done) 
 })
 It("`epochTime` is not defined after a term", function* (done) {
     try {
-        var result = yield r.expr(1).epochTime(Date.now()).run();
+        result = yield r.expr(1).epochTime(Date.now()).run();
     }
     catch(e) {
         if (e.message === "`epochTime` is not defined after:\nr.expr(1)") {
@@ -208,7 +208,7 @@ It("`r.ISO8601` should throw if too many arguments", function* (done) {
 
 It("`ISO8601` is not defined after a term", function* (done) {
     try {
-        var result = yield r.expr(1).ISO8601('validISOstring').run();
+        result = yield r.expr(1).ISO8601('validISOstring').run();
     }
     catch(e) {
         if (e.message === "`ISO8601` is not defined after:\nr.expr(1)") {
@@ -452,7 +452,7 @@ It("Constant terms should work", function* (done) {
 
 It("`epochTime` should work", function* (done) {
     try {
-        now = new Date();
+        var now = new Date();
         result = yield r.epochTime(now.getTime()/1000).run({timeFormat: "raw"});
         assert.equal(result.$reql_type$, "TIME")
 

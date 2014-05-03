@@ -7,7 +7,7 @@ var uuid = util.uuid;
 var It = util.It;
 
 var uuid = util.uuid;
-var dbName, tableName;
+var dbName, tableName, result, pks;
 
 
 It("Init for `transformations.js`", function* (done) {
@@ -15,7 +15,7 @@ It("Init for `transformations.js`", function* (done) {
         dbName = uuid();
         tableName = uuid();
 
-        var result = yield r.dbCreate(dbName).run();
+        result = yield r.dbCreate(dbName).run();
         assert.deepEqual(result, {created:1});
 
         result = yield r.db(dbName).tableCreate(tableName).run();
@@ -39,7 +39,7 @@ It("Init for `transformations.js`", function* (done) {
 
 It("`map` should work on array -- r.row", function* (done) {
     try {
-        var result = yield r.expr([1,2,3]).map(r.row).run();
+        result = yield r.expr([1,2,3]).map(r.row).run();
         result = yield result.toArray();
         assert.deepEqual(result, [1,2,3]);
         done();
@@ -55,7 +55,7 @@ It("`map` should work on array -- r.row", function* (done) {
 })
 It("`map` should work on array -- function", function* (done) {
     try {
-        var result = yield r.expr([1,2,3]).map(function(doc) { return doc }).run();
+        result = yield r.expr([1,2,3]).map(function(doc) { return doc }).run();
         result = yield result.toArray();
         assert.deepEqual(result, [1,2,3]);
 
@@ -85,7 +85,7 @@ It("`map` should throw if no argument has been passed", function* (done) {
 
 It("`withFields` should work on array -- single field", function* (done) {
     try {
-        var result = yield r.expr([{a: 0, b: 1, c: 2}, {a: 4, b: 4, c: 5}, {a:9, b:2, c:0}]).withFields("a").run();
+        result = yield r.expr([{a: 0, b: 1, c: 2}, {a: 4, b: 4, c: 5}, {a:9, b:2, c:0}]).withFields("a").run();
         result = yield result.toArray();
         assert.deepEqual(result, [{a: 0}, {a: 4}, {a: 9}]);
 
@@ -97,7 +97,7 @@ It("`withFields` should work on array -- single field", function* (done) {
 })
 It("`withFields` should work on array -- multiple field", function* (done) {
     try {
-        var result = yield r.expr([{a: 0, b: 1, c: 2}, {a: 4, b: 4, c: 5}, {a:9, b:2, c:0}]).withFields("a", "c").run();
+        result = yield r.expr([{a: 0, b: 1, c: 2}, {a: 4, b: 4, c: 5}, {a:9, b:2, c:0}]).withFields("a", "c").run();
         result = yield result.toArray();
         assert.deepEqual(result, [{a: 0, c: 2}, {a: 4, c: 5}, {a:9, c:0}]);
 
@@ -122,7 +122,7 @@ It("`withFields` should throw if no argument has been passed", function* (done) 
 })
 It("`concatMap` should work on array -- function", function* (done) {
     try {
-        var result = yield r.expr([[1, 2], [3], [4]]).concatMap(function(doc) { return doc}).run();
+        result = yield r.expr([[1, 2], [3], [4]]).concatMap(function(doc) { return doc}).run();
         result = yield result.toArray();
         assert.deepEqual(result, [1, 2, 3, 4]);
 
@@ -134,7 +134,7 @@ It("`concatMap` should work on array -- function", function* (done) {
 })
 It("`concatMap` should work on array -- r.row", function* (done) {
     try {
-        var result = yield r.expr([[1, 2], [3], [4]]).concatMap(r.row).run();
+        result = yield r.expr([[1, 2], [3], [4]]).concatMap(r.row).run();
         result = yield result.toArray();
         assert.deepEqual(result, [1, 2, 3, 4]);
 
@@ -161,7 +161,7 @@ It("`concatMap` should throw if no argument has been passed", function* (done) {
 
 It("`orderBy` should work on array -- string", function* (done) {
     try {
-        var result = yield r.expr([{a:23}, {a:10}, {a:0}, {a:100}]).orderBy("a").run();
+        result = yield r.expr([{a:23}, {a:10}, {a:0}, {a:100}]).orderBy("a").run();
         result = yield result.toArray();
         assert.deepEqual(result, [{a:0}, {a:10}, {a:23}, {a:100}]);
 
@@ -174,7 +174,7 @@ It("`orderBy` should work on array -- string", function* (done) {
 
 It("`orderBy` should work on array -- r.row", function* (done) {
     try {
-        var result = yield r.expr([{a:23}, {a:10}, {a:0}, {a:100}]).orderBy(r.row("a")).run();
+        result = yield r.expr([{a:23}, {a:10}, {a:0}, {a:100}]).orderBy(r.row("a")).run();
         result = yield result.toArray();
         assert.deepEqual(result, [{a:0}, {a:10}, {a:23}, {a:100}]);
 
@@ -187,9 +187,9 @@ It("`orderBy` should work on array -- r.row", function* (done) {
 
 It("`orderBy` should work on a table -- pk", function* (done) {
     try {
-        var result = yield r.db(dbName).table(tableName).orderBy({index: "id"}).run();
+        result = yield r.db(dbName).table(tableName).orderBy({index: "id"}).run();
         result = yield result.toArray();
-        for(i=0; i<result.length-1; i++) {
+        for(var i=0; i<result.length-1; i++) {
             assert(result[i].id < result[i+1].id);
         }
 
@@ -201,9 +201,9 @@ It("`orderBy` should work on a table -- pk", function* (done) {
 })
 It("`orderBy` should work on a table -- secondary", function* (done) {
     try {
-        var result = yield r.db(dbName).table(tableName).orderBy({index: "val"}).run();
+        result = yield r.db(dbName).table(tableName).orderBy({index: "val"}).run();
         result = yield result.toArray();
-        for(i=0; i<result.length-1; i++) {
+        for(var i=0; i<result.length-1; i++) {
             assert(result[i].val < result[i+1].val);
         }
 
@@ -218,7 +218,7 @@ It("`orderBy` should work on a two fields", function* (done) {
         var dbName = uuid();
         var tableName = uuid();
 
-        var result = yield r.dbCreate(dbName).run();
+        result = yield r.dbCreate(dbName).run();
         assert.deepEqual(result, {created: 1});
 
         result = yield r.db(dbName).tableCreate(tableName).run();
@@ -253,7 +253,7 @@ It("`orderBy` should throw if no argument has been passed", function* (done) {
 })
 It("`desc` is not defined after a term", function* (done) {
     try {
-        var result = yield r.expr(1).desc("foo").run();
+        result = yield r.expr(1).desc("foo").run();
     }
     catch(e) {
         if (e.message === "`desc` is not defined after:\nr.expr(1)") {
@@ -266,7 +266,7 @@ It("`desc` is not defined after a term", function* (done) {
 })
 It("`asc` is not defined after a term", function* (done) {
     try {
-        var result = yield r.expr(1).asc("foo").run();
+        result = yield r.expr(1).asc("foo").run();
     }
     catch(e) {
         if (e.message === "`asc` is not defined after:\nr.expr(1)") {
@@ -280,7 +280,7 @@ It("`asc` is not defined after a term", function* (done) {
 
 It("`skip` should work", function* (done) {
     try {
-        var result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).skip(3).run();
+        result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).skip(3).run();
         result = yield result.toArray();
         assert.deepEqual(result, [3, 4, 5, 6, 7, 8, 9]);
 
@@ -306,7 +306,7 @@ It("`skip` should throw if no argument has been passed", function* (done) {
 
 It("`limit` should work", function* (done) {
     try {
-        var result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).limit(3).run();
+        result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).limit(3).run();
         result = yield result.toArray();
         assert.deepEqual(result, [0, 1, 2]);
 
@@ -331,7 +331,7 @@ It("`limit` should throw if no argument has been passed", function* (done) {
 })
 It("`slice` should work", function* (done) {
     try {
-        var result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).slice(3, 5).run();
+        result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).slice(3, 5).run();
         result = yield result.toArray();
         assert.deepEqual(result, [3, 4]);
 
@@ -343,7 +343,7 @@ It("`slice` should work", function* (done) {
 })
 It("`slice` should work -- with options", function* (done) {
     try {
-        var result = yield r.expr([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22, 23]).slice(5, 10, {rightBound:'closed'}).run();
+        result = yield r.expr([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22, 23]).slice(5, 10, {rightBound:'closed'}).run();
         result = yield result.toArray();
         assert.deepEqual(result, [5, 6, 7, 8, 9, 10]);
 
@@ -384,7 +384,7 @@ It("`slice` should throw if no argument has been passed", function* (done) {
 })
 It("`nth` should work", function* (done) {
     try {
-        var result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).nth(3).run();
+        result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).nth(3).run();
         assert(result, 3);
 
         done();
@@ -408,7 +408,7 @@ It("`nth` should throw if no argument has been passed", function* (done) {
 })
 It("`indexesOf` should work - datum", function* (done) {
     try {
-        var result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).nth(3).run();
+        result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).nth(3).run();
         assert(result, 3);
 
         done();
@@ -420,7 +420,7 @@ It("`indexesOf` should work - datum", function* (done) {
 
 It("`indexesOf` should work - r.row", function* (done) {
     try {
-        var result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).indexesOf(r.row.eq(3)).run();
+        result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).indexesOf(r.row.eq(3)).run();
         result = yield result.toArray();
         assert.equal(result, 3);
 
@@ -432,7 +432,7 @@ It("`indexesOf` should work - r.row", function* (done) {
 })
 It("`indexesOf` should work - function", function* (done) {
     try {
-        var result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).indexesOf(function(doc) { return doc.eq(3)}).run();
+        result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).indexesOf(function(doc) { return doc.eq(3)}).run();
         result = yield result.toArray();
         assert.equal(result, 3);
 
@@ -457,7 +457,7 @@ It("`indexesOf` should throw if no argument has been passed", function* (done) {
 })
 It("`isEmpty` should work", function* (done) {
     try {
-        var result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).isEmpty().run();
+        result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).isEmpty().run();
         assert.equal(result, false);
 
         result = yield r.expr([]).isEmpty().run();
@@ -472,7 +472,7 @@ It("`isEmpty` should work", function* (done) {
 
 It("`union` should work", function* (done) {
     try{
-        var result = yield r.expr([0, 1, 2]).union([3, 4, 5]).run();
+        result = yield r.expr([0, 1, 2]).union([3, 4, 5]).run();
         result = yield result.toArray();
         assert.deepEqual(result, [0, 1, 2, 3, 4, 5]);
 
@@ -497,7 +497,7 @@ It("`union` should throw if no argument has been passed", function* (done) {
 })
 It("`sample` should work", function* (done) {
     try{
-        var result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).sample(2).run();
+        result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).sample(2).run();
         result = yield result.toArray();
         assert.equal(result.length, 2);
 
@@ -509,7 +509,7 @@ It("`sample` should work", function* (done) {
 })
 It("`sample` should throw if given -1", function* (done) {
     try{
-        var result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).sample(-1).run();
+        result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).sample(-1).run();
     }
     catch(e) {
         if (e.message.match("Number of items to sample must be non-negative, got `-1`")) {

@@ -7,7 +7,7 @@ var uuid = util.uuid;
 var It = util.It;
 
 var uuid = util.uuid;
-var dbName, tableName;
+var dbName, tableName, result, pks;
 
 var options = {
     min: 2,
@@ -33,7 +33,7 @@ It("`createPool` should create a pool and `getPool` should return it", function*
 //TODO try to make this tests a little more deterministic
 It("`run` should work without a connection if a pool exists", function* (done) {
     try {
-        var result = yield r.expr(1).run()
+        result = yield r.expr(1).run()
         assert.equal(result, 1);
 
         assert(r.getPool().getAvailableLength() >= 2); // This can be 2 because r.expr(1) may be run BEFORE a connection in the buffer is available
@@ -47,7 +47,7 @@ It("`run` should work without a connection if a pool exists", function* (done) {
 });
 It("The pool should keep a buffer", function* (done) {
     try {
-        var result = yield [r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run()]
+        result = yield [r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run()]
         assert.deepEqual(result, [1,1,1,1,1]);
         assert(r.getPool().getLength() >= options.buffer+result.length);
 
@@ -63,7 +63,7 @@ It("The pool should keep a buffer", function* (done) {
 });
 It("The pool shouldn't have more than `options.max` connections", function* (done) {
     try {
-        var result = yield [r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run()]
+        result = yield [r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run()]
         assert.deepEqual(result, [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
         assert.equal(r.getPool().getLength(), options.max)
 
@@ -83,10 +83,10 @@ It("Init for `pool.js`", function* (done) {
         dbName = uuid();
         tableName = uuid();
 
-        var result = yield r.dbCreate(dbName).run();
+        result = yield r.dbCreate(dbName).run();
         assert.deepEqual(result, {created:1});
 
-        var result = yield r.db(dbName).tableCreate(tableName).run();
+        result = yield r.db(dbName).tableCreate(tableName).run();
         assert.deepEqual(result, {created:1});
 
         result = yield r.db(dbName).table(tableName).insert(eval('['+new Array(10000).join('{}, ')+'{}]')).run();
@@ -125,7 +125,7 @@ It("Updating data to make it heavier", function* (done) {
 
 It("The pool should release a connection only when the cursor has fetch everything or get closed", function* (done) {
     try {
-        var result = yield [r.db(dbName).table(tableName).run(),r.db(dbName).table(tableName).run(),r.db(dbName).table(tableName).run(),r.db(dbName).table(tableName).run(),r.db(dbName).table(tableName).run(),r.db(dbName).table(tableName).run(),r.db(dbName).table(tableName).run(),r.db(dbName).table(tableName).run(),r.db(dbName).table(tableName).run(),r.db(dbName).table(tableName).run()];
+        result = yield [r.db(dbName).table(tableName).run(),r.db(dbName).table(tableName).run(),r.db(dbName).table(tableName).run(),r.db(dbName).table(tableName).run(),r.db(dbName).table(tableName).run(),r.db(dbName).table(tableName).run(),r.db(dbName).table(tableName).run(),r.db(dbName).table(tableName).run(),r.db(dbName).table(tableName).run(),r.db(dbName).table(tableName).run()];
         assert.equal(result.length, 10);
         assert.equal(r.getPool().getAvailableLength(), 0);
         yield result[0].toArray();
@@ -146,7 +146,7 @@ It("The pool should shrink if a connection is not used for some time", function*
     try{
         r.getPool().setOptions({timeoutGb: 100});
 
-        var result = yield [r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run()]
+        result = yield [r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run()]
 
         assert.deepEqual(result, [1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
 
@@ -165,12 +165,12 @@ It("The pool should remove a connection if it errored", function* (done) {
     try{
         r.getPool().setOptions({timeoutGb: 60*60*1000});
 
-        var result = yield [r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run()]
+        result = yield [r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run()]
 
         assert.deepEqual(result, [1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
 
         // This query will make the error return an error -1
-        var result = yield r.expr(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+        result = yield r.expr(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
             .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
             .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
             .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)

@@ -7,17 +7,17 @@ var uuid = util.uuid;
 var It = util.It;
 
 var uuid = util.uuid;
-var dbName, tableName;
+var dbName, tableName, pks, result;
 
 It("Init for backtraces", function* (done) {
     try {
         dbName = uuid();
         tableName = uuid();
 
-        var result = yield r.dbCreate(dbName).run();
+        result = yield r.dbCreate(dbName).run();
         assert.deepEqual(result, {created:1});
 
-        var result = yield r.db(dbName).tableCreate(tableName).run();
+        result = yield r.db(dbName).tableCreate(tableName).run();
         assert.deepEqual(result, {created:1});
 
         result = yield r.db(dbName).table(tableName).insert(eval('['+new Array(100).join('{}, ')+'{}]')).run();

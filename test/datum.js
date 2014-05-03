@@ -7,7 +7,7 @@ var uuid = util.uuid;
 var It = util.It;
 
 var uuid = util.uuid;
-var dbName, tableName;
+var dbName, tableName, result;
 
 
 It("All raws datum shoul be defined", function* (done) {
@@ -43,7 +43,7 @@ It("All raws datum shoul be defined", function* (done) {
 })
 It("`expr` is not defined after a term", function* (done) {
     try {
-        var result = yield r.expr(1).expr("foo").run();
+        result = yield r.expr(1).expr("foo").run();
     }
     catch(e) {
         if (e.message === "`expr` is not defined after:\nr.expr(1)") {
@@ -69,7 +69,7 @@ It("`r.exprJSON` should work", function* (done) {
         assert(r.exprJSON({c: 1, a: {b: 1}})._self.type === "JSON");
 
         
-        var result = yield r.exprJSON([{}, {}]).run();
+        result = yield r.exprJSON([{}, {}]).run();
         result = yield result.toArray();
         assert.deepEqual(result, [{}, {}]);
 
@@ -180,7 +180,7 @@ It("`r.exprJSON` should throw when r.setNestingLevel is used with a small value"
 It("`r.expr` should work when setNestingLevel set back the value to 100", function* (done) {
     try {
         r.setNestingLevel(100);
-        var result = yield r.expr({a :{b: {c: {d: 1}}}}).run();
+        result = yield r.expr({a :{b: {c: {d: 1}}}}).run();
         assert.deepEqual(result, {a :{b: {c: {d: 1}}}})
         done();
     }

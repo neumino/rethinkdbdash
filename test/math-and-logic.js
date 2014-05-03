@@ -7,11 +7,11 @@ var uuid = util.uuid;
 var It = util.It;
 
 var uuid = util.uuid;
-var dbName, tableName;
+var dbName, tableName, result;
 
 It("`add` should work", function* (done) {
     try {
-        var result = yield r.expr(1).add(1).run();
+        result = yield r.expr(1).add(1).run();
         assert.equal(result, 2);
 
         result = yield r.expr(1).add(1).add(1).run();

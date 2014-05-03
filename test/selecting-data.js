@@ -8,7 +8,7 @@ var uuid = util.uuid;
 var It = util.It;
 
 var uuid = util.uuid;
-var dbName, tableName;
+var dbName, tableName, result, pks;
 
 
 It("Init for `selecting-data.js`", function* (done) {
@@ -16,10 +16,10 @@ It("Init for `selecting-data.js`", function* (done) {
         dbName = uuid();
         tableName = uuid();
 
-        var result = yield r.dbCreate(dbName).run();
+        result = yield r.dbCreate(dbName).run();
         assert.deepEqual(result, {created:1});
 
-        var result = yield r.db(dbName).tableCreate(tableName).run();
+        result = yield r.db(dbName).tableCreate(tableName).run();
         assert.deepEqual(result, {created:1});
 
         result = yield r.db(dbName).table(tableName).insert(eval('['+new Array(100).join('{}, ')+'{}]')).run();
@@ -35,7 +35,7 @@ It("Init for `selecting-data.js`", function* (done) {
 
 It("`db` should work", function* (done) {
     try {
-        var result = yield r.db(dbName).info().run();
+        result = yield r.db(dbName).info().run();
         assert.deepEqual(result, {name: dbName, type: "DB"});
 
         done();
@@ -47,7 +47,7 @@ It("`db` should work", function* (done) {
 
 It("`table` should work", function* (done) {
     try {
-        var result = yield r.db(dbName).table(tableName).info().run();
+        result = yield r.db(dbName).table(tableName).info().run();
         assert.deepEqual(result,  {db:{name: dbName,type:"DB"},indexes:[],name: tableName, primary_key:"id",type:"TABLE"})
 
         result = yield r.db(dbName).table(tableName).run();
@@ -91,7 +91,7 @@ It("`table` should throw with non valid otpions", function* (done) {
 
 It("`get` should work", function* (done) {
     try {
-        var result = yield r.db(dbName).table(tableName).get(pks[0]).run();
+        result = yield r.db(dbName).table(tableName).get(pks[0]).run();
         assert.deepEqual(result, {id: pks[0]})
 
         done();
@@ -119,7 +119,7 @@ It("`get` should throw if no argument is passed", function* (done) {
 It("`getAll` should work with multiple values - primary key", function* (done) {
     try {
         var table = r.db(dbName).table(tableName);
-        query = table.getAll.apply(table, pks);
+        var query = table.getAll.apply(table, pks);
         result = yield query.run();
         result = yield result.toArray();
         assert.equal(result.length, 100);

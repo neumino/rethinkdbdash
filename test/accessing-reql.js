@@ -7,7 +7,7 @@ var uuid = util.uuid;
 var It = util.It;
 
 var connection; // global connection
-var dbName;
+var dbName, tableName, result;
 
 It("Testing `run` without connection", function* (done) {
     try {
@@ -46,17 +46,17 @@ It("Init for `cursor.js`", function* (done) {
         assert(connection);
 
         dbName = uuid();
-        tableName = uuid();
+        var tableName = uuid();
 
-        var result = yield r.dbCreate(dbName).run(connection);
+        result = yield r.dbCreate(dbName).run(connection);
         assert.deepEqual(result, {created:1});
 
-        var result = yield r.db(dbName).tableCreate(tableName).run(connection);
+        result = yield r.db(dbName).tableCreate(tableName).run(connection);
         assert.deepEqual(result, {created:1});
 
         result = yield r.db(dbName).table(tableName).insert(eval('['+new Array(100).join('{}, ')+'{}]')).run(connection);
         assert.equal(result.inserted, 100);
-        pks = result.generated_keys;
+        var pks = result.generated_keys;
 
         done();
     }
@@ -171,7 +171,7 @@ It("`reconnect` should work with options", function* (done) {
 
 It("`noReplyWait` should throw", function* (done) {
     try{
-        var result = yield connection.noReplyWait()
+        result = yield connection.noReplyWait()
     }
     catch(e) {
         if (e.message === "Did you mean to use `noreplyWait` instead of `noReplyWait`?") {
@@ -185,7 +185,7 @@ It("`noReplyWait` should throw", function* (done) {
 })
 It("`noreplyWait` should work", function* (done) {
     try{
-        var result = yield connection.noreplyWait()
+        result = yield connection.noreplyWait()
         done();
     }
     catch(e) {
@@ -203,7 +203,7 @@ It("`run` should take an argument", function* (done) {
         connection = yield r.connect(config);
         assert(connection);
 
-        var result = yield r.expr(1).run(connection, {useOutdated: true});
+        result = yield r.expr(1).run(connection, {useOutdated: true});
         assert.equal(result, 1);
 
         result = yield r.expr(1).run(connection, {useOutdated: false});
@@ -231,7 +231,7 @@ It("`run` should take an argument", function* (done) {
 
 It("`run` should throw on an unrecongized argument", function* (done) {
     try {
-        var result = yield r.expr(1).run(connection, {db: "db"});
+        result = yield r.expr(1).run(connection, {db: "db"});
     }
     catch(e) {
         if (e.message === "Unrecognized option `db` in `run`. Available options are useOutdated <bool>, durability <string>, noreply <bool>, timeFormat <string>, groupFormat: <string>, profile <bool>.") {
@@ -246,7 +246,7 @@ It("`run` should throw on an unrecongized argument", function* (done) {
 
 It("`r()` should be a shortcut for r.expr()", function* (done) {
     try {
-        var result = yield r(1).run(connection);
+        result = yield r(1).run(connection);
         assert.deepEqual(result, 1)
         done();
     }
@@ -257,7 +257,7 @@ It("`r()` should be a shortcut for r.expr()", function* (done) {
 
 It("`timeFormat` should work", function* (done) {
     try {
-        var result = yield r.now().run(connection);
+        result = yield r.now().run(connection);
         assert(result instanceof Date);
 
         result = yield r.now().run(connection, {timeFormat: 'native'});
@@ -290,7 +290,7 @@ It("`groupFormat` should work", function* (done) {
 
 It("`profile` should work", function* (done) {
     try{
-        var result = yield r.expr(true).run(connection, {profile: false});
+        result = yield r.expr(true).run(connection, {profile: false});
         assert(result)
 
         result = yield r.expr(true).run(connection, {profile: true});
@@ -313,7 +313,7 @@ It("`connection` should extend events.Emitter and emit an error if the server fa
             done();
         });
 
-        var result = yield r.expr(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
+        result = yield r.expr(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
             .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
             .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
             .add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1).add(1)
