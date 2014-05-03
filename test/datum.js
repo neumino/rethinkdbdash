@@ -78,7 +78,36 @@ It("`r.expr` should work when setNestingLevel set back the value to 100", functi
         done(e);
     }
 })
-
+It("`r.expr` should fail with NaN", function* (done) {
+    try {
+        var result = yield r.expr(NaN).run();
+        done(new Error("NaN should throw an error"));
+    }
+    catch(e) {
+        if (e.message === "Cannot convert `NaN` to JSON.") {
+            done();
+        }
+        else {
+            console.log(e.message);
+            done(e);
+        }
+    }
+})
+It("`r.expr` should fail with Infinity", function* (done) {
+    try {
+        var result = yield r.expr(Infinity).run();
+        done(new Error("Infinity should throw an error"));
+    }
+    catch(e) {
+        if (e.message === "Cannot convert `Infinity` to JSON.") {
+            done();
+        }
+        else {
+            console.log(e.message);
+            done(e);
+        }
+    }
+})
 
 
 
