@@ -1,6 +1,6 @@
 {
   "name": "rethinkdbdash-unstable",
-  "version": "1.12.9",
+  "version": "1.12.10",
   "description": "A Node.js driver for RethinkDB with promises and a connection pool",
   "main": "lib/index.js",
   "directories": {
