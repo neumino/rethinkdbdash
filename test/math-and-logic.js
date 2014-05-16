@@ -768,3 +768,46 @@ It("`not` should work", function* (done) {
         done(e);
     }
 })
+It("`not` should throw if called with an argument", function* (done) {
+    try {
+        result = yield r.expr(true).not(false).run();
+        done(new Error("Should have thrown an error"));
+    }
+    catch(e) {
+        if (e.message === "`not` takes 0 argument, 1 provided after:\nr.expr(true)") {
+            done();
+        }
+        else {
+            done(e);
+        }
+
+    }
+})
+
+It("`r.not` should work", function* (done) {
+    try {
+        result = yield r.not(true).run();
+        assert.equal(result, false);
+        result = yield r.not(false).run();
+        assert.equal(result, true);
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+});
+It("`r.not` should throw if called without argument", function* (done) {
+    try{
+        r.not().run()
+        done(new Error("Should have thrown an error"));
+    }
+    catch(e) {
+        if (e.message === "`r.not` takes 1 argument, 0 provided.") {
+            done();
+        }
+        else {
+            done(e);
+        }
+    }
+});
