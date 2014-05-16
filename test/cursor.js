@@ -23,8 +23,12 @@ It("Init for `cursor.js`", function* (done) {
         tableName = uuid(); // Big table to test partial sequence
         tableName2 = uuid(); // small table to test success sequence
 
-        result = yield [r.dbCreate(dbName).run(), r.db(dbName).tableCreate(tableName).run(), r.db(dbName).tableCreate(tableName2).run()]
-        assert.deepEqual(result, [{created:1}, {created:1}, {created:1}]);
+        result = yield r.dbCreate(dbName).run();
+        assert.deepEqual(result, {created:1});
+        result = yield r.db(dbName).tableCreate(tableName).run();
+        assert.deepEqual(result, {created:1});
+        result = yield r.db(dbName).tableCreate(tableName2).run();
+        assert.deepEqual(result, {created:1});
 
         done();
     }
