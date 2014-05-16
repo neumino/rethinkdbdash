@@ -3674,3 +3674,30 @@ It('Test backtrace for r.expr(1).do(function(v) { return r.object("a") })', func
 })
 
 
+/*
+Frames:
+[ { type: 'POS', pos: 0 }, { type: 'POS', pos: 1 } ]
+
+Error:
+Expected type NUMBER but found STRING. in:
+r.expr(1).do(function(var_1) {
+    return var_1.add("foo")
+           ^^^^^^^^^^^^^^^^
+})
+*/
+It('Test backtrace for r.do(1,function( b) { return b.add("foo") })', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.do(1,function( b) { return b.add("foo") }).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Expected type NUMBER but found STRING. in:\nr.expr(1).do(function(var_1) {\n    return var_1.add(\"foo\")\n           ^^^^^^^^^^^^^^^^\n})\n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+

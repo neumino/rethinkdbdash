@@ -9,7 +9,7 @@ var dbName = util.uuid()
 var tableName = util.uuid()
 
 var query;
-query = 'r.expr(1).do(function(v) { return r.object("a") })'
+query = 'r.do(1, 2, function(a, b) { return a.add("foo") })'
 
 Promise.coroutine(function* () {
     try {
