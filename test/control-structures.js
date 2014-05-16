@@ -19,13 +19,28 @@ It("`do` should work", function* (done) {
         done(e);
     }
 })
+It("`r.do` should work", function* (done) {
+    try {
+        result = yield r.do(1, 2, function(a, b) { return a }).run();
+        assert.equal(result, 1);
+
+        result = yield r.do(1, 2, function(a, b) { return b }).run();
+        assert.equal(result, 2);
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
 
 It("`do` should throw if no argument has been given", function* (done) {
     try{
         result = yield r.expr(1).do().run();
     }
     catch(e) {
-        if (e.message.match(/^`do` takes 1 argument, 0 provided after:/)) {
+        if (e.message.match(/^`do` takes at least 1 argument, 0 provided after:/)) {
             done()
         }
         else {
