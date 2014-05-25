@@ -61,6 +61,19 @@ It("The pool should keep a buffer", function* (done) {
         done(e);
     }
 });
+It("A noreply query should release the connection", function* (done) {
+    try {
+        numConnections = r.getPool().getLength();
+        yield r.expr(1).run({noreply: true})
+        assert.equal(r.getPool().getLength(), numConnections);
+        done();
+    }
+    catch(e) {
+        console.log(e)
+        done(e);
+    }
+});
+
 It("The pool shouldn't have more than `options.max` connections", function* (done) {
     try {
         result = yield [r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run()]
