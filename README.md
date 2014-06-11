@@ -207,6 +207,27 @@ var result = yield cursor.toArray();
 console.log(JSON.stringify(result)) // print [1, 2, 3]
 ```
 
+#### `.createReadStream()` ####
+
+Calling `.createReadStream()` on a cursor returns a [Readable Stream](http://nodejs.org/api/stream.html#stream_class_stream_readable), which emits `data` events for each item in the cursor.
+
+Example:
+```javascript
+var through = require('through2');
+
+var cursor = yield r.expr(["a", "b", "c"]).run();
+var stream = cursor.createReadStream();
+
+stream.pipe(through(function(chunk, enc, callback) {
+    for (var i = 0; i < chunk.length; i++) {
+        if (chunk[i] == 97) { //if chunk is 'a'
+            chunk[i] = 122; // swap 'a' for 'z'
+        }
+    }
+    this.push(chunk);
+    callback();
+})).pipe(process.stdout);
+```
 
 #### Errors ####
 - Better backtraces
