@@ -341,6 +341,27 @@ It("`slice` should work", function* (done) {
         done(e);
     }
 })
+It("`slice` should handle options and optional end", function* (done) {
+    try {
+        var result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).slice(3).run();
+        result = yield result.toArray();
+        assert.deepEqual(result, [3, 4, 5, 6, 7, 8, 9]);
+
+        var result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).slice(3, {leftBound: "open"}).run();
+        result = yield result.toArray();
+        assert.deepEqual(result, [4, 5, 6, 7, 8, 9]);
+
+        var result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).slice(3, 5, {leftBound: "open"}).run();
+        result = yield result.toArray();
+        assert.deepEqual(result, [4]);
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
 It("`slice` should work -- with options", function* (done) {
     try {
         var result = yield r.expr([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22, 23]).slice(5, 10, {rightBound:'closed'}).run();
