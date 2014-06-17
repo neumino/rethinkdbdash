@@ -290,3 +290,13 @@ It("`json` is not defined after a term", function* (done) {
         }
     }
 })
+It("`args` should work", function* (done) {
+    try {
+        var cursor = yield r.arsg(10, 20, 30).run();
+        var result = cursor.toArray(); 
+        assert.deepEqual(result, [10, 20, 30])
+    }
+    catch(e) {
+        done(e)
+    }
+})
