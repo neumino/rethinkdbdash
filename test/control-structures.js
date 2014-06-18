@@ -292,11 +292,30 @@ It("`json` is not defined after a term", function* (done) {
 })
 It("`args` should work", function* (done) {
     try {
-        var cursor = yield r.arsg(10, 20, 30).run();
-        var result = cursor.toArray(); 
-        assert.deepEqual(result, [10, 20, 30])
+        var cursor = yield r.args([10, 20, 30]).run();
+        var result = yield cursor.toArray(); 
+        assert.deepEqual(result, [10, 20, 30]);
+
+        result = yield r.expr({foo: 1, bar: 2, buzz: 3}).pluck(r.args(["foo", "buzz"])).run()
+        assert.deepEqual(result, {foo: 1, buzz: 3});
+
+        done();
     }
     catch(e) {
+        console.log(e)
         done(e)
     }
 })
+/*
+It("`args` should not change the current arity checks", function* (done) {
+    try {
+        var result = yield r.now().during(r.args([r.now().sub(1000), r.now().add(1000)])).run();
+        assert.equal(result);
+        done();
+    }
+    catch(e) {
+        console.log(e)
+        done(e)
+    }
+})
+*/
