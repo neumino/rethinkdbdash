@@ -767,3 +767,30 @@ It("`not` should work", function* (done) {
         done(e);
     }
 })
+It("`random` should work", function* (done) {
+    try {
+        result = yield r.random().run();
+        assert((result > 0) && (result < 1));
+
+        result = yield r.random(10).run();
+        assert((result > 0) && (result < 10));
+        assert.equal(Math.floor(result), result);
+
+        result = yield r.random(5, 10).run();
+        assert((result >= 5) && (result < 10));
+        assert.equal(Math.floor(result), result);
+
+        result = yield r.random(5, 10, {float: true}).run();
+        assert((result >= 5) && (result < 10));
+        assert.notEqual(Math.floor(result), result); // that's "almost" safe
+
+        result = yield r.random(5, {float: true}).run();
+        assert((result < 5) && (result > 0));
+        assert.notEqual(Math.floor(result), result); // that's "almost" safe
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})

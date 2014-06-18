@@ -3670,4 +3670,27 @@ It('Test backtrace for r.expr(1).do(function(v) { return r.object("a") })', func
     }
 })
 
+/*
+Frames:
+[]
 
+Error:
+Expected type NUMBER but found STRING in:
+r.random(2, 3).sub("foo")
+^^^^^^^^^^^^^^^^^^^^^^^^^
+*/
+It('Test backtrace for r.random(2, 3, {float: true}).sub("foo")', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.random(2, 3, {float: true}).sub("foo").run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Expected type NUMBER but found STRING in:\nr.random(2, 3).sub(\"foo\")\n^^^^^^^^^^^^^^^^^^^^^^^^^\n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
