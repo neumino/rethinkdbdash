@@ -306,6 +306,43 @@ It("`args` should work", function* (done) {
         done(e)
     }
 })
+It("`http` should work", function* (done) {
+    try {
+        var result = yield r.http('http://google.com').run();
+        assert.equal(typeof result, 'string');
+
+        done();
+    }
+    catch(e) {
+        done(e)
+    }
+})
+It("`http` should work with options", function* (done) {
+    try {
+        var result = yield r.http('http://google.com', {timeout: 60}).run();
+        assert.equal(typeof result, 'string');
+
+        done();
+    }
+    catch(e) {
+        done(e)
+    }
+})
+It("`http` should throw with an unrecognized option", function* (done) {
+    try {
+        var result = yield r.http('http://google.com', {foo: 60}).run();
+        done(new Error("Expecting error..."));
+    }
+    catch(e) {
+        if (e.message === "Unrecognized option `foo` in `http`. Available options are reattemps <number>, redirects <number>, verify <boolean>, resultFormat: <string>, method: <string>, auth: <object>, params: <object>, header: <string>, data: <string>, page: <string/function>, pageLimit: <number>.") {
+            done()
+        }
+        else {
+            done(e)
+        }
+    }
+})
+
 /*
 It("`args` should not change the current arity checks", function* (done) {
     try {
@@ -319,3 +356,4 @@ It("`args` should not change the current arity checks", function* (done) {
     }
 })
 */
+
