@@ -306,6 +306,20 @@ It("`args` should work", function* (done) {
         done(e)
     }
 })
+It("`args` should throw if an implicit var is passed inside", function* (done) {
+    try {
+        var cursor = yield r.table("foo").eqJoin(r.args([r.row, r.table("bar")])).run();
+        done();
+    }
+    catch(e) {
+        if (e.message === 'Implicit variable `r.row` cannot be used inside `r.args`.') {
+            done();
+        }
+        else {
+            done(e);
+        }
+    }
+})
 It("`http` should work", function* (done) {
     try {
         var result = yield r.http('http://google.com').run();
@@ -342,18 +356,3 @@ It("`http` should throw with an unrecognized option", function* (done) {
         }
     }
 })
-
-/*
-It("`args` should not change the current arity checks", function* (done) {
-    try {
-        var result = yield r.now().during(r.args([r.now().sub(1000), r.now().add(1000)])).run();
-        assert.equal(result);
-        done();
-    }
-    catch(e) {
-        console.log(e)
-        done(e)
-    }
-})
-*/
-

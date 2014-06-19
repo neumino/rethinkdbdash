@@ -72,6 +72,7 @@ It("`table` should return a cursor", function* (done) {
     try {
         cursor = yield r.db(dbName).table(tableName).run();
         assert(cursor);
+        assert.equal(cursor.toString(), '[object Cursor]');
 
         done();
     }
@@ -89,7 +90,6 @@ It("`next` should return a document", function* (done) {
         done();
     }
     catch(e) {
-        console.log(e);
         done(e);
     }
 })
@@ -103,7 +103,6 @@ It("`toArray` should work", function* (done) {
         done();
     }
     catch(e) {
-        console.log(e);
         done(e);
     }
 })
@@ -162,7 +161,6 @@ It("`next` should work -- testing common pattern", function* (done) {
                     break;
                 }
                 else {
-                    console.log(e);
                     done(e);
                     break;
                 }
@@ -293,3 +291,84 @@ It("`next` should error when hitting an error -- not on the first batch", functi
         done(e);
     }
 })
+
+It("`changes` should return a feed", function* (done) {
+    try {
+        var feed = yield r.db(dbName).table(tableName).changes().run();
+        assert(feed);
+        assert.equal(feed.toString(), '[object Feed]');
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+It("`next` should work on feed", function* (done) {
+    try {
+        var feed = yield r.db(dbName).table(tableName2).changes().run();
+        setImmediate(function() {
+            r.db(dbName).table(tableName2).update({foo: r.now()}).run();
+        })
+        assert(feed);
+        i=0;
+        while(true) {
+            result = yield feed.next();
+            assert(result);
+            i++;
+            if (i === smallNumDocs) {
+                done();
+                break;
+            }
+        }
+    }
+    catch(e) {
+        done(e);
+    }
+})
+It("`on` should work on feed", function* (done) {
+    try {
+        var feed = yield r.db(dbName).table(tableName2).changes().run();
+        setImmediate(function() {
+            r.db(dbName).table(tableName2).update({foo: r.now()}).run();
+        })
+        var i=0;
+        feed.on('data', function() {
+            i++;
+            if (i === smallNumDocs) {
+                done();
+            }
+        });
+        feed.on('error', function(e) {
+            done(e)
+        })
+    }
+    catch(e) {
+        done(e);
+    }
+})
+It("`next`, `each`, `toArray` should be deactivated if the EventEmitter interface is used", function* (done) {
+    try {
+        var feed = yield r.db(dbName).table(tableName2).changes().run();
+        setImmediate(function() {
+            r.db(dbName).table(tableName2).update({foo: r.now()}).run();
+        })
+        feed.on('data', function() {
+        });
+        assert.throws(function() {
+            feed.next();
+        }, function(e) {
+            if (e.message === 'You cannot called `next` once you have bound listeners on the feed.') {
+                done();
+            }
+            else {
+                done(e);
+            }
+            return true;
+        })
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
