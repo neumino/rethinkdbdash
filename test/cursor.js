@@ -72,7 +72,6 @@ It("`table` should return a cursor", function* (done) {
     try {
         cursor = yield r.db(dbName).table(tableName).run();
         assert(cursor);
-        assert(cursor.hasNext, true);
 
         done();
     }
@@ -90,44 +89,7 @@ It("`next` should return a document", function* (done) {
         done();
     }
     catch(e) {
-        done(e);
-    }
-})
-
-It("`next` should work -- testing common pattern", function* (done) {
-    try {
-        var cursor = yield r.db(dbName).table(tableName).run();
-        assert(cursor);
-        i=0;
-        while(cursor.hasNext()) {
-            result = yield cursor.next();
-            assert(result);
-            i++;
-        }
-        assert.equal(numDocs, i);
-        done();
-    }
-    catch(e) {
-        done(e);
-    }
-})
-It("A cursor should keep the options and use them", function* (done) {
-    var i = 0;
-    try {
-        var result = yield r.db(dbName).table(tableName).run({profile: true, timeFormat: 'raw'});
-        assert(result);
-        assert(result.profile);
-        var cursor = result.result;
-        while(cursor.hasNext()) {
-            result = yield cursor.next();
-            assert(result);
-            assert(result.date.$reql_type$);
-            i++;
-        }
-        assert.equal(numDocs, i);
-        done();
-    }
-    catch(e) {
+        console.log(e);
         done(e);
     }
 })
@@ -141,6 +103,7 @@ It("`toArray` should work", function* (done) {
         done();
     }
     catch(e) {
+        console.log(e);
         done(e);
     }
 })
@@ -161,7 +124,6 @@ It("`table` should return a cursor - 2", function* (done) {
     try {
         cursor = yield r.db(dbName).table(tableName2).run();
         assert(cursor);
-        assert(cursor.hasNext, true);
 
         done();
     }
@@ -182,18 +144,30 @@ It("`next` should return a document - 2", function* (done) {
         done(e);
     }
 })
-It("`next` should work -- testing common pattern - 2", function* (done) {
+It("`next` should work -- testing common pattern", function* (done) {
     try {
         var cursor = yield r.db(dbName).table(tableName2).run();
         assert(cursor);
         i=0;
-        while(cursor.hasNext()) {
-            result = yield cursor.next();
-            assert(result);
-            i++;
+        while(true) {
+            try{
+                result = yield cursor.next();
+                assert(result);
+                i++;
+            }
+            catch(e) {
+                if (e.message === "No more rows in the cursor.") {
+                    assert.equal(smallNumDocs, i);
+                    done();
+                    break;
+                }
+                else {
+                    console.log(e);
+                    done(e);
+                    break;
+                }
+            }
         }
-        assert.equal(smallNumDocs, i);
-        done();
     }
     catch(e) {
         done(e);
@@ -256,7 +230,36 @@ It("Remove the field `val` in some docs", function* (done) {
         done(e);
     }
 })
+It("`next` with multiple batches", function* (done) {
+    var i=0;
+    try {
+        connection = yield r.connect({batch_conf: 10, host: config.host, port: config.port, authKey: config.authKey});
+        assert(connection);
 
+        cursor = yield r.db(dbName).table(tableName).run(connection);
+
+        assert(cursor);
+        while(true) {
+            try {
+                result = yield cursor.next();
+                i++;
+            }
+            catch(e) {
+                if ((i > 0) && (e.message === "No more rows in the cursor.")) {
+                    connection.close();
+                    done()
+                }
+                else {
+                    done(e);
+                }
+                break;
+            }
+        }
+    }
+    catch(e) {
+        done(e);
+    }
+})
 It("`next` should error when hitting an error -- not on the first batch", function* (done) {
     var i=0;
     try {
@@ -269,18 +272,24 @@ It("`next` should error when hitting an error -- not on the first batch", functi
             .run(connection);
 
         assert(cursor);
-        while(cursor.hasNext()) {
-            result = yield cursor.next();
-            i++;
+        while(true) {
+            try {
+                result = yield cursor.next();
+                i++;
+            }
+            catch(e) {
+                if ((i > 0) && (e.message.match(/^No attribute `val` in object/))) {
+                    connection.close();
+                    done()
+                }
+                else {
+                    done(e);
+                }
+                break;
+            }
         }
     }
     catch(e) {
-        if ((i > 0) && (e.message.match(/^No attribute `val` in object/))) {
-            connection.close();
-            done()
-        }
-        else {
-            done(e);
-        }
+        done(e);
     }
 })
