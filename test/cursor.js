@@ -6,7 +6,7 @@ var assert = require('assert');
 var uuid = util.uuid;
 var It = util.It
 
-var dbName, tableName, tableName2, cursor;
+var dbName, tableName, tableName2, cursor, result, pks, feed;
 
 var numDocs = 100; // Number of documents in the "big table" used to test the SUCCESS_PARTIAL 
 var smallNumDocs = 5; // Number of documents in the "small table"
@@ -23,7 +23,7 @@ It("Init for `cursor.js`", function* (done) {
         tableName = uuid(); // Big table to test partial sequence
         tableName2 = uuid(); // small table to test success sequence
 
-        var result = yield r.dbCreate(dbName).run()
+        result = yield r.dbCreate(dbName).run()
         assert.deepEqual(result, {created:1});
         result = yield [r.db(dbName).tableCreate(tableName).run(), r.db(dbName).tableCreate(tableName2).run()]
         assert.deepEqual(result, [{created:1}, {created:1}]);
@@ -83,7 +83,7 @@ It("`table` should return a cursor", function* (done) {
 
 It("`next` should return a document", function* (done) {
     try {
-        var result = yield cursor.next();
+        result = yield cursor.next();
         assert(result);
         assert(result.id);
 
@@ -133,7 +133,7 @@ It("`table` should return a cursor - 2", function* (done) {
 
 It("`next` should return a document - 2", function* (done) {
     try {
-        var result = yield cursor.next();
+        result = yield cursor.next();
         assert(result);
         assert(result.id);
 
@@ -145,7 +145,7 @@ It("`next` should return a document - 2", function* (done) {
 })
 It("`next` should work -- testing common pattern", function* (done) {
     try {
-        var cursor = yield r.db(dbName).table(tableName2).run();
+        cursor = yield r.db(dbName).table(tableName2).run();
         assert(cursor);
         i=0;
         while(true) {
@@ -294,7 +294,7 @@ It("`next` should error when hitting an error -- not on the first batch", functi
 
 It("`changes` should return a feed", function* (done) {
     try {
-        var feed = yield r.db(dbName).table(tableName).changes().run();
+        feed = yield r.db(dbName).table(tableName).changes().run();
         assert(feed);
         assert.equal(feed.toString(), '[object Feed]');
 
@@ -306,7 +306,7 @@ It("`changes` should return a feed", function* (done) {
 })
 It("`next` should work on feed", function* (done) {
     try {
-        var feed = yield r.db(dbName).table(tableName2).changes().run();
+        feed = yield r.db(dbName).table(tableName2).changes().run();
         setImmediate(function() {
             r.db(dbName).table(tableName2).update({foo: r.now()}).run();
         })
@@ -328,7 +328,7 @@ It("`next` should work on feed", function* (done) {
 })
 It("`on` should work on feed", function* (done) {
     try {
-        var feed = yield r.db(dbName).table(tableName2).changes().run();
+        feed = yield r.db(dbName).table(tableName2).changes().run();
         setImmediate(function() {
             r.db(dbName).table(tableName2).update({foo: r.now()}).run();
         })
@@ -347,9 +347,27 @@ It("`on` should work on feed", function* (done) {
         done(e);
     }
 })
+It("`on` should work on feed - a 'end' event shoul be eventually emitted on a cursor", function* (done) {
+    try {
+        cursor = yield r.db(dbName).table(tableName2).run();
+        setImmediate(function() {
+            r.db(dbName).table(tableName2).update({foo: r.now()}).run();
+        })
+        cursor.on('end', function() {
+            done()
+        });
+        cursor.on('error', function(e) {
+            done(e)
+        })
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
 It("`next`, `each`, `toArray` should be deactivated if the EventEmitter interface is used", function* (done) {
     try {
-        var feed = yield r.db(dbName).table(tableName2).changes().run();
+        feed = yield r.db(dbName).table(tableName2).changes().run();
         setImmediate(function() {
             r.db(dbName).table(tableName2).update({foo: r.now()}).run();
         })
