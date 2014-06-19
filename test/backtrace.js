@@ -3694,3 +3694,132 @@ It('Test backtrace for r.random(2, 3, {float: true}).sub("foo")', function* (don
         }
     }
 })
+
+
+/*
+Frames:
+[ 0 ]
+
+Error:
+Expected type NUMBER but found STRING in:
+r.random("foo", "bar")
+         ^^^^^
+*/
+It('Test backtrace for r.random("foo", "bar")', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.random("foo", "bar").run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Expected type NUMBER but found STRING in:\nr.random(\"foo\", \"bar\")\n         ^^^^^      \n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+/*
+Frames:
+undefined
+
+Error:
+`random` takes at most 3 arguments, 4 provided after:
+r.undefined()
+*/
+It('Test backtrace for r.random("foo", "bar", "bar", "bar")', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.random("foo", "bar", "bar", "bar").run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "`random` takes at most 3 arguments, 4 provided after:\nr.undefined()") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+/*
+Frames:
+[ 0 ]
+
+Error:
+Expected type DATUM but found SEQUENCE:
+OPAQUE VALUE SEQUENCE in:
+r.db("bd98452de5ea16f3572ed0d404a2e99c").table("c966dac895ef558f3dfdbfb8be003374")
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    .changes().add(2)
+    ^^^^^^^^^^
+*/
+It('Test backtrace for r.db(dbName).table(tableName).changes().add(2)', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.db(dbName).table(tableName).changes().add(2).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Expected type DATUM but found SEQUENCE:\nOPAQUE VALUE SEQUENCE in:\nr.db(\""+dbName+"\").table(\""+tableName+"\")\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    .changes().add(2)\n    ^^^^^^^^^^       \n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+/*
+Frames:
+[ 0 ]
+
+Error:
+Error in HTTP GET of ``: URL using bad/illegal format or missing URL in:
+r.http("").add(2)
+^^^^^^^^^^
+*/
+It('Test backtrace for r.http("").add(2)', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.http("").add(2).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Error in HTTP GET of ``: URL using bad/illegal format or missing URL in:\nr.http(\"\").add(2)\n^^^^^^^^^^       \n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+/*
+Frames:
+[]
+
+Error:
+Expected type STRING but found NUMBER in:
+r.args(["foo", "bar"]).add(2)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+*/
+It('Test backtrace for r.args(["foo", "bar"]).add(2)', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.args(["foo", "bar"]).add(2).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Expected type STRING but found NUMBER in:\nr.args([\"foo\", \"bar\"]).add(2)\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
