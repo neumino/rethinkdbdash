@@ -92,6 +92,31 @@ It("`group` should work ", function* (done) {
         done(e);
     }
 })
+It("`group` should work with an index ", function* (done) {
+
+    try {
+        var result = yield r.db(dbName).table(tableName).insert([
+            {id:1, group: 1},
+            {id:2, group: 1},
+            {id:3, group: 1},
+            {id:4, group: 4},
+            ]).run();
+        result = yield r.db(dbName).table(tableName).indexCreate("group").run();
+        result = yield r.db(dbName).table(tableName).indexWait("group").run();
+        var cursor = yield r.db(dbName).table(tableName).group({index: "group"}).run();
+        result = yield cursor.toArray();
+
+        assert.equal(result.length, 2);
+        assert(result[0].reduction.length === 3 || result[0].reduction.length === 1);
+        assert(result[1].reduction.length === 3 || result[1].reduction.length === 1);
+        done();
+    }
+    catch(e) {
+        console.log(e);
+        done(e);
+    }
+})
+
 It("`groupFormat` should work -- with raw", function* (done) {
     try {
         result = yield r.expr([{name: "Michel", grownUp: true},{name: "Laurent", grownUp: true},
