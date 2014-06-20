@@ -12,7 +12,7 @@ var dbName, tableName;
 
 It("All raws datum shoul be defined", function* (done) {
     try {
-        result = yield r.expr(1).run();
+        var result = yield r.expr(1).run();
         assert.equal(result, 1);
 
         result = yield r.expr(null).run();

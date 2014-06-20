@@ -7,7 +7,7 @@ var uuid = util.uuid;
 var It = util.It;
 
 var uuid = util.uuid;
-var dbName, tableName;
+var dbName, tableName, pks;
 
 
 It("Init for `joins.js`", function* (done) {
@@ -99,7 +99,7 @@ It("`innerJoin` should throw if no sequence", function* (done) {
 })
 It("`innerJoin` should throw if no predicate", function* (done) {
     try {
-        result = yield r.db(dbName).table(tableName).innerJoin(r.expr([1,2,3])).run();
+        var result = yield r.db(dbName).table(tableName).innerJoin(r.expr([1,2,3])).run();
     }
     catch(e) {
         if (e.message === "`innerJoin` takes 2 arguments, 1 provided after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
@@ -182,7 +182,7 @@ It("`outerJoin` should return -- stream-stream", function* (done) {
 })
 It("`outerJoin` should throw if no sequence", function* (done) {
     try {
-        result = yield r.db(dbName).table(tableName).outerJoin().run();
+        var result = yield r.db(dbName).table(tableName).outerJoin().run();
     }
     catch(e) {
         if (e.message === "`outerJoin` takes 2 arguments, 0 provided after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
@@ -195,7 +195,7 @@ It("`outerJoin` should throw if no sequence", function* (done) {
 })
 It("`outerJoin` should throw if no predicate", function* (done) {
     try {
-        result = yield r.db(dbName).table(tableName).outerJoin(r.expr([1,2,3])).run();
+        var result = yield r.db(dbName).table(tableName).outerJoin(r.expr([1,2,3])).run();
     }
     catch(e) {
         if (e.message === "`outerJoin` takes 2 arguments, 1 provided after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
@@ -210,7 +210,7 @@ It("`outerJoin` should throw if no predicate", function* (done) {
 
 It("`eqJoin` should return -- pk -- array-stream - function", function* (done) {
     try {
-        result = yield r.expr(pks).eqJoin(function(doc) { return doc; }, r.db(dbName).table(tableName)).run();
+        var result = yield r.expr(pks).eqJoin(function(doc) { return doc; }, r.db(dbName).table(tableName)).run();
         result = yield result.toArray();
         assert.equal(result.length, 3);
         assert(result[0].left);
@@ -228,7 +228,7 @@ It("`eqJoin` should return -- pk -- array-stream - function", function* (done) {
 })
 It("`eqJoin` should return -- pk -- array-stream - r.row", function* (done) {
     try {
-        result = yield r.expr(pks).eqJoin(r.row, r.db(dbName).table(tableName)).run();
+        var result = yield r.expr(pks).eqJoin(r.row, r.db(dbName).table(tableName)).run();
         result = yield result.toArray();
         assert.equal(result.length, 3);
         assert(result[0].left);
@@ -247,7 +247,7 @@ It("`eqJoin` should return -- pk -- array-stream - r.row", function* (done) {
 
 It("`eqJoin` should return -- secondary index -- array-stream - r.row", function* (done) {
     try {
-        result = yield r.expr([1,2,3]).eqJoin(r.row, r.db(dbName).table(tableName), {index: "val"}).run();
+        var result = yield r.expr([1,2,3]).eqJoin(r.row, r.db(dbName).table(tableName), {index: "val"}).run();
         result = yield result.toArray();
         assert.equal(result.length, 3);
         assert(result[0].left);
@@ -265,7 +265,7 @@ It("`eqJoin` should return -- secondary index -- array-stream - r.row", function
 })
 It("`eqJoin` should throw if no argument", function* (done) {
     try {
-        result = yield r.db(dbName).table(tableName).eqJoin().run();
+        var result = yield r.db(dbName).table(tableName).eqJoin().run();
     }
     catch(e) {
         if (e.message === "`eqJoin` takes at least 2 arguments, 0 provided after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
@@ -278,7 +278,7 @@ It("`eqJoin` should throw if no argument", function* (done) {
 })
 It("`eqJoin` should throw with a non valid key", function* (done) {
     try {
-        result = yield r.expr([1,2,3]).eqJoin(r.row, r.db(dbName).table(tableName), {nonValidKey: "val"}).run();
+        var result = yield r.expr([1,2,3]).eqJoin(r.row, r.db(dbName).table(tableName), {nonValidKey: "val"}).run();
     }
     catch(e) {
         if (e.message === "Unrecognized option `nonValidKey` in `eqJoin` after:\nr.expr([1, 2, 3])\nAvailable option is index <string>") {
@@ -292,7 +292,7 @@ It("`eqJoin` should throw with a non valid key", function* (done) {
 
 It("`eqJoin` should throw if no sequence", function* (done) {
     try {
-        result = yield r.db(dbName).table(tableName).eqJoin("id").run();
+        var result = yield r.db(dbName).table(tableName).eqJoin("id").run();
     }
     catch(e) {
         if (e.message === "`eqJoin` takes at least 2 arguments, 1 provided after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
@@ -305,7 +305,7 @@ It("`eqJoin` should throw if no sequence", function* (done) {
 })
 It("`eqJoin` should throw if too many arguments", function* (done) {
     try {
-        result = yield r.db(dbName).table(tableName).eqJoin(1, 1, 1, 1, 1).run();
+        var result = yield r.db(dbName).table(tableName).eqJoin(1, 1, 1, 1, 1).run();
     }
     catch(e) {
         if (e.message === "`eqJoin` takes at most 3 arguments, 5 provided after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
@@ -321,7 +321,7 @@ It("`eqJoin` should throw if too many arguments", function* (done) {
 
 It("`zip` should zip stuff", function* (done) {
     try {
-        result = yield r.expr(pks).eqJoin(function(doc) { return doc; }, r.db(dbName).table(tableName)).zip().run();
+        var result = yield r.expr(pks).eqJoin(function(doc) { return doc; }, r.db(dbName).table(tableName)).zip().run();
         result = yield result.toArray();
         assert.equal(result.length, 3);
         assert.equal(result[0].left, undefined);

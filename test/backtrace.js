@@ -22,7 +22,6 @@ It("Init for backtraces", function* (done) {
 
         result = yield r.db(dbName).table(tableName).insert(eval('['+new Array(100).join('{}, ')+'{}]')).run();
         assert.equal(result.inserted, 100);
-        pks = result.generated_keys;
 
         done();
     }

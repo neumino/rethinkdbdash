@@ -31,7 +31,7 @@ It("`add` should work", function* (done) {
 })
 It("`add` should throw if no argument has been passed", function* (done) {
     try {
-        result = yield r.expr(1).add().run();
+        var result = yield r.expr(1).add().run();
     }
     catch(e) {
         if (e.message === "`add` takes at least 1 argument, 0 provided after:\nr.expr(1)") {
@@ -45,7 +45,7 @@ It("`add` should throw if no argument has been passed", function* (done) {
 
 It("`add` should throw if no argument has been passed -- r.add", function* (done) {
     try {
-        result = yield r.add().run();
+        var result = yield r.add().run();
     }
     catch(e) {
         if (e.message === "`r.add` takes at least 2 arguments, 0 provided.") {
@@ -58,7 +58,7 @@ It("`add` should throw if no argument has been passed -- r.add", function* (done
 })
 It("`add` should throw if just one argument has been passed -- r.add", function* (done) {
     try {
-        result = yield r.add(1).run();
+        var result = yield r.add(1).run();
     }
     catch(e) {
         if (e.message === "`r.add` takes at least 2 arguments, 1 provided.") {
@@ -72,7 +72,7 @@ It("`add` should throw if just one argument has been passed -- r.add", function*
 
 It("`sub` should work", function* (done) {
     try {
-        result = yield r.expr(1).sub(1).run();
+        var result = yield r.expr(1).sub(1).run();
         assert.equal(result, 0);
 
         result = yield r.sub(5, 3, 1).run();
@@ -86,7 +86,7 @@ It("`sub` should work", function* (done) {
 })
 It("`sub` should throw if no argument has been passed", function* (done) {
     try {
-        result = yield r.expr(1).sub().run();
+        var result = yield r.expr(1).sub().run();
     }
     catch(e) {
         if (e.message === "`sub` takes at least 1 argument, 0 provided after:\nr.expr(1)") {
@@ -99,7 +99,7 @@ It("`sub` should throw if no argument has been passed", function* (done) {
 })
 It("`sub` should throw if no argument has been passed -- r.sub", function* (done) {
     try {
-        result = yield r.sub().run();
+        var result = yield r.sub().run();
     }
     catch(e) {
         if (e.message === "`r.sub` takes at least 2 arguments, 0 provided.") {
@@ -112,7 +112,7 @@ It("`sub` should throw if no argument has been passed -- r.sub", function* (done
 })
 It("`sub` should throw if just one argument has been passed -- r.sub", function* (done) {
     try {
-        result = yield r.sub(1).run();
+        var result = yield r.sub(1).run();
     }
     catch(e) {
         if (e.message === "`r.sub` takes at least 2 arguments, 1 provided.") {
@@ -125,7 +125,7 @@ It("`sub` should throw if just one argument has been passed -- r.sub", function*
 })
 It("`mul` should work", function* (done) {
     try {
-        result = yield r.expr(2).mul(3).run();
+        var result = yield r.expr(2).mul(3).run();
         assert.equal(result, 6);
 
         result = yield r.mul(2, 3, 4).run();
@@ -139,7 +139,7 @@ It("`mul` should work", function* (done) {
 })
 It("`mul` should throw if no argument has been passed", function* (done) {
     try {
-        result = yield r.expr(1).mul().run();
+        var result = yield r.expr(1).mul().run();
     }
     catch(e) {
         if (e.message === "`mul` takes at least 1 argument, 0 provided after:\nr.expr(1)") {
@@ -152,7 +152,7 @@ It("`mul` should throw if no argument has been passed", function* (done) {
 })
 It("`mul` should throw if no argument has been passed -- r.mul", function* (done) {
     try {
-        result = yield r.mul().run();
+        var result = yield r.mul().run();
     }
     catch(e) {
         if (e.message === "`r.mul` takes at least 2 arguments, 0 provided.") {
@@ -165,7 +165,7 @@ It("`mul` should throw if no argument has been passed -- r.mul", function* (done
 })
 It("`mul` should throw if just one argument has been passed -- r.mul", function* (done) {
     try {
-        result = yield r.mul(1).run();
+        var result = yield r.mul(1).run();
     }
     catch(e) {
         if (e.message === "`r.mul` takes at least 2 arguments, 1 provided.") {
@@ -178,7 +178,7 @@ It("`mul` should throw if just one argument has been passed -- r.mul", function*
 })
 It("`div` should work", function* (done) {
     try {
-        result = yield r.expr(24).div(2).run();
+        var result = yield r.expr(24).div(2).run();
         assert.equal(result, 12);
 
         result = yield r.div(20, 2, 5, 1).run();
@@ -192,7 +192,7 @@ It("`div` should work", function* (done) {
 })
 It("`div` should throw if no argument has been passed", function* (done) {
     try {
-        result = yield r.expr(1).div().run();
+        var result = yield r.expr(1).div().run();
     }
     catch(e) {
         if (e.message === "`div` takes at least 1 argument, 0 provided after:\nr.expr(1)") {
@@ -205,7 +205,7 @@ It("`div` should throw if no argument has been passed", function* (done) {
 })
 It("`div` should throw if no argument has been passed -- r.div", function* (done) {
     try {
-        result = yield r.div().run();
+        var result = yield r.div().run();
     }
     catch(e) {
         if (e.message === "`r.div` takes at least 2 arguments, 0 provided.") {
@@ -218,7 +218,7 @@ It("`div` should throw if no argument has been passed -- r.div", function* (done
 })
 It("`div` should throw if just one argument has been passed -- r.div", function* (done) {
     try {
-        result = yield r.div(1).run();
+        var result = yield r.div(1).run();
     }
     catch(e) {
         if (e.message === "`r.div` takes at least 2 arguments, 1 provided.") {
@@ -231,7 +231,7 @@ It("`div` should throw if just one argument has been passed -- r.div", function*
 })
 It("`mod` should work", function* (done) {
     try {
-        result = yield r.expr(24).mod(7).run();
+        var result = yield r.expr(24).mod(7).run();
         assert.equal(result, 3);
 
         result = yield r.mod(24, 7).run();
@@ -245,7 +245,7 @@ It("`mod` should work", function* (done) {
 })
 It("`mod` should throw if no argument has been passed", function* (done) {
     try {
-        result = yield r.expr(1).mod().run();
+        var result = yield r.expr(1).mod().run();
     }
     catch(e) {
         if (e.message === "`mod` takes 1 argument, 0 provided after:\nr.expr(1)") {
@@ -258,7 +258,7 @@ It("`mod` should throw if no argument has been passed", function* (done) {
 })
 It("`mod` should throw if more than two arguments -- r.mod", function* (done) {
     try {
-        result = yield r.mod(24, 7, 2).run();
+        var result = yield r.mod(24, 7, 2).run();
     }
     catch(e) {
         if (e.message === "`r.mod` takes 2 arguments, 3 provided.") {
@@ -271,7 +271,7 @@ It("`mod` should throw if more than two arguments -- r.mod", function* (done) {
 })
 It("`and` should work", function* (done) {
     try {
-        result = yield r.expr(true).and(false).run();
+        var result = yield r.expr(true).and(false).run();
         assert.equal(result, false);
 
         result = yield r.expr(true).and(true).run();
@@ -291,7 +291,7 @@ It("`and` should work", function* (done) {
 })
 It("`and` should throw if no argument has been passed", function* (done) {
     try {
-        result = yield r.expr(1).and().run();
+        var result = yield r.expr(1).and().run();
     }
     catch(e) {
         if (e.message === "`and` takes at least 1 argument, 0 provided after:\nr.expr(1)") {
@@ -304,7 +304,7 @@ It("`and` should throw if no argument has been passed", function* (done) {
 })
 It("`and` should throw if no argument has been passed -- r.and", function* (done) {
     try {
-        result = yield r.and().run();
+        var result = yield r.and().run();
     }
     catch(e) {
         if (e.message === "`r.and` takes at least 2 arguments, 0 provided.") {
@@ -317,7 +317,7 @@ It("`and` should throw if no argument has been passed -- r.and", function* (done
 })
 It("`and` should throw if just one argument has been passed -- r.and", function* (done) {
     try {
-        result = yield r.and(1).run();
+        var result = yield r.and(1).run();
     }
     catch(e) {
         if (e.message === "`r.and` takes at least 2 arguments, 1 provided.") {
@@ -330,7 +330,7 @@ It("`and` should throw if just one argument has been passed -- r.and", function*
 })
 It("`or` should work", function* (done) {
     try {
-        result = yield r.expr(true).or(false).run();
+        var result = yield r.expr(true).or(false).run();
         assert.equal(result, true);
 
         result = yield r.expr(false).or(false).run();
@@ -349,7 +349,7 @@ It("`or` should work", function* (done) {
 })
 It("`or` should throw if no argument has been passed", function* (done) {
     try {
-        result = yield r.expr(1).or().run();
+        var result = yield r.expr(1).or().run();
     }
     catch(e) {
         if (e.message === "`or` takes at least 1 argument, 0 provided after:\nr.expr(1)") {
@@ -362,7 +362,7 @@ It("`or` should throw if no argument has been passed", function* (done) {
 })
 It("`or` should throw if no argument has been passed -- r.or", function* (done) {
     try {
-        result = yield r.or().run();
+        var result = yield r.or().run();
     }
     catch(e) {
         if (e.message === "`r.or` takes at least 2 arguments, 0 provided.") {
@@ -375,7 +375,7 @@ It("`or` should throw if no argument has been passed -- r.or", function* (done) 
 })
 It("`or` should throw if just one argument has been passed -- r.or", function* (done) {
     try {
-        result = yield r.or(1).run();
+        var result = yield r.or(1).run();
     }
     catch(e) {
         if (e.message === "`r.or` takes at least 2 arguments, 1 provided.") {
@@ -388,7 +388,7 @@ It("`or` should throw if just one argument has been passed -- r.or", function* (
 })
 It("`eq` should work", function* (done) {
     try {
-        result = yield r.expr(1).eq(1).run();
+        var result = yield r.expr(1).eq(1).run();
         assert.equal(result, true);
 
         result = yield r.expr(1).eq(2).run();
@@ -408,7 +408,7 @@ It("`eq` should work", function* (done) {
 })
 It("`eq` should throw if no argument has been passed", function* (done) {
     try {
-        result = yield r.expr(1).eq().run();
+        var result = yield r.expr(1).eq().run();
     }
     catch(e) {
         if (e.message === "`eq` takes at least 1 argument, 0 provided after:\nr.expr(1)") {
@@ -421,7 +421,7 @@ It("`eq` should throw if no argument has been passed", function* (done) {
 })
 It("`eq` should throw if no argument has been passed -- r.eq", function* (done) {
     try {
-        result = yield r.eq().run();
+        var result = yield r.eq().run();
     }
     catch(e) {
         if (e.message === "`r.eq` takes at least 2 arguments, 0 provided.") {
@@ -434,7 +434,7 @@ It("`eq` should throw if no argument has been passed -- r.eq", function* (done) 
 })
 It("`eq` should throw if just one argument has been passed -- r.eq", function* (done) {
     try {
-        result = yield r.eq(1).run();
+        var result = yield r.eq(1).run();
     }
     catch(e) {
         if (e.message === "`r.eq` takes at least 2 arguments, 1 provided.") {
@@ -447,7 +447,7 @@ It("`eq` should throw if just one argument has been passed -- r.eq", function* (
 })
 It("`ne` should work", function* (done) {
     try {
-        result = yield r.expr(1).ne(1).run();
+        var result = yield r.expr(1).ne(1).run();
         assert.equal(result, false);
 
         result = yield r.expr(1).ne(2).run();
@@ -468,7 +468,7 @@ It("`ne` should work", function* (done) {
 })
 It("`ne` should throw if no argument has been passed", function* (done) {
     try {
-        result = yield r.expr(1).ne().run();
+        var result = yield r.expr(1).ne().run();
     }
     catch(e) {
         if (e.message === "`ne` takes at least 1 argument, 0 provided after:\nr.expr(1)") {
@@ -481,7 +481,7 @@ It("`ne` should throw if no argument has been passed", function* (done) {
 })
 It("`ne` should throw if no argument has been passed -- r.ne", function* (done) {
     try {
-        result = yield r.ne().run();
+        var result = yield r.ne().run();
     }
     catch(e) {
         if (e.message === "`r.ne` takes at least 2 arguments, 0 provided.") {
@@ -494,7 +494,7 @@ It("`ne` should throw if no argument has been passed -- r.ne", function* (done) 
 })
 It("`ne` should throw if just one argument has been passed -- r.ne", function* (done) {
     try {
-        result = yield r.ne(1).run();
+        var result = yield r.ne(1).run();
     }
     catch(e) {
         if (e.message === "`r.ne` takes at least 2 arguments, 1 provided.") {
@@ -507,7 +507,7 @@ It("`ne` should throw if just one argument has been passed -- r.ne", function* (
 })
 It("`gt` should work", function* (done) {
     try {
-        result = yield r.expr(1).gt(2).run();
+        var result = yield r.expr(1).gt(2).run();
         assert.equal(result, false);
         result = yield r.expr(2).gt(2).run();
         assert.equal(result, false);
@@ -528,7 +528,7 @@ It("`gt` should work", function* (done) {
 })
 It("`gt` should throw if no argument has been passed", function* (done) {
     try {
-        result = yield r.expr(1).gt().run();
+        var result = yield r.expr(1).gt().run();
     }
     catch(e) {
         if (e.message === "`gt` takes at least 1 argument, 0 provided after:\nr.expr(1)") {
@@ -541,7 +541,7 @@ It("`gt` should throw if no argument has been passed", function* (done) {
 })
 It("`gt` should throw if no argument has been passed -- r.gt", function* (done) {
     try {
-        result = yield r.gt().run();
+        var result = yield r.gt().run();
     }
     catch(e) {
         if (e.message === "`r.gt` takes at least 2 arguments, 0 provided.") {
@@ -554,7 +554,7 @@ It("`gt` should throw if no argument has been passed -- r.gt", function* (done) 
 })
 It("`gt` should throw if just one argument has been passed -- r.gt", function* (done) {
     try {
-        result = yield r.gt(1).run();
+        var result = yield r.gt(1).run();
     }
     catch(e) {
         if (e.message === "`r.gt` takes at least 2 arguments, 1 provided.") {
@@ -567,7 +567,7 @@ It("`gt` should throw if just one argument has been passed -- r.gt", function* (
 })
 It("`ge` should work", function* (done) {
     try {
-        result = yield r.expr(1).ge(2).run();
+        var result = yield r.expr(1).ge(2).run();
         assert.equal(result, false);
         result = yield r.expr(2).ge(2).run();
         assert.equal(result, true);
@@ -591,7 +591,7 @@ It("`ge` should work", function* (done) {
 })
 It("`ge` should throw if no argument has been passed", function* (done) {
     try {
-        result = yield r.expr(1).ge().run();
+        var result = yield r.expr(1).ge().run();
     }
     catch(e) {
         if (e.message === "`ge` takes at least 1 argument, 0 provided after:\nr.expr(1)") {
@@ -604,7 +604,7 @@ It("`ge` should throw if no argument has been passed", function* (done) {
 })
 It("`ge` should throw if no argument has been passed -- r.ge", function* (done) {
     try {
-        result = yield r.ge().run();
+        var result = yield r.ge().run();
     }
     catch(e) {
         if (e.message === "`r.ge` takes at least 2 arguments, 0 provided.") {
@@ -617,7 +617,7 @@ It("`ge` should throw if no argument has been passed -- r.ge", function* (done) 
 })
 It("`ge` should throw if just one argument has been passed -- r.ge", function* (done) {
     try {
-        result = yield r.ge(1).run();
+        var result = yield r.ge(1).run();
     }
     catch(e) {
         if (e.message === "`r.ge` takes at least 2 arguments, 1 provided.") {
@@ -630,7 +630,7 @@ It("`ge` should throw if just one argument has been passed -- r.ge", function* (
 })
 It("`lt` should work", function* (done) {
     try {
-        result = yield r.expr(1).lt(2).run();
+        var result = yield r.expr(1).lt(2).run();
         assert.equal(result, true);
         result = yield r.expr(2).lt(2).run();
         assert.equal(result, false);
@@ -654,7 +654,7 @@ It("`lt` should work", function* (done) {
 })
 It("`lt` should throw if no argument has been passed", function* (done) {
     try {
-        result = yield r.expr(1).lt().run();
+        var result = yield r.expr(1).lt().run();
     }
     catch(e) {
         if (e.message === "`lt` takes at least 1 argument, 0 provided after:\nr.expr(1)") {
@@ -667,7 +667,7 @@ It("`lt` should throw if no argument has been passed", function* (done) {
 })
 It("`lt` should throw if no argument has been passed -- r.lt", function* (done) {
     try {
-        result = yield r.lt().run();
+        var result = yield r.lt().run();
     }
     catch(e) {
         if (e.message === "`r.lt` takes at least 2 arguments, 0 provided.") {
@@ -680,7 +680,7 @@ It("`lt` should throw if no argument has been passed -- r.lt", function* (done) 
 })
 It("`lt` should throw if just one argument has been passed -- r.lt", function* (done) {
     try {
-        result = yield r.lt(1).run();
+        var result = yield r.lt(1).run();
     }
     catch(e) {
         if (e.message === "`r.lt` takes at least 2 arguments, 1 provided.") {
@@ -693,7 +693,7 @@ It("`lt` should throw if just one argument has been passed -- r.lt", function* (
 })
 It("`le` should work", function* (done) {
     try {
-        result = yield r.expr(1).le(2).run();
+        var result = yield r.expr(1).le(2).run();
         assert.equal(result, true);
         result = yield r.expr(2).le(2).run();
         assert.equal(result, true);
@@ -717,7 +717,7 @@ It("`le` should work", function* (done) {
 })
 It("`le` should throw if no argument has been passed", function* (done) {
     try {
-        result = yield r.expr(1).le().run();
+        var result = yield r.expr(1).le().run();
     }
     catch(e) {
         if (e.message === "`le` takes at least 1 argument, 0 provided after:\nr.expr(1)") {
@@ -730,7 +730,7 @@ It("`le` should throw if no argument has been passed", function* (done) {
 })
 It("`le` should throw if no argument has been passed -- r.le", function* (done) {
     try {
-        result = yield r.le().run();
+        var result = yield r.le().run();
     }
     catch(e) {
         if (e.message === "`r.le` takes at least 2 arguments, 0 provided.") {
@@ -743,7 +743,7 @@ It("`le` should throw if no argument has been passed -- r.le", function* (done) 
 })
 It("`le` should throw if just one argument has been passed -- r.le", function* (done) {
     try {
-        result = yield r.le(1).run();
+        var result = yield r.le(1).run();
     }
     catch(e) {
         if (e.message === "`r.le` takes at least 2 arguments, 1 provided.") {
@@ -756,7 +756,7 @@ It("`le` should throw if just one argument has been passed -- r.le", function* (
 })
 It("`not` should work", function* (done) {
     try {
-        result = yield r.expr(true).not().run();
+        var result = yield r.expr(true).not().run();
         assert.equal(result, false);
         result = yield r.expr(false).not().run();
         assert.equal(result, true);
@@ -769,7 +769,7 @@ It("`not` should work", function* (done) {
 })
 It("`random` should work", function* (done) {
     try {
-        result = yield r.random().run();
+        var result = yield r.random().run();
         assert((result > 0) && (result < 1));
 
         result = yield r.random(10).run();

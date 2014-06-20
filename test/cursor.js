@@ -147,7 +147,7 @@ It("`next` should work -- testing common pattern", function* (done) {
     try {
         cursor = yield r.db(dbName).table(tableName2).run();
         assert(cursor);
-        i=0;
+        var i=0;
         while(true) {
             try{
                 result = yield cursor.next();
@@ -197,7 +197,7 @@ It("`cursor.close` should return a promise", function* (done) {
 It("cursor shouldn't throw if the user try to serialize it in JSON", function* (done) {
     try {
         cursor = yield r.db(dbName).table(tableName).run();
-        cursor2 = yield r.db(dbName).table(tableName2).run();
+        var cursor2 = yield r.db(dbName).table(tableName2).run();
         assert.deepEqual(JSON.stringify("You cannot serialize to JSON a cursor. Retrieve data from the cursor with `toArray` or `next`."), JSON.stringify(cursor));
         assert.deepEqual(JSON.stringify("You cannot serialize to JSON a cursor. Retrieve data from the cursor with `toArray` or `next`."), JSON.stringify(cursor2));
         yield cursor.close();
@@ -231,7 +231,7 @@ It("Remove the field `val` in some docs", function* (done) {
 It("`next` with multiple batches", function* (done) {
     var i=0;
     try {
-        connection = yield r.connect({batch_conf: 10, host: config.host, port: config.port, authKey: config.authKey});
+        var connection = yield r.connect({batch_conf: 10, host: config.host, port: config.port, authKey: config.authKey});
         assert(connection);
 
         cursor = yield r.db(dbName).table(tableName).run(connection);
@@ -261,7 +261,7 @@ It("`next` with multiple batches", function* (done) {
 It("`next` should error when hitting an error -- not on the first batch", function* (done) {
     var i=0;
     try {
-        connection = yield r.connect({batch_conf: 10, host: config.host, port: config.port, authKey: config.authKey});
+        var connection = yield r.connect({batch_conf: 10, host: config.host, port: config.port, authKey: config.authKey});
         assert(connection);
 
         cursor = yield r.db(dbName).table(tableName)
@@ -311,7 +311,7 @@ It("`next` should work on feed", function* (done) {
             r.db(dbName).table(tableName2).update({foo: r.now()}).run();
         })
         assert(feed);
-        i=0;
+        var i=0;
         while(true) {
             result = yield feed.next();
             assert(result);

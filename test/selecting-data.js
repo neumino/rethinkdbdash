@@ -8,7 +8,7 @@ var uuid = util.uuid;
 var It = util.It;
 
 var uuid = util.uuid;
-var dbName, tableName;
+var dbName, tableName, pks;
 
 
 It("Init for `selecting-data.js`", function* (done) {
@@ -61,7 +61,7 @@ It("`table` should work", function* (done) {
 })
 It("`table` should work with useOutdated", function* (done) {
     try {
-        result = yield r.db(dbName).table(tableName, {useOutdated: true}).run();
+        var result = yield r.db(dbName).table(tableName, {useOutdated: true}).run();
         result = yield result.toArray();
         assert.equal(result.length, 100)
 
@@ -77,7 +77,7 @@ It("`table` should work with useOutdated", function* (done) {
 })
 It("`table` should throw with non valid otpions", function* (done) {
     try {
-        result = yield r.db(dbName).table(tableName, {nonValidKey: false}).run();
+        var result = yield r.db(dbName).table(tableName, {nonValidKey: false}).run();
     }
     catch(e) {
         if (e.message === 'Unrecognized option `nonValidKey` in `table` after:\nr.db("'+dbName+'")\nAvailable option is useOutdated <bool>') {
@@ -119,8 +119,8 @@ It("`get` should throw if no argument is passed", function* (done) {
 It("`getAll` should work with multiple values - primary key", function* (done) {
     try {
         var table = r.db(dbName).table(tableName);
-        query = table.getAll.apply(table, pks);
-        result = yield query.run();
+        var query = table.getAll.apply(table, pks);
+        var result = yield query.run();
         result = yield result.toArray();
         assert.equal(result.length, 100);
 
@@ -138,7 +138,7 @@ It("`getAll` should work with multiple values - primary key", function* (done) {
 })
 It("`getAll` should work with multiple values - secondary index 1", function* (done) {
     try {
-        result = yield r.db(dbName).table(tableName).update({field: 0}).run();
+        var result = yield r.db(dbName).table(tableName).update({field: 0}).run();
         assert.equal(result.replaced, 100);
         result = yield r.db(dbName).table(tableName).sample(20).update({field: 10}).run();
         assert.equal(result.replaced, 20);
@@ -168,7 +168,7 @@ It("`getAll` should work with multiple values - secondary index 1", function* (d
 })
 It("`getAll` should return native dates (and cursor should handle them)", function* (done) {
     try {
-        result = yield r.db(dbName).table(tableName).insert({field: -1, date: r.now()}).run();
+        var result = yield r.db(dbName).table(tableName).insert({field: -1, date: r.now()}).run();
         result = yield r.db(dbName).table(tableName).getAll(-1, {index: "field"}).run();
         result = yield result.toArray();
         assert(result[0].date instanceof Date);
@@ -183,7 +183,7 @@ It("`getAll` should return native dates (and cursor should handle them)", functi
 
 It("`getAll` should work with multiple values - secondary index 2", function* (done) {
     try {
-        result = yield r.db(dbName).table(tableName).indexCreate("fieldAddOne", function(doc) { return doc("field").add(1) }).run();
+        var result = yield r.db(dbName).table(tableName).indexCreate("fieldAddOne", function(doc) { return doc("field").add(1) }).run();
         assert.deepEqual(result, {created: 1});
 
         result = yield r.db(dbName).table(tableName).indexWait("fieldAddOne").run();
@@ -209,7 +209,7 @@ It("`getAll` should work with multiple values - secondary index 2", function* (d
 })
 It("`getAll` should throw if no argument is passed", function* (done) {
     try {
-        result = yield r.db(dbName).table(tableName).getAll().run();
+        var result = yield r.db(dbName).table(tableName).getAll().run();
     }
     catch(e) {
         assert(e instanceof r.Error.ReqlDriverError);
@@ -225,7 +225,7 @@ It("`getAll` should throw if no argument is passed", function* (done) {
 
 It("`between` should wrok -- secondary index", function* (done) {
     try {
-        result = yield r.db(dbName).table(tableName).between(5, 20, {index: "fieldAddOne"}).run();
+        var result = yield r.db(dbName).table(tableName).between(5, 20, {index: "fieldAddOne"}).run();
         assert(result);
         result = yield result.toArray();
         assert.equal(result.length, 20);
@@ -238,7 +238,7 @@ It("`between` should wrok -- secondary index", function* (done) {
 })
 It("`between` should wrok -- all args", function* (done) {
     try {
-        result = yield r.db(dbName).table(tableName).between(5, 20, {index: "fieldAddOne", leftBound: "open", rightBound: "closed"}).run();
+        var result = yield r.db(dbName).table(tableName).between(5, 20, {index: "fieldAddOne", leftBound: "open", rightBound: "closed"}).run();
         assert(result);
         result = yield result.toArray();
         assert.equal(result.length, 20);
@@ -251,7 +251,7 @@ It("`between` should wrok -- all args", function* (done) {
 })
 It("`between` should throw if no argument is passed", function* (done) {
     try {
-        result = yield r.db(dbName).table(tableName).between().run();
+        var result = yield r.db(dbName).table(tableName).between().run();
     }
     catch(e) {
         assert(e instanceof r.Error.ReqlDriverError);
@@ -266,7 +266,7 @@ It("`between` should throw if no argument is passed", function* (done) {
 })
 It("`between` should throw if non valid arg", function* (done) {
     try {
-        result = yield r.db(dbName).table(tableName).between(1, 2, {nonValidKey: true}).run();
+        var result = yield r.db(dbName).table(tableName).between(1, 2, {nonValidKey: true}).run();
     }
     catch(e) {
         assert(e instanceof r.Error.ReqlDriverError);
@@ -282,7 +282,7 @@ It("`between` should throw if non valid arg", function* (done) {
 
 It("`filter` should work -- with an object", function* (done) {
     try {
-        result = yield r.db(dbName).table(tableName).filter({field: 10}).run();
+        var result = yield r.db(dbName).table(tableName).filter({field: 10}).run();
         assert(result);
         result = yield result.toArray();
         assert.equal(result.length, 20);
@@ -295,7 +295,7 @@ It("`filter` should work -- with an object", function* (done) {
 })
 It("`filter` should work -- with an object -- looking for an undefined field", function* (done) {
     try {
-        result = yield r.db(dbName).table(tableName).filter({nonExistingField: 10}).run();
+        var result = yield r.db(dbName).table(tableName).filter({nonExistingField: 10}).run();
         assert(result);
         result = yield result.toArray();
         assert.equal(result.length, 0);
@@ -310,7 +310,7 @@ It("`filter` should work -- with an object -- looking for an undefined field", f
 
 It("`filter` should work -- with an anonymous function", function* (done) {
     try {
-        result = yield r.db(dbName).table(tableName).filter(function(doc) { return doc("field").eq(10) }).run();
+        var result = yield r.db(dbName).table(tableName).filter(function(doc) { return doc("field").eq(10) }).run();
         assert(result);
         result = yield result.toArray();
         assert.equal(result.length, 20);
@@ -324,7 +324,7 @@ It("`filter` should work -- with an anonymous function", function* (done) {
 
 It("`filter` should work -- default true", function* (done) {
     try {
-        result = yield r.db(dbName).table(tableName).filter({nonExistingField: 10}, {default: true}).run();
+        var result = yield r.db(dbName).table(tableName).filter({nonExistingField: 10}, {default: true}).run();
         assert(result);
         result = yield result.toArray();
         assert.equal(result.length, 100);
@@ -338,7 +338,7 @@ It("`filter` should work -- default true", function* (done) {
 
 It("`filter` should work -- default false", function* (done) {
     try {
-        result = yield r.db(dbName).table(tableName).filter({nonExistingField: 10}, {default: false}).run();
+        var result = yield r.db(dbName).table(tableName).filter({nonExistingField: 10}, {default: false}).run();
         assert(result);
         result = yield result.toArray();
         assert.equal(result.length, 0);
@@ -352,7 +352,7 @@ It("`filter` should work -- default false", function* (done) {
 
 It("`filter` should work -- default false", function* (done) {
     try{
-        result = yield r.expr([{a:1}, {}]).filter(r.row("a"), {default: r.error()}).run();
+        var result = yield r.expr([{a:1}, {}]).filter(r.row("a"), {default: r.error()}).run();
     }
     catch(e) {
         if (e.message.match(/^No attribute `a` in object:/)) {
@@ -365,7 +365,7 @@ It("`filter` should work -- default false", function* (done) {
 })
 It("`filter` should throw if no argument is passed", function* (done) {
     try {
-        result = yield r.db(dbName).table(tableName).filter().run();
+        var result = yield r.db(dbName).table(tableName).filter().run();
     }
     catch(e) {
         assert(e instanceof r.Error.ReqlDriverError);
@@ -380,7 +380,7 @@ It("`filter` should throw if no argument is passed", function* (done) {
 })
 It("`filter` should throw with a non valid option", function* (done) {
     try {
-        result = yield r.db(dbName).table(tableName).filter(true, {nonValidKey: false}).run();
+        var result = yield r.db(dbName).table(tableName).filter(true, {nonValidKey: false}).run();
     }
     catch(e) {
         if (e.message.match(/^Unrecognized option `nonValidKey` in `filter` after:/)) {

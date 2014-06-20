@@ -7,7 +7,7 @@ var uuid = util.uuid;
 var It = util.It;
 
 var uuid = util.uuid;
-var dbName, tableName;
+var dbName, tableName, pks;
 
 var options = {
     min: 2,
@@ -102,7 +102,7 @@ It("Init for `pool.js`", function* (done) {
 It("Updating data to make it heavier", function* (done) {
     try {
         //Making bigger documents to retrieve multiple batches
-        result = yield r.db(dbName).table(tableName).update({
+        var result = yield r.db(dbName).table(tableName).update({
             "foo": uuid(),
             "fooo": uuid(),
             "foooo": uuid(),

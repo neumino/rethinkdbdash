@@ -54,7 +54,7 @@ It("`reduce` should throw if no argument has been passed", function* (done) {
 
 It("`count` should work -- no arg ", function* (done) {
     try {
-        result = yield r.expr([0, 1, 2, 3, 4, 5]).count().run();
+        var result = yield r.expr([0, 1, 2, 3, 4, 5]).count().run();
         assert.equal(result, 6);
 
         done();
@@ -65,7 +65,7 @@ It("`count` should work -- no arg ", function* (done) {
 })
 It("`count` should work -- filter ", function* (done) {
     try {
-        result = yield r.expr([0, 1, 2, 3, 4, 5]).count(r.row.eq(2)).run();
+        var result = yield r.expr([0, 1, 2, 3, 4, 5]).count(r.row.eq(2)).run();
         assert.equal(result, 1);
 
         result = yield r.expr([0, 1, 2, 3, 4, 5]).count(function(doc) { return doc.eq(2) }).run();
@@ -79,7 +79,7 @@ It("`count` should work -- filter ", function* (done) {
 })
 It("`group` should work ", function* (done) {
     try {
-        result = yield r.expr([{name: "Michel", grownUp: true},{name: "Laurent", grownUp: true},
+        var result = yield r.expr([{name: "Michel", grownUp: true},{name: "Laurent", grownUp: true},
             {name: "Sophie", grownUp: true},{name: "Luke", grownUp: false},{name: "Mino", grownUp: false}]).group('grownUp').run();
         result = yield result.toArray();
         result.sort();
@@ -119,7 +119,7 @@ It("`group` should work with an index ", function* (done) {
 
 It("`groupFormat` should work -- with raw", function* (done) {
     try {
-        result = yield r.expr([{name: "Michel", grownUp: true},{name: "Laurent", grownUp: true},
+        var result = yield r.expr([{name: "Michel", grownUp: true},{name: "Laurent", grownUp: true},
             {name: "Sophie", grownUp: true},{name: "Luke", grownUp: false},{name: "Mino", grownUp: false}]).group('grownUp').run({groupFormat: "raw"});
 
         assert.deepEqual(result, { "$reql_type$": "GROUPED_DATA", "data": [ [ false, [ { "grownUp": false, "name": "Luke" }, { "grownUp": false, "name": "Mino" } ] ], [ true, [ { "grownUp": true, "name": "Michel" }, { "grownUp": true, "name": "Laurent" }, { "grownUp": true, "name": "Sophie" } ] ] ] })
@@ -134,7 +134,7 @@ It("`groupFormat` should work -- with raw", function* (done) {
 
 It("`ungroup` should work ", function* (done) {
     try {
-        result = yield r.expr([{name: "Michel", grownUp: true},{name: "Laurent", grownUp: true},
+        var result = yield r.expr([{name: "Michel", grownUp: true},{name: "Laurent", grownUp: true},
             {name: "Sophie", grownUp: true},{name: "Luke", grownUp: false},{name: "Mino", grownUp: false}]).group('grownUp').ungroup().run();
         result = yield result.toArray();
         result.sort();
@@ -150,7 +150,7 @@ It("`ungroup` should work ", function* (done) {
 
 It("`contains` should work ", function* (done) {
     try{
-        result = yield r.expr([1,2,3]).contains(2).run();
+        var result = yield r.expr([1,2,3]).contains(2).run();
         assert.equal(result, true);
 
         result = yield r.expr([1,2,3]).contains(1, 2).run();
@@ -179,7 +179,7 @@ It("`contains` should work ", function* (done) {
 })
 It("`contains` should throw if called without arguments", function* (done) {
     try {
-        result = yield r.db(dbName).table(tableName).contains().run();
+        var result = yield r.db(dbName).table(tableName).contains().run();
     }
     catch(e) {
         if (e.message === "`contains` takes at least 1 argument, 0 provided after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
@@ -193,7 +193,7 @@ It("`contains` should throw if called without arguments", function* (done) {
 
 It("`sum` should work ", function* (done) {
     try{
-        result = yield r.expr([1,2,3]).sum().run();
+        var result = yield r.expr([1,2,3]).sum().run();
         assert.equal(result, 6);
 
         done();
@@ -205,7 +205,7 @@ It("`sum` should work ", function* (done) {
 
 It("`sum` should with a field", function* (done) {
     try {
-        result = yield r.expr([{a: 2}, {a: 10}, {a: 9}]).sum('a').run();
+        var result = yield r.expr([{a: 2}, {a: 10}, {a: 9}]).sum('a').run();
         assert.equal(result, 21);
         done();
     }
@@ -216,7 +216,7 @@ It("`sum` should with a field", function* (done) {
 
 It("`avg` should work ", function* (done) {
     try{
-        result = yield r.expr([1,2,3]).avg().run();
+        var result = yield r.expr([1,2,3]).avg().run();
         assert.equal(result, 2);
 
         done();
@@ -228,7 +228,7 @@ It("`avg` should work ", function* (done) {
 
 It("`avg` should work with fields", function* (done) {
     try {
-        result = yield r.expr([{a: 2}, {a: 10}, {a: 9}]).avg('a').run();
+        var result = yield r.expr([{a: 2}, {a: 10}, {a: 9}]).avg('a').run();
         assert.equal(result, 7);
         done();
     }
@@ -239,7 +239,7 @@ It("`avg` should work with fields", function* (done) {
 
 It("`min` should work ", function* (done) {
     try{
-        result = yield r.expr([1,2,3]).min().run();
+        var result = yield r.expr([1,2,3]).min().run();
         assert.equal(result, 1);
 
         done();
@@ -251,7 +251,7 @@ It("`min` should work ", function* (done) {
 
 It("`min` should work with a field", function* (done) {
     try {
-        result = yield r.expr([{a: 2}, {a: 10}, {a: 9}]).min('a').run();
+        var result = yield r.expr([{a: 2}, {a: 10}, {a: 9}]).min('a').run();
         assert.deepEqual(result, {a: 2});
         done();
     }
@@ -262,7 +262,7 @@ It("`min` should work with a field", function* (done) {
 
 It("`max` should work ", function* (done) {
     try{
-        result = yield r.expr([1,2,3]).max().run();
+        var result = yield r.expr([1,2,3]).max().run();
         assert.equal(result, 3);
 
         done();
@@ -274,7 +274,7 @@ It("`max` should work ", function* (done) {
 
 It("`max` should work with a field", function* (done) {
     try {
-        result = yield r.expr([{a: 2}, {a: 10}, {a: 9}]).max('a').run();
+        var result = yield r.expr([{a: 2}, {a: 10}, {a: 9}]).max('a').run();
         assert.deepEqual(result, {a: 10});
         done();
     }

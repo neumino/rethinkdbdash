@@ -30,7 +30,7 @@ It("Init for `writing-data.js`", function* (done) {
 
 It("`insert` should work - single insert`", function* (done) {
     try {
-        result = yield r.db(dbName).table(tableName).insert({}).run();
+        var result = yield r.db(dbName).table(tableName).insert({}).run();
         assert.equal(result.inserted, 1);
 
         result = yield r.db(dbName).table(tableName).insert(eval('['+new Array(100).join('{}, ')+'{}]')).run();
@@ -47,7 +47,7 @@ It("`insert` should work - single insert`", function* (done) {
 
 It("`insert` should work - batch insert 1`", function* (done) {
     try {
-        result = yield r.db(dbName).table(tableName).insert([{}, {}]).run();
+        var result = yield r.db(dbName).table(tableName).insert([{}, {}]).run();
         assert.equal(result.inserted, 2);
 
         done();
@@ -59,7 +59,7 @@ It("`insert` should work - batch insert 1`", function* (done) {
 
 It("`insert` should work - batch insert 2`", function* (done) {
     try {
-        result = yield r.db(dbName).table(tableName).insert(eval('['+new Array(100).join('{}, ')+'{}]')).run();
+        var result = yield r.db(dbName).table(tableName).insert(eval('['+new Array(100).join('{}, ')+'{}]')).run();
         assert.equal(result.inserted, 100);
 
         done();
@@ -71,7 +71,7 @@ It("`insert` should work - batch insert 2`", function* (done) {
 
 It("`insert` should work - with returnVals true`", function* (done) {
     try {
-        result = yield r.db(dbName).table(tableName).insert({}, {returnVals: true}).run();
+        var result = yield r.db(dbName).table(tableName).insert({}, {returnVals: true}).run();
         assert.equal(result.inserted, 1);
         assert(result.new_val);
         assert.equal(result.old_val, null);
@@ -85,7 +85,7 @@ It("`insert` should work - with returnVals true`", function* (done) {
 
 It("`insert` should work - with returnVals false`", function* (done) {
     try {
-        result = yield r.db(dbName).table(tableName).insert({}, {returnVals: false}).run();
+        var result = yield r.db(dbName).table(tableName).insert({}, {returnVals: false}).run();
         assert.equal(result.inserted, 1);
         assert.equal(result.new_val, undefined);
         assert.equal(result.old_val, undefined);
@@ -98,7 +98,7 @@ It("`insert` should work - with returnVals false`", function* (done) {
 })
 It("`insert` should work - with durability soft`", function* (done) {
     try {
-        result = yield r.db(dbName).table(tableName).insert({}, {durability: "soft"}).run();
+        var result = yield r.db(dbName).table(tableName).insert({}, {durability: "soft"}).run();
         assert.equal(result.inserted, 1);
 
         done();
@@ -148,7 +148,7 @@ It("`insert` should work - testing upsert false`", function* (done) {
 })
 It("`insert` should throw if no argument is given", function* (done) {
     try{
-        result = yield r.db(dbName).table(tableName).insert().run();
+        var result = yield r.db(dbName).table(tableName).insert().run();
     }
     catch(e) {
         if (e.message === "`insert` takes at least 1 argument, 0 provided after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
@@ -161,7 +161,7 @@ It("`insert` should throw if no argument is given", function* (done) {
 })
 It("`insert` work with dates - 1", function* (done) {
     try {
-        result = yield r.db(dbName).table(tableName).insert({name: "Michel", age: 27, birthdate: new Date()}).run()
+        var result = yield r.db(dbName).table(tableName).insert({name: "Michel", age: 27, birthdate: new Date()}).run()
         assert.deepEqual(result.inserted, 1);
         done();
     }
@@ -171,7 +171,7 @@ It("`insert` work with dates - 1", function* (done) {
 })
 It("`insert` work with dates - 2", function* (done) {
     try {
-        result = yield r.db(dbName).table(tableName).insert([{name: "Michel", age: 27, birthdate: new Date()}, {name: "Sophie", age: 23}]).run()
+        var result = yield r.db(dbName).table(tableName).insert([{name: "Michel", age: 27, birthdate: new Date()}, {name: "Sophie", age: 23}]).run()
         assert.deepEqual(result.inserted, 2);
         done();
     }
@@ -181,7 +181,7 @@ It("`insert` work with dates - 2", function* (done) {
 })
 It("`insert` work with dates - 3", function* (done) {
     try {
-        result = yield r.db(dbName).table(tableName).insert({
+        var result = yield r.db(dbName).table(tableName).insert({
             field: 'test',
             field2: { nested: 'test' },
             date: new Date()
@@ -195,7 +195,7 @@ It("`insert` work with dates - 3", function* (done) {
 })
 It("`insert` work with dates - 4", function* (done) {
     try {
-        result = yield r.db(dbName).table(tableName).insert({
+        var result = yield r.db(dbName).table(tableName).insert({
             field: 'test',
             field2: { nested: 'test' },
             date: r.now()
@@ -210,7 +210,7 @@ It("`insert` work with dates - 4", function* (done) {
 
 It("`insert` should throw if non valid option", function* (done) {
     try{
-        result = yield r.db(dbName).table(tableName).insert({}, {nonValidKey: true}).run();
+        var result = yield r.db(dbName).table(tableName).insert({}, {nonValidKey: true}).run();
     }
     catch(e) {
         if (e.message === 'Unrecognized option `nonValidKey` in `insert` after:\nr.db("'+dbName+'").table("'+tableName+'")\nAvailable options are returnVals <bool>, durability <string>, upsert <bool>') {
@@ -223,7 +223,7 @@ It("`insert` should throw if non valid option", function* (done) {
 })
 It("`replace` should throw if no argument is given", function* (done) {
     try{
-        result = yield r.db(dbName).table(tableName).replace().run();
+        var result = yield r.db(dbName).table(tableName).replace().run();
     }
     catch(e) {
         if (e.message === "`replace` takes at least 1 argument, 0 provided after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
@@ -236,7 +236,7 @@ It("`replace` should throw if no argument is given", function* (done) {
 })
 It("`replace` should throw if non valid option", function* (done) {
     try{
-        result = yield r.db(dbName).table(tableName).replace({}, {nonValidKey: true}).run();
+        var result = yield r.db(dbName).table(tableName).replace({}, {nonValidKey: true}).run();
     }
     catch(e) {
         if (e.message === 'Unrecognized option `nonValidKey` in `replace` after:\nr.db("'+dbName+'").table("'+tableName+'")\nAvailable options are returnVals <bool>, durability <string>, nonAtomic <bool>') {
@@ -314,7 +314,7 @@ It("`delete` should work -- hard durability`", function* (done) {
 })
 It("`delete` should throw if non valid option", function* (done) {
     try{
-        result = yield r.db(dbName).table(tableName).delete({nonValidKey: true}).run();
+        var result = yield r.db(dbName).table(tableName).delete({nonValidKey: true}).run();
     }
     catch(e) {
         if (e.message === 'Unrecognized option `nonValidKey` in `delete` after:\nr.db("'+dbName+'").table("'+tableName+'")\nAvailable options are returnVals <bool>, durability <string>') {
@@ -449,7 +449,7 @@ It("`update` should work - returnVals false`", function* (done) {
 })
 It("`update` should throw if no argument is given", function* (done) {
     try{
-        result = yield r.db(dbName).table(tableName).update().run();
+        var result = yield r.db(dbName).table(tableName).update().run();
     }
     catch(e) {
         if (e.message === "`update` takes at least 1 argument, 0 provided after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
@@ -462,7 +462,7 @@ It("`update` should throw if no argument is given", function* (done) {
 })
 It("`update` should throw if non valid option", function* (done) {
     try{
-        result = yield r.db(dbName).table(tableName).update({}, {nonValidKey: true}).run();
+        var result = yield r.db(dbName).table(tableName).update({}, {nonValidKey: true}).run();
     }
     catch(e) {
         if (e.message === 'Unrecognized option `nonValidKey` in `update` after:\nr.db("'+dbName+'").table("'+tableName+'")\nAvailable options are returnVals <bool>, durability <string>, nonAtomic <bool>') {

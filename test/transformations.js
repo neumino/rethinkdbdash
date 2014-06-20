@@ -7,7 +7,7 @@ var uuid = util.uuid;
 var It = util.It;
 
 var uuid = util.uuid;
-var dbName, tableName;
+var dbName, tableName, pks;
 
 
 It("Init for `transformations.js`", function* (done) {
@@ -189,7 +189,7 @@ It("`orderBy` should work on a table -- pk", function* (done) {
     try {
         var result = yield r.db(dbName).table(tableName).orderBy({index: "id"}).run();
         result = yield result.toArray();
-        for(i=0; i<result.length-1; i++) {
+        for(var i=0; i<result.length-1; i++) {
             assert(result[i].id < result[i+1].id);
         }
 
@@ -203,7 +203,7 @@ It("`orderBy` should work on a table -- secondary", function* (done) {
     try {
         var result = yield r.db(dbName).table(tableName).orderBy({index: "val"}).run();
         result = yield result.toArray();
-        for(i=0; i<result.length-1; i++) {
+        for(var i=0; i<result.length-1; i++) {
             assert(result[i].val < result[i+1].val);
         }
 

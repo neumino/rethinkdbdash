@@ -7,7 +7,7 @@ var uuid = util.uuid;
 var It = util.It;
 
 var connection; // global connection
-var dbName;
+var dbName, tableName, pks;
 
 It("Testing `run` without connection", function* (done) {
     try {
@@ -70,7 +70,7 @@ It("`run` should use the default database", function* (done) {
         dbName = uuid();
         tableName = uuid();
 
-        result = yield r.dbCreate(dbName).run(connection);
+        var result = yield r.dbCreate(dbName).run(connection);
         assert.deepEqual(result, {created: 1});
 
         result = yield r.db(dbName).tableCreate(tableName).run(connection);
@@ -96,7 +96,7 @@ It("`use` should work", function* (done) {
         dbName = uuid();
         tableName = uuid();
 
-        result = yield r.dbCreate(dbName).run(connection);
+        var result = yield r.dbCreate(dbName).run(connection);
         assert.deepEqual(result, {created: 1});
 
         result = yield r.db(dbName).tableCreate(tableName).run(connection);
@@ -116,7 +116,7 @@ It("`use` should work", function* (done) {
 })
 It("`reconnect` should work", function* (done) {
     try{
-        result = yield r.expr(1).run(connection);
+        var result = yield r.expr(1).run(connection);
         assert.equal(result, 1);
 
         result = yield connection.close();
@@ -138,7 +138,7 @@ It("`reconnect` should work", function* (done) {
 })
 It("`reconnect` should work with options", function* (done) {
     try{
-        result = yield r.expr(1).run(connection);
+        var result = yield r.expr(1).run(connection);
         assert.equal(result, 1);
 
         assert(connection);
@@ -198,7 +198,7 @@ It("`noreplyWait` should work", function* (done) {
  
 It("`run` should take an argument", function* (done) {
     try {
-        result = yield connection.close();
+        var result = yield connection.close();
         assert(connection);
         connection = yield r.connect(config);
         assert(connection);
@@ -275,7 +275,7 @@ It("`timeFormat` should work", function* (done) {
 
 It("`groupFormat` should work", function* (done) {
     try {
-        result = yield r.expr([{name: "Michel", grownUp: true},{name: "Laurent", grownUp: true},
+        var result = yield r.expr([{name: "Michel", grownUp: true},{name: "Laurent", grownUp: true},
             {name: "Sophie", grownUp: true},{name: "Luke", grownUp: false},{name: "Mino", grownUp: false}]).group('grownUp').run(connection, {groupFormat: "raw"});
 
         assert.deepEqual(result, { "$reql_type$": "GROUPED_DATA", "data": [ [ false, [ { "grownUp": false, "name": "Luke" }, { "grownUp": false, "name": "Mino" } ] ], [ true, [ { "grownUp": true, "name": "Michel" }, { "grownUp": true, "name": "Laurent" }, { "grownUp": true, "name": "Sophie" } ] ] ] })

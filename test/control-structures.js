@@ -10,7 +10,7 @@ var dbName, tableName;
 
 It("`do` should work", function* (done) {
     try {
-        result = yield r.expr({a: 1}).do( function(doc) { return doc("a") }).run();
+        var result = yield r.expr({a: 1}).do( function(doc) { return doc("a") }).run();
         assert.equal(result, 1);
 
         done();
@@ -22,7 +22,7 @@ It("`do` should work", function* (done) {
 
 It("`do` should throw if no argument has been given", function* (done) {
     try{
-        result = yield r.expr(1).do().run();
+        var result = yield r.expr(1).do().run();
     }
     catch(e) {
         if (e.message.match(/^`do` takes 1 argument, 0 provided after:/)) {
@@ -37,7 +37,7 @@ It("`do` should throw if no argument has been given", function* (done) {
 
 It("`branch` should work", function* (done) {
     try {
-        result = yield r.branch(true, 1, 2).run();
+        var result = yield r.branch(true, 1, 2).run();
         assert.equal(result, 1);
 
         result = yield r.branch(false, 1, 2).run();
@@ -51,7 +51,7 @@ It("`branch` should work", function* (done) {
 })
 It("`branch` should throw if no argument has been given", function* (done) {
     try{
-        result = yield r.branch().run();
+        var result = yield r.branch().run();
     }
     catch(e) {
         if (e.message.match(/^`r.branch` takes 3 arguments, 0 provided/)) {
@@ -64,7 +64,7 @@ It("`branch` should throw if no argument has been given", function* (done) {
 })
 It("`branch` should throw if just one argument has been given", function* (done) {
     try{
-        result = yield r.branch(true).run();
+        var result = yield r.branch(true).run();
     }
     catch(e) {
         if (e.message.match(/^`r.branch` takes 3 arguments, 1 provided/)) {
@@ -77,7 +77,7 @@ It("`branch` should throw if just one argument has been given", function* (done)
 })
 It("`branch` should throw if just two arguments have been given", function* (done) {
     try{
-        result = yield r.branch(true, true).run();
+        var result = yield r.branch(true, true).run();
     }
     catch(e) {
         if (e.message.match(/^`r.branch` takes 3 arguments, 2 provided/)) {
@@ -138,7 +138,7 @@ It("`forEach` should throw if not given a function", function* (done) {
 })
 It("`default` should work", function* (done) {
     try {
-        result = yield r.expr({a:1})("b").default("Hello").run();
+        var result = yield r.expr({a:1})("b").default("Hello").run();
         assert.equal(result, "Hello");
 
         done();
@@ -162,7 +162,7 @@ It("`error` is not defined after a term", function* (done) {
 })
 It("`default` should throw if no argument has been given", function* (done) {
     try{
-        result = yield r.expr({})("").default().run();
+        var result = yield r.expr({})("").default().run();
     }
     catch(e) {
         if (e.message.match(/^`default` takes 1 argument, 0 provided after/)) {
@@ -177,7 +177,7 @@ It("`default` should throw if no argument has been given", function* (done) {
 
 It("`r.js` should work", function* (done) {
     try {
-        result = yield r.js("1").run();
+        var result = yield r.js("1").run();
         assert.equal(result, 1);
 
         done();
@@ -201,7 +201,7 @@ It("`js` is not defined after a term", function* (done) {
 })
 It("`js` should throw if no argument has been given", function* (done) {
     try{
-        result = yield r.js().run();
+        var result = yield r.js().run();
     }
     catch(e) {
         if (e.message.match(/^`r.js` takes 1 argument, 0 provided/)) {
@@ -216,7 +216,7 @@ It("`js` should throw if no argument has been given", function* (done) {
 
 It("`coerceTo` should work", function* (done) {
     try {
-        result = yield r.expr(1).coerceTo("STRING").run();
+        var result = yield r.expr(1).coerceTo("STRING").run();
         assert.equal(result, "1");
 
         done();
@@ -227,7 +227,7 @@ It("`coerceTo` should work", function* (done) {
 })
 It("`coerceTo` should throw if no argument has been given", function* (done) {
     try{
-        result = yield r.expr(1).coerceTo().run();
+        var result = yield r.expr(1).coerceTo().run();
     }
     catch(e) {
         if (e.message.match(/^`coerceTo` takes 1 argument, 0 provided/)) {
@@ -241,7 +241,7 @@ It("`coerceTo` should throw if no argument has been given", function* (done) {
 
 It("`typeOf` should work", function* (done) {
     try {
-        result = yield r.expr(1).typeOf().run();
+        var result = yield r.expr(1).typeOf().run();
         assert.equal(result, "NUMBER");
 
         done();
@@ -252,7 +252,7 @@ It("`typeOf` should work", function* (done) {
 })
 It("`json` should work", function* (done) {
     try {
-        result = yield r.json(JSON.stringify({a:1})).run();
+        var result = yield r.json(JSON.stringify({a:1})).run();
         assert.deepEqual(result, {a:1});
 
         result = yield r.json("{}").run();
@@ -266,7 +266,7 @@ It("`json` should work", function* (done) {
 })
 It("`json` should throw if no argument has been given", function* (done) {
     try{
-        result = yield r.json().run();
+        var result = yield r.json().run();
     }
     catch(e) {
         if (e.message === "`r.json` takes 1 argument, 0 provided.") {

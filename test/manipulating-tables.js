@@ -13,7 +13,7 @@ var dbName, tableName;
 It("Init for `manipulating-tables.js`", function* (done) {
     try {
         dbName = uuid(); // export to the global scope
-        result = yield r.dbCreate(dbName).run();
+        var result = yield r.dbCreate(dbName).run();
         assert.deepEqual(result, {created:1});
 
         done();
@@ -253,7 +253,7 @@ It("index operations", function* (done) {
 
 It("`indexCreate` should work with options", function* (done) {
     try {
-        result = yield r.db(dbName).table(tableName).indexCreate("foo", {multi: true}).run();
+        var result = yield r.db(dbName).table(tableName).indexCreate("foo", {multi: true}).run();
         assert.deepEqual(result, {created: 1});
 
         result = yield r.db(dbName).table(tableName).indexCreate("foo1", r.row("foo"), {multi: true}).run();
@@ -299,7 +299,7 @@ It("`indexCreate` should work with options", function* (done) {
 
 It("`indexCreate` should throw if no argument is passed", function* (done) {
     try {
-        result = yield r.db(dbName).table(tableName).indexCreate().run();
+        var result = yield r.db(dbName).table(tableName).indexCreate().run();
     }
     catch(e) {
         if (e.message === '`indexCreate` takes at least 1 argument, 0 provided after:\nr.db("'+dbName+'").table("'+tableName+'")') {
@@ -312,7 +312,7 @@ It("`indexCreate` should throw if no argument is passed", function* (done) {
 })
 It("`indexDrop` should throw if no argument is passed", function* (done) {
     try {
-        result = yield r.db(dbName).table(tableName).indexDrop().run();
+        var result = yield r.db(dbName).table(tableName).indexDrop().run();
     }
     catch(e) {
         if (e.message === '`indexDrop` takes 1 argument, 0 provided after:\nr.db("'+dbName+'").table("'+tableName+'")') {
