@@ -5,13 +5,7 @@ rethinkdbdash
 
 A Node.js driver for RethinkDB with promises and a connection pool.
 
-This is the branch for Node `0.11.10` and `0.11.9` that provides the package `rethinkdbdash-unstable`.
-If you use a stable version of Node, please install `rethinkdbdash`.
-
-`rethinkdbdash-unstable` depends on `node-protobuf` which is written in C++ and use V8's API.
-Lower or higher version of Node won't work.
-
-_Note_: To use `yield` as shown in the examples, you have to start `node` with
+_Note_: To use `yield` as shown in the examples, you have to start `node` unstable (>= 0.11) with
 the `--harmony` flag.
 
 

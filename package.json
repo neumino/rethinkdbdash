@@ -1,6 +1,6 @@
 {
-  "name": "rethinkdbdash-unstable",
-  "version": "1.12.5",
+  "name": "rethinkdbdash",
+  "version": "1.13.0",
   "description": "A Node.js driver for RethinkDB with promises and a connection pool",
   "main": "lib/index.js",
   "directories": {
@@ -28,6 +28,6 @@
     "bluebird": ">= 2.0.0"
   },
   "devDependencies": {
-    "mocha": ">= 1.11.0"
+    "mocha": ">= 1.20.0"
   }
 }
