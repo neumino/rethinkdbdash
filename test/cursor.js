@@ -326,6 +326,39 @@ It("`next` should work on feed", function* (done) {
         done(e);
     }
 })
+It("`close` should work on feed", function* (done) {
+    try {
+        feed = yield r.db(dbName).table(tableName2).changes().run();
+        setTimeout(function() {
+            feed.close().then(function() {
+                done();
+            });
+        }, 1000)
+        assert(feed);
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
+It("`close` should work on feed with events", function* (done) {
+    try {
+        feed = yield r.db(dbName).table(tableName2).changes().run();
+        setTimeout(function() {
+            feed.close();
+        }, 1000)
+        assert(feed);
+        feed.on('error', function() {
+            // Ignore the error
+        });
+        feed.on('end', function() {
+            done();
+        });
+    }
+    catch(e) {
+        done(e);
+    }
+})
 It("`on` should work on feed", function* (done) {
     try {
         feed = yield r.db(dbName).table(tableName2).changes().run();
@@ -389,4 +422,3 @@ It("`next`, `each`, `toArray` should be deactivated if the EventEmitter interfac
         done(e);
     }
 })
-
