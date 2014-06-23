@@ -7,17 +7,17 @@ var uuid = util.uuid;
 var It = util.It;
 
 var uuid = util.uuid;
-var dbName, tableName;
+var dbName, tableName, pks, result;
 
 It("Init for backtraces", function* (done) {
     try {
         dbName = uuid();
         tableName = uuid();
 
-        var result = yield r.dbCreate(dbName).run();
+        result = yield r.dbCreate(dbName).run();
         assert.deepEqual(result, {created:1});
 
-        var result = yield r.db(dbName).tableCreate(tableName).run();
+        result = yield r.db(dbName).tableCreate(tableName).run();
         assert.deepEqual(result, {created:1});
 
         result = yield r.db(dbName).table(tableName).insert(eval('['+new Array(100).join('{}, ')+'{}]')).run();
@@ -3814,6 +3814,33 @@ It('Test backtrace for r.args(["foo", "bar"]).add(2)', function* (done) {
     }
     catch(e) {
         if (e.message === "Expected type STRING but found NUMBER in:\nr.args([\"foo\", \"bar\"]).add(2)\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+/*
+Frames:
+[ { type: 'POS', pos: 0 }, { type: 'POS', pos: 1 } ]
+
+Error:
+Expected type NUMBER but found STRING. in:
+r.expr(1).do(function(var_1) {
+    return var_1.add("foo")
+           ^^^^^^^^^^^^^^^^
+})
+*/
+It('Test backtrace for r.do(1,function( b) { return b.add("foo") })', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.do(1,function( b) { return b.add("foo") }).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Expected type NUMBER but found STRING in:\nr.expr(1).do(function(var_1) {\n    return var_1.add(\"foo\")\n           ^^^^^^^^^^^^^^^^\n})\n") {
             done()
         }
         else {

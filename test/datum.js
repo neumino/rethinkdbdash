@@ -7,7 +7,7 @@ var uuid = util.uuid;
 var It = util.It;
 
 var uuid = util.uuid;
-var dbName, tableName;
+var dbName, tableName, result;
 
 
 It("All raws datum shoul be defined", function* (done) {
@@ -43,7 +43,7 @@ It("All raws datum shoul be defined", function* (done) {
 })
 It("`expr` is not defined after a term", function* (done) {
     try {
-        var result = yield r.expr(1).expr("foo").run();
+        result = yield r.expr(1).expr("foo").run();
     }
     catch(e) {
         if (e.message === "`expr` is not defined after:\nr.expr(1)") {

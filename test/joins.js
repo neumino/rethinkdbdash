@@ -7,7 +7,7 @@ var uuid = util.uuid;
 var It = util.It;
 
 var uuid = util.uuid;
-var dbName, tableName, pks;
+var dbName, tableName, result, pks;
 
 
 It("Init for `joins.js`", function* (done) {
@@ -15,10 +15,10 @@ It("Init for `joins.js`", function* (done) {
         dbName = uuid();
         tableName = uuid();
 
-        var result = yield r.dbCreate(dbName).run();
+        result = yield r.dbCreate(dbName).run();
         assert.deepEqual(result, {created:1});
 
-        var result = yield r.db(dbName).tableCreate(tableName).run();
+        result = yield r.db(dbName).tableCreate(tableName).run();
         assert.deepEqual(result, {created:1});
 
         result = yield r.db(dbName).table(tableName).insert([{val:1}, {val: 2}, {val: 3}]).run();
@@ -39,7 +39,7 @@ It("Init for `joins.js`", function* (done) {
 
 It("`innerJoin` should return -- array-array", function* (done) {
     try {
-        var result = yield r.expr([1,2,3]).innerJoin(r.expr([1,2,3]), function(left, right) { return left.eq(right) }).run();
+        result = yield r.expr([1,2,3]).innerJoin(r.expr([1,2,3]), function(left, right) { return left.eq(right) }).run();
         result = yield result.toArray();
         assert.deepEqual(result, [{left:1, right:1}, {left:2, right: 2}, {left:3, right: 3}]);
         done();
@@ -50,7 +50,7 @@ It("`innerJoin` should return -- array-array", function* (done) {
 })
 It("`innerJoin` should return -- array-stream", function* (done) {
     try {
-        var result = yield r.expr([1,2,3]).innerJoin(r.db(dbName).table(tableName), function(left, right) { return left.eq(right("val")) }).run();
+        result = yield r.expr([1,2,3]).innerJoin(r.db(dbName).table(tableName), function(left, right) { return left.eq(right("val")) }).run();
         result = yield result.toArray();
         assert.equal(result.length, 3);
         assert(result[0].left);
@@ -68,7 +68,7 @@ It("`innerJoin` should return -- array-stream", function* (done) {
 })
 It("`innerJoin` should return -- stream-stream", function* (done) {
     try {
-        var result = yield r.db(dbName).table(tableName).innerJoin(r.db(dbName).table(tableName), function(left, right) { return left.eq(right) }).run();
+        result = yield r.db(dbName).table(tableName).innerJoin(r.db(dbName).table(tableName), function(left, right) { return left.eq(right) }).run();
         result = yield result.toArray();
         assert.equal(result.length, 3);
         assert(result[0].left);
@@ -114,7 +114,7 @@ It("`innerJoin` should throw if no predicate", function* (done) {
 
 It("`outerJoin` should return -- array-array", function* (done) {
     try {
-        var result = yield r.expr([1,2,3]).outerJoin(r.expr([1,2,3]), function(left, right) { return left.eq(right) }).run();
+        result = yield r.expr([1,2,3]).outerJoin(r.expr([1,2,3]), function(left, right) { return left.eq(right) }).run();
         result = yield result.toArray();
         assert.deepEqual(result, [{left:1, right:1}, {left:2, right: 2}, {left:3, right: 3}]);
         done();
@@ -125,7 +125,7 @@ It("`outerJoin` should return -- array-array", function* (done) {
 })
 It("`outerJoin` should return -- array-stream - 1", function* (done) {
     try {
-        var result = yield r.expr([1,2,3,4]).outerJoin(r.db(dbName).table(tableName), function(left, right) { return left.eq(right("val")) }).run();
+        result = yield r.expr([1,2,3,4]).outerJoin(r.db(dbName).table(tableName), function(left, right) { return left.eq(right("val")) }).run();
         result = yield result.toArray();
         assert.equal(result.length, 4);
         assert(result[0].left);
@@ -144,7 +144,7 @@ It("`outerJoin` should return -- array-stream - 1", function* (done) {
 
 It("`outerJoin` should return -- array-stream - 2", function* (done) {
     try {
-        var result = yield r.expr([1,2,3,4]).outerJoin(r.db(dbName).table(tableName), function(left, right) { return left.eq(right("val")) }).run();
+        result = yield r.expr([1,2,3,4]).outerJoin(r.db(dbName).table(tableName), function(left, right) { return left.eq(right("val")) }).run();
         result = yield result.toArray();
         assert.equal(result.length, 4);
         assert(result[0].left);
@@ -164,7 +164,7 @@ It("`outerJoin` should return -- array-stream - 2", function* (done) {
 })
 It("`outerJoin` should return -- stream-stream", function* (done) {
     try {
-        var result = yield r.db(dbName).table(tableName).outerJoin(r.db(dbName).table(tableName), function(left, right) { return left.eq(right) }).run();
+        result = yield r.db(dbName).table(tableName).outerJoin(r.db(dbName).table(tableName), function(left, right) { return left.eq(right) }).run();
         result = yield result.toArray();
         assert.equal(result.length, 3);
         assert(result[0].left);

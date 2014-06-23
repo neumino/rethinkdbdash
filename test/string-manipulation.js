@@ -7,12 +7,12 @@ var uuid = util.uuid;
 var It = util.It;
 
 var uuid = util.uuid;
-var dbName, tableName;
+var dbName, tableName, result;
 
 
 It("`match` should work", function* (done) {
     try {
-        var result = yield r.expr("hello").match("hello").run()
+        result = yield r.expr("hello").match("hello").run()
         assert.deepEqual(result, {"end":5,"groups":[],"start":0,"str":"hello"});
         done();
     }
@@ -35,7 +35,7 @@ It("`match` should throw if no arguement has been passed", function* (done) {
 })
 It("`upcase` should work", function* (done) {
     try {
-        var result = yield r.expr("helLo").upcase().run();
+        result = yield r.expr("helLo").upcase().run();
         assert.equal(result, "HELLO");
         done();
     }
@@ -45,7 +45,7 @@ It("`upcase` should work", function* (done) {
 })
 It("`downcase` should work", function* (done) {
     try {
-        var result = yield r.expr("HElLo").downcase().run();
+        result = yield r.expr("HElLo").downcase().run();
         assert.equal(result, "hello");
         done();
     }

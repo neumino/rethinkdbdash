@@ -40,7 +40,7 @@ It("`reduce` should work -- no base ", function* (done) {
 })
 It("`reduce` should throw if no argument has been passed", function* (done) {
     try {
-        result = yield r.db(dbName).table(tableName).reduce().run();
+        var result = yield r.db(dbName).table(tableName).reduce().run();
     }
     catch(e) {
         if (e.message === "`reduce` takes 1 argument, 0 provided after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
@@ -203,22 +203,23 @@ It("`sum` should work ", function* (done) {
     }
 })
 
-It("`sum` should with a field", function* (done) {
+It("`sum` should work with a field", function* (done) {
     try {
         var result = yield r.expr([{a: 2}, {a: 10}, {a: 9}]).sum('a').run();
-        assert.equal(result, 21);
+        assert.deepEqual(result, 21)
         done();
     }
     catch(e) {
         done(e);
     }
 })
+
+
 
 It("`avg` should work ", function* (done) {
     try{
         var result = yield r.expr([1,2,3]).avg().run();
         assert.equal(result, 2);
-
         done();
     }
     catch(e) {
@@ -226,7 +227,7 @@ It("`avg` should work ", function* (done) {
     }
 })
 
-It("`avg` should work with fields", function* (done) {
+It("`avg` should work with a field", function* (done) {
     try {
         var result = yield r.expr([{a: 2}, {a: 10}, {a: 9}]).avg('a').run();
         assert.equal(result, 7);
@@ -241,7 +242,6 @@ It("`min` should work ", function* (done) {
     try{
         var result = yield r.expr([1,2,3]).min().run();
         assert.equal(result, 1);
-
         done();
     }
     catch(e) {
@@ -264,7 +264,6 @@ It("`max` should work ", function* (done) {
     try{
         var result = yield r.expr([1,2,3]).max().run();
         assert.equal(result, 3);
-
         done();
     }
     catch(e) {

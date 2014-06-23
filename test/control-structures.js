@@ -6,7 +6,7 @@ var assert = require('assert');
 var uuid = util.uuid;
 var It = util.It;
 
-var dbName, tableName;
+var dbName, tableName, result;
 
 It("`do` should work", function* (done) {
     try {
@@ -19,13 +19,29 @@ It("`do` should work", function* (done) {
         done(e);
     }
 })
+It("`r.do` should work", function* (done) {
+    try {
+        result = yield r.do(1, 2, function(a, b) { return a }).run();
+        assert.equal(result, 1);
+
+        result = yield r.do(1, 2, function(a, b) { return b }).run();
+        assert.equal(result, 2);
+
+        done();
+    }
+    catch(e) {
+        console.log(e)
+        done(e);
+    }
+})
+
 
 It("`do` should throw if no argument has been given", function* (done) {
     try{
         var result = yield r.expr(1).do().run();
     }
     catch(e) {
-        if (e.message.match(/^`do` takes 1 argument, 0 provided after:/)) {
+        if (e.message.match(/^`do` takes at least 1 argument, 0 provided after:/)) {
             done()
         }
         else {
@@ -90,7 +106,7 @@ It("`branch` should throw if just two arguments have been given", function* (don
 })
 It("`branch` is not defined after a term", function* (done) {
     try {
-        var result = yield r.expr(1).branch(true, true, true).run();
+        result = yield r.expr(1).branch(true, true, true).run();
     }
     catch(e) {
         if (e.message === "`branch` is not defined after:\nr.expr(1)") {
@@ -106,13 +122,13 @@ It("`forEach` should work", function* (done) {
         var dbName = uuid();
         var tableName = uuid();
 
-        var result = yield r.dbCreate(dbName).run();
+        result = yield r.dbCreate(dbName).run();
         assert.deepEqual(result, {created:1}) 
 
-        var result = yield r.db(dbName).tableCreate(tableName).run();
+        result = yield r.db(dbName).tableCreate(tableName).run();
         assert.deepEqual(result, {created:1}) 
 
-        var result = yield r.expr([{foo: "bar"}, {foo: "foo"}]).forEach(function(doc) {
+        result = yield r.expr([{foo: "bar"}, {foo: "foo"}]).forEach(function(doc) {
             return r.db(dbName).table(tableName).insert(doc)
         }).run();
         assert.equal(result.inserted, 2);
@@ -125,7 +141,7 @@ It("`forEach` should work", function* (done) {
 })
 It("`forEach` should throw if not given a function", function* (done) {
     try{
-        var result = yield r.expr([{foo: "bar"}, {foo: "foo"}]).forEach().run();
+        result = yield r.expr([{foo: "bar"}, {foo: "foo"}]).forEach().run();
     }
     catch(e) {
         if (e.message.match(/^`forEach` takes 1 argument, 0 provided after/)) {
@@ -149,7 +165,7 @@ It("`default` should work", function* (done) {
 })
 It("`error` is not defined after a term", function* (done) {
     try {
-        var result = yield r.expr(1).error("error").run();
+        result = yield r.expr(1).error("error").run();
     }
     catch(e) {
         if (e.message === "`error` is not defined after:\nr.expr(1)") {
@@ -188,7 +204,7 @@ It("`r.js` should work", function* (done) {
 })
 It("`js` is not defined after a term", function* (done) {
     try {
-        var result = yield r.expr(1).js("foo").run();
+        result = yield r.expr(1).js("foo").run();
     }
     catch(e) {
         if (e.message === "`js` is not defined after:\nr.expr(1)") {
@@ -279,7 +295,7 @@ It("`json` should throw if no argument has been given", function* (done) {
 })
 It("`json` is not defined after a term", function* (done) {
     try {
-        var result = yield r.expr(1).json("1").run();
+        result = yield r.expr(1).json("1").run();
     }
     catch(e) {
         if (e.message.match(/^`json` is not defined after/)) {

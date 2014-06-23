@@ -7,7 +7,7 @@ var uuid = util.uuid;
 var It = util.It;
 
 var uuid = util.uuid;
-var dbName, tableName;
+var dbName, tableName, result;
 
 
 It("Init for `manipulating-tables.js`", function* (done) {
@@ -25,8 +25,8 @@ It("Init for `manipulating-tables.js`", function* (done) {
 
 It("`tableList` should return a cursor", function* (done) {
     try {
-        var result = yield r.db(dbName).tableList().run();
-        var result = yield result.toArray();
+        result = yield r.db(dbName).tableList().run();
+        result = yield result.toArray();
         assert(Array.isArray(result));
         done();
     }
@@ -39,7 +39,7 @@ It("`tableList` should show the table we created", function* (done) {
     try {
         tableName = uuid(); // export to the global scope
 
-        var result = yield r.db(dbName).tableCreate(tableName).run();
+        result = yield r.db(dbName).tableCreate(tableName).run();
         assert.deepEqual(result, {created:1});
 
         result = yield r.db(dbName).tableList().run();
@@ -71,7 +71,7 @@ It("'`tableCreate` should create a table'", function* (done) {
     try {
         tableName = uuid(); // export to the global scope
 
-        var result = yield r.db(dbName).tableCreate(tableName).run();
+        result = yield r.db(dbName).tableCreate(tableName).run();
         assert.deepEqual(result, {created:1});
 
         done();
@@ -84,7 +84,7 @@ It("'`tableCreate` should create a table -- primaryKey'", function* (done) {
     try {
         tableName = uuid();
 
-        var result = yield r.db(dbName).tableCreate(tableName, {primaryKey: "foo"}).run();
+        result = yield r.db(dbName).tableCreate(tableName, {primaryKey: "foo"}).run();
         assert.deepEqual(result, {created:1});
 
         result = yield r.db(dbName).table(tableName).info().run();
@@ -100,7 +100,7 @@ It("'`tableCreate` should create a table -- all args'", function* (done) {
     try {
         tableName = uuid();
 
-        var result = yield r.db(dbName).tableCreate(tableName, {durability: "soft", primaryKey: "foo"}).run();
+        result = yield r.db(dbName).tableCreate(tableName, {durability: "soft", primaryKey: "foo"}).run();
         assert.deepEqual(result, {created:1}); // We can't really check other parameters...
 
         result = yield r.db(dbName).table(tableName).info().run();
@@ -116,7 +116,7 @@ It("'`tableCreate` should throw -- non valid args'", function* (done) {
     try {
         tableName = uuid();
 
-        var result = yield r.db(dbName).tableCreate(tableName, {nonValidArg: true}).run();
+        result = yield r.db(dbName).tableCreate(tableName, {nonValidArg: true}).run();
     }
     catch(e) {
         if (e.message === 'Unrecognized option `nonValidArg` in `tableCreate`. Available options are primaryKey <string>, durability <string>, datancenter <string>.') {
@@ -129,7 +129,7 @@ It("'`tableCreate` should throw -- non valid args'", function* (done) {
 })
 It("`tableCreate` should throw if no argument is given", function* (done) {
     try {
-        var result = yield r.db(dbName).tableCreate().run();
+        result = yield r.db(dbName).tableCreate().run();
     }
     catch(e) {
         if (e.message === '`tableCreate` takes at least 1 argument, 0 provided after:\nr.db("'+dbName+'")') {
@@ -142,7 +142,7 @@ It("`tableCreate` should throw if no argument is given", function* (done) {
 })
 It("'`tableCreate` should throw is the name contains special char'", function* (done) {
     try {
-        var result = yield r.db(dbName).tableCreate("-_-").run();
+        result = yield r.db(dbName).tableCreate("-_-").run();
     }
     catch(e) {
         if (e.message.match(/Table name `-_-` invalid \(Use A-Za-z0-9_ only\)/)) { done(); }
@@ -156,7 +156,7 @@ It("`tableDrop` should drop a table", function* (done) {
     try {
         tableName = uuid();
 
-        var result = yield r.db(dbName).tableCreate(tableName).run();
+        result = yield r.db(dbName).tableCreate(tableName).run();
         assert.deepEqual(result, {created:1});
 
         result = yield r.db(dbName).tableList().run();
@@ -187,7 +187,7 @@ It("`tableDrop` should drop a table", function* (done) {
 
 It("`tableDrop` should throw if no argument is given", function* (done) {
     try {
-        var result = yield r.db(dbName).tableDrop().run();
+        result = yield r.db(dbName).tableDrop().run();
     }
     catch(e) {
         if (e.message === '`tableDrop` takes 1 argument, 0 provided after:\nr.db("'+dbName+'")') {
@@ -205,7 +205,7 @@ It("index operations", function* (done) {
         dbName = uuid();
         tableName = uuid();
 
-        var result = yield r.dbCreate(dbName).run();
+        result = yield r.dbCreate(dbName).run();
         assert.deepEqual(result, {created: 1});
 
         result = yield r.db(dbName).tableCreate(tableName).run();

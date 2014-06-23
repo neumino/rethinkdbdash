@@ -27,7 +27,6 @@ It("Init for `cursor.js`", function* (done) {
         assert.deepEqual(result, {created:1});
         result = yield [r.db(dbName).tableCreate(tableName).run(), r.db(dbName).tableCreate(tableName2).run()]
         assert.deepEqual(result, [{created:1}, {created:1}]);
-
         done();
     }
     catch(e) {
@@ -38,7 +37,6 @@ It("Inserting batch - table 1", function* (done) {
     try {
         result = yield r.db(dbName).table(tableName).insert(eval('['+new Array(numDocs).join('{}, ')+'{}]')).run();
         assert.equal(result.inserted, numDocs);
-        pks = result.generated_keys;
         done();
     }
     catch(e) {
@@ -49,7 +47,6 @@ It("Inserting batch - table 2", function* (done) {
     try {
         result = yield r.db(dbName).table(tableName2).insert(eval('['+new Array(smallNumDocs).join('{}, ')+'{}]')).run();
         assert.equal(result.inserted, smallNumDocs);
-        pks = result.generated_keys;
         done();
     }
     catch(e) {
@@ -173,7 +170,7 @@ It("`next` should work -- testing common pattern", function* (done) {
 })
 It("`toArray` should work - 2", function* (done) {
     try {
-        cursor = yield r.db(dbName).table(tableName2).run();
+        var cursor = yield r.db(dbName).table(tableName2).run();
         result = yield cursor.toArray();
         assert.equal(result.length, smallNumDocs);
 
@@ -186,7 +183,7 @@ It("`toArray` should work - 2", function* (done) {
 
 It("`cursor.close` should return a promise", function* (done) {
     try {
-        cursor = yield r.db(dbName).table(tableName2).run();
+        var cursor = yield r.db(dbName).table(tableName2).run();
         yield cursor.close();
         done();
     }
@@ -196,7 +193,7 @@ It("`cursor.close` should return a promise", function* (done) {
 })
 It("cursor shouldn't throw if the user try to serialize it in JSON", function* (done) {
     try {
-        cursor = yield r.db(dbName).table(tableName).run();
+        var cursor = yield r.db(dbName).table(tableName).run();
         var cursor2 = yield r.db(dbName).table(tableName2).run();
         assert.deepEqual(JSON.stringify("You cannot serialize to JSON a cursor. Retrieve data from the cursor with `toArray` or `next`."), JSON.stringify(cursor));
         assert.deepEqual(JSON.stringify("You cannot serialize to JSON a cursor. Retrieve data from the cursor with `toArray` or `next`."), JSON.stringify(cursor2));
@@ -264,7 +261,7 @@ It("`next` should error when hitting an error -- not on the first batch", functi
         var connection = yield r.connect({batch_conf: 10, host: config.host, port: config.port, authKey: config.authKey});
         assert(connection);
 
-        cursor = yield r.db(dbName).table(tableName)
+        var cursor = yield r.db(dbName).table(tableName)
             .orderBy({index: "id"})
             .map(r.row("val").add(1))
             .run(connection);

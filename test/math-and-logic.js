@@ -7,11 +7,11 @@ var uuid = util.uuid;
 var It = util.It;
 
 var uuid = util.uuid;
-var dbName, tableName;
+var dbName, tableName, result;
 
 It("`add` should work", function* (done) {
     try {
-        var result = yield r.expr(1).add(1).run();
+        result = yield r.expr(1).add(1).run();
         assert.equal(result, 2);
 
         result = yield r.expr(1).add(1).add(1).run();
@@ -773,7 +773,7 @@ It("`random` should work", function* (done) {
         assert((result > 0) && (result < 1));
 
         result = yield r.random(10).run();
-        assert((result > 0) && (result < 10));
+        assert((result >= 0) && (result < 10));
         assert.equal(Math.floor(result), result);
 
         result = yield r.random(5, 10).run();
