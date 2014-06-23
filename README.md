@@ -3,7 +3,7 @@ rethinkdbdash
 
 <a href="https://app.wercker.com/project/bykey/10e69719c2031f4995798ddb9221c398"><img alt="Wercker status" src="https://app.wercker.com/status/10e69719c2031f4995798ddb9221c398/m/master" align="right" /></a>
 
-A Node.js driver for RethinkDB with promises and a connection pool.
+An experimental (yet stable) Node.js driver for RethinkDB with promises and a connection pool.
 
 _Note_: To use `yield` as shown in the examples, you have to start `node` unstable (>= 0.11) with
 the `--harmony` flag.
@@ -51,14 +51,12 @@ Note: You have to start node with the `--harmony` flag.
 
 ### Install ###
 -------------
-- Build node 0.11.10 (checkout `v0.11.10-release`) from source.  
-Binaries won't work with `node-protobuf` -- some libraries are not properly linked.
-- Install the `libprotobuf` binary and development files (required to build `node-protobuf` in the next step).
-- Install `rethinkdbdash-unstable` with `npm`.
 
 ```
-npm install rethinkdbdash-unstable
+npm install rethinkdbdash
 ```
+
+The `rethinkdbdash-unstable` package is a relic from the past when the driver had a dependency on `node-protobuf`.
 
 
 ### Documentation ###
@@ -98,8 +96,8 @@ var r = require('rethinkdbdash')(options);
 
 #### Promises ####
 
-Rethinkdbdash returns a bluebird promise when a method in the official driver
-takes a callback.
+Rethinkdbdash uses promises and not callback.
+RethinkDB >= 1.13 handles both syntaxes.
 
 Example 1 with `yield`:
 ```js
@@ -142,7 +140,7 @@ r.table("foo").run().then(function(connection) {
 
 Rethinkdbdash implements a connection pool and is created by default.
 
-If you do not want to use a connection pool, iniitialize rethinkdbdash with `{pool: false}` like that:
+If you do not want to use a connection pool, iniitialize rethinkdbdash with `{pool: false}` like this:
 ```js
 var r = require('rethinkdbdash')({pool: false});
 ```
@@ -186,8 +184,6 @@ __Note__: If a query returns a cursor, the connection will not be released as lo
 cursor hasn't fetched everything or has been closed.
 
 
-
-
 #### Cursor ####
 
 Rethinkdbdash does not extend `Array` with methods and returns a cursor as long as your
@@ -206,15 +202,14 @@ console.log(JSON.stringify(result)) // print [1, 2, 3]
 - Better backtraces
 
 Long backtraces are split on multiple lines.  
-In case the driver cannot parse the query, it provides a better location of the error.
+In case the driver cannot serialize the query, it provides a better location of the error.
 
-- Different handling for queries that cannot be parsed on the server.
+- Arity errors
 
-In case an error occured because the server cannot parse the protobuf message, the
-official driver emits an `error` on the connection.  
-Rethinkdbdash emits an error and rejects all queries running on this connection and
-close the connection. This is the only way now to avoid having some part of your
-program hang forever.
+The server may return confusing error messages when the wrong number
+of arguments is provided (See [issue 2463](https://github.com/rethinkdb/rethinkdb/issues/2463) to track progress).
+Rethinkdbdash tries to make up for it by catching errors before sending
+the query to the server if possible.
 
 
 #### Miscellaneous ####
@@ -233,7 +228,6 @@ r.setNestingLevel(<number>)
 
 The tree representation of the query is built step by step and stored which avoid
 recomputing it if the query is re-run.  
-`exprJSON`, internal method used by `insert`, is more efficient in the worst case.
 
 - Connection
 
@@ -259,8 +253,3 @@ Tests are also being run on [wercker](http://wercker.com/):
 - Box: 
   - Github: [https://github.com/neumino/box-rethinkdbdash](https://github.com/neumino/box-rethinkdbdash)
   - Wercker builds: [https://app.wercker.com/#applications/52dffc65a4acb3ef16010b60/tab](https://app.wercker.com/#applications/52dffc65a4acb3ef16010b60/tab)
-
-
-### Roadmap ###
-============
-- Pre-serialize a query (not sure if possible though)
