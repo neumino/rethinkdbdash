@@ -237,6 +237,10 @@ error, an atom, or the end (or full) sequence.
 
 A connection can also emit a "timeout" event if the underlying connection times out.
 
+- `undefined` values in an object
+
+Rethinkdbdash will ignore the keys/values where the value is `undefined`.
+
 ### Run tests ###
 -------------
 
