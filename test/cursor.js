@@ -225,6 +225,22 @@ It("Remove the field `val` in some docs", function* (done) {
         done(e);
     }
 })
+It("`toArray` with multiple batches - testing empty SUCCESS_COMPLETE", function* (done) {
+    var i=0;
+    try {
+        var connection = yield r.connect({batch_conf: 1, host: config.host, port: config.port, authKey: config.authKey});
+        assert(connection);
+
+        cursor = yield r.db(dbName).table(tableName).run(connection);
+
+        assert(cursor);
+        result = yield cursor.toArray();
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
 It("`next` with multiple batches", function* (done) {
     var i=0;
     try {
