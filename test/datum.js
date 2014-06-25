@@ -109,6 +109,16 @@ It("`r.expr` should fail with Infinity", function* (done) {
     }
 })
 
+It("`r.expr` should work with high unicode char", function* (done) {
+    try {
+        var result = yield r.expr('“').run();
+        assert.equal(result, '“')
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
 
 
 /*
