@@ -1,6 +1,6 @@
 {
   "name": "rethinkdbdash",
-  "version": "1.13.7",
+  "version": "1.13.8",
   "description": "A Node.js driver for RethinkDB with promises and a connection pool",
   "main": "lib/index.js",
   "directories": {
