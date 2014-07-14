@@ -2,6 +2,7 @@ var config = require(__dirname+'/config.js');
 var r = require(__dirname+'/../lib')({pool: false});
 var util = require(__dirname+'/util.js');
 var assert = require('assert');
+var Promise = require('bluebird');
 
 var uuid = util.uuid;
 var It = util.It;
