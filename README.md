@@ -90,7 +90,8 @@ var r = require('rethinkdbdash')(options);
     bufferSize: <number>, // minimum number of connections available in the pool, default 50
     timeoutError: <number>, // wait time before reconnecting in case of an error (in ms), default 1000
     timeoutGb: <number>, // how long the pool keep a connection that hasn't been used (in ms), default 60*60*1000
-    maxExponent: <number> // the maximum timeout before trying to reconnect is 2^maxExponent*timeoutError
+    maxExponent: <number>, // the maximum timeout before trying to reconnect is 2^maxExponent*timeoutError
+    silent: <boolean> // console.error errors (default false)
 }
 ```
 
@@ -154,7 +155,8 @@ var r = require('rethinkdbdash')({
     bufferSize: <number>, // minimum number of connections available in the pool, default 50
     timeoutError: <number>, // wait time before reconnecting in case of an error (in ms), default 1000
     timeoutGb: <number>, // how long the pool keep a connection that hasn't been used (in ms), default 60*60*1000
-    maxExponent: <number> // the maximum timeout before trying to reconnect is 2^maxExponent*timeoutError
+    maxExponent: <number>, // the maximum timeout before trying to reconnect is 2^maxExponent*timeoutError
+    silent: <boolean> // console.error errors (default false)
 });
 
 try {
@@ -181,6 +183,12 @@ Drain the pool
 r.getPool().drain();
 ```
 
+
+The pool can emits emits:
+- `draining`: when `drain` is called
+- `queueing`: when a query is added/removed from the queue (queries waiting for a connection), the size of the queue is provided
+- `size`: when the number of connections changes, the number of connections is provided
+- `available-size`: when the number of available connections changes, the number of available connections is provided
 
 __Note__: If a query returns a cursor, the connection will not be released as long as the
 cursor hasn't fetched everything or has been closed.
