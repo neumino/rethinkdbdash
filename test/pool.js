@@ -187,6 +187,60 @@ It("`pool.drain` should eventually remove all the connections", function* (done)
     }
 });
 
+It("If the pool cannot create a connection, it should reject queries", function* (done) {
+    try {
+        var r = require(__dirname+'/../lib')({host: "notarealhost", min: 1, max: 2, silent: true});
+        yield r.expr(1).run()
+        done(new Error("Was expecting an error"));
+    }
+    catch(e) {
+        if (e.message === "The pool does not have any opened connections and failed to open a new one.") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+});
+
+It("If the pool cannot create a connection, it should reject queries - timeout", function* (done) {
+    try {
+        var r = require(__dirname+'/../lib')({host: "notarealhost", min: 1, max: 2, silent: true});
+        yield new Promise(function(resolve, reject) { setTimeout(resolve, 1000) });
+        yield r.expr(1).run()
+        done(new Error("Was expecting an error"));
+    }
+    catch(e) {
+        if (e.message === "The pool does not have any opened connections and failed to open a new one.") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+});
+
+
+It("If the pool is drained, it should reject queries", function* (done) {
+    try {
+        var r = require(__dirname+'/../lib')({min: 1, max: 2, silent: true});
+
+        r.getPool().drain();
+
+        var result = yield r.expr(1).run();
+        console.log(result);
+        done(new Error("Was expecting an error"));
+    }
+    catch(e) {
+        if (e.message === "The pool is being drained.") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+});
+
 /*
 It("The pool should remove a connection if it errored", function* (done) {
     try{
