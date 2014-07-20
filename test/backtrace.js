@@ -3849,3 +3849,68 @@ It('Test backtrace for r.do(1,function( b) { return b.add("foo") })', function* 
     }
 })
 
+
+/*
+Frames:
+[ 0 ]
+
+Error:
+Expected type DATUM but found SELECTION:
+OPAQUE SELECTION ON table(a93bd2f48cbc4a14d2601c48de445ba7) in:
+r.db("650f01d24677c2284a5a066318f2ab7f").table("a93bd2f48cbc4a14d2601c48de445ba7")
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    .between("foo", "bar", {
+    ^^^^^^^^^^^^^^^^^^^^^^^^
+        index: "id"
+        ^^^^^^^^^^^
+    }).add(1)
+    ^^
+*/
+It('Test backtrace for r.db(dbName).table(tableName).between("foo", "bar", {index: "id"}).add(1)', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.db(dbName).table(tableName).between("foo", "bar", {index: "id"}).add(1).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Expected type DATUM but found SELECTION:\nOPAQUE SELECTION ON table("+tableName+") in:\nr.db(\""+dbName+"\").table(\""+tableName+"\")\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    .between(\"foo\", \"bar\", {\n    ^^^^^^^^^^^^^^^^^^^^^^^^\n        index: \"id\"\n        ^^^^^^^^^^^\n    }).add(1)\n    ^^       \n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+
+/*
+Frames:
+[ 0 ]
+
+Error:
+Expected type DATUM but found SELECTION:
+OPAQUE SELECTION ON table(ca27693ec37d32babd9a09a6d4ef2e97) in:
+r.db("850424174ad32c1883d03448c857588b").table("ca27693ec37d32babd9a09a6d4ef2e97")
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    .orderBy({
+    ^^^^^^^^^^
+        index: "id"
+        ^^^^^^^^^^^
+    }).add(1)
+    ^^
+*/
+It('Test backtrace for r.db(dbName).table(tableName).orderBy({index: "id"}).add(1)', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.db(dbName).table(tableName).orderBy({index: "id"}).add(1).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Expected type DATUM but found SELECTION:\nOPAQUE SELECTION ON table("+tableName+") in:\nr.db(\""+dbName+"\").table(\""+tableName+"\")\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    .orderBy({\n    ^^^^^^^^^^\n        index: \"id\"\n        ^^^^^^^^^^^\n    }).add(1)\n    ^^       \n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
