@@ -220,7 +220,6 @@ It("`ISO8601` is not defined after a term", function* (done) {
     }
 })
 
-
 It("`inTimezone` should work", function* (done) {
     try {
         var result = yield r.now().inTimezone('-08:00').hours().do(function(h) {
@@ -462,4 +461,3 @@ It("`epochTime` should work", function* (done) {
         done(e);
     }
 })
-

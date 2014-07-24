@@ -123,6 +123,7 @@ It("`dbDrop` should drop a table", function* (done) {
         done();
     }
     catch(e) {
+        console.log(e);
         done(e);
     }
 })

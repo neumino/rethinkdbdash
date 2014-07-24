@@ -27,7 +27,6 @@ It("Init for `writing-data.js`", function* (done) {
         done(e);
     }
 })
-
 It("`insert` should work - single insert`", function* (done) {
     try {
         var result = yield r.db(dbName).table(tableName).insert({}).run();
@@ -83,6 +82,7 @@ It("`insert` should work - with returnVals true`", function* (done) {
     }
 })
 
+
 It("`insert` should work - with returnVals false`", function* (done) {
     try {
         var result = yield r.db(dbName).table(tableName).insert({}, {returnVals: false}).run();
@@ -118,6 +118,7 @@ It("`insert` should work - with durability hard`", function* (done) {
         done(e);
     }
 })
+
 It("`insert` should work - testing upsert true`", function* (done) {
     try {
         result = yield r.db(dbName).table(tableName).insert({}, {upsert: true}).run();
@@ -506,6 +507,7 @@ It("`replace` should work - range replace`", function* (done) {
 
         result = yield r.db(dbName).table(tableName).get(1).run();
         assert.deepEqual(result, {id: 1, foo: "bar"});
+
         result = yield r.db(dbName).table(tableName).get(2).run();
         assert.deepEqual(result, {id: 2, foo: "bar"});
 
@@ -554,6 +556,7 @@ It("`replace` should work - hard durability`", function* (done) {
         done(e);
     }
 })
+
 It("`replace` should work - returnVals true", function* (done) {
     try {
         result = yield r.db(dbName).table(tableName).delete().run();

@@ -264,11 +264,13 @@ It("`indexCreate` should work with options", function* (done) {
 
         result = yield r.db(dbName).table(tableName).insert({foo: ["bar1", "bar2"]}).run()
         assert.equal(result.inserted, 1); 
+
         result = yield r.db(dbName).table(tableName).insert({foo: ["bar1", "bar3"]}).run()
         assert.equal(result.inserted, 1); 
 
         result = yield r.db(dbName).table(tableName).getAll("bar1", {index: "foo"}).count().run()
         assert.equal(result, 2)
+
         result = yield r.db(dbName).table(tableName).getAll("bar1", {index: "foo1"}).count().run()
         assert.equal(result, 2)
         result = yield r.db(dbName).table(tableName).getAll("bar1", {index: "foo2"}).count().run()
