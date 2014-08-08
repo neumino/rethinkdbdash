@@ -68,12 +68,12 @@ It("`insert` should work - batch insert 2`", function* (done) {
     }
 })
 
-It("`insert` should work - with returnVals true`", function* (done) {
+It("`insert` should work - with returnChanges true`", function* (done) {
     try {
-        var result = yield r.db(dbName).table(tableName).insert({}, {returnVals: true}).run();
+        var result = yield r.db(dbName).table(tableName).insert({}, {returnChanges: true}).run();
         assert.equal(result.inserted, 1);
-        assert(result.new_val);
-        assert.equal(result.old_val, null);
+        assert(result.changes[0].new_val);
+        assert.equal(result.changes[0].old_val, null);
 
         done();
     }
@@ -83,12 +83,12 @@ It("`insert` should work - with returnVals true`", function* (done) {
 })
 
 
-It("`insert` should work - with returnVals false`", function* (done) {
+It("`insert` should work - with returnChanges false`", function* (done) {
     try {
-        var result = yield r.db(dbName).table(tableName).insert({}, {returnVals: false}).run();
+        var result = yield r.db(dbName).table(tableName).insert({}, {returnChanges: false}).run();
         assert.equal(result.inserted, 1);
-        assert.equal(result.new_val, undefined);
-        assert.equal(result.old_val, undefined);
+        assert.equal(result.changes, undefined);
+        assert.equal(result.changes, undefined);
 
         done();
     }
@@ -118,27 +118,20 @@ It("`insert` should work - with durability hard`", function* (done) {
         done(e);
     }
 })
-
-It("`insert` should work - testing upsert true`", function* (done) {
+It("`insert` should work - testing conflict`", function* (done) {
     try {
-        result = yield r.db(dbName).table(tableName).insert({}, {upsert: true}).run();
+        result = yield r.db(dbName).table(tableName).insert({}, {conflict: "update"}).run();
         assert.equal(result.inserted, 1);
 
-        result = yield r.db(dbName).table(tableName).insert({id: result.generated_keys[0], val:1}, {upsert: true}).run();
+        var pk = result.generated_keys[0];
+
+        result = yield r.db(dbName).table(tableName).insert({id: pk, val:1}, {conflict: "update"}).run();
         assert.equal(result.replaced, 1);
 
-        done();
-    }
-    catch(e) {
-        done(e);
-    }
-})
-It("`insert` should work - testing upsert false`", function* (done) {
-    try {
-        result = yield r.db(dbName).table(tableName).insert({}, {upsert: false}).run();
-        assert.equal(result.inserted, 1);
+        result = yield r.db(dbName).table(tableName).insert({id: pk, val:2}, {conflict: "replace"}).run();
+        assert.equal(result.replaced, 1);
 
-        result = yield r.db(dbName).table(tableName).insert({id: result.generated_keys[0], val:1}, {upsert: false}).run();
+        result = yield r.db(dbName).table(tableName).insert({id: pk, val:3}, {conflict: "error"}).run();
         assert.equal(result.errors, 1);
 
         done();
@@ -214,7 +207,7 @@ It("`insert` should throw if non valid option", function* (done) {
         var result = yield r.db(dbName).table(tableName).insert({}, {nonValidKey: true}).run();
     }
     catch(e) {
-        if (e.message === 'Unrecognized option `nonValidKey` in `insert` after:\nr.db("'+dbName+'").table("'+tableName+'")\nAvailable options are returnVals <bool>, durability <string>, upsert <bool>') {
+        if (e.message === 'Unrecognized option `nonValidKey` in `insert` after:\nr.db("'+dbName+'").table("'+tableName+'")\nAvailable options are returnChanges <bool>, durability <string>, conflict <string>') {
             done()
         }
         else {
@@ -240,7 +233,7 @@ It("`replace` should throw if non valid option", function* (done) {
         var result = yield r.db(dbName).table(tableName).replace({}, {nonValidKey: true}).run();
     }
     catch(e) {
-        if (e.message === 'Unrecognized option `nonValidKey` in `replace` after:\nr.db("'+dbName+'").table("'+tableName+'")\nAvailable options are returnVals <bool>, durability <string>, nonAtomic <bool>') {
+        if (e.message === 'Unrecognized option `nonValidKey` in `replace` after:\nr.db("'+dbName+'").table("'+tableName+'")\nAvailable options are returnChanges <bool>, durability <string>, nonAtomic <bool>') {
             done()
         }
         else {
@@ -318,7 +311,7 @@ It("`delete` should throw if non valid option", function* (done) {
         var result = yield r.db(dbName).table(tableName).delete({nonValidKey: true}).run();
     }
     catch(e) {
-        if (e.message === 'Unrecognized option `nonValidKey` in `delete` after:\nr.db("'+dbName+'").table("'+tableName+'")\nAvailable options are returnVals <bool>, durability <string>') {
+        if (e.message === 'Unrecognized option `nonValidKey` in `delete` after:\nr.db("'+dbName+'").table("'+tableName+'")\nAvailable options are returnChanges <bool>, durability <string>') {
             done()
         }
         else {
@@ -406,17 +399,17 @@ It("`update` should work - hard durability`", function* (done) {
         done(e);
     }
 })
-It("`update` should work - returnVals true", function* (done) {
+It("`update` should work - returnChanges true", function* (done) {
     try {
         result = yield r.db(dbName).table(tableName).delete().run();
         assert(result);
         result = yield r.db(dbName).table(tableName).insert({id: 1}).run();
         assert(result);
 
-        result = yield r.db(dbName).table(tableName).get(1).update({foo: "bar"}, {returnVals: true}).run();
+        result = yield r.db(dbName).table(tableName).get(1).update({foo: "bar"}, {returnChanges: true}).run();
         assert.equal(result.replaced, 1);
-        assert.deepEqual(result.new_val, {id: 1, foo: "bar"});
-        assert.deepEqual(result.old_val, {id: 1});
+        assert.deepEqual(result.changes[0].new_val, {id: 1, foo: "bar"});
+        assert.deepEqual(result.changes[0].old_val, {id: 1});
 
         result = yield r.db(dbName).table(tableName).get(1).run();
         assert.deepEqual(result, {id: 1, foo: "bar"});
@@ -427,17 +420,17 @@ It("`update` should work - returnVals true", function* (done) {
         done(e);
     }
 })
-It("`update` should work - returnVals false`", function* (done) {
+It("`update` should work - returnChanges false`", function* (done) {
     try {
         result = yield r.db(dbName).table(tableName).delete().run();
         assert(result);
         result = yield r.db(dbName).table(tableName).insert({id: 1}).run();
         assert(result);
 
-        result = yield r.db(dbName).table(tableName).get(1).update({foo: "bar"}, {returnVals: false}).run();
+        result = yield r.db(dbName).table(tableName).get(1).update({foo: "bar"}, {returnChanges: false}).run();
         assert.equal(result.replaced, 1);
-        assert.equal(result.new_val, undefined);
-        assert.equal(result.old_val, undefined);
+        assert.equal(result.changes, undefined);
+        assert.equal(result.changes, undefined);
 
         result = yield r.db(dbName).table(tableName).get(1).run();
         assert.deepEqual(result, {id: 1, foo: "bar"});
@@ -466,7 +459,7 @@ It("`update` should throw if non valid option", function* (done) {
         var result = yield r.db(dbName).table(tableName).update({}, {nonValidKey: true}).run();
     }
     catch(e) {
-        if (e.message === 'Unrecognized option `nonValidKey` in `update` after:\nr.db("'+dbName+'").table("'+tableName+'")\nAvailable options are returnVals <bool>, durability <string>, nonAtomic <bool>') {
+        if (e.message === 'Unrecognized option `nonValidKey` in `update` after:\nr.db("'+dbName+'").table("'+tableName+'")\nAvailable options are returnChanges <bool>, durability <string>, nonAtomic <bool>') {
             done()
         }
         else {
@@ -557,17 +550,17 @@ It("`replace` should work - hard durability`", function* (done) {
     }
 })
 
-It("`replace` should work - returnVals true", function* (done) {
+It("`replace` should work - returnChanges true", function* (done) {
     try {
         result = yield r.db(dbName).table(tableName).delete().run();
         assert(result);
         result = yield r.db(dbName).table(tableName).insert({id: 1}).run();
         assert(result);
 
-        result = yield r.db(dbName).table(tableName).get(1).replace({id: 1, foo: "bar"}, {returnVals: true}).run();
+        result = yield r.db(dbName).table(tableName).get(1).replace({id: 1, foo: "bar"}, {returnChanges: true}).run();
         assert.equal(result.replaced, 1);
-        assert.deepEqual(result.new_val, {id: 1, foo: "bar"});
-        assert.deepEqual(result.old_val, {id: 1});
+        assert.deepEqual(result.changes[0].new_val, {id: 1, foo: "bar"});
+        assert.deepEqual(result.changes[0].old_val, {id: 1});
 
         result = yield r.db(dbName).table(tableName).get(1).run();
         assert.deepEqual(result, {id: 1, foo: "bar"});
@@ -578,17 +571,17 @@ It("`replace` should work - returnVals true", function* (done) {
         done(e);
     }
 })
-It("`replace` should work - returnVals false`", function* (done) {
+It("`replace` should work - returnChanges false`", function* (done) {
     try {
         result = yield r.db(dbName).table(tableName).delete().run();
         assert(result);
         result = yield r.db(dbName).table(tableName).insert({id: 1}).run();
         assert(result);
 
-        result = yield r.db(dbName).table(tableName).get(1).replace({id: 1, foo: "bar"}, {returnVals: false}).run();
+        result = yield r.db(dbName).table(tableName).get(1).replace({id: 1, foo: "bar"}, {returnChanges: false}).run();
         assert.equal(result.replaced, 1);
-        assert.equal(result.new_val, undefined);
-        assert.equal(result.old_val, undefined);
+        assert.equal(result.changes, undefined);
+        assert.equal(result.changes, undefined);
 
         result = yield r.db(dbName).table(tableName).get(1).run();
         assert.deepEqual(result, {id: 1, foo: "bar"});

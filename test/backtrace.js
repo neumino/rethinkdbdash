@@ -698,7 +698,7 @@ Frames:
 
 Error:
 Expected type DATUM but found SELECTION:
-OPAQUE SELECTION ON table(0c2967f3799eb2025b4cd92342dfe4a9) in:
+SELECTION ON table(0c2967f3799eb2025b4cd92342dfe4a9) in:
 r.db("cd911f3c958c1ec7637f7f2dc2827245").table("0c2967f3799eb2025b4cd92342dfe4a9")
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     .getAll(1, 2, 3).do(function(var_1) {
@@ -713,7 +713,7 @@ It('Test backtrace for r.db(dbName).table(tableName).getAll(1, 2, 3).do(function
         done(new Error("Should have thrown an error"))
     }
     catch(e) {
-        if (e.message === "Expected type DATUM but found SELECTION:\nOPAQUE SELECTION ON table("+tableName+") in:\nr.db(\""+dbName+"\").table(\""+tableName+"\")\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    .getAll(1, 2, 3).do(function(var_1) {\n    ^^^^^^^^^^^^^^^^                     \n        return var_1.add(3)\n    })\n") {
+        if (e.message === "Expected type DATUM but found SELECTION:\nSELECTION ON table("+tableName+") in:\nr.db(\""+dbName+"\").table(\""+tableName+"\")\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    .getAll(1, 2, 3).do(function(var_1) {\n    ^^^^^^^^^^^^^^^^                     \n        return var_1.add(3)\n    })\n") {
             done()
         }
         else {
@@ -731,7 +731,7 @@ Frames:
 
 Error:
 Expected type DATUM but found SELECTION:
-OPAQUE SELECTION ON table(2fb59ffdec1b6605369953703547f82d) in:
+SELECTION ON table(2fb59ffdec1b6605369953703547f82d) in:
 r.db("52bdcbc788f0c0b00357fa1840f62a81").table("2fb59ffdec1b6605369953703547f82d")
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     .getAll(1, 2, 3, {
@@ -750,7 +750,7 @@ It('Test backtrace for r.db(dbName).table(tableName).getAll(1, 2, 3, { index: "f
         done(new Error("Should have thrown an error"))
     }
     catch(e) {
-        if (e.message === "Expected type DATUM but found SELECTION:\nOPAQUE SELECTION ON table("+tableName+") in:\nr.db(\""+dbName+"\").table(\""+tableName+"\")\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    .getAll(1, 2, 3, {\n    ^^^^^^^^^^^^^^^^^^\n        index: \"foo\"\n        ^^^^^^^^^^^^\n    }).do(function(var_1) {\n    ^^                     \n        return var_1.add(3)\n    })\n") {
+        if (e.message === "Expected type DATUM but found SELECTION:\nSELECTION ON table("+tableName+") in:\nr.db(\""+dbName+"\").table(\""+tableName+"\")\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    .getAll(1, 2, 3, {\n    ^^^^^^^^^^^^^^^^^^\n        index: \"foo\"\n        ^^^^^^^^^^^^\n    }).do(function(var_1) {\n    ^^                     \n        return var_1.add(3)\n    })\n") {
             done()
         }
         else {
@@ -803,7 +803,7 @@ Frames:
 
 Error:
 Expected type DATUM but found SELECTION:
-OPAQUE SELECTION ON table(775cb364800937836f7ecaafc6405cf0) in:
+SELECTION ON table(775cb364800937836f7ecaafc6405cf0) in:
 r.db("39ae0baa00e8cb2da57783c544f569d3").table("775cb364800937836f7ecaafc6405cf0")
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     .filter({
@@ -822,7 +822,7 @@ It('Test backtrace for r.db(dbName).table(tableName).filter({foo: "bar"}).do(fun
         done(new Error("Should have thrown an error"))
     }
     catch(e) {
-        if (e.message === "Expected type DATUM but found SELECTION:\nOPAQUE SELECTION ON table("+tableName+") in:\nr.db(\""+dbName+"\").table(\""+tableName+"\")\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    .filter({\n    ^^^^^^^^^\n        foo: \"bar\"\n        ^^^^^^^^^^\n    }).do(function(var_1) {\n    ^^                     \n        return var_1.add(3)\n    })\n") {
+        if (e.message === "Expected type DATUM but found SELECTION:\nSELECTION ON table("+tableName+") in:\nr.db(\""+dbName+"\").table(\""+tableName+"\")\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    .filter({\n    ^^^^^^^^^\n        foo: \"bar\"\n        ^^^^^^^^^^\n    }).do(function(var_1) {\n    ^^                     \n        return var_1.add(3)\n    })\n") {
             done()
         }
         else {
@@ -3031,7 +3031,7 @@ undefined
 Error:
 Unrecognized option `nonValid` in `replace` after:
 r.db("791087f7a75b40ba6a89f96cafefa643").table("da63855c1650bdd5e653662750771333")
-Available options are returnVals <bool>, durability <string>, nonAtomic <bool>
+Available options are returnChanges <bool>, durability <string>, nonAtomic <bool>
 */
 It('Test backtrace for r.db(dbName).table(tableName).replace({a:1}, {nonValid:true})', function* (done) {
     try {
@@ -3040,7 +3040,7 @@ It('Test backtrace for r.db(dbName).table(tableName).replace({a:1}, {nonValid:tr
         done(new Error("Should have thrown an error"))
     }
     catch(e) {
-        if (e.message === "Unrecognized option `nonValid` in `replace` after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")\nAvailable options are returnVals <bool>, durability <string>, nonAtomic <bool>") {
+        if (e.message === "Unrecognized option `nonValid` in `replace` after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")\nAvailable options are returnChanges <bool>, durability <string>, nonAtomic <bool>") {
             done()
         }
         else {
@@ -3856,7 +3856,7 @@ Frames:
 
 Error:
 Expected type DATUM but found SELECTION:
-OPAQUE SELECTION ON table(a93bd2f48cbc4a14d2601c48de445ba7) in:
+SELECTION ON table(a93bd2f48cbc4a14d2601c48de445ba7) in:
 r.db("650f01d24677c2284a5a066318f2ab7f").table("a93bd2f48cbc4a14d2601c48de445ba7")
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     .between("foo", "bar", {
@@ -3873,7 +3873,7 @@ It('Test backtrace for r.db(dbName).table(tableName).between("foo", "bar", {inde
         done(new Error("Should have thrown an error"))
     }
     catch(e) {
-        if (e.message === "Expected type DATUM but found SELECTION:\nOPAQUE SELECTION ON table("+tableName+") in:\nr.db(\""+dbName+"\").table(\""+tableName+"\")\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    .between(\"foo\", \"bar\", {\n    ^^^^^^^^^^^^^^^^^^^^^^^^\n        index: \"id\"\n        ^^^^^^^^^^^\n    }).add(1)\n    ^^       \n") {
+        if (e.message === "Expected type DATUM but found SELECTION:\nSELECTION ON table("+tableName+") in:\nr.db(\""+dbName+"\").table(\""+tableName+"\")\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    .between(\"foo\", \"bar\", {\n    ^^^^^^^^^^^^^^^^^^^^^^^^\n        index: \"id\"\n        ^^^^^^^^^^^\n    }).add(1)\n    ^^       \n") {
             done()
         }
         else {
@@ -3889,7 +3889,7 @@ Frames:
 
 Error:
 Expected type DATUM but found SELECTION:
-OPAQUE SELECTION ON table(ca27693ec37d32babd9a09a6d4ef2e97) in:
+SELECTION ON table(ca27693ec37d32babd9a09a6d4ef2e97) in:
 r.db("850424174ad32c1883d03448c857588b").table("ca27693ec37d32babd9a09a6d4ef2e97")
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     .orderBy({
@@ -3906,7 +3906,7 @@ It('Test backtrace for r.db(dbName).table(tableName).orderBy({index: "id"}).add(
         done(new Error("Should have thrown an error"))
     }
     catch(e) {
-        if (e.message === "Expected type DATUM but found SELECTION:\nOPAQUE SELECTION ON table("+tableName+") in:\nr.db(\""+dbName+"\").table(\""+tableName+"\")\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    .orderBy({\n    ^^^^^^^^^^\n        index: \"id\"\n        ^^^^^^^^^^^\n    }).add(1)\n    ^^       \n") {
+        if (e.message === "Expected type DATUM but found SELECTION:\nSELECTION ON table("+tableName+") in:\nr.db(\""+dbName+"\").table(\""+tableName+"\")\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    .orderBy({\n    ^^^^^^^^^^\n        index: \"id\"\n        ^^^^^^^^^^^\n    }).add(1)\n    ^^       \n") {
             done()
         }
         else {
