@@ -233,7 +233,7 @@ It("`run` should throw on an unrecongized argument", function* (done) {
         result = yield r.expr(1).run(connection, {db: "db"});
     }
     catch(e) {
-        if (e.message === "Unrecognized option `db` in `run`. Available options are useOutdated <bool>, durability <string>, noreply <bool>, timeFormat <string>, groupFormat: <string>, profile <bool>.") {
+        if (e.message === "Unrecognized option `db` in `run`. Available options are useOutdated <bool>, durability <string>, noreply <bool>, timeFormat <string>, groupFormat: <string>, profile <bool>, binaryFormat <bool>.") {
             done();
         }
         else{

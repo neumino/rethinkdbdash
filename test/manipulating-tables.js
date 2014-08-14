@@ -218,11 +218,11 @@ It("index operations", function* (done) {
         result = yield result.toArray();
         assert.deepEqual(result, ["newField"]);
 
-        result = yield r.db(dbName).table(tableName).indexWait().run();
+        result = yield r.db(dbName).table(tableName).indexWait().pluck('index', 'ready').run();
         result = yield result.toArray();
         assert.deepEqual(result, [ { index: 'newField', ready: true } ]);
 
-        result = yield r.db(dbName).table(tableName).indexStatus().run();
+        result = yield r.db(dbName).table(tableName).indexStatus().pluck('index', 'ready').run();
         result = yield result.toArray();
         assert.deepEqual(result, [ { index: 'newField', ready: true } ]);
 
@@ -232,11 +232,11 @@ It("index operations", function* (done) {
         result = yield r.db(dbName).table(tableName).indexCreate("field1", function(doc) { return doc("field1") }).run();
         assert.deepEqual(result, {created: 1});
 
-        result = yield r.db(dbName).table(tableName).indexWait('field1').run();
+        result = yield r.db(dbName).table(tableName).indexWait('field1').pluck('index', 'ready').run();
         result = yield result.toArray();
         assert.deepEqual(result, [ { index: 'field1', ready: true } ]);
 
-        result = yield r.db(dbName).table(tableName).indexStatus('field1').run();
+        result = yield r.db(dbName).table(tableName).indexStatus('field1').pluck('index', 'ready').run();
         result = yield result.toArray();
         assert.deepEqual(result, [ { index: 'field1', ready: true } ]);
 

@@ -146,7 +146,7 @@ It("`getAll` should work with multiple values - secondary index 1", function* (d
         result = yield r.db(dbName).table(tableName).indexCreate("field").run();
         assert.deepEqual(result, {created: 1});
 
-        result = yield r.db(dbName).table(tableName).indexWait("field").run();
+        result = yield r.db(dbName).table(tableName).indexWait("field").pluck('index', 'ready').run();
         result = yield result.toArray();
         assert.deepEqual(result, [{"index":"field","ready":true}]);
 
@@ -186,7 +186,7 @@ It("`getAll` should work with multiple values - secondary index 2", function* (d
         var result = yield r.db(dbName).table(tableName).indexCreate("fieldAddOne", function(doc) { return doc("field").add(1) }).run();
         assert.deepEqual(result, {created: 1});
 
-        result = yield r.db(dbName).table(tableName).indexWait("fieldAddOne").run();
+        result = yield r.db(dbName).table(tableName).indexWait("fieldAddOne").pluck('index', 'ready').run();
         result = yield result.toArray();
         assert.deepEqual(result, [{"index":"fieldAddOne","ready":true}]);
 
