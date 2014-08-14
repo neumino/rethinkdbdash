@@ -271,6 +271,17 @@ It("`timeFormat` should work", function* (done) {
         done(e);
     }
 })
+It("`binaryFormat` should work", function* (done) {
+    try {
+        result = yield r.binary(new Buffer([1,2,3])).run(connection, {binaryFormat: "raw"});
+        assert.equal(result.$reql_type$, "BINARY");
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
 
 It("`groupFormat` should work", function* (done) {
     try {

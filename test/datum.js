@@ -119,6 +119,31 @@ It("`r.expr` should work with high unicode char", function* (done) {
         done(e);
     }
 })
+It("`r.binary` should work", function* (done) {
+    try {
+        var result = yield r.binary(new Buffer([1,2,3,4,5,6])).run();
+        assert(result instanceof Buffer);
+        assert.deepEqual(result.toJSON().data, [1,2,3,4,5,6]);
+        done();
+    }
+    catch(e) {
+        console.log(e);
+        done(e);
+    }
+})
+It("`r.expr` should work with binaries", function* (done) {
+    try {
+        var result = yield r.expr(new Buffer([1,2,3,4,5,6])).run();
+        assert(result instanceof Buffer);
+        assert.deepEqual(result.toJSON().data, [1,2,3,4,5,6]);
+        done();
+    }
+    catch(e) {
+        console.log(e);
+        done(e);
+    }
+})
+
 
 
 /*
