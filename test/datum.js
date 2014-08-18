@@ -108,6 +108,21 @@ It("`r.expr` should throw when ArrayLimit is too small", function* (done) {
         }
     }
 })
+It("`r.expr` should throw when ArrayLimit is too small - options in run take precedence", function* (done) {
+    try {
+        r.setArrayLimit(100);
+        var result = yield r.expr([0,1,2,3,4,5,6,8,9]).run({arrayLimit: 2});
+        done(new Error("Was expecting an error"))
+    }
+    catch(e) {
+        if (e.message.match(/^Array over size limit `2` in/)) {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
 
 It("`r.expr` should throw when setArrayLimit is too small", function* (done) {
     try {
