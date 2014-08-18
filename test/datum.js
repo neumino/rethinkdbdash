@@ -67,6 +67,21 @@ It("`r.expr` should take a nestingLevel value and throw if the nesting level is 
         }
     }
 })
+It("`r.expr` should throw when setNestingLevel is too small", function* (done) {
+    try {
+        r.setNestingLevel(2);
+        var result = yield r.expr({a :{b: {c: {d: 1}}}}).run();
+    }
+    catch(e) {
+        if (e.message === "Nesting depth limit exceeded.\nYou probably have a circular reference somewhere.") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
 It("`r.expr` should work when setNestingLevel set back the value to 100", function* (done) {
     try {
         r.setNestingLevel(100);
@@ -78,6 +93,52 @@ It("`r.expr` should work when setNestingLevel set back the value to 100", functi
         done(e);
     }
 })
+
+It("`r.expr` should throw when ArrayLimit is too small", function* (done) {
+    try {
+        var result = yield r.expr([0,1,2,3,4,5,6,8,9]).run({arrayLimit: 2});
+        done(new Error("Was expecting an error"))
+    }
+    catch(e) {
+        if (e.message.match(/^Array over size limit `2` in/)) {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+It("`r.expr` should throw when setArrayLimit is too small", function* (done) {
+    try {
+        r.setArrayLimit(2);
+        var result = yield r.expr([0,1,2,3,4,5,6,8,9]).run();
+        done(new Error("Was expecting an error"))
+    }
+    catch(e) {
+        if (e.message.match(/^Array over size limit `2` in/)) {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+It("`r.expr` should work when setArrayLimit set back the value to 100000", function* (done) {
+    try {
+        r.setArrayLimit(100000);
+        var cursor = yield r.expr([0,1,2,3,4,5,6,8,9]).run();
+        var result = yield cursor.toArray();
+        assert.deepEqual(result, [0,1,2,3,4,5,6,8,9])
+        done();
+    }
+    catch(e) {
+        console.log(e);
+        done(e);
+    }
+})
+
 It("`r.expr` should fail with NaN", function* (done) {
     try {
         var result = yield r.expr(NaN).run();

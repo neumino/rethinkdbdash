@@ -22,7 +22,10 @@ It("Multiple import should not share the same pool", function* (done) {
 It("Multiple import should not share the same nestingLevel value", function* (done) {
     try {
         r.setNestingLevel(19);
+        r_.setNestingLevel(100);
         assert(r.nestingLevel !== r_.nestingLevel);
+        assert.equal(r.nestingLevel, 19);
+        assert.equal(r_.nestingLevel, 100);
         done();
     }
     catch(e) {
