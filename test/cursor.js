@@ -90,6 +90,52 @@ It("`next` should return a document", function* (done) {
         done(e);
     }
 })
+It("`each` should work", function* (done) {
+    try {
+        cursor = yield r.db(dbName).table(tableName).run();
+        assert(cursor);
+        var count = 0;
+        cursor.each(function(err, result) {
+            count++;
+            if (count === numDocs) {
+                done();
+            }
+        })
+    }
+    catch(e) {
+        done(e);
+    }
+})
+It("`each` should work - onFinish - reach end", function* (done) {
+    try {
+        cursor = yield r.db(dbName).table(tableName).run();
+        assert(cursor);
+        var count = 0;
+        cursor.each(function(err, result) {
+        }, done)
+    }
+    catch(e) {
+        done(e);
+    }
+})
+It("`each` should work - onFinish - return false", function* (done) {
+    try {
+        cursor = yield r.db(dbName).table(tableName).run();
+        assert(cursor);
+        var count = 0;
+        cursor.each(function(err, result) {
+            count++
+            return false
+        }, function() {
+            assert.equal(count, 1);
+            done();
+        })
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
 
 It("`toArray` should work", function* (done) {
     try {
