@@ -81,7 +81,6 @@ It("`group` should work ", function* (done) {
     try {
         var result = yield r.expr([{name: "Michel", grownUp: true},{name: "Laurent", grownUp: true},
             {name: "Sophie", grownUp: true},{name: "Luke", grownUp: false},{name: "Mino", grownUp: false}]).group('grownUp').run();
-        result = yield result.toArray();
         result.sort();
 
         assert.deepEqual(result, [ { "group": false, "reduction": [ { "grownUp": false, "name": "Luke" }, { "grownUp": false, "name": "Mino" } ] }, { "group": true, "reduction": [ { "grownUp": true, "name": "Michel" }, { "grownUp": true, "name": "Laurent" }, { "grownUp": true, "name": "Sophie" } ] } ])
@@ -103,8 +102,7 @@ It("`group` should work with an index ", function* (done) {
             ]).run();
         result = yield r.db(dbName).table(tableName).indexCreate("group").run();
         result = yield r.db(dbName).table(tableName).indexWait("group").run();
-        var cursor = yield r.db(dbName).table(tableName).group({index: "group"}).run();
-        result = yield cursor.toArray();
+        result = yield r.db(dbName).table(tableName).group({index: "group"}).run();
 
         assert.equal(result.length, 2);
         assert(result[0].reduction.length === 3 || result[0].reduction.length === 1);
@@ -136,7 +134,6 @@ It("`ungroup` should work ", function* (done) {
     try {
         var result = yield r.expr([{name: "Michel", grownUp: true},{name: "Laurent", grownUp: true},
             {name: "Sophie", grownUp: true},{name: "Luke", grownUp: false},{name: "Mino", grownUp: false}]).group('grownUp').ungroup().run();
-        result = yield result.toArray();
         result.sort();
 
         assert.deepEqual(result, [ { "group": false, "reduction": [ { "grownUp": false, "name": "Luke" }, { "grownUp": false, "name": "Mino" } ] }, { "group": true, "reduction": [ { "grownUp": true, "name": "Michel" }, { "grownUp": true, "name": "Laurent" }, { "grownUp": true, "name": "Sophie" } ] } ])

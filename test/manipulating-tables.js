@@ -26,7 +26,6 @@ It("Init for `manipulating-tables.js`", function* (done) {
 It("`tableList` should return a cursor", function* (done) {
     try {
         result = yield r.db(dbName).tableList().run();
-        result = yield result.toArray();
         assert(Array.isArray(result));
         done();
     }
@@ -43,7 +42,6 @@ It("`tableList` should show the table we created", function* (done) {
         assert.deepEqual(result, {created:1});
 
         result = yield r.db(dbName).tableList().run();
-        result = yield result.toArray();
         assert(Array.isArray(result));
 
         var found = false;
@@ -160,13 +158,11 @@ It("`tableDrop` should drop a table", function* (done) {
         assert.deepEqual(result, {created:1});
 
         result = yield r.db(dbName).tableList().run();
-        result = yield result.toArray();
 
         result = yield r.db(dbName).tableDrop(tableName).run();
         assert.deepEqual(result, {dropped:1});
 
         result = yield r.db(dbName).tableList().run();
-        result = yield result.toArray();
         assert(Array.isArray(result));
 
         var found = false;
@@ -215,15 +211,12 @@ It("index operations", function* (done) {
         assert.deepEqual(result, {created: 1});
 
         result = yield r.db(dbName).table(tableName).indexList().run();
-        result = yield result.toArray();
         assert.deepEqual(result, ["newField"]);
 
         result = yield r.db(dbName).table(tableName).indexWait().pluck('index', 'ready').run();
-        result = yield result.toArray();
         assert.deepEqual(result, [ { index: 'newField', ready: true } ]);
 
         result = yield r.db(dbName).table(tableName).indexStatus().pluck('index', 'ready').run();
-        result = yield result.toArray();
         assert.deepEqual(result, [ { index: 'newField', ready: true } ]);
 
         result = yield r.db(dbName).table(tableName).indexDrop("newField").run();
@@ -233,11 +226,9 @@ It("index operations", function* (done) {
         assert.deepEqual(result, {created: 1});
 
         result = yield r.db(dbName).table(tableName).indexWait('field1').pluck('index', 'ready').run();
-        result = yield result.toArray();
         assert.deepEqual(result, [ { index: 'field1', ready: true } ]);
 
         result = yield r.db(dbName).table(tableName).indexStatus('field1').pluck('index', 'ready').run();
-        result = yield result.toArray();
         assert.deepEqual(result, [ { index: 'field1', ready: true } ]);
 
         result = yield r.db(dbName).table(tableName).indexDrop("field1").run();

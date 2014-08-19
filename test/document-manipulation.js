@@ -30,7 +30,6 @@ It("Init for `document-manipulation.js`", function* (done) {
 It("`r.row` should work - 1", function* (done) {
     try {
         result = yield r.expr([1,2,3]).map(r.row).run();
-        result = yield result.toArray();
         assert.deepEqual(result, [1,2,3]);
         done()
     }
@@ -96,7 +95,6 @@ It("`pluck` should work", function* (done) {
         assert.deepEqual(result, {a: 0, b: 1});
 
         result = yield r.expr([{a: 0, b: 1, c: 2}, {a: 0, b: 10, c: 20}]).pluck("a", "b").run();
-        result = yield result.toArray();
         assert.deepEqual(result, [{a: 0, b: 1}, {a: 0, b: 10}]);
 
         done();
@@ -125,7 +123,6 @@ It("`without` should work", function* (done) {
         assert.deepEqual(result, {a: 0, b: 1});
 
         result = yield r.expr([{a: 0, b: 1, c: 2}, {a: 0, b: 10, c: 20}]).without("a", "c").run();
-        result = yield result.toArray();
         assert.deepEqual(result, [{b: 1}, {b: 10}]);
 
         done();
@@ -153,7 +150,6 @@ It("`merge` should work", function* (done) {
         assert.deepEqual(result, {a: 0, b: 1});
 
         result = yield r.expr([{a: 0}, {a: 1}, {a: 2}]).merge({b: 1}).run();
-        result = yield result.toArray();
         assert.deepEqual(result, [{a: 0, b: 1}, {a: 1, b: 1}, {a: 2, b: 1}]);
 
         result = yield r.expr({a: 0, c: {l: "tt"}}).merge({b: {c: {d: {e: "fff"}}, k: "pp"}}).run();
@@ -243,7 +239,6 @@ It("`literal` should throw if no argument has been passed", function* (done) {
 It("`append` should work", function* (done) {
     try {
         var result = yield r.expr([1,2,3]).append(4).run();
-        result = yield result.toArray();
         assert.deepEqual(result, [1,2,3,4]);
 
         done();
@@ -268,7 +263,6 @@ It("`append` should throw if no argument has been passed", function* (done) {
 It("`prepend` should work", function* (done) {
     try {
         var result = yield r.expr([1,2,3]).prepend(4).run();
-        result = yield result.toArray();
         assert.deepEqual(result, [4,1,2,3]);
 
         done();
@@ -293,7 +287,6 @@ It("`prepend` should throw if no argument has been passed", function* (done) {
 It("`difference` should work", function* (done) {
     try {
         var result = yield r.expr([1,2,3]).prepend(4).run();
-        result = yield result.toArray();
         assert.deepEqual(result, [4,1,2,3]);
 
         done();
@@ -318,11 +311,9 @@ It("`difference` should throw if no argument has been passed", function* (done) 
 It("`setInsert` should work", function* (done) {
     try {
         var result = yield r.expr([1,2,3]).setInsert(4).run();
-        result = yield result.toArray();
         assert.deepEqual(result, [1,2,3,4]);
 
         result = yield r.expr([1,2,3]).setInsert(2).run();
-        result = yield result.toArray();
         assert.deepEqual(result, [1,2,3]);
 
         done();
@@ -347,7 +338,6 @@ It("`setInsert` should throw if no argument has been passed", function* (done) {
 It("`setUnion` should work", function* (done) {
     try {
         var result = yield r.expr([1,2,3]).setUnion([2,4]).run();
-        result = yield result.toArray();
         assert.deepEqual(result, [1,2,3,4]);
 
         done();
@@ -373,7 +363,6 @@ It("`setUnion` should throw if no argument has been passed", function* (done) {
 It("`setIntersection` should work", function* (done) {
     try {
         var result = yield r.expr([1,2,3]).setIntersection([2,4]).run();
-        result = yield result.toArray();
         assert.deepEqual(result, [2]);
 
         done()
@@ -399,7 +388,6 @@ It("`setIntersection` should throw if no argument has been passed", function* (d
 It("`setDifference` should work", function* (done) {
     try {
         var result = yield r.expr([1,2,3]).setDifference([2,4]).run();
-        result = yield result.toArray();
         assert.deepEqual(result, [1,3]);
 
         done()
@@ -431,7 +419,6 @@ It("`getField` should work", function* (done) {
         assert.equal(result, 0);
 
         result = yield r.expr([{a:0, b:1}, {a:1}])("a").run();
-        result = yield result.toArray();
         assert.deepEqual(result, [0, 1]);
 
         done()
@@ -469,7 +456,6 @@ It("`getField` should throw if no argument has been passed", function* (done) {
 It("`hasFields` should work", function* (done) {
     try {
         var result = yield r.expr([{a: 0, b: 1, c: 2}, {a: 0, b: 10, c: 20}, {b:1, c:3}]).hasFields("a", "c").run();
-        result = yield result.toArray();
         assert.deepEqual(result, [{a: 0, b: 1, c: 2}, {a: 0, b: 10, c: 20}]);
 
         done()
@@ -495,11 +481,9 @@ It("`hasFields` should throw if no argument has been passed", function* (done) {
 It("`insertAt` should work", function* (done) {
     try {
         var result = yield r.expr([1,2,3,4]).insertAt(0, 2).run();
-        result = yield result.toArray();
         assert.deepEqual(result, [2,1,2,3,4]);
 
         result = yield r.expr([1,2,3,4]).insertAt(3, 2).run();
-        result = yield result.toArray();
         assert.deepEqual(result, [1,2,3,2,4]);
 
         done()
@@ -524,7 +508,6 @@ It("`insertAt` should throw if no argument has been passed", function* (done) {
 It("`spliceAt` should work", function* (done) {
     try {
         var result = yield r.expr([1,2,3,4]).spliceAt(1, [9, 9]).run();
-        result = yield result.toArray();
         assert.deepEqual(result, [1,9,9,2,3,4]);
 
         done()
@@ -549,11 +532,9 @@ It("`spliceAt` should throw if no argument has been passed", function* (done) {
 It("`deleteAt` should work", function* (done) {
     try {
         var result = yield r.expr([1,2,3,4]).deleteAt(1).run();
-        result = yield result.toArray();
         assert.deepEqual(result, [1,3,4]);
 
         result = yield r.expr([1,2,3,4]).deleteAt(1, 3).run();
-        result = yield result.toArray();
         assert.deepEqual(result, [1,4]);
 
         done()
@@ -591,7 +572,6 @@ It("`deleteAt` should throw if too many arguments", function* (done) {
 It("`changeAt` should work", function* (done) {
     try {
         var result = yield r.expr([1,2,3,4]).changeAt(1, 3).run();
-        result = yield result.toArray();
         assert.deepEqual(result, [1,3,3,4]);
 
         done()
@@ -616,7 +596,6 @@ It("`changeAt` should throw if no argument has been passed", function* (done) {
 It("`keys` should work", function* (done) {
     try {
         var result = yield r.expr({a:0, b:1, c:2}).keys().orderBy(r.row).run();
-        result = yield result.toArray();
         assert.deepEqual(result, ["a", "b", "c"]);
 
         done()

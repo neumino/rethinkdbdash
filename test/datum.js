@@ -28,7 +28,6 @@ It("All raws datum shoul be defined", function* (done) {
         assert.equal(result, "Hello");
 
         result = yield r.expr([0, 1, 2]).run();
-        result = yield result.toArray();
         assert.deepEqual(result, [0, 1, 2]);
 
 
@@ -143,8 +142,7 @@ It("`r.expr` should throw when setArrayLimit is too small", function* (done) {
 It("`r.expr` should work when setArrayLimit set back the value to 100000", function* (done) {
     try {
         r.setArrayLimit(100000);
-        var cursor = yield r.expr([0,1,2,3,4,5,6,8,9]).run();
-        var result = yield cursor.toArray();
+        var result = yield r.expr([0,1,2,3,4,5,6,8,9]).run();
         assert.deepEqual(result, [0,1,2,3,4,5,6,8,9])
         done();
     }

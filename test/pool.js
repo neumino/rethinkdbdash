@@ -138,7 +138,7 @@ It("Updating data to make it heavier", function* (done) {
 
 It("The pool should release a connection only when the cursor has fetch everything or get closed", function* (done) {
     try {
-        result = yield [r.db(dbName).table(tableName).run(),r.db(dbName).table(tableName).run(),r.db(dbName).table(tableName).run(),r.db(dbName).table(tableName).run(),r.db(dbName).table(tableName).run(),r.db(dbName).table(tableName).run(),r.db(dbName).table(tableName).run(),r.db(dbName).table(tableName).run(),r.db(dbName).table(tableName).run(),r.db(dbName).table(tableName).run()];
+        result = yield [r.db(dbName).table(tableName).run({cursor: true}),r.db(dbName).table(tableName).run({cursor: true}),r.db(dbName).table(tableName).run({cursor: true}),r.db(dbName).table(tableName).run({cursor: true}),r.db(dbName).table(tableName).run({cursor: true}),r.db(dbName).table(tableName).run({cursor: true}),r.db(dbName).table(tableName).run({cursor: true}),r.db(dbName).table(tableName).run({cursor: true}),r.db(dbName).table(tableName).run({cursor: true}),r.db(dbName).table(tableName).run({cursor: true})];
         assert.equal(result.length, 10);
         assert.equal(r.getPool().getAvailableLength(), 0);
         yield result[0].toArray();

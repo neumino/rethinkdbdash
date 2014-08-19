@@ -48,12 +48,10 @@ describe("", function() {
 
 
     it("Table", function(done) {
-        r.db(dbName).table(tableName).run().then(function(cursor) {
-            cursor.toArray().then(function(result) {
-                assert(result.length, 2)
-                docs = result;
-                done();
-            }).error(function(error) { done(error) });
+        r.db(dbName).table(tableName).run().then(function(result) {
+            assert(result.length, 2)
+            docs = result;
+            done();
         }).error(function(error) {
             done(error);
         })

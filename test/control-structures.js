@@ -308,8 +308,7 @@ It("`json` is not defined after a term", function* (done) {
 })
 It("`args` should work", function* (done) {
     try {
-        var cursor = yield r.args([10, 20, 30]).run();
-        var result = yield cursor.toArray(); 
+        var result = yield r.args([10, 20, 30]).run();
         assert.deepEqual(result, [10, 20, 30]);
 
         result = yield r.expr({foo: 1, bar: 2, buzz: 3}).pluck(r.args(["foo", "buzz"])).run()

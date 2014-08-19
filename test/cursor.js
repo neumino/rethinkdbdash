@@ -67,7 +67,7 @@ It("Inserting batch", function* (done) {
 })
 It("`table` should return a cursor", function* (done) {
     try {
-        cursor = yield r.db(dbName).table(tableName).run();
+        cursor = yield r.db(dbName).table(tableName).run({cursor: true});
         assert(cursor);
         assert.equal(cursor.toString(), '[object Cursor]');
 
@@ -92,7 +92,7 @@ It("`next` should return a document", function* (done) {
 })
 It("`each` should work", function* (done) {
     try {
-        cursor = yield r.db(dbName).table(tableName).run();
+        cursor = yield r.db(dbName).table(tableName).run({cursor: true});
         assert(cursor);
         var count = 0;
         cursor.each(function(err, result) {
@@ -108,7 +108,7 @@ It("`each` should work", function* (done) {
 })
 It("`each` should work - onFinish - reach end", function* (done) {
     try {
-        cursor = yield r.db(dbName).table(tableName).run();
+        cursor = yield r.db(dbName).table(tableName).run({cursor: true});
         assert(cursor);
         var count = 0;
         cursor.each(function(err, result) {
@@ -120,7 +120,7 @@ It("`each` should work - onFinish - reach end", function* (done) {
 })
 It("`each` should work - onFinish - return false", function* (done) {
     try {
-        cursor = yield r.db(dbName).table(tableName).run();
+        cursor = yield r.db(dbName).table(tableName).run({cursor: true});
         assert(cursor);
         var count = 0;
         cursor.each(function(err, result) {
@@ -139,7 +139,7 @@ It("`each` should work - onFinish - return false", function* (done) {
 
 It("`toArray` should work", function* (done) {
     try {
-        cursor = yield r.db(dbName).table(tableName).run();
+        cursor = yield r.db(dbName).table(tableName).run({cursor: true});
         result = yield cursor.toArray();
         assert.equal(result.length, numDocs);
 
@@ -151,9 +151,21 @@ It("`toArray` should work", function* (done) {
 })
 It("`toArray` should work -- with a profile", function* (done) {
     try {
-        result = yield r.db(dbName).table(tableName).run({profile: true});
+        result = yield r.db(dbName).table(tableName).run({cursor: true, profile: true});
         result = yield result.result.toArray();
         assert.equal(result.length, numDocs);
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+It("`toArray` should work with a datum", function* (done) {
+    try {
+        cursor = yield r.expr([1,2,3]).run({cursor: true});
+        result = yield cursor.toArray();
+        assert.deepEqual(result, [1,2,3]);
 
         done();
     }
@@ -164,7 +176,7 @@ It("`toArray` should work -- with a profile", function* (done) {
 
 It("`table` should return a cursor - 2", function* (done) {
     try {
-        cursor = yield r.db(dbName).table(tableName2).run();
+        cursor = yield r.db(dbName).table(tableName2).run({cursor: true});
         assert(cursor);
 
         done();
@@ -188,7 +200,7 @@ It("`next` should return a document - 2", function* (done) {
 })
 It("`next` should work -- testing common pattern", function* (done) {
     try {
-        cursor = yield r.db(dbName).table(tableName2).run();
+        cursor = yield r.db(dbName).table(tableName2).run({cursor: true});
         assert(cursor);
         var i=0;
         while(true) {
@@ -216,7 +228,7 @@ It("`next` should work -- testing common pattern", function* (done) {
 })
 It("`toArray` should work - 2", function* (done) {
     try {
-        var cursor = yield r.db(dbName).table(tableName2).run();
+        var cursor = yield r.db(dbName).table(tableName2).run({cursor: true});
         result = yield cursor.toArray();
         assert.equal(result.length, smallNumDocs);
 
@@ -229,7 +241,7 @@ It("`toArray` should work - 2", function* (done) {
 
 It("`cursor.close` should return a promise", function* (done) {
     try {
-        var cursor = yield r.db(dbName).table(tableName2).run();
+        var cursor = yield r.db(dbName).table(tableName2).run({cursor: true});
         yield cursor.close();
         done();
     }
@@ -239,8 +251,8 @@ It("`cursor.close` should return a promise", function* (done) {
 })
 It("cursor shouldn't throw if the user try to serialize it in JSON", function* (done) {
     try {
-        var cursor = yield r.db(dbName).table(tableName).run();
-        var cursor2 = yield r.db(dbName).table(tableName2).run();
+        var cursor = yield r.db(dbName).table(tableName).run({cursor: true});
+        var cursor2 = yield r.db(dbName).table(tableName2).run({cursor: true});
         assert.deepEqual(JSON.stringify("You cannot serialize to JSON a cursor. Retrieve data from the cursor with `toArray` or `next`."), JSON.stringify(cursor));
         assert.deepEqual(JSON.stringify("You cannot serialize to JSON a cursor. Retrieve data from the cursor with `toArray` or `next`."), JSON.stringify(cursor2));
         yield cursor.close();
@@ -263,7 +275,7 @@ It("Remove the field `val` in some docs", function* (done) {
         result = yield r.db(dbName).table(tableName)
             .orderBy({index: r.desc("id")}).limit(5).replace(r.row.without("val"))
             //.sample(1).replace(r.row.without("val"))
-            .run();
+            .run({cursor: true});
         assert.equal(result.replaced, 5);
         done();
     }
@@ -277,7 +289,7 @@ It("`toArray` with multiple batches - testing empty SUCCESS_COMPLETE", function*
         var connection = yield r.connect({batch_conf: 1, host: config.host, port: config.port, authKey: config.authKey});
         assert(connection);
 
-        cursor = yield r.db(dbName).table(tableName).run(connection);
+        cursor = yield r.db(dbName).table(tableName).run(connection, {cursor: true});
 
         assert(cursor);
         result = yield cursor.toArray();
@@ -293,7 +305,7 @@ It("`next` with multiple batches", function* (done) {
         var connection = yield r.connect({batch_conf: 10, host: config.host, port: config.port, authKey: config.authKey});
         assert(connection);
 
-        cursor = yield r.db(dbName).table(tableName).run(connection);
+        cursor = yield r.db(dbName).table(tableName).run(connection, {cursor: true});
 
         assert(cursor);
         while(true) {
@@ -326,7 +338,7 @@ It("`next` should error when hitting an error -- not on the first batch", functi
         var cursor = yield r.db(dbName).table(tableName)
             .orderBy({index: "id"})
             .map(r.row("val").add(1))
-            .run(connection);
+            .run(connection, {cursor: true});
 
         assert(cursor);
         while(true) {
@@ -439,9 +451,9 @@ It("`on` should work on feed", function* (done) {
         done(e);
     }
 })
-It("`on` should work on feed - a 'end' event shoul be eventually emitted on a cursor", function* (done) {
+It("`on` should work on cursor - a 'end' event shoul be eventually emitted on a cursor", function* (done) {
     try {
-        cursor = yield r.db(dbName).table(tableName2).run();
+        cursor = yield r.db(dbName).table(tableName2).run({cursor: true});
         setImmediate(function() {
             r.db(dbName).table(tableName2).update({foo: r.now()}).run();
         })

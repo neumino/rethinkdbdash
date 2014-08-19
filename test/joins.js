@@ -27,7 +27,6 @@ It("Init for `joins.js`", function* (done) {
 
         result = yield r.db(dbName).table(tableName).indexCreate("val").run();
         result = yield r.db(dbName).table(tableName).indexWait("val").run();
-        result = yield result.toArray();
         assert(result);
 
         done();
@@ -40,7 +39,6 @@ It("Init for `joins.js`", function* (done) {
 It("`innerJoin` should return -- array-array", function* (done) {
     try {
         result = yield r.expr([1,2,3]).innerJoin(r.expr([1,2,3]), function(left, right) { return left.eq(right) }).run();
-        result = yield result.toArray();
         assert.deepEqual(result, [{left:1, right:1}, {left:2, right: 2}, {left:3, right: 3}]);
         done();
     }
@@ -51,7 +49,6 @@ It("`innerJoin` should return -- array-array", function* (done) {
 It("`innerJoin` should return -- array-stream", function* (done) {
     try {
         result = yield r.expr([1,2,3]).innerJoin(r.db(dbName).table(tableName), function(left, right) { return left.eq(right("val")) }).run();
-        result = yield result.toArray();
         assert.equal(result.length, 3);
         assert(result[0].left);
         assert(result[0].right);
@@ -69,7 +66,6 @@ It("`innerJoin` should return -- array-stream", function* (done) {
 It("`innerJoin` should return -- stream-stream", function* (done) {
     try {
         result = yield r.db(dbName).table(tableName).innerJoin(r.db(dbName).table(tableName), function(left, right) { return left.eq(right) }).run();
-        result = yield result.toArray();
         assert.equal(result.length, 3);
         assert(result[0].left);
         assert(result[0].right);
@@ -115,7 +111,6 @@ It("`innerJoin` should throw if no predicate", function* (done) {
 It("`outerJoin` should return -- array-array", function* (done) {
     try {
         result = yield r.expr([1,2,3]).outerJoin(r.expr([1,2,3]), function(left, right) { return left.eq(right) }).run();
-        result = yield result.toArray();
         assert.deepEqual(result, [{left:1, right:1}, {left:2, right: 2}, {left:3, right: 3}]);
         done();
     }
@@ -126,7 +121,6 @@ It("`outerJoin` should return -- array-array", function* (done) {
 It("`outerJoin` should return -- array-stream - 1", function* (done) {
     try {
         result = yield r.expr([1,2,3,4]).outerJoin(r.db(dbName).table(tableName), function(left, right) { return left.eq(right("val")) }).run();
-        result = yield result.toArray();
         assert.equal(result.length, 4);
         assert(result[0].left);
         assert(result[0].right);
@@ -145,7 +139,6 @@ It("`outerJoin` should return -- array-stream - 1", function* (done) {
 It("`outerJoin` should return -- array-stream - 2", function* (done) {
     try {
         result = yield r.expr([1,2,3,4]).outerJoin(r.db(dbName).table(tableName), function(left, right) { return left.eq(right("val")) }).run();
-        result = yield result.toArray();
         assert.equal(result.length, 4);
         assert(result[0].left);
         assert(result[0].right);
@@ -165,7 +158,6 @@ It("`outerJoin` should return -- array-stream - 2", function* (done) {
 It("`outerJoin` should return -- stream-stream", function* (done) {
     try {
         result = yield r.db(dbName).table(tableName).outerJoin(r.db(dbName).table(tableName), function(left, right) { return left.eq(right) }).run();
-        result = yield result.toArray();
         assert.equal(result.length, 3);
         assert(result[0].left);
         assert(result[0].right);
@@ -211,7 +203,6 @@ It("`outerJoin` should throw if no predicate", function* (done) {
 It("`eqJoin` should return -- pk -- array-stream - function", function* (done) {
     try {
         var result = yield r.expr(pks).eqJoin(function(doc) { return doc; }, r.db(dbName).table(tableName)).run();
-        result = yield result.toArray();
         assert.equal(result.length, 3);
         assert(result[0].left);
         assert(result[0].right);
@@ -229,7 +220,6 @@ It("`eqJoin` should return -- pk -- array-stream - function", function* (done) {
 It("`eqJoin` should return -- pk -- array-stream - r.row", function* (done) {
     try {
         var result = yield r.expr(pks).eqJoin(r.row, r.db(dbName).table(tableName)).run();
-        result = yield result.toArray();
         assert.equal(result.length, 3);
         assert(result[0].left);
         assert(result[0].right);
@@ -248,7 +238,6 @@ It("`eqJoin` should return -- pk -- array-stream - r.row", function* (done) {
 It("`eqJoin` should return -- secondary index -- array-stream - r.row", function* (done) {
     try {
         var result = yield r.expr([1,2,3]).eqJoin(r.row, r.db(dbName).table(tableName), {index: "val"}).run();
-        result = yield result.toArray();
         assert.equal(result.length, 3);
         assert(result[0].left);
         assert(result[0].right);
@@ -322,7 +311,6 @@ It("`eqJoin` should throw if too many arguments", function* (done) {
 It("`zip` should zip stuff", function* (done) {
     try {
         var result = yield r.expr(pks).eqJoin(function(doc) { return doc; }, r.db(dbName).table(tableName)).zip().run();
-        result = yield result.toArray();
         assert.equal(result.length, 3);
         assert.equal(result[0].left, undefined);
 

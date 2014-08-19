@@ -51,7 +51,6 @@ It("`table` should work", function* (done) {
         assert.deepEqual(result,  {db:{name: dbName,type:"DB"},indexes:[],name: tableName, primary_key:"id",type:"TABLE"})
 
         result = yield r.db(dbName).table(tableName).run();
-        result = yield result.toArray();
         assert.equal(result.length, 100)
         done();
     }
@@ -62,11 +61,9 @@ It("`table` should work", function* (done) {
 It("`table` should work with useOutdated", function* (done) {
     try {
         var result = yield r.db(dbName).table(tableName, {useOutdated: true}).run();
-        result = yield result.toArray();
         assert.equal(result.length, 100)
 
         result = yield r.db(dbName).table(tableName, {useOutdated: false}).run();
-        result = yield result.toArray();
         assert.equal(result.length, 100)
 
         done();
@@ -121,13 +118,11 @@ It("`getAll` should work with multiple values - primary key", function* (done) {
         var table = r.db(dbName).table(tableName);
         var query = table.getAll.apply(table, pks);
         result = yield query.run();
-        result = yield result.toArray();
         assert.equal(result.length, 100);
 
         table = r.db(dbName).table(tableName);
         query = table.getAll.apply(table, pks.slice(0, 50));
         result = yield query.run();
-        result = yield result.toArray();
         assert.equal(result.length, 50);
 
         done();
@@ -147,7 +142,6 @@ It("`getAll` should work with multiple values - secondary index 1", function* (d
         assert.deepEqual(result, {created: 1});
 
         result = yield r.db(dbName).table(tableName).indexWait("field").pluck('index', 'ready').run();
-        result = yield result.toArray();
         assert.deepEqual(result, [{"index":"field","ready":true}]);
 
         // Yield one second -- See https://github.com/rethinkdb/rethinkdb/issues/2170
@@ -157,7 +151,6 @@ It("`getAll` should work with multiple values - secondary index 1", function* (d
         yield p;
         result = yield r.db(dbName).table(tableName).getAll(10, {index: "field"}).run();
         assert(result);
-        result = yield result.toArray();
         assert.equal(result.length, 20);
 
         done();
@@ -170,7 +163,6 @@ It("`getAll` should return native dates (and cursor should handle them)", functi
     try {
         var result = yield r.db(dbName).table(tableName).insert({field: -1, date: r.now()}).run();
         result = yield r.db(dbName).table(tableName).getAll(-1, {index: "field"}).run();
-        result = yield result.toArray();
         assert(result[0].date instanceof Date);
         // Clean for later
         result = yield r.db(dbName).table(tableName).getAll(-1, {index: "field"}).delete().run();
@@ -187,7 +179,6 @@ It("`getAll` should work with multiple values - secondary index 2", function* (d
         assert.deepEqual(result, {created: 1});
 
         result = yield r.db(dbName).table(tableName).indexWait("fieldAddOne").pluck('index', 'ready').run();
-        result = yield result.toArray();
         assert.deepEqual(result, [{"index":"fieldAddOne","ready":true}]);
 
         // Yield one second -- See https://github.com/rethinkdb/rethinkdb/issues/2170
@@ -198,7 +189,6 @@ It("`getAll` should work with multiple values - secondary index 2", function* (d
 
         result = yield r.db(dbName).table(tableName).getAll(11, {index: "fieldAddOne"}).run();
         assert(result);
-        result = yield result.toArray();
         assert.equal(result.length, 20);
 
         done();
@@ -227,7 +217,6 @@ It("`between` should wrok -- secondary index", function* (done) {
     try {
         var result = yield r.db(dbName).table(tableName).between(5, 20, {index: "fieldAddOne"}).run();
         assert(result);
-        result = yield result.toArray();
         assert.equal(result.length, 20);
 
         done();
@@ -240,7 +229,6 @@ It("`between` should wrok -- all args", function* (done) {
     try {
         var result = yield r.db(dbName).table(tableName).between(5, 20, {index: "fieldAddOne", leftBound: "open", rightBound: "closed"}).run();
         assert(result);
-        result = yield result.toArray();
         assert.equal(result.length, 20);
 
         done();
@@ -284,7 +272,6 @@ It("`filter` should work -- with an object", function* (done) {
     try {
         var result = yield r.db(dbName).table(tableName).filter({field: 10}).run();
         assert(result);
-        result = yield result.toArray();
         assert.equal(result.length, 20);
 
         done();
@@ -297,7 +284,6 @@ It("`filter` should work -- with an object -- looking for an undefined field", f
     try {
         var result = yield r.db(dbName).table(tableName).filter({nonExistingField: 10}).run();
         assert(result);
-        result = yield result.toArray();
         assert.equal(result.length, 0);
 
         done();
@@ -312,7 +298,6 @@ It("`filter` should work -- with an anonymous function", function* (done) {
     try {
         var result = yield r.db(dbName).table(tableName).filter(function(doc) { return doc("field").eq(10) }).run();
         assert(result);
-        result = yield result.toArray();
         assert.equal(result.length, 20);
 
         done();
@@ -326,7 +311,6 @@ It("`filter` should work -- default true", function* (done) {
     try {
         var result = yield r.db(dbName).table(tableName).filter({nonExistingField: 10}, {default: true}).run();
         assert(result);
-        result = yield result.toArray();
         assert.equal(result.length, 100);
 
         done();
@@ -340,7 +324,6 @@ It("`filter` should work -- default false", function* (done) {
     try {
         var result = yield r.db(dbName).table(tableName).filter({nonExistingField: 10}, {default: false}).run();
         assert(result);
-        result = yield result.toArray();
         assert.equal(result.length, 0);
 
         done();

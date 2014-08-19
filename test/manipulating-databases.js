@@ -24,7 +24,6 @@ It("Init for `manipulating-databases.js`", function* (done) {
 It("`dbList` should return a cursor", function* (done) {
     try {
         result = yield r.dbList().run();
-        result = yield result.toArray();
         assert(Array.isArray(result));
         done();
     }
@@ -97,7 +96,6 @@ It("'`db` should throw is the name contains special char'", function* (done) {
 It("`dbList` should show the database we created", function* (done) {
     try {
         result = yield r.dbList().run();
-        result = yield result.toArray();
         assert(Array.isArray(result));
 
         var found = false;
@@ -184,7 +182,6 @@ It("`dbList` is not defined after a term", function* (done) {
 It("`dbList` shouldn't show the database we dropped", function* (done) {
     try {
         result = yield r.dbList().run();
-        result = yield result.toArray();
         assert(Array.isArray(result));
 
         var found = false;

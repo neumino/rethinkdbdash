@@ -81,7 +81,6 @@ It("`run` should use the default database", function* (done) {
         assert(connection);
 
         result = yield r.tableList().run(connection);
-        result = yield result.toArray();
         assert.deepEqual(result, [tableName])
 
         done();
@@ -104,7 +103,6 @@ It("`use` should work", function* (done) {
         connection.use(dbName);
 
         result = yield r.tableList().run(connection);
-        result = yield result.toArray();
         assert.deepEqual(result, [tableName])
 
         done();
@@ -126,7 +124,6 @@ It("`reconnect` should work", function* (done) {
 
 
         result = yield r.tableList().run(connection);
-        result = yield result.toArray();
         assert.deepEqual(result, [tableName])
 
         done();
@@ -228,12 +225,12 @@ It("`run` should take an argument", function* (done) {
     }
 })
 
-It("`run` should throw on an unrecongized argument", function* (done) {
+It("`run` should throw on an unrecognized argument", function* (done) {
     try {
         result = yield r.expr(1).run(connection, {db: "db"});
     }
     catch(e) {
-        if (e.message === "Unrecognized option `db` in `run`. Available options are useOutdated <bool>, durability <string>, noreply <bool>, timeFormat <string>, groupFormat: <string>, profile <bool>, binaryFormat <bool>.") {
+        if (e.message === "Unrecognized option `db` in `run`. Available options are useOutdated <bool>, durability <string>, noreply <bool>, timeFormat <string>, groupFormat: <string>, profile <bool>, binaryFormat <bool>, cursor <bool>.") {
             done();
         }
         else{
