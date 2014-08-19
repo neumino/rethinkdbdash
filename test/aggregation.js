@@ -268,13 +268,25 @@ It("`max` should work ", function* (done) {
     }
 })
 
-It("`max` should work with a field", function* (done) {
+It("`distinct` should work", function* (done) {
     try {
-        var result = yield r.expr([{a: 2}, {a: 10}, {a: 9}]).max('a').run();
-        assert.deepEqual(result, {a: 10});
+        var result = yield r.expr([1,2,3,1,2,1,3,2,2,1,4]).distinct().orderBy(r.row).run();
+        assert.deepEqual(result, [1,2,3,4]);
         done();
     }
     catch(e) {
+        done(e);
+    }
+})
+It("`distinct` should work with an index", function* (done) {
+    try {
+        var result = yield r.db(dbName).table(tableName).distinct({index: "id"}).count().run();
+        var result2 = yield r.db(dbName).table(tableName).count().run();
+        assert.equal(result, result2);
+        done();
+    }
+    catch(e) {
+        console.log(e);
         done(e);
     }
 })
