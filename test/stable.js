@@ -14,7 +14,7 @@ function uuid() {
     return s4()+s4()+s4()+s4()+s4()+s4()+s4()+s4();
 }
 
-describe("", function() {
+describe("callback", function() {
     it("Create db", function(done) {
         dbName = uuid();
 

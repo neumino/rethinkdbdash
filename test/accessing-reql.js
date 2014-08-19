@@ -22,7 +22,7 @@ It("Testing `run` without connection", function* (done) {
         }
     }
 })
-It("Testing `run` with connection", function* (done) {
+It("Testing `run` with a closed connection", function* (done) {
     try {
         connection = yield r.connect(config);
         assert(connection);
@@ -38,7 +38,6 @@ It("Testing `run` with connection", function* (done) {
         }
     }
 })
-
 
 It("Init for `cursor.js`", function* (done) {
     try {
