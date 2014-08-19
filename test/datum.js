@@ -193,7 +193,7 @@ It("`r.expr` should work with high unicode char", function* (done) {
         done(e);
     }
 })
-It("`r.binary` should work", function* (done) {
+It("`r.binary` should work - with a buffer", function* (done) {
     try {
         var result = yield r.binary(new Buffer([1,2,3,4,5,6])).run();
         assert(result instanceof Buffer);
@@ -205,6 +205,19 @@ It("`r.binary` should work", function* (done) {
         done(e);
     }
 })
+It("`r.binary` should work - with a ReQL term", function* (done) {
+    try {
+        var result = yield r.binary(r.expr("foo")).run();
+        assert(result instanceof Buffer);
+        result = yield r.expr(result).coerceTo("STRING").run();
+        assert.equal(result, "foo");
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
 It("`r.expr` should work with binaries", function* (done) {
     try {
         var result = yield r.expr(new Buffer([1,2,3,4,5,6])).run();

@@ -3914,3 +3914,56 @@ It('Test backtrace for r.db(dbName).table(tableName).orderBy({index: "id"}).add(
         }
     }
 })
+
+
+/*
+Frames:
+[]
+
+Error:
+Expected type NUMBER but found PTYPE<BINARY> in:
+r.binary("foo").add(1)
+^^^^^^^^^^^^^^^^^^^^^^
+*/
+It('Test backtrace for r.binary("foo").add(1)', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.binary("foo").add(1).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Expected type NUMBER but found PTYPE<BINARY> in:\nr.binary(\"foo\").add(1)\n^^^^^^^^^^^^^^^^^^^^^^\n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+
+
+/*
+Frames:
+[]
+
+Error:
+Expected type NUMBER but found PTYPE<BINARY> in:
+r.binary(<Buffer>).add(1)
+^^^^^^^^^^^^^^^^^^^^^^^^^
+*/
+It('Test backtrace for r.binary(new Buffer([0,1,2,3,4])).add(1)', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.binary(new Buffer([0,1,2,3,4])).add(1).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Expected type NUMBER but found PTYPE<BINARY> in:\nr.binary(<Buffer>).add(1)\n^^^^^^^^^^^^^^^^^^^^^^^^^\n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})

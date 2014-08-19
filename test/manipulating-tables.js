@@ -117,7 +117,7 @@ It("'`tableCreate` should throw -- non valid args'", function* (done) {
         result = yield r.db(dbName).tableCreate(tableName, {nonValidArg: true}).run();
     }
     catch(e) {
-        if (e.message === 'Unrecognized option `nonValidArg` in `tableCreate`. Available options are primaryKey <string>, durability <string>, datancenter <string>.') {
+        if (e.message.match(/^Unrecognized option `nonValidArg` in `tableCreate`/)) {
             done()
         }
         else {
@@ -316,3 +316,67 @@ It("`indexDrop` should throw if no argument is passed", function* (done) {
         }
     }
 })
+It("`indexRename` should work", function* (done) {
+    var toRename = uuid();
+    var renamed = uuid();
+    var existing = uuid();
+    try {
+        var result = yield r.db(dbName).table(tableName).indexCreate(toRename).run();
+        assert.deepEqual(result, {created: 1});
+
+        var result = yield r.db(dbName).table(tableName).indexRename(toRename, renamed).run();
+        assert.deepEqual(result, {renamed: 1});
+
+        var result = yield r.db(dbName).table(tableName).indexCreate(existing).run();
+        assert.deepEqual(result, {created: 1});
+
+        var result = yield r.db(dbName).table(tableName).indexRename(renamed, existing, {overwrite: true}).run();
+        assert.deepEqual(result, {renamed: 1});
+
+
+        done()
+
+    }
+    catch(e) {
+        console.log(e);
+        done(e)
+    }
+
+})
+It("`indexRename` should not overwrite an index if not specified", function* (done) {
+    try {
+        var name = uuid();
+        var otherName = uuid();
+
+        var result = yield r.db(dbName).table(tableName).indexCreate(name).run();
+        assert.deepEqual(result, {created: 1});
+        var result = yield r.db(dbName).table(tableName).indexCreate(otherName).run();
+        assert.deepEqual(result, {created: 1});
+
+        var result = yield r.db(dbName).table(tableName).indexRename(otherName, name).run();
+    }
+    catch(e) {
+        if (e.message.match(/^Index `.*` already exists on table/)) {
+            done()
+        }
+        else {
+            done(e)
+        }
+    }
+})
+It("`indexRename` should throw -- non valid args", function* (done) {
+    try {
+        tableName = uuid();
+
+        result = yield r.db(dbName).table(tableName).indexRename("foo", "bar", {nonValidArg: true}).run();
+    }
+    catch(e) {
+        if (e.message.match(/^Unrecognized option `nonValidArg` in `indexRename`/)) {
+            done()
+        }
+        else {
+            done(e)
+        }
+    }
+})
+
