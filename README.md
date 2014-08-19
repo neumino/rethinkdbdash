@@ -12,7 +12,31 @@ the `--harmony` flag.
 ### Quick start ###
 -------------
 
-Example wih [koa](https://github.com/koajs/koa):
+- Example with promises but without generators:
+
+```js
+var r = require('rethinkdbdash')();
+r.table("foo").get("bar").run().then(function(result) {
+    console.log(JSON.stringify(result, null, 2));
+}).error(function(err) {
+    console.log(err);
+});
+```
+
+- Example with callback:
+
+```js
+var r = require('rethinkdbdash')();
+r.table("foo").get("bar").run(function(err, result) {
+    if (err) {
+        return console.log(err);
+    }
+    console.log(JSON.stringify(result, null, 2));
+})
+```
+
+
+- Example wih [koa](https://github.com/koajs/koa):
 
 ```js
 var app = require('koa')();
@@ -26,8 +50,10 @@ app.use(function *(){
 
 app.listen(3000);
 ```
+Note: You have to start node with the `--harmony` flag.
 
-Example with [bluebird](https://github.com/petkaantonov/bluebird):
+
+- Example with [bluebird](https://github.com/petkaantonov/bluebird):
 
 ```js
 var Promise = require('bluebird');
@@ -45,8 +71,8 @@ var run = Promise.coroutine(function* () {
     }
 })();
 ```
-
 Note: You have to start node with the `--harmony` flag.
+
 
 
 ### Install ###
@@ -98,44 +124,8 @@ var r = require('rethinkdbdash')(options);
 
 #### Promises ####
 
-Rethinkdbdash uses promises and not callback.
-RethinkDB >= 1.13 handles both syntaxes.
-
-Example 1 with `yield`:
-```js
-try{
-    var cursor = yield r.table("foo").run();
-    var result = yield cursor.toArray();
-    //process(result);
-}
-else {
-    console.log(e.message);
-}
-```
-
-Example 2 with `yield`:
-```js
-try{
-    var cursor = yield r.table("foo").run();
-    var row;
-    while(cursor.hasNext()) {
-        row = yield cursor.next();
-        //process(row);
-    }
-}
-else {
-    console.log(e.message);
-}
-```
-
-Example with `then` and `error`:
-```js
-r.table("foo").run().then(function(connection) {
-    //...
-}).error(function(e) {
-    console.log(e.mssage)
-})
-```
+RethinkDB official driver support both syntaxes (promises and callback) since 1.13 (used to support only callback).
+Rethinkdbdash support both syntaxes (promises and callback) since 1.14 (used to support only promises).
 
 
 #### Connection pool ####
@@ -196,15 +186,19 @@ cursor hasn't fetched everything or has been closed.
 
 #### Cursor ####
 
-Rethinkdbdash does not extend `Array` with methods and returns a cursor as long as your
-result is a sequence.
+Rethinkdbdash automatically coerce cursor to arrays. If you need a raw cursor, you can call the
+`run` command with the option `{cursor: true}`.
 
 ```js
-var cursor = yield r.expr([1, 2, 3]).run()
-console.log(JSON.stringify(cursor)) // does *not* print [1, 2, 3]
-
-var result = yield cursor.toArray();
+var result = yield r.expr([1, 2, 3]).run()
 console.log(JSON.stringify(result)) // print [1, 2, 3]
+
+// Or with a cursor
+var cursor = yield r.expr([1, 2, 3]).run({cursor: true})
+var result = yield cursor.toArray();
+
+console.log(JSON.stringify(result)) // print [1, 2, 3]
+
 ```
 
 
@@ -228,16 +222,29 @@ the query to the server if possible.
 - Maximum nesting depth
 
 The maximum nesting depth is your documents is by default 100 (instead of 20).
-You can change this setting with
+You can also change this setting with:
 
 ```js
 r.setNestingLevel(<number>)
+```
+
+
+- Maximum array length
+
+The maximum array length in your result is by default 100000. You can change this limit with
+the option `arrayLimit` in `run`, or set it per instance of `r` with:
+
+```js
+r.setArrayLimit(<number>)
 ```
 
 - Performance
 
 The tree representation of the query is built step by step and stored which avoid
 recomputing it if the query is re-run.  
+
+The code was partially optimized for v8, and is written in pure JavaScript which avoids
+errors like [issue #2839](https://github.com/rethinkdb/rethinkdb/issues/2839)
 
 - Connection
 
@@ -258,7 +265,7 @@ Update `test/config.js` if your RethinkDB instance doesn't run on the default pa
 
 Run
 ```
-mocha --harmony-generators
+npm test
 ```
 
 
