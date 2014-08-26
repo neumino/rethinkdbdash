@@ -1,5 +1,5 @@
 var config = require(__dirname+'/config.js');
-var r = require(__dirname+'/../lib')();
+var r = require(__dirname+'/../lib')(config);
 var assert = require('assert');
 
 var connection; // global connection
