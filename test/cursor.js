@@ -299,6 +299,20 @@ It("`toArray` with multiple batches - testing empty SUCCESS_COMPLETE", function*
         done(e);
     }
 })
+It("Automatic coercion from cursor to table with multiple batches", function* (done) {
+    var i=0;
+    try {
+        var connection = yield r.connect({batch_conf: 1, host: config.host, port: config.port, authKey: config.authKey});
+        assert(connection);
+
+        result = yield r.db(dbName).table(tableName).run(connection);
+        assert(result.length > 0);
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
 It("`next` with multiple batches", function* (done) {
     var i=0;
     try {
