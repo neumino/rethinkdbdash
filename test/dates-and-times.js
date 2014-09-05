@@ -63,6 +63,19 @@ It("`r.time` should return a date -- with date and time", function* (done) {
     }
 })
 
+It("`r.time` should work with r.args", function* (done) {
+    try{
+        var now = new Date();
+        var result = yield r.time(r.args([1986, 11, 3, 12, 0, 0, 'Z'])).run();
+        assert.equal(result instanceof Date, true)
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
 It("`r.time` should return a date -- just with a date", function* (done) {
     try {
         var result = yield r.time(1986, 11, 3, 'Z').run();
