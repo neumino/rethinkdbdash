@@ -91,6 +91,20 @@ It("`group` should work ", function* (done) {
         done(e);
     }
 })
+It("`group` should work with r.row", function* (done) {
+    try {
+        var result = yield r.expr([{name: "Michel", grownUp: true},{name: "Laurent", grownUp: true},
+            {name: "Sophie", grownUp: true},{name: "Luke", grownUp: false},{name: "Mino", grownUp: false}]).group(r.row('grownUp')).run();
+        result.sort();
+
+        assert.deepEqual(result, [ { "group": false, "reduction": [ { "grownUp": false, "name": "Luke" }, { "grownUp": false, "name": "Mino" } ] }, { "group": true, "reduction": [ { "grownUp": true, "name": "Michel" }, { "grownUp": true, "name": "Laurent" }, { "grownUp": true, "name": "Sophie" } ] } ])
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
 It("`group` should work with an index ", function* (done) {
 
     try {
