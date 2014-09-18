@@ -371,3 +371,15 @@ It("`http` should throw with an unrecognized option", function* (done) {
         }
     }
 })
+It("`r.uuid` should work", function* (done) {
+    try {
+        var result = yield r.uuid().run();
+        assert.equal(typeof result, 'string');
+
+        done();
+    }
+    catch(e) {
+        done(e)
+    }
+})
+
