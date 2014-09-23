@@ -3612,17 +3612,16 @@ It('Test backtrace for r.expr(1).downcase()', function* (done) {
     }
 })
 
+
 /*
 Frames:
-[ { type: 'POS', pos: 0 },
-  { type: 'POS', pos: 1 },
-  { type: 'POS', pos: 0 } ]
+[ 0, 1, 0 ]
 
 Error:
 Expected type STRING but found NUMBER in:
 r.expr(1).do(function(var_1) {
-    return r.expr(1).object(2)
-           ^^^^^^^^^          
+    return r.object(1, 2)
+                    ^  
 })
 */
 It('Test backtrace for r.expr(1).do(function(v) { return r.object(1, 2) })', function* (done) {
@@ -3632,11 +3631,11 @@ It('Test backtrace for r.expr(1).do(function(v) { return r.object(1, 2) })', fun
         done(new Error("Should have thrown an error"))
     }
     catch(e) {
-        if (e.message === "Expected type STRING but found NUMBER in:\nr.expr(1).do(function(var_1) {\n    return r.expr(1).object(2)\n           ^^^^^^^^^          \n})\n") {
+        if (e.message === "Expected type STRING but found NUMBER in:\nr.expr(1).do(function(var_1) {\n    return r.object(1, 2)\n                    ^  \n})\n") {
             done()
         }
         else {
-            console.log(e.message); done(e);
+            done(e);
         }
     }
 })
@@ -3644,13 +3643,13 @@ It('Test backtrace for r.expr(1).do(function(v) { return r.object(1, 2) })', fun
 
 /*
 Frames:
-[ { type: 'POS', pos: 0 }, { type: 'POS', pos: 1 } ]
+[ 0, 1 ]
 
 Error:
 OBJECT expects an even number of arguments (but found 1) in:
 r.expr(1).do(function(var_1) {
-    return r.expr("a").object()
-           ^^^^^^^^^^^^^^^^^^^^
+    return r.object("a")
+           ^^^^^^^^^^^^^
 })
 */
 It('Test backtrace for r.expr(1).do(function(v) { return r.object("a") })', function* (done) {
@@ -3660,14 +3659,15 @@ It('Test backtrace for r.expr(1).do(function(v) { return r.object("a") })', func
         done(new Error("Should have thrown an error"))
     }
     catch(e) {
-        if (e.message === "OBJECT expects an even number of arguments (but found 1) in:\nr.expr(1).do(function(var_1) {\n    return r.expr(\"a\").object()\n           ^^^^^^^^^^^^^^^^^^^^\n})\n") {
+        if (e.message === "OBJECT expects an even number of arguments (but found 1) in:\nr.expr(1).do(function(var_1) {\n    return r.object(\"a\")\n           ^^^^^^^^^^^^^\n})\n") {
             done()
         }
         else {
-            console.log(e.message); done(e);
+            done(e);
         }
     }
 })
+
 
 /*
 Frames:
@@ -3967,3 +3967,31 @@ It('Test backtrace for r.binary(new Buffer([0,1,2,3,4])).add(1)', function* (don
         }
     }
 })
+
+
+
+/*
+Frames:
+[]
+
+Error:
+OBJECT expects an even number of arguments (but found 3) in:
+r.object("foo", "bar", "buzz")
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+*/
+It('Test backtrace for r.object("foo", "bar", "buzz")', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.object("foo", "bar", "buzz").run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "OBJECT expects an even number of arguments (but found 3) in:\nr.object(\"foo\", \"bar\", \"buzz\")\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
