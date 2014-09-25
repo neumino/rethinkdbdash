@@ -839,7 +839,7 @@ Frames:
 
 Error:
 Expected type SEQUENCE but found FUNCTION:
-OPAQUE VALUE FUNCTION in:
+VALUE FUNCTION in:
 r.expr([1, 2, 3]).innerJoin(function(var_1, var_2) {
                             ^^^^^^^^^^^^^^^^^^^^^^^^
     return var_1.eq(var_2("bar").add(1))
@@ -854,7 +854,7 @@ It('Test backtrace for r.expr([1,2,3]).innerJoin( function(left, right) { return
         done(new Error("Should have thrown an error"))
     }
     catch(e) {
-        if (e.message === "Expected type SEQUENCE but found FUNCTION:\nOPAQUE VALUE FUNCTION in:\nr.expr([1, 2, 3]).innerJoin(function(var_1, var_2) {\n                            ^^^^^^^^^^^^^^^^^^^^^^^^\n    return var_1.eq(var_2(\"bar\").add(1))\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n}, r.db(\""+dbName+"\").table(\""+tableName+"\"))\n^                                                                                     \n") {
+        if (e.message === "Expected type SEQUENCE but found FUNCTION:\nVALUE FUNCTION in:\nr.expr([1, 2, 3]).innerJoin(function(var_1, var_2) {\n                            ^^^^^^^^^^^^^^^^^^^^^^^^\n    return var_1.eq(var_2(\"bar\").add(1))\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n}, r.db(\""+dbName+"\").table(\""+tableName+"\"))\n^                                                                                     \n") {
             done()
         }
         else {
@@ -901,7 +901,7 @@ Frames:
 
 Error:
 Expected type SEQUENCE but found FUNCTION:
-OPAQUE VALUE FUNCTION in:
+VALUE FUNCTION in:
 r.expr([1, 2, 3]).outerJoin(function(var_1, var_2) {
                             ^^^^^^^^^^^^^^^^^^^^^^^^
     return var_1.eq(var_2("bar").add(1))
@@ -916,7 +916,7 @@ It('Test backtrace for r.expr([1,2,3]).outerJoin( function(left, right) { return
         done(new Error("Should have thrown an error"))
     }
     catch(e) {
-        if (e.message === "Expected type SEQUENCE but found FUNCTION:\nOPAQUE VALUE FUNCTION in:\nr.expr([1, 2, 3]).outerJoin(function(var_1, var_2) {\n                            ^^^^^^^^^^^^^^^^^^^^^^^^\n    return var_1.eq(var_2(\"bar\").add(1))\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n}, r.db(\""+dbName+"\").table(\""+tableName+"\"))\n^                                                                                     \n") {
+        if (e.message === "Expected type SEQUENCE but found FUNCTION:\nVALUE FUNCTION in:\nr.expr([1, 2, 3]).outerJoin(function(var_1, var_2) {\n                            ^^^^^^^^^^^^^^^^^^^^^^^^\n    return var_1.eq(var_2(\"bar\").add(1))\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n}, r.db(\""+dbName+"\").table(\""+tableName+"\"))\n^                                                                                     \n") {
             done()
         }
         else {
@@ -2748,28 +2748,29 @@ It('Test backtrace for r.expr(1).do(function(boo) { return boo("bah").add(3); })
 
 /*
 Frames:
-[ { type: 'POS', pos: 0 } ]
+[ 0 ]
 
 Error:
 Expected type NUMBER but found STRING in:
 r.branch(r.expr(1).add("hello"), "Hello", "World")
          ^^^^^^^^^^^^^^^^^^^^^^
 */
-It('Test backtrace for r.branch( r.expr(1).add("hello"), "Hello", "World")', function* (done) {
+It('Test backtrace for r.branch(r.expr(1).add("hello"), "Hello", "World")', function* (done) {
     try {
         r.nextVarId=1;
-        yield r.branch( r.expr(1).add("hello"), "Hello", "World").run()
+        yield r.branch(r.expr(1).add("hello"), "Hello", "World").run()
         done(new Error("Should have thrown an error"))
     }
     catch(e) {
-        if (e.message === "Expected type NUMBER but found STRING in:\nr.branch(r.expr(1).add(\"hello\"), \"Hello\", \"World\")\n         ^^^^^^^^^^^^^^^^^^^^^^               \n") {
+        if (e.message === "Expected type NUMBER but found STRING in:\nr.branch(r.expr(1).add(\"hello\"), \"Hello\", \"World\")\n         ^^^^^^^^^^^^^^^^^^^^^^                   \n") {
             done()
         }
         else {
-            console.log(e.message); done(e);
+            done(e);
         }
     }
 })
+
 
 
 /*
@@ -3621,7 +3622,7 @@ Error:
 Expected type STRING but found NUMBER in:
 r.expr(1).do(function(var_1) {
     return r.object(1, 2)
-                    ^  
+                    ^    
 })
 */
 It('Test backtrace for r.expr(1).do(function(v) { return r.object(1, 2) })', function* (done) {
@@ -3631,7 +3632,7 @@ It('Test backtrace for r.expr(1).do(function(v) { return r.object(1, 2) })', fun
         done(new Error("Should have thrown an error"))
     }
     catch(e) {
-        if (e.message === "Expected type STRING but found NUMBER in:\nr.expr(1).do(function(var_1) {\n    return r.object(1, 2)\n                    ^  \n})\n") {
+        if (e.message === "Expected type STRING but found NUMBER in:\nr.expr(1).do(function(var_1) {\n    return r.object(1, 2)\n                    ^    \n})\n") {
             done()
         }
         else {
@@ -3711,7 +3712,7 @@ It('Test backtrace for r.random("foo", "bar")', function* (done) {
         done(new Error("Should have thrown an error"))
     }
     catch(e) {
-        if (e.message === "Expected type NUMBER but found STRING in:\nr.random(\"foo\", \"bar\")\n         ^^^^^      \n") {
+        if (e.message === "Expected type NUMBER but found STRING in:\nr.random(\"foo\", \"bar\")\n         ^^^^^        \n") {
             done()
         }
         else {
@@ -3719,6 +3720,7 @@ It('Test backtrace for r.random("foo", "bar")', function* (done) {
         }
     }
 })
+
 
 /*
 Frames:
@@ -3750,7 +3752,7 @@ Frames:
 
 Error:
 Expected type DATUM but found SEQUENCE:
-OPAQUE VALUE SEQUENCE in:
+VALUE SEQUENCE in:
 r.db("bd98452de5ea16f3572ed0d404a2e99c").table("c966dac895ef558f3dfdbfb8be003374")
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     .changes().add(2)
@@ -3763,7 +3765,7 @@ It('Test backtrace for r.db(dbName).table(tableName).changes().add(2)', function
         done(new Error("Should have thrown an error"))
     }
     catch(e) {
-        if (e.message === "Expected type DATUM but found SEQUENCE:\nOPAQUE VALUE SEQUENCE in:\nr.db(\""+dbName+"\").table(\""+tableName+"\")\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    .changes().add(2)\n    ^^^^^^^^^^       \n") {
+        if (e.message === "Expected type DATUM but found SEQUENCE:\nVALUE SEQUENCE in:\nr.db(\""+dbName+"\").table(\""+tableName+"\")\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    .changes().add(2)\n    ^^^^^^^^^^       \n") {
             done()
         }
         else {
@@ -3772,12 +3774,17 @@ It('Test backtrace for r.db(dbName).table(tableName).changes().add(2)', function
     }
 })
 
+
 /*
 Frames:
 [ 0 ]
 
 Error:
-Error in HTTP GET of ``: URL using bad/illegal format or missing URL in:
+Error in HTTP GET of ``: URL using bad/illegal format or missing URL.
+header:
+null
+body:
+null in:
 r.http("").add(2)
 ^^^^^^^^^^
 */
@@ -3788,7 +3795,7 @@ It('Test backtrace for r.http("").add(2)', function* (done) {
         done(new Error("Should have thrown an error"))
     }
     catch(e) {
-        if (e.message === "Error in HTTP GET of ``: URL using bad/illegal format or missing URL in:\nr.http(\"\").add(2)\n^^^^^^^^^^       \n") {
+        if (e.message === "Error in HTTP GET of ``: URL using bad/illegal format or missing URL.\nheader:\nnull\nbody:\nnull in:\nr.http(\"\").add(2)\n^^^^^^^^^^       \n") {
             done()
         }
         else {
@@ -3796,6 +3803,8 @@ It('Test backtrace for r.http("").add(2)', function* (done) {
         }
     }
 })
+
+
 
 /*
 Frames:
@@ -3972,21 +3981,23 @@ It('Test backtrace for r.binary(new Buffer([0,1,2,3,4])).add(1)', function* (don
 
 /*
 Frames:
-[]
+[ 0, 1 ]
 
 Error:
-OBJECT expects an even number of arguments (but found 3) in:
-r.object("foo", "bar", "buzz")
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Expected type NUMBER but found PTYPE<GEOMETRY> in:
+r.expr(1).do(function(var_1) {
+    return r.point(1, 2).add("foo")
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+})
 */
-It('Test backtrace for r.object("foo", "bar", "buzz")', function* (done) {
+It('Test backtrace for r.do(1,function( b) { return r.point(1, 2).add("foo") })', function* (done) {
     try {
         r.nextVarId=1;
-        yield r.object("foo", "bar", "buzz").run()
+        yield r.do(1,function( b) { return r.point(1, 2).add("foo") }).run()
         done(new Error("Should have thrown an error"))
     }
     catch(e) {
-        if (e.message === "OBJECT expects an even number of arguments (but found 3) in:\nr.object(\"foo\", \"bar\", \"buzz\")\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n") {
+        if (e.message === "Expected type NUMBER but found PTYPE<GEOMETRY> in:\nr.expr(1).do(function(var_1) {\n    return r.point(1, 2).add(\"foo\")\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n})\n") {
             done()
         }
         else {
@@ -3995,3 +4006,278 @@ It('Test backtrace for r.object("foo", "bar", "buzz")', function* (done) {
     }
 })
 
+
+
+/*
+Frames:
+[ 0, 1, 0 ]
+
+Error:
+Expected type ARRAY but found NUMBER in:
+r.expr(1).do(function(var_1) {
+    return r.line(1, 2).add("foo")
+           ^^^^^^^^^^^^           
+})
+*/
+It('Test backtrace for r.do(1,function( b) { return r.line(1, 2).add("foo") })', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.do(1,function( b) { return r.line(1, 2).add("foo") }).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Expected type ARRAY but found NUMBER in:\nr.expr(1).do(function(var_1) {\n    return r.line(1, 2).add(\"foo\")\n           ^^^^^^^^^^^^           \n})\n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+
+
+
+/*
+Frames:
+[ 0, 1, 0 ]
+
+Error:
+Expected type ARRAY but found NUMBER in:
+r.expr(1).do(function(var_1) {
+    return r.circle(1, 2).add("foo")
+           ^^^^^^^^^^^^^^           
+})
+*/
+It('Test backtrace for r.do(1,function( b) { return r.circle(1, 2).add("foo") })', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.do(1,function( b) { return r.circle(1, 2).add("foo") }).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Expected type ARRAY but found NUMBER in:\nr.expr(1).do(function(var_1) {\n    return r.circle(1, 2).add(\"foo\")\n           ^^^^^^^^^^^^^^           \n})\n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+
+
+/*
+Frames:
+[ 0, 1, 0 ]
+
+Error:
+Expected type ARRAY but found NUMBER in:
+r.expr(1).do(function(var_1) {
+    return r.polygon(1, 2, 3).add("foo")
+           ^^^^^^^^^^^^^^^^^^           
+})
+*/
+It('Test backtrace for r.do(1,function( b) { return r.polygon(1, 2, 3).add("foo") })', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.do(1,function( b) { return r.polygon(1, 2, 3).add("foo") }).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Expected type ARRAY but found NUMBER in:\nr.expr(1).do(function(var_1) {\n    return r.polygon(1, 2, 3).add(\"foo\")\n           ^^^^^^^^^^^^^^^^^^           \n})\n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+/*
+Frames:
+[ 0, 1, 0, 1 ]
+
+Error:
+Not a GEOMETRY pseudotype: `3` in:
+r.expr(1).do(function(var_1) {
+    return r.polygon([0, 0], [1, 1], [2, 3]).polygonSub(3).add("foo")
+                                                        ^            
+})
+*/
+It('Test backtrace for r.do(1,function( b) { return r.polygon([0,0], [1,1], [2,3]).polygonSub(3).add("foo") })', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.do(1,function( b) { return r.polygon([0,0], [1,1], [2,3]).polygonSub(3).add("foo") }).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Not a GEOMETRY pseudotype: `3` in:\nr.expr(1).do(function(var_1) {\n    return r.polygon([0, 0], [1, 1], [2, 3]).polygonSub(3).add(\"foo\")\n                                                        ^            \n})\n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+
+/*
+Frames:
+[ 0, 1, 0, 0 ]
+
+Error:
+Expected geometry of type `LineString` but found `Polygon` in:
+r.expr(1).do(function(var_1) {
+    return r.polygon([0, 0], [1, 1], [2, 3]).fill().polygonSub(3).add("foo")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^                         
+})
+*/
+It('Test backtrace for r.do(1,function( b) { return r.polygon([0,0], [1,1], [2,3]).fill().polygonSub(3).add("foo") })', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.do(1,function( b) { return r.polygon([0,0], [1,1], [2,3]).fill().polygonSub(3).add("foo") }).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Expected geometry of type `LineString` but found `Polygon` in:\nr.expr(1).do(function(var_1) {\n    return r.polygon([0, 0], [1, 1], [2, 3]).fill().polygonSub(3).add(\"foo\")\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^                         \n})\n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+
+/*
+Frames:
+[ 0, 1, 0, 1, 0 ]
+
+Error:
+Not a GEOMETRY pseudotype: `"foo"` in:
+r.expr(1).do(function(var_1) {
+    return r.polygon([0, 0], [1, 1], [2, 3]).distance(r.expr("foo").polygonSub(3)).add("foo")
+                                                      ^^^^^^^^^^^^^                          
+})
+*/
+It('Test backtrace for r.do(1,function( b) { return r.polygon([0,0], [1,1], [2,3]).distance(r.expr("foo").polygonSub(3)).add("foo") })', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.do(1,function( b) { return r.polygon([0,0], [1,1], [2,3]).distance(r.expr("foo").polygonSub(3)).add("foo") }).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Not a GEOMETRY pseudotype: `\"foo\"` in:\nr.expr(1).do(function(var_1) {\n    return r.polygon([0, 0], [1, 1], [2, 3]).distance(r.expr(\"foo\").polygonSub(3)).add(\"foo\")\n                                                      ^^^^^^^^^^^^^                          \n})\n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+/*
+Frames:
+[ 1 ]
+
+Error:
+Expected type ARRAY but found NUMBER in:
+r.db("43d3ef1b574ce3176bd8a6a573be3417").table("4428ef38de9fae93c0ca5f880a296b31")
+    .getIntersecting(r.circle(0, 1))
+                     ^^^^^^^^^^^^^^
+*/
+It('Test backtrace for r.db(dbName).table(tableName).getIntersecting(r.circle(0, 1), 3)', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.db(dbName).table(tableName).getIntersecting(r.circle(0, 1), 3).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Expected type ARRAY but found NUMBER in:\nr.db(\""+dbName+"\").table(\""+tableName+"\")\n    .getIntersecting(r.circle(0, 1))\n                     ^^^^^^^^^^^^^^ \n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+
+/*
+Frames:
+[ 1 ]
+
+Error:
+Expected type ARRAY but found NUMBER in:
+r.db("9fd8231574663499a11f93d205835f51").table("4463dfde70cea8f03266cd78cfec151d")
+    .getNearest(r.circle(0, 1))
+                ^^^^^^^^^^^^^^
+*/
+It('Test backtrace for r.db(dbName).table(tableName).getNearest(r.circle(0, 1), 3)', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.db(dbName).table(tableName).getNearest(r.circle(0, 1), 3).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Expected type ARRAY but found NUMBER in:\nr.db(\""+dbName+"\").table(\""+tableName+"\")\n    .getNearest(r.circle(0, 1))\n                ^^^^^^^^^^^^^^ \n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+
+/*
+Frames:
+[ 1 ]
+
+Error:
+Not a GEOMETRY pseudotype: `[0, 1, 3]` in:
+r.polygon([0, 0], [0, 1], [1, 1]).includes([0, 1, 3])
+                                           ^^^^^^^^^
+*/
+It('Test backtrace for r.polygon([0, 0], [0, 1], [1, 1]).includes(r.expr([0, 1, 3]))', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.polygon([0, 0], [0, 1], [1, 1]).includes(r.expr([0, 1, 3])).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Not a GEOMETRY pseudotype: `[0, 1, 3]` in:\nr.polygon([0, 0], [0, 1], [1, 1]).includes([0, 1, 3])\n                                           ^^^^^^^^^ \n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+
+/*
+Frames:
+[ 1 ]
+
+Error:
+Not a GEOMETRY pseudotype: `[0, 1, 3]` in:
+r.polygon([0, 0], [0, 1], [1, 1]).intersects([0, 1, 3])
+                                             ^^^^^^^^^
+*/
+It('Test backtrace for r.polygon([0, 0], [0, 1], [1, 1]).intersects(r.expr([0, 1, 3]))', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.polygon([0, 0], [0, 1], [1, 1]).intersects(r.expr([0, 1, 3])).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Not a GEOMETRY pseudotype: `[0, 1, 3]` in:\nr.polygon([0, 0], [0, 1], [1, 1]).intersects([0, 1, 3])\n                                             ^^^^^^^^^ \n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
