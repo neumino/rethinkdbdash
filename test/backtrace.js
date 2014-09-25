@@ -3774,12 +3774,17 @@ It('Test backtrace for r.db(dbName).table(tableName).changes().add(2)', function
     }
 })
 
+
 /*
 Frames:
 [ 0 ]
 
 Error:
-Error in HTTP GET of ``: URL using bad/illegal format or missing URL in:
+Error in HTTP GET of ``: URL using bad/illegal format or missing URL.
+header:
+null
+body:
+null in:
 r.http("").add(2)
 ^^^^^^^^^^
 */
@@ -3790,7 +3795,7 @@ It('Test backtrace for r.http("").add(2)', function* (done) {
         done(new Error("Should have thrown an error"))
     }
     catch(e) {
-        if (e.message === "Error in HTTP GET of ``: URL using bad/illegal format or missing URL in:\nr.http(\"\").add(2)\n^^^^^^^^^^       \n") {
+        if (e.message === "Error in HTTP GET of ``: URL using bad/illegal format or missing URL.\nheader:\nnull\nbody:\nnull in:\nr.http(\"\").add(2)\n^^^^^^^^^^       \n") {
             done()
         }
         else {
@@ -3798,6 +3803,8 @@ It('Test backtrace for r.http("").add(2)', function* (done) {
         }
     }
 })
+
+
 
 /*
 Frames:

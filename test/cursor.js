@@ -286,7 +286,7 @@ It("Remove the field `val` in some docs", function* (done) {
 It("`toArray` with multiple batches - testing empty SUCCESS_COMPLETE", function* (done) {
     var i=0;
     try {
-        var connection = yield r.connect({batch_conf: 1, host: config.host, port: config.port, authKey: config.authKey});
+        var connection = yield r.connect({max_batch_rows: 1, host: config.host, port: config.port, authKey: config.authKey});
         assert(connection);
 
         cursor = yield r.db(dbName).table(tableName).run(connection, {cursor: true});
@@ -302,7 +302,7 @@ It("`toArray` with multiple batches - testing empty SUCCESS_COMPLETE", function*
 It("Automatic coercion from cursor to table with multiple batches", function* (done) {
     var i=0;
     try {
-        var connection = yield r.connect({batch_conf: 1, host: config.host, port: config.port, authKey: config.authKey});
+        var connection = yield r.connect({max_batch_rows: 1, host: config.host, port: config.port, authKey: config.authKey});
         assert(connection);
 
         result = yield r.db(dbName).table(tableName).run(connection);
@@ -316,7 +316,7 @@ It("Automatic coercion from cursor to table with multiple batches", function* (d
 It("`next` with multiple batches", function* (done) {
     var i=0;
     try {
-        var connection = yield r.connect({batch_conf: 10, host: config.host, port: config.port, authKey: config.authKey});
+        var connection = yield r.connect({max_batch_rows: 10, host: config.host, port: config.port, authKey: config.authKey});
         assert(connection);
 
         cursor = yield r.db(dbName).table(tableName).run(connection, {cursor: true});
@@ -346,7 +346,7 @@ It("`next` with multiple batches", function* (done) {
 It("`next` should error when hitting an error -- not on the first batch", function* (done) {
     var i=0;
     try {
-        var connection = yield r.connect({batch_conf: 10, host: config.host, port: config.port, authKey: config.authKey});
+        var connection = yield r.connect({max_batch_rows: 10, host: config.host, port: config.port, authKey: config.authKey});
         assert(connection);
 
         var cursor = yield r.db(dbName).table(tableName)

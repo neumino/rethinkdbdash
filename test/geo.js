@@ -328,8 +328,8 @@ It("`getNearest` arity", function* (done) {
 
 It("`includes` should work", function* (done) {
     try {
-        var point1 = r.point(32.719464,-117.220406);
-        var point2 = r.point(32.725186,-117.206201);
+        var point1 = r.point(-117.220406, 32.719464);
+        var point2 = r.point(-117.206201, 32.725186);
         var result = yield r.circle(point1, 2000).includes(point2).run();
         assert(result)
         done();
@@ -356,8 +356,8 @@ It("`includes` arity", function* (done) {
 
 It("`intersects` should work", function* (done) {
     try {
-        var point1 = r.point(32.719464,-117.220406);
-        var point2 = r.point(32.725186,-117.206201);
+        var point1 = r.point(-117.220406, 32.719464);
+        var point2 = r.point(-117.206201, 32.725186);
         r.circle(point1, 2000).intersects(r.circle(point2, 2000)).run();
         assert(result)
         done();
@@ -369,8 +369,8 @@ It("`intersects` should work", function* (done) {
 It("`intersects` arity", function* (done) {
     try {
         // All points are in [0,1]x[0,1]
-        var point1 = r.point(32.719464,-117.220406);
-        var point2 = r.point(32.725186,-117.206201);
+        var point1 = r.point(-117.220406, 32.719464);
+        var point2 = r.point(-117.206201, 32.725186);
         r.circle(point1, 2000).intersects(r.circle(point2, 2000), 2, 3).run();
 
         done(new Error("Was expecting an error"));
@@ -487,7 +487,7 @@ It("`r.polygon` arity", function* (done) {
 })
 It("`polygonSub` should work", function* (done) {
     try {
-        var result = yield r.polygon([0, 0], [0, 1], [1, 1]).polygonSub(r.polygon([0.4, 0.4], [0.4, 0.5], [0.5, 0.5])).run();
+        var result = yield r.polygon([0, 0], [0, 1], [1, 1], [1, 0]).polygonSub(r.polygon([0.4, 0.4], [0.4, 0.5], [0.5, 0.5])).run();
         assert.equal(result.$reql_type$, "GEOMETRY");
         assert.equal(result.type, "Polygon");
         assert.equal(result.coordinates.length, 2); // The server will close the line
