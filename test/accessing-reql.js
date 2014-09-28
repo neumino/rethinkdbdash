@@ -312,6 +312,51 @@ It("`profile` should work", function* (done) {
     }
 })
 
+
+It("Test error message when running a query on a closed connection", function* (done) {
+    try {
+        yield connection.close();
+        yield r.expr(1).run(connection)
+    }
+    catch(e) {
+        if (e.message.match('`run` was called with a closed connection after:')) {
+            done();
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+It("Test timeout", function* (done) {
+    var server;
+    try {
+        var port = Math.floor(Math.random()*(65535-1025)+1025)
+
+        server = require('net').createServer(function(c) {
+        }).listen(port);
+
+        connection = yield r.connect({
+            port: port,
+            timeout: 1
+        });
+        done(new Error("Was expecting an error"));
+    }
+    catch(err) {
+        //close server
+        if (err.message === "Failed to connect to localhost:"+port+" in less than 1s.") {
+            done();
+        }
+        else {
+            done(err)
+        }
+    }
+})
+
+
+
+
+
 /* Since 1.13, the token is stored oustide the query, so this error shouldn't happen anymore
 It("`connection` should extend events.Emitter and emit an error if the server failed to parse the protobuf message", function* (done) {
     try{
@@ -403,17 +448,4 @@ It("`connection` should extend events.Emitter and emit an error if the server fa
 */
 
 
-It("Test error message when running a query on a closed connection", function* (done) {
-    try {
-        yield connection.close();
-        yield r.expr(1).run(connection)
-    }
-    catch(e) {
-        if (e.message.match('`run` was called with a closed connection after:')) {
-            done();
-        }
-        else {
-            done(e);
-        }
-    }
-})
+
