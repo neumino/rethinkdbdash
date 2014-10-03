@@ -10,7 +10,7 @@ var uuid = util.uuid;
 var dbName, tableName, result;
 var numDocs = 10;
 
-It("Init for `document-manipulation.js`", function* (done) {
+It("Init for `geo.js`", function* (done) {
     try {
         dbName = uuid();
         tableName = uuid();
