@@ -253,10 +253,12 @@ It("`indexCreate` should work with options", function* (done) {
         result = yield r.db(dbName).table(tableName).indexCreate("foo2", function(doc) { return doc("foo")}, {multi: true}).run();
         assert.deepEqual(result, {created: 1});
 
-        result = yield r.db(dbName).table(tableName).insert({foo: ["bar1", "bar2"]}).run()
+        yield r.db(dbName).table(tableName).indexWait().run();
+
+        result = yield r.db(dbName).table(tableName).insert({foo: ["bar1", "bar2"], buzz: 1}).run()
         assert.equal(result.inserted, 1); 
 
-        result = yield r.db(dbName).table(tableName).insert({foo: ["bar1", "bar3"]}).run()
+        result = yield r.db(dbName).table(tableName).insert({foo: ["bar1", "bar3"], buzz: 2}).run()
         assert.equal(result.inserted, 1); 
 
         result = yield r.db(dbName).table(tableName).getAll("bar1", {index: "foo"}).count().run()
@@ -279,6 +281,16 @@ It("`indexCreate` should work with options", function* (done) {
         result = yield r.db(dbName).table(tableName).getAll("bar3", {index: "foo1"}).count().run()
         assert.equal(result, 1)
         result = yield r.db(dbName).table(tableName).getAll("bar3", {index: "foo2"}).count().run()
+        assert.equal(result, 1)
+
+
+        // Test when the function is wrapped in an array
+        result = yield r.db(dbName).table(tableName).indexCreate("buzz", [r.row("buzz")]).run();
+        assert.deepEqual(result, {created: 1});
+
+        yield r.db(dbName).table(tableName).indexWait().run();
+
+        result = yield r.db(dbName).table(tableName).getAll([1], {index: "buzz"}).count().run()
         assert.equal(result, 1)
 
         done()
