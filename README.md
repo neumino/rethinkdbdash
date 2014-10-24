@@ -91,7 +91,7 @@ While rethinkdbdash uses almost the same syntax as the official driver, there ar
 a few differences.
 
 This section references all the differences. For all the other methods not
-mentionned here, please refer to the
+mentioned here, please refer to the
 [official driver's documentation](http://www.rethinkdb.com/api/javascript/).
 
 
@@ -143,7 +143,7 @@ You can provide options for the connection pool with the following syntax:
 var r = require('rethinkdbdash')({
     min: <number>, // minimum number of connections in the pool, default 50
     max: <number>, // maximum number of connections in the pool, default 1000
-    timeout: <number>, // number of seconds for a connections to be opened, default 20
+    timeout: <number>, // number of seconds for a connection to be opened, default 20
     bufferSize: <number>, // minimum number of connections available in the pool, default 50
     timeoutError: <number>, // wait time before reconnecting in case of an error (in ms), default 1000
     timeoutGb: <number>, // how long the pool keep a connection that hasn't been used (in ms), default 60*60*1000
