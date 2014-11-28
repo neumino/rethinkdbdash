@@ -111,10 +111,9 @@ var r = require('rethinkdbdash')(options);
 
 ```js
 {
-    min: <number>, // minimum number of connections in the pool, default 50
+    buffer: <number>, // minimum number of connections available in the pool, default 50
     max: <number>, // maximum number of connections in the pool, default 1000
     timeout: <number>, // number of seconds for a connections to be opened, default 20
-    bufferSize: <number>, // minimum number of connections available in the pool, default 50
     timeoutError: <number>, // wait time before reconnecting in case of an error (in ms), default 1000
     timeoutGb: <number>, // how long the pool keep a connection that hasn't been used (in ms), default 60*60*1000
     maxExponent: <number>, // the maximum timeout before trying to reconnect is 2^maxExponent*timeoutError, default 6 (~60 seconds for the longest wait)
@@ -141,10 +140,9 @@ var r = require('rethinkdbdash')({pool: false});
 You can provide options for the connection pool with the following syntax:
 ```js
 var r = require('rethinkdbdash')({
-    min: <number>, // minimum number of connections in the pool, default 50
+    buffer: <number>, // minimum number of connections available in the pool, default 50
     max: <number>, // maximum number of connections in the pool, default 1000
     timeout: <number>, // number of seconds for a connections to be opened, default 20
-    bufferSize: <number>, // minimum number of connections available in the pool, default 50
     timeoutError: <number>, // wait time before reconnecting in case of an error (in ms), default 1000
     timeoutGb: <number>, // how long the pool keep a connection that hasn't been used (in ms), default 60*60*1000
     maxExponent: <number>, // the maximum timeout before trying to reconnect is 2^maxExponent*timeoutError, default 6 (~60 seconds for the longest wait)
