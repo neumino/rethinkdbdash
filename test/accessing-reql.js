@@ -1,6 +1,6 @@
 var config = require(__dirname+'/config.js');
 var r = require(__dirname+'/../lib')({pool: false});
-var util = require(__dirname+'/util.js');
+var util = require(__dirname+'/util/common.js');
 var assert = require('assert');
 
 var uuid = util.uuid;

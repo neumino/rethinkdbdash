@@ -1,6 +1,6 @@
 var config = require(__dirname+'/config.js');
 var r = require(__dirname+'/../lib')({pool: false});
-var util = require(__dirname+'/util.js');
+var util = require(__dirname+'/util/common.js');
 var assert = require('assert');
 var Promise = require('bluebird');
 
@@ -11,7 +11,6 @@ var uuid = util.uuid;
 var dbName, tableName, result, pks;
 
 var options = {
-    min: 2,
     max: 10,
     buffer: 2,
     host: config.host,
@@ -164,8 +163,8 @@ It("The pool should shrink if a connection is not used for some time", function*
         assert.deepEqual(result, [1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
 
         setTimeout(function() {
-            assert.equal(r.getPool().getAvailableLength(), options.min)
-            assert.equal(r.getPool().getLength(), options.min)
+            assert.equal(r.getPool().getAvailableLength(), options.buffer)
+            assert.equal(r.getPool().getLength(), options.buffer)
             done()
         },400)
     }
@@ -229,7 +228,6 @@ It("If the pool is drained, it should reject queries", function* (done) {
         r.getPool().drain();
 
         var result = yield r.expr(1).run();
-        console.log(result);
         done(new Error("Was expecting an error"));
     }
     catch(e) {
@@ -241,6 +239,30 @@ It("If the pool is drained, it should reject queries", function* (done) {
         }
     }
 });
+
+It("`drain` should work in case of failures", function* (done) {
+    try {
+        r = r.createPool({
+            port: 80, // non valid port
+            silent: true,
+            timeoutError: 100
+        });
+        var pool = r.getPool();
+        // Sleep 1 sec
+        yield new Promise(function(resolve, reject) { setTimeout(resolve, 150) });
+        pool.drain();
+
+        // timeoutReconnect should have been canceled
+        assert.equal(pool.timeoutReconnect, null);
+        pool.options.silent = false;
+        yield new Promise(function(resolve, reject) { setTimeout(resolve, 1000) });
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+});
+
 
 /*
 It("The pool should remove a connection if it errored", function* (done) {
