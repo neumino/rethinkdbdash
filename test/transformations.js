@@ -238,6 +238,55 @@ It("`orderBy` should throw if no argument has been passed", function* (done) {
         }
     }
 })
+It("`orderBy` should not wrap on r.asc", function* (done) {
+    try {
+        result = yield r.expr([{a:23}, {a:10}, {a:0}, {a:100}]).orderBy(r.asc(r.row("a"))).run();
+        assert.deepEqual(result, [{a:0}, {a:10}, {a:23}, {a:100}]);
+
+        done();
+    }
+    catch(e) {
+        console.log(e);
+        done(e);
+    }
+})
+
+It("`orderBy` should not wrap on r.desc", function* (done) {
+    try {
+        result = yield r.expr([{a:23}, {a:10}, {a:0}, {a:100}]).orderBy(r.desc(r.row("a"))).run();
+        assert.deepEqual(result, [{a:100}, {a:23}, {a:10}, {a:0} ]);
+        done();
+    }
+    catch(e) {
+        console.log(e);
+        done(e);
+    }
+})
+It("r.desc should work", function* (done) {
+    try {
+        result = yield r.expr([{a:23}, {a:10}, {a:0}, {a:100}]).orderBy(r.desc("a")).run();
+        assert.deepEqual(result, [{a:100}, {a:23}, {a:10}, {a:0} ]);
+        done();
+    }
+    catch(e) {
+        console.log(e);
+        done(e);
+    }
+})
+It("r.asc should work", function* (done) {
+    try {
+        result = yield r.expr([{a:23}, {a:10}, {a:0}, {a:100}]).orderBy(r.asc("a")).run();
+        assert.deepEqual(result, [{a:0}, {a:10}, {a:23}, {a:100}]);
+        done();
+    }
+    catch(e) {
+        console.log(e);
+        done(e);
+    }
+})
+
+
+
 It("`desc` is not defined after a term", function* (done) {
     try {
         result = yield r.expr(1).desc("foo").run();
