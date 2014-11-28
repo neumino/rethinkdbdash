@@ -4281,3 +4281,62 @@ It('Test backtrace for r.polygon([0, 0], [0, 1], [1, 1]).intersects(r.expr([0, 1
         }
     }
 })
+
+
+
+/*
+Frames:
+[ 0 ]
+
+Error:
+Expected type DATUM but found SELECTION:
+SELECTION ON table(bbbe68e9a13071ae0c579471d1e30f45) in:
+r.db("92cc9fb8833587dcb7e02a62bdf53145").table("bbbe68e9a13071ae0c579471d1e30f45")
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    .orderBy(r.desc("foo")).add(1)
+    ^^^^^^^^^^^^^^^^^^^^^^^
+*/
+It('Test backtrace for r.db(dbName).table(tableName).orderBy(r.desc("foo")).add(1)', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.db(dbName).table(tableName).orderBy(r.desc("foo")).add(1).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Expected type DATUM but found SELECTION:\nSELECTION ON table("+tableName+") in:\nr.db(\""+dbName+"\").table(\""+tableName+"\")\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    .orderBy(r.desc(\"foo\")).add(1)\n    ^^^^^^^^^^^^^^^^^^^^^^^       \n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+/*
+Frames:
+[ 0 ]
+
+Error:
+Expected type DATUM but found SELECTION:
+SELECTION ON table(0488a0abab5f89bd2de2cbf816649aa3) in:
+r.db("7af5e5289c00f3ea521a3859c666f03c").table("0488a0abab5f89bd2de2cbf816649aa3")
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    .orderBy(r.asc("foo")).add(1)
+    ^^^^^^^^^^^^^^^^^^^^^^
+*/
+It('Test backtrace for r.db(dbName).table(tableName).orderBy(r.asc("foo")).add(1)', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.db(dbName).table(tableName).orderBy(r.asc("foo")).add(1).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Expected type DATUM but found SELECTION:\nSELECTION ON table("+tableName+") in:\nr.db(\""+dbName+"\").table(\""+tableName+"\")\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    .orderBy(r.asc(\"foo\")).add(1)\n    ^^^^^^^^^^^^^^^^^^^^^^       \n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
