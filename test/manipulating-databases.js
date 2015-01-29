@@ -37,7 +37,7 @@ It("'`dbCreate` should create a database'", function* (done) {
         dbName = uuid(); // export to the global scope
 
         result = yield r.dbCreate(dbName).run();
-        assert.deepEqual(result, {created:1});
+        assert.equal(result.dbs_created, 1);
 
         done();
     }
@@ -116,7 +116,7 @@ It("`dbList` should show the database we created", function* (done) {
 It("`dbDrop` should drop a table", function* (done) {
     try {
         result = yield r.dbDrop(dbName).run();
-        assert.deepEqual(result, {dropped:1});
+        assert.deepEqual(result.dbs_dropped, 1);
 
         done();
     }

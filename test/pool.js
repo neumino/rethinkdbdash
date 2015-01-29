@@ -96,10 +96,10 @@ It("Init for `pool.js`", function* (done) {
         tableName = uuid();
 
         result = yield r.dbCreate(dbName).run();
-        assert.deepEqual(result, {created:1});
+        assert.equal(result.dbs_created, 1);
 
         result = yield r.db(dbName).tableCreate(tableName).run();
-        assert.deepEqual(result, {created:1});
+        assert.equal(result.tables_created, 1);
 
         result = yield r.db(dbName).table(tableName).insert(eval('['+new Array(10000).join('{}, ')+'{}]')).run();
         assert.equal(result.inserted, 10000);

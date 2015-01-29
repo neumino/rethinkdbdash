@@ -16,10 +16,10 @@ It("Init for `geo.js`", function* (done) {
         tableName = uuid();
 
         result = yield r.dbCreate(dbName).run();
-        assert.deepEqual(result, {created:1});
+        assert.equal(result.dbs_created, 1);
 
         result = yield r.db(dbName).tableCreate(tableName).run();
-        assert.deepEqual(result, {created:1});
+        assert.equal(result.tables_created, 1);
 
         result = yield r.db(dbName).table(tableName).indexCreate("location", {geo: true}).run();
         result = yield r.db(dbName).table(tableName).indexWait("location").run();

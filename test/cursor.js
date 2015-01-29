@@ -24,9 +24,9 @@ It("Init for `cursor.js`", function* (done) {
         tableName2 = uuid(); // small table to test success sequence
 
         result = yield r.dbCreate(dbName).run()
-        assert.deepEqual(result, {created:1});
-        result = yield [r.db(dbName).tableCreate(tableName).run(), r.db(dbName).tableCreate(tableName2).run()]
-        assert.deepEqual(result, [{created:1}, {created:1}]);
+        assert.equal(result.dbs_created, 1);
+        result = yield [r.db(dbName).tableCreate(tableName)('tables_created').run(), r.db(dbName).tableCreate(tableName2)('tables_created').run()]
+        assert.deepEqual(result, [1, 1]);
         done();
     }
     catch(e) {

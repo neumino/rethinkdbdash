@@ -15,10 +15,10 @@ It("Init for backtraces", function* (done) {
         tableName = uuid();
 
         result = yield r.dbCreate(dbName).run();
-        assert.deepEqual(result, {created:1});
+        assert.equal(result.dbs_created, 1);
 
         result = yield r.db(dbName).tableCreate(tableName).run();
-        assert.deepEqual(result, {created:1});
+        assert.equal(result.tables_created, 1);
 
         result = yield r.db(dbName).table(tableName).insert(eval('['+new Array(100).join('{}, ')+'{}]')).run();
         assert.equal(result.inserted, 100);
@@ -765,9 +765,9 @@ Frames:
 [ 1 ]
 
 Error:
-Expected type DATUM but found TABLE:
-table("b8fa3b904a14980f85331232001b56c6") in:
-r.db("b0a7a9647877bf2ff7b42aad5ff5449a").table("b8fa3b904a14980f85331232001b56c6")
+Expected type DATUM but found TABLE_SLICE:
+SELECTION ON table(a163b9372202a469fa7485f6c20b9f4f) in:
+r.db("8bd65d3ca931f3587cc5f3acee0e9f6d").table("a163b9372202a469fa7485f6c20b9f4f")
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     .between(2, 3, {
     ^^^^^^^^^^^^^^^^
@@ -785,11 +785,11 @@ It('Test backtrace for r.db(dbName).table(tableName).between(2, 3, { index: "foo
         done(new Error("Should have thrown an error"))
     }
     catch(e) {
-        if (e.message === "Expected type DATUM but found TABLE:\ntable(\""+tableName+"\") in:\nr.db(\""+dbName+"\").table(\""+tableName+"\")\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    .between(2, 3, {\n    ^^^^^^^^^^^^^^^^\n        index: \"foo\"\n        ^^^^^^^^^^^^\n    }).do(function(var_1) {\n    ^^                     \n        return var_1.add(3)\n    })\n") {
+        if (e.message === "Expected type DATUM but found TABLE_SLICE:\nSELECTION ON table("+tableName+") in:\nr.db(\""+dbName+"\").table(\""+tableName+"\")\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    .between(2, 3, {\n    ^^^^^^^^^^^^^^^^\n        index: \"foo\"\n        ^^^^^^^^^^^^\n    }).do(function(var_1) {\n    ^^                     \n        return var_1.add(3)\n    })\n") {
             done()
         }
         else {
-            console.log(e.message); done(e);
+            done(e);
         }
     }
 })
@@ -1665,28 +1665,29 @@ It('Test backtrace for r.expr([1,2,3]).setIntersection("foo").add("Hello")', fun
 
 /*
 Frames:
-[ { type: 'POS', pos: 0 } ]
+[ 0 ]
 
 Error:
-Cannot perform get_field on a non-object non-sequence `1` in:
+Cannot perform bracket on a non-object non-sequence `1` in:
 r.expr([1, 2, 3])("foo").add("Hello")
 ^^^^^^^^^^^^^^^^^^^^^^^^
 */
-It('Test backtrace for r.expr([1,2,3])("foo").add("Hello")', function* (done) {
+It('Test backtrace for r.expr([1, 2, 3])("foo").add("Hello")', function* (done) {
     try {
         r.nextVarId=1;
-        yield r.expr([1,2,3])("foo").add("Hello").run()
+        yield r.expr([1, 2, 3])("foo").add("Hello").run()
         done(new Error("Should have thrown an error"))
     }
     catch(e) {
-        if (e.message === "Cannot perform get_field on a non-object non-sequence `1` in:\nr.expr([1, 2, 3])(\"foo\").add(\"Hello\")\n^^^^^^^^^^^^^^^^^^^^^^^^             \n") {
+        if (e.message === "Cannot perform bracket on a non-object non-sequence `1` in:\nr.expr([1, 2, 3])(\"foo\").add(\"Hello\")\n^^^^^^^^^^^^^^^^^^^^^^^^             \n") {
             done()
         }
         else {
-            console.log(e.message); done(e);
+            done(e);
         }
     }
 })
+
 
 
 /*
@@ -1823,28 +1824,29 @@ It('Test backtrace for r.expr([1,2,3]).changeAt("foo", 2).add("Hello")', functio
 
 /*
 Frames:
-[ { type: 'POS', pos: 0 } ]
+[ 0, 0 ]
 
 Error:
-Expected type OBJECT but found ARRAY in:
+Cannot call `keys` on objects of type `ARRAY` in:
 r.expr([1, 2, 3]).keys().add("Hello")
-^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^
 */
-It('Test backtrace for r.expr([1,2,3]).keys().add("Hello")', function* (done) {
+It('Test backtrace for  r.expr([1,2,3]).keys().add("Hello")', function* (done) {
     try {
         r.nextVarId=1;
-        yield r.expr([1,2,3]).keys().add("Hello").run()
+        yield  r.expr([1,2,3]).keys().add("Hello").run()
         done(new Error("Should have thrown an error"))
     }
     catch(e) {
-        if (e.message === "Expected type OBJECT but found ARRAY in:\nr.expr([1, 2, 3]).keys().add(\"Hello\")\n^^^^^^^^^^^^^^^^^^^^^^^^             \n") {
+        if (e.message === "Cannot call `keys` on objects of type `ARRAY` in:\nr.expr([1, 2, 3]).keys().add(\"Hello\")\n^^^^^^^^^^^^^^^^^                    \n") {
             done()
         }
         else {
-            console.log(e.message); done(e);
+            done(e);
         }
     }
 })
+
 
 
 /*
@@ -2718,33 +2720,32 @@ It('Test backtrace for r.now().toEpochTime().add(true)', function* (done) {
 
 /*
 Frames:
-[ { type: 'POS', pos: 0 },
-  { type: 'POS', pos: 1 },
-  { type: 'POS', pos: 0 },
-  { type: 'POS', pos: 0 } ]
+[ 0, 1, 0, 0 ]
 
 Error:
-Cannot perform get_field on a non-object non-sequence `1` in:
+Cannot perform bracket on a non-object non-sequence `1` in:
 r.expr(1).do(function(var_1) {
     return var_1("bah").add(3)
            ^^^^^              
 })
 */
-It('Test backtrace for r.expr(1).do(function(boo) { return boo("bah").add(3); })', function* (done) {
+It('Test backtrace for r.expr(1).do(function(var_1) { return var_1("bah").add(3) }) ', function* (done) {
     try {
         r.nextVarId=1;
-        yield r.expr(1).do(function(boo) { return boo("bah").add(3); }).run()
+        yield r.expr(1).do(function(var_1) { return var_1("bah").add(3) }) .run()
         done(new Error("Should have thrown an error"))
     }
     catch(e) {
-        if (e.message === "Cannot perform get_field on a non-object non-sequence `1` in:\nr.expr(1).do(function(var_1) {\n    return var_1(\"bah\").add(3)\n           ^^^^^              \n})\n") {
+        if (e.message === "Cannot perform bracket on a non-object non-sequence `1` in:\nr.expr(1).do(function(var_1) {\n    return var_1(\"bah\").add(3)\n           ^^^^^              \n})\n") {
             done()
         }
         else {
-            console.log(e.message); done(e);
+            done(e);
         }
     }
 })
+
+
 
 /*
 Frames:
@@ -3055,20 +3056,22 @@ It('Test backtrace for r.db(dbName).table(tableName).replace({a:1}, {nonValid:tr
 Frames:
 []
 
+
+/*
+Frames:
+[ 'durability' ]
+
 Error:
 Durability option `softt` unrecognized (options are "hard" and "soft") in:
-r.db("5d7b30df7dbc84066b5d408ae5c83a2e").table("375d7c3c7453e93ff2ed124d468a24cc")
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+r.db("0fbd7374d30a23284bc64625f9b6838a").table("5429869da70a92a5e495ed4989e40e30")
     .replace({
-    ^^^^^^^^^^
         a: 1
-        ^^^^
     }, {
-    ^^^^
+       ^
         durability: "softt"
         ^^^^^^^^^^^^^^^^^^^
     })
-    ^^
+    ^
 */
 It('Test backtrace for r.db(dbName).table(tableName).replace({a:1}, {durability: "softt"})', function* (done) {
     try {
@@ -3077,14 +3080,15 @@ It('Test backtrace for r.db(dbName).table(tableName).replace({a:1}, {durability:
         done(new Error("Should have thrown an error"))
     }
     catch(e) {
-        if (e.message === "Durability option `softt` unrecognized (options are \"hard\" and \"soft\") in:\nr.db(\""+dbName+"\").table(\""+tableName+"\")\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    .replace({\n    ^^^^^^^^^^\n        a: 1\n        ^^^^\n    }, {\n    ^^^^\n        durability: \"softt\"\n        ^^^^^^^^^^^^^^^^^^^\n    })\n    ^^\n") {
+        if (e.message === "Durability option `softt` unrecognized (options are \"hard\" and \"soft\") in:\nr.db(\""+dbName+"\").table(\""+tableName+"\")\n    .replace({\n        a: 1\n    }, {\n       ^\n        durability: \"softt\"\n        ^^^^^^^^^^^^^^^^^^^\n    })\n    ^ \n") {
             done()
         }
         else {
-            console.log(e.message); done(e);
+            done(e);
         }
     }
 })
+
 
 
 /*
@@ -3676,17 +3680,21 @@ Frames:
 
 Error:
 Expected type NUMBER but found STRING in:
-r.random(2, 3).sub("foo")
-^^^^^^^^^^^^^^^^^^^^^^^^^
+r.random(1, 2, {
+^^^^^^^^^^^^^^^^
+    float: true
+    ^^^^^^^^^^^
+}).sub("foo")
+^^^^^^^^^^^^^
 */
-It('Test backtrace for r.random(2, 3, {float: true}).sub("foo")', function* (done) {
+It('Test backtrace for r.random(1,2,{float: true}).sub("foo")', function* (done) {
     try {
         r.nextVarId=1;
-        yield r.random(2, 3, {float: true}).sub("foo").run()
+        yield r.random(1,2,{float: true}).sub("foo").run()
         done(new Error("Should have thrown an error"))
     }
     catch(e) {
-        if (e.message === "Expected type NUMBER but found STRING in:\nr.random(2, 3).sub(\"foo\")\n^^^^^^^^^^^^^^^^^^^^^^^^^\n") {
+        if (e.message === "Expected type NUMBER but found STRING in:\nr.random(1, 2, {\n^^^^^^^^^^^^^^^^\n    float: true\n    ^^^^^^^^^^^\n}).sub(\"foo\")\n^^^^^^^^^^^^^\n") {
             done()
         }
         else {
@@ -3860,13 +3868,14 @@ It('Test backtrace for r.do(1,function( b) { return b.add("foo") })', function* 
 
 
 /*
+Broken backtrace, see https://github.com/rethinkdb/rethinkdb/issues/3689
 Frames:
 [ 0 ]
 
 Error:
 Expected type DATUM but found SELECTION:
-SELECTION ON table(a93bd2f48cbc4a14d2601c48de445ba7) in:
-r.db("650f01d24677c2284a5a066318f2ab7f").table("a93bd2f48cbc4a14d2601c48de445ba7")
+SELECTION ON table(4c73c8ff60ce03ce66aedf52832bac20) in:
+r.db("1335c6baaaed71ecff52b82776fcc926").table("4c73c8ff60ce03ce66aedf52832bac20")
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     .between("foo", "bar", {
     ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -3893,13 +3902,14 @@ It('Test backtrace for r.db(dbName).table(tableName).between("foo", "bar", {inde
 
 
 /*
+// Note: Buggy? It should be SELECTION, not TABLE_SLICE
 Frames:
 [ 0 ]
 
 Error:
-Expected type DATUM but found SELECTION:
-SELECTION ON table(ca27693ec37d32babd9a09a6d4ef2e97) in:
-r.db("850424174ad32c1883d03448c857588b").table("ca27693ec37d32babd9a09a6d4ef2e97")
+Expected type DATUM but found TABLE_SLICE:
+SELECTION ON table(d6063464b40e094f48ec13bbee46d457) in:
+r.db("bdff9659bb18007d268d810929df5d90").table("d6063464b40e094f48ec13bbee46d457")
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     .orderBy({
     ^^^^^^^^^^
@@ -3915,7 +3925,7 @@ It('Test backtrace for r.db(dbName).table(tableName).orderBy({index: "id"}).add(
         done(new Error("Should have thrown an error"))
     }
     catch(e) {
-        if (e.message === "Expected type DATUM but found SELECTION:\nSELECTION ON table("+tableName+") in:\nr.db(\""+dbName+"\").table(\""+tableName+"\")\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    .orderBy({\n    ^^^^^^^^^^\n        index: \"id\"\n        ^^^^^^^^^^^\n    }).add(1)\n    ^^       \n") {
+        if (e.message === "Expected type DATUM but found TABLE_SLICE:\nSELECTION ON table("+tableName+") in:\nr.db(\""+dbName+"\").table(\""+tableName+"\")\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    .orderBy({\n    ^^^^^^^^^^\n        index: \"id\"\n        ^^^^^^^^^^^\n    }).add(1)\n    ^^       \n") {
             done()
         }
         else {
@@ -3923,6 +3933,7 @@ It('Test backtrace for r.db(dbName).table(tableName).orderBy({index: "id"}).add(
         }
     }
 })
+
 
 
 /*
@@ -4332,6 +4343,334 @@ It('Test backtrace for r.db(dbName).table(tableName).orderBy(r.asc("foo")).add(1
     }
     catch(e) {
         if (e.message === "Expected type DATUM but found SELECTION:\nSELECTION ON table("+tableName+") in:\nr.db(\""+dbName+"\").table(\""+tableName+"\")\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    .orderBy(r.asc(\"foo\")).add(1)\n    ^^^^^^^^^^^^^^^^^^^^^^       \n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+
+/*
+Frames:
+[ 0 ]
+
+Error:
+Expected type NUMBER but found STRING in:
+r.range("foo")
+        ^^^^^
+*/
+It('Test backtrace for r.range("foo")', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.range("foo").run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Expected type NUMBER but found STRING in:\nr.range(\"foo\")\n        ^^^^^ \n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+
+/*
+Frames:
+[ 1 ]
+
+Error:
+Expected type DATUM but found SEQUENCE:
+VALUE SEQUENCE in:
+r.range(1, 10).do(function(var_1) {
+^^^^^^^^^^^^^^                     
+    return var_1.add(4)
+})
+*/
+It('Test backtrace for r.range(1,10).do(function(x) { return x.add(4) })', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.range(1,10).do(function(x) { return x.add(4) }).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Expected type DATUM but found SEQUENCE:\nVALUE SEQUENCE in:\nr.range(1, 10).do(function(var_1) {\n^^^^^^^^^^^^^^                     \n    return var_1.add(4)\n})\n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+
+
+/*
+Frames:
+[ 1, 0 ]
+
+Error:
+Expected type DATUM but found SEQUENCE:
+VALUE SEQUENCE in:
+r.range(1, 10).toJSON().do(function(var_1) {
+^^^^^^^^^^^^^^                              
+    return var_1.add(4)
+})
+*/
+It('Test backtrace for r.range(1,10).toJSON().do(function(x) { return x.add(4) })', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.range(1,10).toJSON().do(function(x) { return x.add(4) }).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Expected type DATUM but found SEQUENCE:\nVALUE SEQUENCE in:\nr.range(1, 10).toJSON().do(function(var_1) {\n^^^^^^^^^^^^^^                              \n    return var_1.add(4)\n})\n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+
+/*
+Frames:
+[ 0, 1 ]
+
+Error:
+Expected type NUMBER but found OBJECT in:
+r.db("0bf896ead3b69f218ceff0de67476afe").table("a382350695a78865de1505c44c481223")
+    .config().do(function(var_1) {
+        return var_1.add(4)
+               ^^^^^^^^^^^^
+    })
+*/
+It('Test backtrace for r.db(dbName).table(tableName).config().do(function(x) { return x.add(4) })', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.db(dbName).table(tableName).config().do(function(x) { return x.add(4) }).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Expected type NUMBER but found OBJECT in:\nr.db(\""+dbName+"\").table(\""+tableName+"\")\n    .config().do(function(var_1) {\n        return var_1.add(4)\n               ^^^^^^^^^^^^\n    })\n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+
+
+/*
+Frames:
+[ 0, 1 ]
+
+Error:
+Expected type NUMBER but found OBJECT in:
+r.db("c38ab783cfde80ea7ecf4db42eb942a0").table("7d81632cf83797a5b65a5f2b2adb2c8a")
+    .status().do(function(var_1) {
+        return var_1.add(4)
+               ^^^^^^^^^^^^
+    })
+*/
+It('Test backtrace for r.db(dbName).table(tableName).status().do(function(x) { return x.add(4) })', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.db(dbName).table(tableName).status().do(function(x) { return x.add(4) }).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Expected type NUMBER but found OBJECT in:\nr.db(\""+dbName+"\").table(\""+tableName+"\")\n    .status().do(function(var_1) {\n        return var_1.add(4)\n               ^^^^^^^^^^^^\n    })\n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+
+
+/*
+Frames:
+[ 0, 1 ]
+
+Error:
+Expected type NUMBER but found OBJECT in:
+r.db("6c42577f50299d1e88bf57acd87ba5ea").table("031bd87d16ecf4b8d295dd6960fd4800")
+    .wait().do(function(var_1) {
+        return var_1.add(4)
+               ^^^^^^^^^^^^
+    })
+*/
+It('Test backtrace for r.db(dbName).table(tableName).wait().do(function(x) { return x.add(4) })', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.db(dbName).table(tableName).wait().do(function(x) { return x.add(4) }).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Expected type NUMBER but found OBJECT in:\nr.db(\""+dbName+"\").table(\""+tableName+"\")\n    .wait().do(function(var_1) {\n        return var_1.add(4)\n               ^^^^^^^^^^^^\n    })\n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+
+/*
+Frames:
+[ 0, 1 ]
+
+Error:
+Expected type NUMBER but found OBJECT in:
+r.wait().do(function(var_1) {
+    return var_1.add(4)
+           ^^^^^^^^^^^^
+})
+*/
+It('Test backtrace for r.wait().do(function(x) { return x.add(4) })', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.wait().do(function(x) { return x.add(4) }).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Expected type NUMBER but found OBJECT in:\nr.wait().do(function(var_1) {\n    return var_1.add(4)\n           ^^^^^^^^^^^^\n})\n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+
+/*
+Frames:
+[ 1 ]
+
+Error:
+Missing required argument `replicas` in:
+r.db("997da59afc784220d0d5093ef2e698cf").table("dd9f7cdc9eb6c2dc21ef3d63d8fea221")
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    .reconfigure({
+    ^^^^^^^^^^^^^^
+        shards: 1
+        ^^^^^^^^^
+    }).do(function(var_1) {
+    ^^                     
+        return var_1.add(4)
+    })
+*/
+It('Test backtrace for r.db(dbName).table(tableName).reconfigure({ shards: 1 }).do(function(x) { return x.add(4) })', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.db(dbName).table(tableName).reconfigure({ shards: 1 }).do(function(x) { return x.add(4) }).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Missing required argument `replicas` in:\nr.db(\""+dbName+"\").table(\""+tableName+"\")\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    .reconfigure({\n    ^^^^^^^^^^^^^^\n        shards: 1\n        ^^^^^^^^^\n    }).do(function(var_1) {\n    ^^                     \n        return var_1.add(4)\n    })\n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+
+
+/*
+Frames:
+[ 1 ]
+
+Error:
+Missing required argument `replicas` in:
+r.reconfigure({
+^^^^^^^^^^^^^^^
+    shards: 1
+    ^^^^^^^^^
+}).do(function(var_1) {
+^^                     
+    return var_1.add(4)
+})
+*/
+It('Test backtrace for r.reconfigure({ shards: 1 }).do(function(x) { return x.add(4) })', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.reconfigure({ shards: 1 }).do(function(x) { return x.add(4) }).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Missing required argument `replicas` in:\nr.reconfigure({\n^^^^^^^^^^^^^^^\n    shards: 1\n    ^^^^^^^^^\n}).do(function(var_1) {\n^^                     \n    return var_1.add(4)\n})\n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+
+
+/*
+Frames:
+[ 0, 1 ]
+
+Error:
+Expected type NUMBER but found OBJECT in:
+r.rebalance().do(function(var_1) {
+    return var_1.add(4)
+           ^^^^^^^^^^^^
+})
+*/
+It('Test backtrace for r.rebalance().do(function(x) { return x.add(4) })', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.rebalance().do(function(x) { return x.add(4) }).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Expected type NUMBER but found OBJECT in:\nr.rebalance().do(function(var_1) {\n    return var_1.add(4)\n           ^^^^^^^^^^^^\n})\n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+
+
+/*
+Frames:
+[ 0 ]
+
+Error:
+Expected type NUMBER but found STRING in:
+r.expr(1).add("foo").add(r.db("987367b7c251d403119132131f6ba8ae").table("90ff34f973a3f837d1c892027790a95c")
+^^^^^^^^^^^^^^^^^^^^                                                                                       
+    .rebalance().do(function(var_1) {
+        return var_1.add(4)
+    }))
+*/
+It('Test backtrace for r.expr(1).add("foo").add(r.db(dbName).table(tableName).rebalance().do(function(x) { return x.add(4) }))', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.expr(1).add("foo").add(r.db(dbName).table(tableName).rebalance().do(function(x) { return x.add(4) })).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Expected type NUMBER but found STRING in:\nr.expr(1).add(\"foo\").add(r.db(\""+dbName+"\").table(\""+tableName+"\")\n^^^^^^^^^^^^^^^^^^^^                                                                                       \n    .rebalance().do(function(var_1) {\n        return var_1.add(4)\n    }))\n") {
             done()
         }
         else {

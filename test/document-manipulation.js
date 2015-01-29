@@ -15,10 +15,10 @@ It("Init for `document-manipulation.js`", function* (done) {
         tableName = uuid();
 
         result = yield r.dbCreate(dbName).run();
-        assert.deepEqual(result, {created:1});
+        assert.equal(result.dbs_created, 1);
 
         result = yield r.db(dbName).tableCreate(tableName).run();
-        assert.deepEqual(result, {created:1});
+        assert.equal(result.tables_created, 1);
 
         done();
     }
@@ -609,10 +609,11 @@ It("`keys` throw on a string", function* (done) {
         var result = yield r.expr("hello").keys().orderBy(r.row).run();
     }
     catch(e) {
-        if (e.message.match(/^Expected type OBJECT but found STRING in/)) {
+        if (e.message.match(/^Cannot call `keys` on objects of type `STRING` in/)) {
             done();
         }
         else {
+            console.log(e);
             done(e);
         }
     }

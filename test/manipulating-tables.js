@@ -14,7 +14,7 @@ It("Init for `manipulating-tables.js`", function* (done) {
     try {
         dbName = uuid(); // export to the global scope
         var result = yield r.dbCreate(dbName).run();
-        assert.deepEqual(result, {created:1});
+        assert.equal(result.dbs_created, 1);
 
         done();
     }
@@ -39,7 +39,7 @@ It("`tableList` should show the table we created", function* (done) {
         tableName = uuid(); // export to the global scope
 
         result = yield r.db(dbName).tableCreate(tableName).run();
-        assert.deepEqual(result, {created:1});
+        assert.equal(result.tables_created, 1);
 
         result = yield r.db(dbName).tableList().run();
         assert(Array.isArray(result));
@@ -70,7 +70,7 @@ It("'`tableCreate` should create a table'", function* (done) {
         tableName = uuid(); // export to the global scope
 
         result = yield r.db(dbName).tableCreate(tableName).run();
-        assert.deepEqual(result, {created:1});
+        assert.equal(result.tables_created, 1);
 
         done();
     }
@@ -83,7 +83,7 @@ It("'`tableCreate` should create a table -- primaryKey'", function* (done) {
         tableName = uuid();
 
         result = yield r.db(dbName).tableCreate(tableName, {primaryKey: "foo"}).run();
-        assert.deepEqual(result, {created:1});
+        assert.equal(result.tables_created, 1);
 
         result = yield r.db(dbName).table(tableName).info().run();
         assert(result.primary_key, "foo");
@@ -99,7 +99,7 @@ It("'`tableCreate` should create a table -- all args'", function* (done) {
         tableName = uuid();
 
         result = yield r.db(dbName).tableCreate(tableName, {durability: "soft", primaryKey: "foo"}).run();
-        assert.deepEqual(result, {created:1}); // We can't really check other parameters...
+        assert.equal(result.tables_created, 1); // We can't really check other parameters...
 
         result = yield r.db(dbName).table(tableName).info().run();
         assert(result.primary_key, "foo");
@@ -155,12 +155,12 @@ It("`tableDrop` should drop a table", function* (done) {
         tableName = uuid();
 
         result = yield r.db(dbName).tableCreate(tableName).run();
-        assert.deepEqual(result, {created:1});
+        assert.equal(result.tables_created, 1);
 
         result = yield r.db(dbName).tableList().run();
 
         result = yield r.db(dbName).tableDrop(tableName).run();
-        assert.deepEqual(result, {dropped:1});
+        assert.equal(result.tables_dropped, 1);
 
         result = yield r.db(dbName).tableList().run();
         assert(Array.isArray(result));
@@ -202,10 +202,10 @@ It("index operations", function* (done) {
         tableName = uuid();
 
         result = yield r.dbCreate(dbName).run();
-        assert.deepEqual(result, {created: 1});
+        assert.equal(result.dbs_created, 1);
 
         result = yield r.db(dbName).tableCreate(tableName).run();
-        assert.deepEqual(result, {created: 1});
+        assert.equal(result.tables_created, 1);
 
         result = yield r.db(dbName).table(tableName).indexCreate("newField").run();
         assert.deepEqual(result, {created: 1});

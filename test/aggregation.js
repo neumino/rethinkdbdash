@@ -16,10 +16,10 @@ It("Init for `aggregation.js`", function* (done) {
         tableName = uuid();
 
         var result = yield r.dbCreate(dbName).run();
-        assert.deepEqual(result, {created:1});
+        assert.equal(result.dbs_created, 1);
 
         var result = yield r.db(dbName).tableCreate(tableName).run();
-        assert.deepEqual(result, {created:1});
+        assert.equal(result.tables_created, 1);
 
         done();
     }
@@ -289,6 +289,7 @@ It("`distinct` should work", function* (done) {
         done();
     }
     catch(e) {
+      console.log(e);
         done(e);
     }
 })

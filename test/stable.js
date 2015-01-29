@@ -19,7 +19,7 @@ describe("callback", function() {
         dbName = uuid();
 
         r.dbCreate(dbName).run().then(function(result) {
-            assert.deepEqual(result, {created: 1});
+            assert.equal(result.dbs_created, 1);
             done();
         }).error(function(error) {
             done(error);
@@ -30,7 +30,7 @@ describe("callback", function() {
         tableName = uuid();
 
         r.db(dbName).tableCreate(tableName).run().then(function(result) {
-            assert.deepEqual(result, {created: 1});
+            assert.equal(result.tables_created, 1);
             done();
         }).error(function(error) {
             done(error);

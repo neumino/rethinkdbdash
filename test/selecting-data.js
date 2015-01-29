@@ -17,10 +17,10 @@ It("Init for `selecting-data.js`", function* (done) {
         tableName = uuid();
 
         result = yield r.dbCreate(dbName).run();
-        assert.deepEqual(result, {created:1});
+        assert.equal(result.dbs_created, 1);
 
         result = yield r.db(dbName).tableCreate(tableName).run();
-        assert.deepEqual(result, {created:1});
+        assert.equal(result.tables_created, 1);
 
         result = yield r.db(dbName).table(tableName).insert(eval('['+new Array(100).join('{}, ')+'{}]')).run();
         assert.equal(result.inserted, 100);
@@ -36,7 +36,8 @@ It("Init for `selecting-data.js`", function* (done) {
 It("`db` should work", function* (done) {
     try {
         result = yield r.db(dbName).info().run();
-        assert.deepEqual(result, {name: dbName, type: "DB"});
+        assert.equal(result.name, dbName);
+        assert.equal(result.type, 'DB');
 
         done();
     }
@@ -48,7 +49,10 @@ It("`db` should work", function* (done) {
 It("`table` should work", function* (done) {
     try {
         result = yield r.db(dbName).table(tableName).info().run();
-        assert.deepEqual(result,  {db:{name: dbName,type:"DB"},indexes:[],name: tableName, primary_key:"id",type:"TABLE"})
+        assert.equal(result.name, tableName)
+        assert.equal(result.type, 'TABLE')
+        assert.equal(result.primary_key, 'id')
+        assert.equal(result.db.name, dbName)
 
         result = yield r.db(dbName).table(tableName).run();
         assert.equal(result.length, 100)

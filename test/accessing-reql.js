@@ -48,10 +48,11 @@ It("Init for `cursor.js`", function* (done) {
         var tableName = uuid();
 
         result = yield r.dbCreate(dbName).run(connection);
-        assert.deepEqual(result, {created:1});
+        assert.equal(result.config_changes.length, 1);
+        assert.equal(result.dbs_created, 1);
 
         result = yield r.db(dbName).tableCreate(tableName).run(connection);
-        assert.deepEqual(result, {created:1});
+        assert.equal(result.tables_created, 1);
 
         result = yield r.db(dbName).table(tableName).insert(eval('['+new Array(100).join('{}, ')+'{}]')).run(connection);
         assert.equal(result.inserted, 100);
@@ -69,10 +70,10 @@ It("`run` should use the default database", function* (done) {
         tableName = uuid();
 
         var result = yield r.dbCreate(dbName).run(connection);
-        assert.deepEqual(result, {created: 1});
+        assert.equal(result.dbs_created, 1);
 
         result = yield r.db(dbName).tableCreate(tableName).run(connection);
-        assert.deepEqual(result, {created: 1});
+        assert.equal(result.tables_created, 1);
 
         result = yield connection.close();
 
@@ -94,10 +95,10 @@ It("`use` should work", function* (done) {
         tableName = uuid();
 
         var result = yield r.dbCreate(dbName).run(connection);
-        assert.deepEqual(result, {created: 1});
+        assert.equal(result.dbs_created, 1);
 
         result = yield r.db(dbName).tableCreate(tableName).run(connection);
-        assert.deepEqual(result, {created: 1});
+        assert.equal(result.tables_created, 1);
 
         connection.use(dbName);
 

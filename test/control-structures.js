@@ -123,10 +123,10 @@ It("`forEach` should work", function* (done) {
         var tableName = uuid();
 
         result = yield r.dbCreate(dbName).run();
-        assert.deepEqual(result, {created:1}) 
+        assert.equal(result.dbs_created, 1) 
 
         result = yield r.db(dbName).tableCreate(tableName).run();
-        assert.deepEqual(result, {created:1}) 
+        assert.equal(result.tables_created, 1) 
 
         result = yield r.expr([{foo: "bar"}, {foo: "foo"}]).forEach(function(doc) {
             return r.db(dbName).table(tableName).insert(doc)
@@ -152,6 +152,60 @@ It("`forEach` should throw if not given a function", function* (done) {
         }
     }
 })
+
+It("`r.range(x)` should work", function* (done) {
+    try {
+        var result = yield r.range(10).run();
+        assert.deepEqual(result, [0,1,2,3,4,5,6,7,8,9]);
+
+        done();
+    }
+    catch(e) {
+        console.log(e);
+        done(e);
+    }
+})
+It("`r.range(x, y)` should work", function* (done) {
+    try {
+        var result = yield r.range(3,10).run();
+        assert.deepEqual(result, [3,4,5,6,7,8,9]);
+
+        done();
+    }
+    catch(e) {
+        console.log(e);
+        done(e);
+    }
+})
+It("`r.range(1,2,3)` should throw - arity", function* (done) {
+    try {
+        var result = yield r.range(1,2,3).run()
+        done(new Error("Was expecting an error"));
+    }
+    catch(e) {
+        if (e.message.match(/^`r.range` takes at most 2 arguments, 3 provided/) !== null) {
+            done();
+        }
+        else {
+            done(e);
+        }
+    }
+})
+It("`r.range()` should throw - arity", function* (done) {
+    try {
+        var result = yield r.range().run()
+        done(new Error("Was expecting an error"));
+    }
+    catch(e) {
+        if (e.message.match(/^`r.range` takes at least 1 argument, 0 provided/) !== null) {
+            done();
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
 It("`default` should work", function* (done) {
     try {
         var result = yield r.expr({a:1})("b").default("Hello").run();
@@ -306,6 +360,35 @@ It("`json` is not defined after a term", function* (done) {
         }
     }
 })
+It("`toJSON` and `toJsonString` should work", function* (done) {
+    try {
+        var result = yield r.expr({a:1}).toJSON().run();
+        assert.equal(result, '{"a":1}');
+
+        var result = yield r.expr({a:1}).toJsonString().run();
+        assert.equal(result, '{"a":1}');
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+It("`toJSON` should throw if an argument is provided", function* (done) {
+    try {
+        var result = yield r.expr({a:1}).toJSON('foo').run();
+        done(new Error("Expecting error..."));
+    }
+    catch(e) {
+        if (e.message.match(/^`toJSON` takes 0 argument, 1 provided/) !== null) {
+            done()
+        }
+        else {
+            done(e)
+        }
+    }
+})
+
 It("`args` should work", function* (done) {
     try {
         var result = yield r.args([10, 20, 30]).run();
