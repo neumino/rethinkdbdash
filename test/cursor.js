@@ -389,7 +389,20 @@ It("`changes` should return a feed", function* (done) {
         done(e);
     }
 })
-It("`next` should work on feed", function* (done) {
+It("`get.changes` should return a feed", function* (done) {
+    try {
+        feed = yield r.db(dbName).table(tableName).get(1).changes().run();
+        assert(feed);
+        assert.equal(feed.toString(), '[object AtomFeed]');
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
+It("`next` should work on a feed", function* (done) {
     try {
         feed = yield r.db(dbName).table(tableName2).changes().run();
         setImmediate(function() {
@@ -411,6 +424,29 @@ It("`next` should work on feed", function* (done) {
         done(e);
     }
 })
+It("`next` should work on an atom feed", function* (done) {
+    try {
+        var idValue = uuid();
+        feed = yield r.db(dbName).table(tableName2).get(idValue).changes().run();
+        setImmediate(function() {
+            r.db(dbName).table(tableName2).insert({id: idValue}).run();
+        })
+        assert(feed);
+        var i=0;
+        var change = yield feed.next();
+        assert.deepEqual(change, {new_val: null});
+        change = yield feed.next();
+        assert.deepEqual(change, {new_val: {id: idValue}, old_val: null});
+        feed.close();
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
+
 It("`close` should work on feed", function* (done) {
     try {
         feed = yield r.db(dbName).table(tableName2).changes().run();
