@@ -217,19 +217,6 @@ It("`default` should work", function* (done) {
         done(e);
     }
 })
-It("`error` is not defined after a term", function* (done) {
-    try {
-        result = yield r.expr(1).error("error").run();
-    }
-    catch(e) {
-        if (e.message === "`error` is not defined after:\nr.expr(1)") {
-            done()
-        }
-        else {
-            done(e)
-        }
-    }
-})
 It("`default` should throw if no argument has been given", function* (done) {
     try{
         var result = yield r.expr({})("").default().run();

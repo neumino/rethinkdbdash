@@ -118,6 +118,8 @@ var r = require('rethinkdbdash')(options);
     timeoutGb: <number>, // how long the pool keep a connection that hasn't been used (in ms), default 60*60*1000
     maxExponent: <number>, // the maximum timeout before trying to reconnect is 2^maxExponent*timeoutError, default 6 (~60 seconds for the longest wait)
     silent: <boolean> // console.error errors (default false)
+    cursor: <boolean> // if you want a cursor by default instead of an array or feed, default false
+    stream: <boolean> // if you want a stream by default instead of an array or feed, default false
 }
 ```
 
@@ -190,7 +192,7 @@ cursor hasn't fetched everything or has been closed.
 #### Cursor ####
 
 Rethinkdbdash automatically coerce cursor to arrays. If you need a raw cursor, you can call the
-`run` command with the option `{cursor: true}`.
+`run` command with the option `{cursor: true}` or import the driver with `{cursor: true}`.
 
 ```js
 var result = yield r.expr([1, 2, 3]).run()
@@ -201,8 +203,25 @@ var cursor = yield r.expr([1, 2, 3]).run({cursor: true})
 var result = yield cursor.toArray();
 
 console.log(JSON.stringify(result)) // print [1, 2, 3]
-
 ```
+
+#### Stream ####
+
+Rethinkdbdash automatically coerce cursor to arrays. If you need a stream, you can call the
+`run` command with the option `{stream: true}` or import the driver with `{stream: true}`.
+
+```js
+var result = yield r.expr([1, 2, 3]).run()
+console.log(JSON.stringify(result)) // print [1, 2, 3]
+
+// Or with a cursor
+var cursor = yield r.expr([1, 2, 3]).run({cursor: true})
+var result = yield cursor.toArray();
+
+console.log(JSON.stringify(result)) // print [1, 2, 3]
+```
+
+_Note_: Make sure to not pass the option `cursor: true` or a cursor will be returned.
 
 
 #### Errors ####

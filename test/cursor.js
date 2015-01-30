@@ -11,12 +11,6 @@ var dbName, tableName, tableName2, cursor, result, pks, feed;
 var numDocs = 100; // Number of documents in the "big table" used to test the SUCCESS_PARTIAL 
 var smallNumDocs = 5; // Number of documents in the "small table"
 
-function It(testName, generatorFn) {
-    it(testName, function(done) {
-        Promise.coroutine(generatorFn)(done);
-    })
-}
-
 It("Init for `cursor.js`", function* (done) {
     try {
         dbName = uuid();
@@ -538,6 +532,19 @@ It("`next`, `each`, `toArray` should be deactivated if the EventEmitter interfac
             }
             return true;
         })
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
+It("Import with cursor as default", function* (done) {
+    var r1 = require('../lib')({cursor: true, host: config.host, port: config.port, authKey: config.authKey});
+    var i=0;
+    try {
+        cursor = yield r1.db(dbName).table(tableName).run();
+        assert.equal(cursor.toString(), '[object Cursor]');
+        done();
     }
     catch(e) {
         done(e);

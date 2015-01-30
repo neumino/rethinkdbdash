@@ -227,10 +227,10 @@ It("`run` should take an argument", function* (done) {
 
 It("`run` should throw on an unrecognized argument", function* (done) {
     try {
-        result = yield r.expr(1).run(connection, {db: "db"});
+        result = yield r.expr(1).run(connection, {foo: "bar"});
     }
     catch(e) {
-        if (e.message === "Unrecognized option `db` in `run`. Available options are useOutdated <bool>, durability <string>, noreply <bool>, timeFormat <string>, groupFormat: <string>, profile <bool>, binaryFormat <bool>, cursor <bool>.") {
+        if (e.message === "Unrecognized option `foo` in `run`. Available options are useOutdated <bool>, durability <string>, noreply <bool>, timeFormat <string>, groupFormat: <string>, profile <bool>, binaryFormat <bool>, cursor <bool>, stream <bool>.") {
             done();
         }
         else{
