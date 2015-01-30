@@ -33,3 +33,32 @@ It("toString should work", function* (done) {
         done(e);
     }
 })
+
+It("yield a query should work - 1", function* (done) {
+    try {
+        var result = yield r.expr(1);
+        assert.equal(result, 1);
+
+        var result = yield r.expr(1).add(3);
+        assert.equal(result, 4);
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+It("yield a query should work - 2", function* (done) {
+    try {
+        var result = yield r.expr(1).add("foo");
+        done(new Error("Was expecting an error"));
+    }
+    catch(e) {
+        if (e.message.match(/Expected type NUMBER but found STRING/)) {
+            done();
+        }
+        else {
+            done(e);
+        }
+    }
+})
