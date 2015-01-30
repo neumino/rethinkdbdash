@@ -43,7 +43,7 @@ var app = require('koa')();
 var r = require('rethinkdbdash')();
 
 app.use(function *(){
-    var result = yield r.table("foo").get("bar").run();
+    var result = yield r.table("foo").get("bar");
 
     this.body = JSON.stringify(result);
 });
@@ -63,7 +63,7 @@ var run = Promise.coroutine(function* () {
     var result
 
     try{
-        result = yield r.table("foo").get("bar").run();
+        result = yield r.table("foo").get("bar");
         console.log(JSON.stringify(result, null, 2));
     }
     catch(e) {
@@ -91,7 +91,7 @@ While rethinkdbdash uses almost the same syntax as the official driver, there ar
 a few differences.
 
 This section references all the differences. For all the other methods not
-mentionned here, please refer to the
+mentioned here, please refer to the
 [official driver's documentation](http://www.rethinkdb.com/api/javascript/).
 
 
@@ -113,7 +113,7 @@ var r = require('rethinkdbdash')(options);
 {
     buffer: <number>, // minimum number of connections available in the pool, default 50
     max: <number>, // maximum number of connections in the pool, default 1000
-    timeout: <number>, // number of seconds for a connections to be opened, default 20
+    timeout: <number>, // number of seconds for a connection to be opened, default 20
     timeoutError: <number>, // wait time before reconnecting in case of an error (in ms), default 1000
     timeoutGb: <number>, // how long the pool keep a connection that hasn't been used (in ms), default 60*60*1000
     maxExponent: <number>, // the maximum timeout before trying to reconnect is 2^maxExponent*timeoutError, default 6 (~60 seconds for the longest wait)
@@ -126,6 +126,9 @@ var r = require('rethinkdbdash')(options);
 
 RethinkDB official driver support both syntaxes (promises and callback) since 1.13 (used to support only callback).
 Rethinkdbdash support both syntaxes (promises and callback) since 1.14 (used to support only promises).
+
+Rethinkdbdash implements `then`, `catch` and `error` as a shortcut for `run().then/catch/error`. So if you use
+`yield`, you basically do not have to call `run` at the end of a query.
 
 
 #### Connection pool ####
