@@ -166,7 +166,7 @@ It("Test flowing - event data", function* (done) {
 })
 
 It("Import with stream as default", function* (done) {
-    var r1 = require('../lib')({stream: true, host: config.host, port: config.port, authKey: config.authKey});
+    var r1 = require('../lib')({stream: true, host: config.host, port: config.port, authKey: config.authKey, buffer: config.buffer, max: config.max});
     var i=0;
     try {
         stream = yield r1.db(dbName).table(tableName).run();
