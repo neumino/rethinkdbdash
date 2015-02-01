@@ -165,6 +165,54 @@ It("Test flowing - event data", function* (done) {
     }
 })
 
+It("Test read with null value", function* (done) {
+    try {
+        var connection = yield r.connect({max_batch_rows: 1, host: config.host, port: config.port, authKey: config.authKey});
+        assert(connection);
+
+        stream = yield r.db(dbName).table(tableName).limit(10).union([null]).union(r.db(dbName).table(tableName).limit(10)).run(connection, {stream: true});
+        stream.once('readable', function() {
+            var count = 0;
+            stream.on('data', function(data) {
+                count++;
+                if (count === 20) {
+                    done();
+                }
+                else if (count > 20) {
+                    done(new Error("Should not get null"))
+                }
+            });
+        });
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
+It("Test read", function* (done) {
+    try {
+        var connection = yield r.connect({max_batch_rows: 1, host: config.host, port: config.port, authKey: config.authKey});
+        assert(connection);
+
+        stream = yield r.db(dbName).table(tableName).run(connection, {stream: true});
+        stream.once('readable', function() {
+            var doc = stream.read();
+            if (doc === null) {
+                done(new Error("stream.read() should not return null when readable was emitted"));
+            }
+            stream.close().then(function() {
+                done();
+            }).error(function(error) {
+                done(error);
+            });
+
+        });
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
 It("Import with stream as default", function* (done) {
     var r1 = require('../lib')({stream: true, host: config.host, port: config.port, authKey: config.authKey, buffer: config.buffer, max: config.max});
     var i=0;

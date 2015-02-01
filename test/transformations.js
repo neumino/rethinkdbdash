@@ -70,7 +70,7 @@ It("`map` should throw if no argument has been passed", function* (done) {
         result = yield r.db(dbName).table(tableName).map().run();
     }
     catch(e) {
-        if (e.message.match(/^`map` takes 1 argument, 0 provided after/) ){
+        if (e.message.match(/^`map` takes at least 1 argument, 0 provided after/) ){
             done()
         }
         else {

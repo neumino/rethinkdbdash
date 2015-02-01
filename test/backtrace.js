@@ -4679,3 +4679,61 @@ It('Test backtrace for r.expr(1).add("foo").add(r.db(dbName).table(tableName).re
     }
 })
 
+
+/*
+Frames:
+[]
+
+Error:
+The function passed to `map` expects 1 argument, but 2 sequences were found in:
+r.map(r.expr([1, 2, 3]), [1, 2, 3], function(var_1) {
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    return var_1("bah").add(3)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+})
+^^
+*/
+It('Test backtrace for r.map([1,2,3], [1,2,3], function(var_1) { return var_1("bah").add(3) })', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.map([1,2,3], [1,2,3], function(var_1) { return var_1("bah").add(3) }).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "The function passed to `map` expects 1 argument, but 2 sequences were found in:\nr.map(r.expr([1, 2, 3]), [1, 2, 3], function(var_1) {\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    return var_1(\"bah\").add(3)\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^\n})\n^^\n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+
+/*
+Frames:
+[ 2, 1, 0, 0 ]
+
+Error:
+Cannot perform bracket on a non-object non-sequence `1` in:
+r.map(r.expr([1, 2, 3]), [1, 2, 3], function(var_1, var_2) {
+    return var_1("bah").add(3)
+           ^^^^^              
+})
+*/
+It('Test backtrace for r.map([1,2,3], [1,2,3], function(var_1, var_2) { return var_1("bah").add(3) })', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.map([1,2,3], [1,2,3], function(var_1, var_2) { return var_1("bah").add(3) }).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Cannot perform bracket on a non-object non-sequence `1` in:\nr.map(r.expr([1, 2, 3]), [1, 2, 3], function(var_1, var_2) {\n    return var_1(\"bah\").add(3)\n           ^^^^^              \n})\n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+

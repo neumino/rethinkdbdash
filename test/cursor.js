@@ -376,19 +376,32 @@ It("`changes` should return a feed", function* (done) {
         feed = yield r.db(dbName).table(tableName).changes().run();
         assert(feed);
         assert.equal(feed.toString(), '[object Feed]');
-
+        feed.close();
         done();
     }
     catch(e) {
         done(e);
     }
 })
+It("`changes` should work with squash: true", function* (done) {
+    try {
+        feed = yield r.db(dbName).table(tableName).changes({squash: true}).run();
+        assert(feed);
+        assert.equal(feed.toString(), '[object Feed]');
+        feed.close();
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
 It("`get.changes` should return a feed", function* (done) {
     try {
         feed = yield r.db(dbName).table(tableName).get(1).changes().run();
         assert(feed);
         assert.equal(feed.toString(), '[object AtomFeed]');
-
+        feed.close();
         done();
     }
     catch(e) {

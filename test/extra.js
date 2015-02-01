@@ -7,7 +7,36 @@ var uuid = util.uuid;
 var It = util.It;
 
 var uuid = util.uuid;
-var dbName, tableName;
+var dbName, tableName, result;
+
+It("Init for `extra.js`", function* (done) {
+    try {
+        dbName = uuid();
+        tableName = uuid(); // Big table to test partial sequence
+
+        result = yield r.dbCreate(dbName).run()
+        assert.equal(result.dbs_created, 1);
+        //yield r.db(dbName).wait().run()
+        result = yield r.db(dbName).tableCreate(tableName)('tables_created').run();
+        assert.deepEqual(result, 1);
+        done();
+    }
+    catch(e) {
+        console.log(e);
+        done(e);
+    }
+})
+It("Change the default database on the fly in run", function* (done) {
+    try {
+        result = yield r.tableList().run({db: dbName})
+        assert.deepEqual(result, [tableName]);
+        done();
+    }
+    catch(e) {
+        console.log(e);
+        done(e);
+    }
+})
 
 It("Anonymous function should throw if they return undefined", function* (done) {
     try {
