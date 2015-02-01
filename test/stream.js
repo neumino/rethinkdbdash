@@ -76,6 +76,25 @@ It("`table` should return a stream", function* (done) {
         done(e);
     }
 })
+It("Arrays should return a stream", function* (done) {
+    try {
+        var data = [10, 11, 12, 13, 14, 15, 16];
+        stream = yield r.expr(data).run({stream: true});
+        assert(stream);
+        assert(stream instanceof Readable);
+
+        var count = 0;
+        stream.on('data', function() {
+            count++;
+            if (count === data.length) {
+                done();
+            }
+        });
+    }
+    catch(e) {
+        done(e);
+    }
+})
 
 It("`table` should return a stream - testing empty SUCCESS_COMPLETE", function* (done) {
     var i=0;
