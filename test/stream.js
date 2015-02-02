@@ -96,6 +96,51 @@ It("Arrays should return a stream", function* (done) {
     }
 })
 
+It("changes() should return a stream", function* (done) {
+    try {
+        var data = [{}, {}, {}, {}];
+        stream = yield r.db(dbName).table(tableName).changes().run({stream: true});
+        assert(stream);
+        assert(stream instanceof Readable);
+
+        var count = 0;
+        stream.on('data', function() {
+            count++;
+            if (count === data.length) {
+                done();
+                stream.close();
+            }
+        });
+        yield r.db(dbName).table(tableName).insert(data).run();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
+It("get().changes() should return a stream", function* (done) {
+    try {
+        stream = yield r.db(dbName).table(tableName).get(1).changes().run({stream: true});
+        assert(stream);
+        assert(stream instanceof Readable);
+
+        var count = 0;
+        stream.on('data', function() {
+            count++;
+            if (count === 3) {
+                done();
+                stream.close();
+            }
+        });
+        yield r.db(dbName).table(tableName).insert({id: 1}).run();
+        yield r.db(dbName).table(tableName).get(1).update({update: 1}).run();
+        yield r.db(dbName).table(tableName).get(1).update({update: 2}).run();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
 It("`table` should return a stream - testing empty SUCCESS_COMPLETE", function* (done) {
     var i=0;
     try {
