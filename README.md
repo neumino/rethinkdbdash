@@ -207,21 +207,17 @@ console.log(JSON.stringify(result)) // print [1, 2, 3]
 
 #### Stream ####
 
-Rethinkdbdash automatically coerce cursor to arrays. If you need a stream, you can call the
+Rethinkdbdash automatically coerce cursor to arrays. If you want a stream, you can call the
 `run` command with the option `{stream: true}` or import the driver with `{stream: true}`.
 
 ```js
-var result = yield r.expr([1, 2, 3]).run()
-console.log(JSON.stringify(result)) // print [1, 2, 3]
-
-// Or with a cursor
-var cursor = yield r.expr([1, 2, 3]).run({cursor: true})
-var result = yield cursor.toArray();
-
-console.log(JSON.stringify(result)) // print [1, 2, 3]
+var stream = yield r.expr([1, 2, 3]).run({stream: true});
+stream.pipe(stringifier).pipe(writableStream);
 ```
 
 _Note_: Make sure to not pass the option `cursor: true` or a cursor will be returned.
+
+_Note_: `null` values are currently dropped from streams.
 
 
 #### Errors ####
