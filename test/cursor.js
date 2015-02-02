@@ -563,3 +563,92 @@ It("Import with cursor as default", function* (done) {
         done(e);
     }
 })
+It("`each` should not return an error if the feed is closed - 1", function* (done) {
+    try {
+        feed = yield r.db(dbName).table(tableName2).changes().run();
+        setImmediate(function() {
+            r.db(dbName).table(tableName2).limit(2).update({foo: r.now()}).run();
+        })
+        var count = 0;
+        feed.each(function(err, result) {
+            count++;
+            if (count === 1) {
+                setImmediate(function() {
+                    feed.close().then(function() {
+                        done();
+                    }).error(done);
+                });
+            }
+        });
+    }
+    catch(e) {
+        done(e);
+    }
+})
+It("`each` should not return an error if the feed is closed - 2", function* (done) {
+    try {
+        feed = yield r.db(dbName).table(tableName2).changes().run();
+        setImmediate(function() {
+            r.db(dbName).table(tableName2).limit(2).update({foo: r.now()}).run();
+        })
+        var count = 0;
+        feed.each(function(err, result) {
+            count++;
+            if (count === 2) {
+                setImmediate(function() {
+                    feed.close().then(function() {
+                        done();
+                    }).error(done);
+                });
+            }
+        });
+    }
+    catch(e) {
+        done(e);
+    }
+})
+It("events should not return an error if the feed is closed - 1", function* (done) {
+    try {
+        feed = yield r.db(dbName).table(tableName2).changes().run();
+        setImmediate(function() {
+            r.db(dbName).table(tableName2).limit(2).update({foo: r.now()}).run();
+        })
+        var count = 0;
+        feed.on('data', function(result) {
+            count++;
+            if (count === 1) {
+                setImmediate(function() {
+                    feed.close().then(function() {
+                        done();
+                    }).error(done);
+                });
+            }
+        });
+    }
+    catch(e) {
+        done(e);
+    }
+})
+It("events should not return an error if the feed is closed - 2", function* (done) {
+    try {
+        feed = yield r.db(dbName).table(tableName2).changes().run();
+        setImmediate(function() {
+            r.db(dbName).table(tableName2).limit(2).update({foo: r.now()}).run();
+        })
+        var count = 0;
+        feed.on('data', function(result) {
+            count++;
+            if (count === 1) {
+                setImmediate(function() {
+                    feed.close().then(function() {
+                        done();
+                    }).error(done);
+                });
+            }
+        });
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
