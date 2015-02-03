@@ -609,19 +609,20 @@ It("`each` should not return an error if the feed is closed - 2", function* (don
 })
 It("events should not return an error if the feed is closed - 1", function* (done) {
     try {
-        feed = yield r.db(dbName).table(tableName2).changes().run();
+        feed = yield r.db(dbName).table(tableName2).get(1).changes().run();
         setImmediate(function() {
-            r.db(dbName).table(tableName2).limit(2).update({foo: r.now()}).run();
+            r.db(dbName).table(tableName2).insert({id: 1}).run();
         })
         var count = 0;
-        feed.on('data', function(result) {
+        feed.each(function(err, result) {
+            if (err) {
+                return done(err);
+            }
             count++;
             if (count === 1) {
-                setImmediate(function() {
-                    feed.close().then(function() {
-                        done();
-                    }).error(done);
-                });
+                feed.close().then(function() {
+                    done();
+                }).error(done);
             }
         });
     }
