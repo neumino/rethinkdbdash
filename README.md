@@ -119,9 +119,10 @@ var r = require('rethinkdbdash')(options);
     maxExponent: <number>, // the maximum timeout before trying to reconnect is 2^maxExponent*timeoutError, default 6 (~60 seconds for the longest wait)
     silent: <boolean> // console.error errors (default false)
     cursor: <boolean> // if you want a cursor by default instead of an array or feed, default false
-    stream: <boolean> // if you want a stream by default instead of an array or feed, default false
 }
 ```
+
+_Note_: The option `{stream: true}` that asynchronously returns a stream is deprecated. Use `toStream` instead.
 
 
 #### Promises ####
@@ -207,17 +208,21 @@ console.log(JSON.stringify(result)) // print [1, 2, 3]
 
 #### Stream ####
 
-Rethinkdbdash automatically coerce cursor to arrays. If you want a stream, you can call the
-`run` command with the option `{stream: true}` or import the driver with `{stream: true}`.
+If you prefer streams over cursors and arrays, you can use `toStream`. This synchronous method
+returns a stream that you can pipe.
 
 ```js
-var stream = yield r.expr([1, 2, 3]).run({stream: true});
-stream.pipe(stringifier).pipe(writableStream);
+r.expr([1, 2, 3]).toStream()
+    .on('error', handleError)
+    .pipe(stringifier)
+    .on('error', handleError)
+    .pipe(writableStream);
 ```
 
-_Note_: Make sure to not pass the option `cursor: true` or a cursor will be returned.
+_Note:_ The stream will emit an error if you provide it with a single value (arrays and grouped data
+work fine).
 
-_Note_: `null` values are currently dropped from streams.
+_Note:_ `null` values are currently dropped from streams.
 
 
 #### Errors ####

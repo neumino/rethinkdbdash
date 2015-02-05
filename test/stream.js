@@ -290,3 +290,48 @@ It("Import with stream as default", function* (done) {
     }
 })
 
+It("toStream", function* (done) {
+    try {
+        stream = r.db(dbName).table(tableName).toStream();
+        stream.once('readable', function() {
+            var doc = stream.read();
+            if (doc === null) {
+                done(new Error("stream.read() should not return null when readable was emitted"));
+            }
+            var count = 1;
+            stream.on('data', function(data) {
+                count++;
+                if (count === numDocs) {
+                    done();
+                }
+            });
+        });
+    }
+    catch(e) {
+        done(e);
+    }
+
+})
+It("toStream - with grouped data", function* (done) {
+    try {
+        stream = r.db(dbName).table(tableName).group({index: 'id'}).toStream();
+        stream.once('readable', function() {
+            var doc = stream.read();
+            if (doc === null) {
+                done(new Error("stream.read() should not return null when readable was emitted"));
+            }
+            var count = 1;
+            stream.on('data', function(data) {
+                count++;
+                if (count === numDocs) {
+                    done();
+                }
+            });
+        });
+    }
+    catch(e) {
+        done(e);
+    }
+
+})
+
