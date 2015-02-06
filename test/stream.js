@@ -434,8 +434,80 @@ It("toWritableStream should handle options", function* (done) {
             return r1.db(dbName).table(dumpTable).get(1)
         }).then(function(result) {
             assert.deepEqual(result, {id: 1, foo: 3});
+            return r1.db(dbName).table(dumpTable).delete();
+        }).then(function(result) {
+            r1.getPool().drain();
             done();
         }).error(done);
     });
+})
+
+It("test pipe all streams", function* (done) {
+    // Create a transform stream that will convert data to a string
+    var stream = require('stream')
+    var addfoobar = new stream.Transform();
+    addfoobar._writableState.objectMode = true;
+    addfoobar._readableState.objectMode = true;
+    addfoobar._transform = function (data, encoding, done) {
+        data.transform = true;
+        this.push(data);
+        done();
+    }
+    var addbuzzlol = new stream.Transform();
+    addbuzzlol._writableState.objectMode = true;
+    addbuzzlol._readableState.objectMode = true;
+    addbuzzlol._transform = function (data, encoding, done) {
+        delete data.id
+        data.written = true;
+        this.push(data);
+        done();
+    }
+
+    r.db(dbName).table(tableName).without('id').toStream()
+        .on('error', done)
+        .pipe(addfoobar)
+        .on('error', done)
+        .pipe(r.db(dbName).table(dumpTable).toTransformStream())
+        .on('error', done)
+        .pipe(addbuzzlol)
+        .on('error', done)
+        .pipe(r.db(dbName).table(dumpTable).toWritableStream())
+        .on('error', done)
+        .on('finish', function() {
+            r.db(dbName).table(dumpTable).filter({written: true}).count().run().then(function(result) {
+                assert(result, numDocs);
+                return r.db(dbName).table(dumpTable).filter({transform:true}).count().run()
+            }).then(function() {
+                assert(result, numDocs*2);
+                return r.db(dbName).table(dumpTable).delete();
+            }).then(function(result) {
+                done();
+                r.getPool().drain();
+            });
+        });
+})
+
+It("toWritableStream should throw on something else than a table", function* (done) {
+    var r1 = require('../lib')({buffer:1, max: 2});
+
+    try {
+        r.expr(dumpTable).toWritableStream();
+    }
+    catch(err) {
+        assert(err.message, "Cannot create a writable stream on something else than a table.");
+        done();
+    }
+})
+
+It("toTransformStream should throw on something else than a table", function* (done) {
+    var r1 = require('../lib')({buffer:1, max: 2});
+
+    try {
+        r.expr(dumpTable).toTransformStream();
+    }
+    catch(err) {
+        assert(err.message, "Cannot create a writable stream on something else than a table.");
+        done();
+    }
 })
 
