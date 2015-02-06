@@ -18,12 +18,16 @@ It("Init for `stream.js`", function* (done) {
         dbName = uuid();
         tableName = uuid(); // Big table to test partial sequence
         tableName2 = uuid(); // small table to test success sequence
+        dumpTable = uuid(); // dump table
 
         result = yield r.dbCreate(dbName).run()
         assert.equal(result.dbs_created, 1);
         //yield r.db(dbName).wait().run()
-        result = yield [r.db(dbName).tableCreate(tableName)('tables_created').run(), r.db(dbName).tableCreate(tableName2)('tables_created').run()]
-        assert.deepEqual(result, [1, 1]);
+        result = yield [
+          r.db(dbName).tableCreate(tableName)('tables_created').run(),
+          r.db(dbName).tableCreate(tableName2)('tables_created').run(),
+          r.db(dbName).tableCreate(dumpTable)('tables_created').run()]
+        assert.deepEqual(result, [1, 1, 1]);
         done();
     }
     catch(e) {
@@ -51,6 +55,7 @@ It("Inserting batch - table 2", function* (done) {
         done(e);
     }
 })
+/*
 It("Inserting batch", function* (done) {
     try {
         // Add a date
@@ -333,5 +338,104 @@ It("toStream - with grouped data", function* (done) {
         done(e);
     }
 
+})
+*/
+
+It("pipe should work with a writable stream - 200-200", function* (done) {
+    var r1 = require('../lib')({buffer:1, max: 2});
+
+    r1.db(dbName).table(tableName).toStream({highWaterMark: 200})
+        .pipe(r1.db(dbName).table(dumpTable).toWritableStream({highWaterMark: 200}))
+        .on('finish', function() {
+            r.expr([
+                r1.db(dbName).table(tableName).count(),
+                r1.db(dbName).table(dumpTable).count()
+            ]).run().then(function(result) {
+                if (result[0] !== result[1]) {
+                    done(new Error('All the data should have been streamed'));
+                }
+                return r1.db(dbName).table(dumpTable).delete()
+            }).then(function() {
+                r1.getPool().drain();
+                done();
+            }).error(done);
+        });
+})
+It("pipe should work with a writable stream - 200-20", function* (done) {
+    var r1 = require('../lib')({buffer:1, max: 2});
+
+    r1.db(dbName).table(tableName).toStream({highWaterMark: 200})
+        .pipe(r1.db(dbName).table(dumpTable).toWritableStream({highWaterMark: 20}))
+        .on('finish', function() {
+            r.expr([
+                r1.db(dbName).table(tableName).count(),
+                r1.db(dbName).table(dumpTable).count()
+            ]).run().then(function(result) {
+                if (result[0] !== result[1]) {
+                    done(new Error('All the data should have been streamed'));
+                }
+                return r1.db(dbName).table(dumpTable).delete()
+            }).then(function() {
+                r1.getPool().drain();
+                done();
+            }).error(done);
+        });
+})
+It("pipe should work with a writable stream - 20-200", function* (done) {
+    var r1 = require('../lib')({buffer:1, max: 2});
+
+    r1.db(dbName).table(tableName).toStream({highWaterMark: 20})
+        .pipe(r1.db(dbName).table(dumpTable).toWritableStream({highWaterMark: 200}))
+        .on('finish', function() {
+            r.expr([
+                r1.db(dbName).table(tableName).count(),
+                r1.db(dbName).table(dumpTable).count()
+            ]).run().then(function(result) {
+                if (result[0] !== result[1]) {
+                    done(new Error('All the data should have been streamed'));
+                }
+                return r1.db(dbName).table(dumpTable).delete()
+            }).then(function() {
+                r1.getPool().drain();
+                done();
+            }).error(done);
+        });
+})
+It("pipe should work with a writable stream - 50-50", function* (done) {
+    var r1 = require('../lib')({buffer:1, max: 2});
+
+    r1.db(dbName).table(tableName).toStream({highWaterMark: 50})
+        .pipe(r1.db(dbName).table(dumpTable).toWritableStream({highWaterMark: 50}))
+        .on('finish', function() {
+            r.expr([
+                r1.db(dbName).table(tableName).count(),
+                r1.db(dbName).table(dumpTable).count()
+            ]).run().then(function(result) {
+                if (result[0] !== result[1]) {
+                    done(new Error('All the data should have been streamed'));
+                }
+                return r1.db(dbName).table(dumpTable).delete()
+            }).then(function() {
+                r1.getPool().drain();
+                done();
+            }).error(done);
+        });
+})
+It("toWritableStream should handle options", function* (done) {
+    var r1 = require('../lib')({buffer:1, max: 2});
+
+    var stream = r1.db(dbName).table(dumpTable).toWritableStream({highWaterMark: 50, conflict: 'replace'});
+    stream.write({id: 1, foo: 1});
+    stream.write({id: 1, foo: 2});
+    stream.end({id: 1, foo: 3});
+    stream.on('finish', function() {
+        r1.db(dbName).table(dumpTable).count().then(function(result) {
+            assert.equal(result, 1);
+            return r1.db(dbName).table(dumpTable).get(1)
+        }).then(function(result) {
+            assert.deepEqual(result, {id: 1, foo: 3});
+            done();
+        }).error(done);
+    });
 })
 

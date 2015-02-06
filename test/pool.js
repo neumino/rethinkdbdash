@@ -189,7 +189,7 @@ It("`pool.drain` should eventually remove all the connections", function* (done)
 
 It("If the pool cannot create a connection, it should reject queries", function* (done) {
     try {
-        var r = require(__dirname+'/../lib')({host: "notarealhost", min: 1, max: 2, silent: true});
+        var r = require(__dirname+'/../lib')({host: "notarealhost", buffer: 1, max: 2, silent: true});
         yield r.expr(1).run()
         done(new Error("Was expecting an error"));
     }
@@ -205,7 +205,7 @@ It("If the pool cannot create a connection, it should reject queries", function*
 
 It("If the pool cannot create a connection, it should reject queries - timeout", function* (done) {
     try {
-        var r = require(__dirname+'/../lib')({host: "notarealhost", min: 1, max: 2, silent: true});
+        var r = require(__dirname+'/../lib')({host: "notarealhost", buffer: 1, max: 2, silent: true});
         yield new Promise(function(resolve, reject) { setTimeout(resolve, 1000) });
         yield r.expr(1).run()
         done(new Error("Was expecting an error"));
@@ -223,7 +223,7 @@ It("If the pool cannot create a connection, it should reject queries - timeout",
 
 It("If the pool is drained, it should reject queries", function* (done) {
     try {
-        var r = require(__dirname+'/../lib')({min: 1, max: 2, silent: true});
+        var r = require(__dirname+'/../lib')({buffer: 1, max: 2, silent: true});
 
         r.getPool().drain();
 
