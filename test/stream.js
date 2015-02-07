@@ -55,7 +55,6 @@ It("Inserting batch - table 2", function* (done) {
         done(e);
     }
 })
-/*
 It("Inserting batch", function* (done) {
     try {
         // Add a date
@@ -339,13 +338,12 @@ It("toStream - with grouped data", function* (done) {
     }
 
 })
-*/
 
 It("pipe should work with a writable stream - 200-200", function* (done) {
     var r1 = require('../lib')({buffer:1, max: 2});
 
     r1.db(dbName).table(tableName).toStream({highWaterMark: 200})
-        .pipe(r1.db(dbName).table(dumpTable).toWritableStream({highWaterMark: 200}))
+        .pipe(r1.db(dbName).table(dumpTable).toStream({writable: true, highWaterMark: 200}))
         .on('finish', function() {
             r.expr([
                 r1.db(dbName).table(tableName).count(),
@@ -365,7 +363,7 @@ It("pipe should work with a writable stream - 200-20", function* (done) {
     var r1 = require('../lib')({buffer:1, max: 2});
 
     r1.db(dbName).table(tableName).toStream({highWaterMark: 200})
-        .pipe(r1.db(dbName).table(dumpTable).toWritableStream({highWaterMark: 20}))
+        .pipe(r1.db(dbName).table(dumpTable).toStream({writable: true, highWaterMark: 20}))
         .on('finish', function() {
             r.expr([
                 r1.db(dbName).table(tableName).count(),
@@ -385,7 +383,7 @@ It("pipe should work with a writable stream - 20-200", function* (done) {
     var r1 = require('../lib')({buffer:1, max: 2});
 
     r1.db(dbName).table(tableName).toStream({highWaterMark: 20})
-        .pipe(r1.db(dbName).table(dumpTable).toWritableStream({highWaterMark: 200}))
+        .pipe(r1.db(dbName).table(dumpTable).toStream({writable: true, highWaterMark: 200}))
         .on('finish', function() {
             r.expr([
                 r1.db(dbName).table(tableName).count(),
@@ -405,26 +403,30 @@ It("pipe should work with a writable stream - 50-50", function* (done) {
     var r1 = require('../lib')({buffer:1, max: 2});
 
     r1.db(dbName).table(tableName).toStream({highWaterMark: 50})
-        .pipe(r1.db(dbName).table(dumpTable).toWritableStream({highWaterMark: 50}))
+        .pipe(r1.db(dbName).table(dumpTable).toStream({writable: true, highWaterMark: 50}))
         .on('finish', function() {
             r.expr([
                 r1.db(dbName).table(tableName).count(),
                 r1.db(dbName).table(dumpTable).count()
             ]).run().then(function(result) {
                 if (result[0] !== result[1]) {
+                    console.log(result);
                     done(new Error('All the data should have been streamed'));
                 }
                 return r1.db(dbName).table(dumpTable).delete()
             }).then(function() {
                 r1.getPool().drain();
                 done();
-            }).error(done);
+            }).error(function(err) {
+                console.log(err);
+                done(err);
+            });
         });
 })
-It("toWritableStream should handle options", function* (done) {
+It("toStream((writable: true}) should handle options", function* (done) {
     var r1 = require('../lib')({buffer:1, max: 2});
 
-    var stream = r1.db(dbName).table(dumpTable).toWritableStream({highWaterMark: 50, conflict: 'replace'});
+    var stream = r1.db(dbName).table(dumpTable).toStream({writable: true, highWaterMark: 50, conflict: 'replace'});
     stream.write({id: 1, foo: 1});
     stream.write({id: 1, foo: 2});
     stream.end({id: 1, foo: 3});
@@ -467,11 +469,11 @@ It("test pipe all streams", function* (done) {
         .on('error', done)
         .pipe(addfoobar)
         .on('error', done)
-        .pipe(r.db(dbName).table(dumpTable).toTransformStream())
+        .pipe(r.db(dbName).table(dumpTable).toStream({transform: true}))
         .on('error', done)
         .pipe(addbuzzlol)
         .on('error', done)
-        .pipe(r.db(dbName).table(dumpTable).toWritableStream())
+        .pipe(r.db(dbName).table(dumpTable).toStream({writable: true}))
         .on('error', done)
         .on('finish', function() {
             r.db(dbName).table(dumpTable).filter({written: true}).count().run().then(function(result) {
@@ -487,11 +489,11 @@ It("test pipe all streams", function* (done) {
         });
 })
 
-It("toWritableStream should throw on something else than a table", function* (done) {
+It("toStream({writable: true}) should throw on something else than a table", function* (done) {
     var r1 = require('../lib')({buffer:1, max: 2});
 
     try {
-        r.expr(dumpTable).toWritableStream();
+        r.expr(dumpTable).toStream({writable: true});
     }
     catch(err) {
         assert(err.message, "Cannot create a writable stream on something else than a table.");
@@ -499,15 +501,14 @@ It("toWritableStream should throw on something else than a table", function* (do
     }
 })
 
-It("toTransformStream should throw on something else than a table", function* (done) {
+It("toStream({transform: true}) should throw on something else than a table", function* (done) {
     var r1 = require('../lib')({buffer:1, max: 2});
 
     try {
-        r.expr(dumpTable).toTransformStream();
+        r.expr(dumpTable).toStream({transform: true});
     }
     catch(err) {
         assert(err.message, "Cannot create a writable stream on something else than a table.");
         done();
     }
 })
-
