@@ -209,6 +209,9 @@ console.log(JSON.stringify(result)) // print [1, 2, 3]
 
 #### Stream ####
 
+_Note:_ Streams are an experimental features (especially the writable streams). Feedbacks and suggestions
+for this feature is welcome!
+
 If you prefer streams over cursors and arrays, you can use `toStream`. This synchronous method
 returns a stream that you can pipe.
 
