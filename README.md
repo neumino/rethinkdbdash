@@ -225,6 +225,23 @@ work fine).
 _Note:_ `null` values are currently dropped from streams.
 
 
+#### Writable streams ####
+
+You can open a writable streams on a table by calling `toStream({writable: true})`.
+
+```js
+var logs = r.table('logs').toStream({writable: true});
+
+// Logs all the uncaught exceptions
+process.on('error', function(err) {
+    logs.write(err);
+});
+```
+
+If you need the result of your write, you can call `toStream({transform: true})` to retrieve a
+Transform stream.
+
+
 #### Errors ####
 - Better backtraces
 
