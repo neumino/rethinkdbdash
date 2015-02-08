@@ -5,9 +5,10 @@ rethinkdbdash
 
 An experimental (yet stable) Node.js driver for RethinkDB with promises and a connection pool.
 
-_Note_: To use `yield` as shown in the examples, you have to start `node` unstable (>= 0.11) with
-the `--harmony` flag.
+_Note_: The current implementation of streams require Node >= 0.12.
 
+_Note_: To use `yield` as shown in the examples, you have to start `node` (>= 0.11) with
+the `--harmony` flag.
 
 ### Quick start ###
 -------------
@@ -303,7 +304,7 @@ Rethinkdbdash will ignore the keys/values where the value is `undefined`.
 
 Update `test/config.js` if your RethinkDB instance doesn't run on the default parameters.
 
-Run
+Make sure you run a version of Node that supports generators and run:
 ```
 npm test
 ```
