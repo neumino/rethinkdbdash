@@ -3,11 +3,128 @@ rethinkdbdash
 
 <a href="https://app.wercker.com/project/bykey/10e69719c2031f4995798ddb9221c398"><img alt="Wercker status" src="https://app.wercker.com/status/10e69719c2031f4995798ddb9221c398/m/master" align="right" /></a>
 
-An experimental (yet stable) Node.js driver for RethinkDB with promises and a connection pool.
+An Node.js driver for RethinkDB with more advanced features.
 
-_Note_: To use `yield` as shown in the examples, you have to start `node` unstable (>= 0.11) with
-the `--harmony` flag.
 
+### Quick start ###
+
+Rethinkdbdash uses almost the same API as the official driver.
+
+The main differences are:
+
+- You need to execute the module when you import it:
+
+```
+var r = require('rethinkdbdash')();
+// With the official driver:
+// var r = require('rethinkdb');
+```
+
+- An automatic connection pool: Once you have imported the driver,
+you can immediately run queries, you don't need to call `r.connect`,
+or pass a connection to `run`.
+
+```
+var r = require('rethinkdbdash')();
+r.table('users').get('orphee@gmail.com').run().then(function(user) {
+  // ...
+}).error(handleError)
+```
+
+- RethinkDB streams are coerced to arrays by default
+
+```js
+var r = require('rethinkdbdash')();
+r.table('data').run().then(function(result) {
+  assert(Array.isArray(result)) // true
+  // With the official driver you need to call
+  // result.toArray().then(function(result2) {
+  //   assert(Array.isArray(result2))
+  // })
+});
+```
+
+### Drop in ###
+
+You can replace the official driver with rethinkdbdash by just replacing
+
+```js
+var r = require('rethinkdb');
+```
+
+With:
+
+```js
+var r = require('rethinkdbdash')({
+  pool: false,
+  cursor: true
+});
+```
+
+If you want to take advantage of the connection pool, refer to the next section.
+
+
+### From the official driver ###
+
+To switch from the official driver to rethinkdbdash and get the most of it,
+here are the few things to do:
+
+1. Change the way to import the driver.
+
+```js
+var r = require('rethinkdb');
+```
+
+To:
+
+```js
+var r = require('rethinkdbdash')();
+// Or if you do not connect to the local default instance:
+// var r = require('rethinkdbdash')({host: ..., port: ...});
+```
+
+2. Remove everything related to a connection:
+
+```js
+r.connect({host: ..., port: ...}).then(function(connection) {
+  connection.on('error', handleError);
+  query.run(connection).then(function(result) {
+    // console.log(result);
+    connection.close();
+  });
+});
+```
+
+Becomes:
+
+```
+query.run().then(function(result) {
+  // console.log(result);
+});
+```
+
+3. Remove the methods related to the cursor. This typically involves
+removing `toArray`:
+
+```js
+r.table('data').run(connection).then(function(cursor) {
+  cursor.toArray().then(function(result) {
+    // console.log(result):
+  });
+});
+```
+
+Becomes
+
+```js
+r.table('data').run().then(function(result) {
+  // console.log(result);
+});
+```
+
+
+
+### FAQ ###
 
 ### Quick start ###
 -------------
