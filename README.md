@@ -1,18 +1,19 @@
 rethinkdbdash
-=============
+-------------
 
 <a href="https://app.wercker.com/project/bykey/10e69719c2031f4995798ddb9221c398"><img alt="Wercker status" src="https://app.wercker.com/status/10e69719c2031f4995798ddb9221c398/m/master" align="right" /></a>
 
 An Node.js driver for RethinkDB with more advanced features.
 
-### Install ###
--------------
+### Install
+=============
 
 ```
 npm install rethinkdbdash
 ```
 
 The `rethinkdbdash-unstable` package is a relic from the past when the driver had a dependency on `node-protobuf`.
+
 
 
 ### Quick start
