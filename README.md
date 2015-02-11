@@ -391,7 +391,8 @@ Tests are also being run on [wercker](http://wercker.com/):
 
   Rethinkdbdash was built as an experiment for promises and a connection pool. Its
   purpose was to test new features and improve the official driver. Today,
-  rethinkdbdash still tries to make the developer experience as pleasant as possible.
+  rethinkdbdash still tries to make the developer experience as pleasant as possible -
+  like with the recent support for Node.js streams.
 
   Some features like promises have been back ported to the official driver, some like
   the connection pool and streams are on their way.
