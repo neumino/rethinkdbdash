@@ -3,7 +3,7 @@ rethinkdbdash
 
 <a href="https://app.wercker.com/project/bykey/10e69719c2031f4995798ddb9221c398"><img alt="Wercker status" src="https://app.wercker.com/status/10e69719c2031f4995798ddb9221c398/m/master" align="right" /></a>
 
-An Node.js driver for RethinkDB with more advanced features.
+A Node.js driver for RethinkDB with more advanced features.
 
 ### Install
 
@@ -39,6 +39,15 @@ var r = require('rethinkdbdash')();
 r.table('users').get('orphee@gmail.com').run().then(function(user) {
   // ...
 }).error(handleError)
+
+/* Instead of
+r.connect().then(function(connection) {
+  r.table('users').get('orphee@gmail.com').run().then(function(user) {
+    // ...
+    connection.close();
+  }).error(handleError)
+});
+*/
 ```
 
 - RethinkDB streams are coerced to arrays by default
@@ -47,10 +56,11 @@ r.table('users').get('orphee@gmail.com').run().then(function(user) {
 var r = require('rethinkdbdash')();
 r.table('data').run().then(function(result) {
   assert(Array.isArray(result)) // true
-  // With the official driver you need to call
-  // result.toArray().then(function(result2) {
-  //   assert(Array.isArray(result2))
-  // })
+  /* With the official driver you need to call
+  result.toArray().then(function(result2) {
+     assert(Array.isArray(result2))
+  })
+  */
 });
 ```
 
