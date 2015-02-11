@@ -389,37 +389,37 @@ Tests are also being run on [wercker](http://wercker.com/):
 
 - Why rethinkdbdash?
 
-Rethinkdbdash was built as an experiment for promises and a connection pool. Its
-purpose was to test new features and improve the official driver. Today,
-rethinkdbdash still tries to make the developer experience as pleasant as possible.
+  Rethinkdbdash was built as an experiment for promises and a connection pool. Its
+  purpose was to test new features and improve the official driver. Today,
+  rethinkdbdash still tries to make the developer experience as pleasant as possible.
 
-Some features like promises have been back ported to the official driver, some like
-the connection pool and streams are on their way.
+  Some features like promises have been back ported to the official driver, some like
+  the connection pool and streams are on their way.
 
 
 - Is it stable?
 
-Yes.
+  Yes.
 
-Rethinkdbdash is used by quite a few people. The driver is also used by `thinky`,
-so it has been and is still being tested in the wild.
+  Rethinkdbdash is used by quite a few people. The driver is also used by `thinky`,
+  so it has been and is still being tested in the wild.
 
 
 - Is rethinkdbdash going to become the JavaScript official driver?
 
-Not (yet?), maybe :)
+  Not (yet?), maybe :)
 
-Completely replacing the driver requires some work:
-- Integrate the driver in RethinkDB suite test.
-- Support HTTP connections.
-- Rollback some default like the coercion of cursors to arrays.
+  Completely replacing the driver requires some work:
+  - Integrate the driver in RethinkDB suite test.
+  - Support HTTP connections.
+  - Rollback some default like the coercion of cursors to arrays.
 
 
 - Can I contribute? 
 
-Because I would like to give rethinkdbdash to RethinkDB, I would like to
-keep ownership of the code (mostly because I don't like dealing with legal stuff).
-So I would rather not merge pull requests. That being said, feedback,
-bug reports etc. are welcome!
+  Because I would like to give rethinkdbdash to RethinkDB, I would like to
+  keep ownership of the code (mostly because I don't like dealing with legal stuff).
+  So I would rather not merge pull requests. That being said, feedback,
+  bug reports etc. are welcome!
 
-If you want to write code, checkout [thinky](https://github.com/neumino/thinky)!
+  If you want to write code, checkout [thinky](https://github.com/neumino/thinky)!
