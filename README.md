@@ -421,4 +421,4 @@ Tests are also being run on [wercker](http://wercker.com/):
   So I would rather not merge pull requests. That being said, feedback,
   bug reports etc. are welcome!
 
-  If you want to write code, checkout [thinky](https://github.com/neumino/thinky)!
+  If you want to write code, come help with [thinky](https://github.com/neumino/thinky)!
