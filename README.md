@@ -41,7 +41,7 @@ r.table('users').get('orphee@gmail.com').run().then(function(user) {
 }).error(handleError)
 ```
 
-- RethinkDB streams are coerced to arrays by default
+- Cursors are coerced to arrays by default
 
 ```js
 var r = require('rethinkdbdash')();
