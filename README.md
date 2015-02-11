@@ -185,10 +185,6 @@ to exit, you need to drain the pool with:
 r.getPool().drain();
 ```
 
-_Note_: If you are using cursors, you must fetch all the data from the cursor or close the cursor to release
-the connection. Failure to do so will keep a connection unavailable for other queries.
-
-
 ##### Advanced details about the pool
 
 To access the pool, you can call the method `r.getPool()`.
@@ -234,16 +230,17 @@ you can call the `run` command with the option `{cursor: true}` or import the
 driver with `{cursor: true}`.
 
 ```js
-var result = yield r.expr([1, 2, 3]).run()
-console.log(JSON.stringify(result)) // print [1, 2, 3]
+r.expr([1, 2, 3]).run().then(function(result) {
+  console.log(JSON.stringify(result)) // print [1, 2, 3]
+})
 ```
 
 ```js
-// Or with a cursor
-var cursor = r.expr([1, 2, 3]).run({cursor: true})
-cursor.toArray().then(function(result) {
-  console.log(JSON.stringify(result)) // print [1, 2, 3]
-});
+r.expr([1, 2, 3]).run({cursor: true}).then(function(result) {
+  cursor.toArray().then(function(result) {
+    console.log(JSON.stringify(result)) // print [1, 2, 3]
+  });
+})
 ```
 
 __Note__: If a query returns a cursor, the connection will not be
@@ -252,8 +249,8 @@ released as long as the cursor hasn't fetched everything or has been closed.
 
 #### Readable streams
 
-2. Cursors can be returned as [Readable streams](http://nodejs.org/api/stream.html#stream_class_stream_readable) thanks
-to the `toStream()` method.
+[Readable streams](http://nodejs.org/api/stream.html#stream_class_stream_readable) can be
+synchronously returned with the `toStream()` method.
 
 ```js
 var fs = require('fs');
@@ -269,12 +266,12 @@ r.table('users').toStream()
   });
 ```
 
-_Note:_ The stream will emit an error if you provide it with a single value (arrays and grouped data
-work fine).
+_Note:_ The stream will emit an error if you provide it with a single value (streams, arrays
+and grouped data work fine).
 
 _Note:_ `null` values are currently dropped from streams.
 
-##### Writable and Transform streams
+#### Writable and Transform streams
 
 You can create a [Writable](http://nodejs.org/api/stream.html#stream_class_stream_writable)
 or [Transform](http://nodejs.org/api/stream.html#stream_class_stream_transform) streams by
@@ -285,7 +282,7 @@ This makes a convenient way to dump data from multiple places without having to 
 about batching them. The writable streams will sequentially insert data, but may insert
 the data in batch.
 
-```
+```js
 var logs = r.table('logs').toStream({writable: true});
 
 http.createServer(function (req, res) {
@@ -340,6 +337,7 @@ r.setArrayLimit(<number>)
 Rethinkdbdash will ignore the keys/values where the value is `undefined` instead
 of throwing an error like the official driver.
 
+
 #### Better errors
 
 
@@ -348,7 +346,7 @@ of throwing an error like the official driver.
 If your query fails, the driver will return an error with a backtrace; your query
 will be printed and the broken part will be highlighted.
 
-Backtraces in rethinkdbdash are tested and properly formatted. For example long backtraces
+Backtraces in rethinkdbdash are tested and properly formatted. Typically, long backtraces
 are split on multiple lines and if the driver cannot serialize the query,
 it will provide a better location of the error.
 
@@ -356,7 +354,7 @@ it will provide a better location of the error.
 ##### Arity errors
 
 The server may return confusing error messages when the wrong number
-of arguments is provided (See [issue 2463](https://github.com/rethinkdb/rethinkdb/issues/2463) to track progress).
+of arguments is provided (See [rethinkdb/rethinkdb#2463](https://github.com/rethinkdb/rethinkdb/issues/2463) to track progress).
 Rethinkdbdash tries to make up for it by catching errors before sending
 the query to the server if possible.
 
@@ -368,8 +366,6 @@ recomputing it if the query is re-run.
 
 The code was partially optimized for v8, and is written in pure JavaScript which avoids
 errors like [issue #2839](https://github.com/rethinkdb/rethinkdb/issues/2839)
-
-
 
 
 ### Run tests
@@ -387,3 +383,43 @@ Tests are also being run on [wercker](http://wercker.com/):
 - Box: 
   - Github: [https://github.com/neumino/box-rethinkdbdash](https://github.com/neumino/box-rethinkdbdash)
   - Wercker builds: [https://app.wercker.com/#applications/52dffc65a4acb3ef16010b60/tab](https://app.wercker.com/#applications/52dffc65a4acb3ef16010b60/tab)
+
+
+### FAQ
+
+- Why rethinkdbdash?
+
+Rethinkdbdash was built as an experiment for promises and a connection pool. Its
+purpose was to test new features and improve the official driver. Today,
+rethinkdbdash still tries to make the developer experience as pleasant as possible.
+
+Some features like promises have been back ported to the official driver, some like
+the connection pool and streams are on their way.
+
+
+- Is it stable?
+
+Yes.
+
+Rethinkdbdash is used by quite a few people. The driver is also used by `thinky`,
+so it has been and is still being tested in the wild.
+
+
+- Is rethinkdbdash going to become the JavaScript official driver?
+
+Not (yet?), maybe :)
+
+Completely replacing the driver requires some work:
+- Integrate the driver in RethinkDB suite test.
+- Support HTTP connections.
+- Rollback some default like the coercion of cursors to arrays.
+
+
+- Can I contribute? 
+
+Because I would like to give rethinkdbdash to RethinkDB, I would like to
+keep ownership of the code (mostly because I don't like dealing with legal stuff).
+So I would rather not merge pull requests. That being said, feedback,
+bug reports etc. are welcome!
+
+If you want to write code, checkout [thinky](https://github.com/neumino/thinky)!
