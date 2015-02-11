@@ -39,15 +39,6 @@ var r = require('rethinkdbdash')();
 r.table('users').get('orphee@gmail.com').run().then(function(user) {
   // ...
 }).error(handleError)
-
-/* Instead of
-r.connect().then(function(connection) {
-  r.table('users').get('orphee@gmail.com').run().then(function(user) {
-    // ...
-    connection.close();
-  }).error(handleError)
-});
-*/
 ```
 
 - RethinkDB streams are coerced to arrays by default
@@ -56,11 +47,10 @@ r.connect().then(function(connection) {
 var r = require('rethinkdbdash')();
 r.table('data').run().then(function(result) {
   assert(Array.isArray(result)) // true
-  /* With the official driver you need to call
-  result.toArray().then(function(result2) {
-     assert(Array.isArray(result2))
-  })
-  */
+  // With the official driver you need to call
+  // result.toArray().then(function(result2) {
+  //   assert(Array.isArray(result2))
+  // })
 });
 ```
 
@@ -89,7 +79,7 @@ If you want to take advantage of the connection pool, refer to the next section.
 To switch from the official driver to rethinkdbdash and get the most of it,
 here are the few things to do:
 
-1. Change the way to import the driver.
+* Change the way to import the driver.
 
 ```js
 var r = require('rethinkdb');
@@ -99,11 +89,11 @@ To:
 
 ```js
 var r = require('rethinkdbdash')();
-// Or if you do not connect to the local default instance:
+// Or if you do not connect to the default local instance:
 // var r = require('rethinkdbdash')({host: ..., port: ...});
 ```
 
-2. Remove everything related to a connection:
+* Remove everything related to a connection:
 
 ```js
 r.connect({host: ..., port: ...}).then(function(connection) {
@@ -123,7 +113,7 @@ query.run().then(function(result) {
 });
 ```
 
-3. Remove the methods related to the cursor. This typically involves
+* Remove the methods related to the cursor. This typically involves
 removing `toArray`:
 
 ```js
