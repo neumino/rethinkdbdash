@@ -79,58 +79,58 @@ If you want to take advantage of the connection pool, refer to the next section.
 To switch from the official driver to rethinkdbdash and get the most of it,
 here are the few things to do:
 
-* Change the way to import the driver.
+1. Change the way to import the driver.
 
-```js
-var r = require('rethinkdb');
-```
+  ```js
+  var r = require('rethinkdb');
+  ```
 
-To:
+  To:
 
-```js
-var r = require('rethinkdbdash')();
-// Or if you do not connect to the default local instance:
-// var r = require('rethinkdbdash')({host: ..., port: ...});
-```
+  ```js
+  var r = require('rethinkdbdash')();
+  // Or if you do not connect to the default local instance:
+  // var r = require('rethinkdbdash')({host: ..., port: ...});
+  ```
 
-* Remove everything related to a connection:
+2. Remove everything related to a connection:
 
-```js
-r.connect({host: ..., port: ...}).then(function(connection) {
-  connection.on('error', handleError);
-  query.run(connection).then(function(result) {
-    // console.log(result);
-    connection.close();
+  ```js
+  r.connect({host: ..., port: ...}).then(function(connection) {
+    connection.on('error', handleError);
+    query.run(connection).then(function(result) {
+      // console.log(result);
+      connection.close();
+    });
   });
-});
-```
+  ```
 
-Becomes:
+  Becomes:
 
-```js
-query.run().then(function(result) {
-  // console.log(result);
-});
-```
+  ```js
+  query.run().then(function(result) {
+    // console.log(result);
+  });
+  ```
 
-* Remove the methods related to the cursor. This typically involves
+3. Remove the methods related to the cursor. This typically involves
 removing `toArray`:
 
-```js
-r.table('data').run(connection).then(function(cursor) {
-  cursor.toArray().then(function(result) {
-    // console.log(result):
+  ```js
+  r.table('data').run(connection).then(function(cursor) {
+    cursor.toArray().then(function(result) {
+      // console.log(result):
+    });
   });
-});
-```
+  ```
 
-Becomes
+  Becomes
 
-```js
-r.table('data').run().then(function(result) {
-  // console.log(result);
-});
-```
+  ```js
+  r.table('data').run().then(function(result) {
+    // console.log(result);
+  });
+  ```
 
 
 
