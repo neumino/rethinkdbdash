@@ -404,6 +404,11 @@ Tests are also being run on [wercker](http://wercker.com/):
   and has been and is still being tested in the wild.
 
 
+- __Does it work with io.js?__
+
+  All the tests pass with io.js so yes.
+
+
 - __Is rethinkdbdash going to become the JavaScript official driver?__
 
   Not (yet?), maybe :)
