@@ -6,15 +6,12 @@ rethinkdbdash
 An Node.js driver for RethinkDB with more advanced features.
 
 ### Install
-=============
 
 ```
 npm install rethinkdbdash
 ```
 
-The `rethinkdbdash-unstable` package is a relic from the past when the driver had a dependency on `node-protobuf`.
-
-
+_Note_: The `rethinkdbdash-unstable` package is a relic from the past (rethinkdb < 1.13).
 
 ### Quick start
 
