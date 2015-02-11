@@ -387,7 +387,7 @@ Tests are also being run on [wercker](http://wercker.com/):
 
 ### FAQ
 
-- Why rethinkdbdash?
+- _Why rethinkdbdash?_
 
   Rethinkdbdash was built as an experiment for promises and a connection pool. Its
   purpose was to test new features and improve the official driver. Today,
@@ -398,7 +398,7 @@ Tests are also being run on [wercker](http://wercker.com/):
   the connection pool and streams are on their way.
 
 
-- Is it stable?
+- _Is it stable?_
 
   Yes.
 
@@ -406,7 +406,7 @@ Tests are also being run on [wercker](http://wercker.com/):
   so it has been and is still being tested in the wild.
 
 
-- Is rethinkdbdash going to become the JavaScript official driver?
+- _Is rethinkdbdash going to become the JavaScript official driver?_
 
   Not (yet?), maybe :)
 
@@ -416,7 +416,7 @@ Tests are also being run on [wercker](http://wercker.com/):
   - Rollback some default like the coercion of cursors to arrays.
 
 
-- Can I contribute? 
+- _Can I contribute?_
 
   Because I would like to give rethinkdbdash to RethinkDB, I would like to
   keep ownership of the code (mostly because I don't like dealing with legal stuff).
