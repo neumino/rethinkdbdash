@@ -231,10 +231,25 @@ _Note:_ `null` values are currently dropped from streams.
 
 #### Writable streams ####
 
-You can open a writable streams on a table by calling `toStream({writable: true})`.
+You can open a Writable stream or a Transform stream on a table by
+calling `toStream({writable: true})` or `toStream({transform: true})`.
+
+Transform streams are currently more efficient than Writable streams as
+Transform streams can eagerly buffer data as they have a chance to deal with the
+remaining data when the input stream is closed.
+
+Until [joyent/node#7348](https://github.com/joyent/node/issues/7348) is solved,
+or a better internal buffer is implemented for Writable streams,
+we recommend people to use only Transform streams. If you do not need the ouput,
+just pass `{returnChanges: false}` in the options and pipe to `dev/null`.
+
+
+For example if you want to save all the uncaught errors, you could do:
 
 ```js
-var logs = r.table('logs').toStream({writable: true});
+var devnull = require('dev-null');
+var logs = r.table('logs').toStream({transform: true, returnChanges: false});
+logs.pipe(devnull());
 
 // Logs all the uncaught exceptions
 process.on('error', function(err) {
@@ -242,9 +257,11 @@ process.on('error', function(err) {
 });
 ```
 
-If you need the result of your write, you can call `toStream({transform: true})` to retrieve a
-Transform stream.
+_Note_: Writable and Transform streams use a single connection. If you want to specify the
+connection, use the syntax `toStream(connection, {transform: true})`.
 
+_Note_: Writable and Transform streams will execute a single insert operation at a time,
+but will execute a batch insert if possible.
 
 #### Errors ####
 - Better backtraces
