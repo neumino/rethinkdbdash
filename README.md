@@ -74,7 +74,7 @@ var r = require('rethinkdbdash')({
 If you want to take advantage of the connection pool, refer to the next section.
 
 
-### From the official driver
+#### From the official driver
 
 To switch from the official driver to rethinkdbdash and get the most of it,
 here are the few things to do:
@@ -134,7 +134,7 @@ removing `toArray`:
 
 
 
-### New features and differences ###
+### New features and differences
 
 Rethinkdbdash ships with a few interesting features.
 
@@ -167,21 +167,26 @@ _Note_: The option `{stream: true}` that asynchronously returns a stream is depr
 
 #### Connection pool
 
-As mentionned before, `rethinkdbdash` has a connection pool and manage the connection
-itself. The connection pool is initialized as soon as you execute the module, which
-is why all the options for the connection pool should be passed there.
+As mentionned before, `rethinkdbdash` has a connection pool and manage all the connections
+itself. The connection pool is initialized as soon as you execute the module.
 
-In the common case, you never have to worry about the connection pool. It will create
-connection as it needs respecting the constraints provided. In case the RethinkDB server
-is not available, it will retry using an exponential back off algorithm.
+You should never have to worry about connections in rethinkdbdash. Connections are created
+as they are needed, and in case of failure, the pool will try to open connections with an
+exponential back off algorithm.
 
-Because the connection pool will keep some connections available, your script will not
+The driver will execute one query per connection as queries are not executed in parallel
+on a single connection at the moment - [rethinkdb/rethinkdb#3296](https://github.com/rethinkdb/rethinkdb/issues/3296).
+
+Because the connection pool will keep some connections available, a script will not
 terminate. If you have finished executing your queries and want your Node.js script
 to exit, you need to drain the pool with:
 
 ```js
 r.getPool().drain();
 ```
+
+_Note_: If you are using cursors, you must fetch all the data from the cursor or close the cursor to release
+the connection. Failure to do so will keep a connection unavailable for other queries.
 
 
 ##### Advanced details about the pool
