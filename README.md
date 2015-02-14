@@ -250,7 +250,7 @@ released as long as the cursor hasn't fetched everything or has been closed.
 #### Readable streams
 
 [Readable streams](http://nodejs.org/api/stream.html#stream_class_stream_readable) can be
-synchronously returned with the `toStream()` method.
+synchronously returned with the `toStream([connection])` method.
 
 ```js
 var fs = require('fs');
@@ -275,8 +275,8 @@ _Note:_ `null` values are currently dropped from streams.
 
 You can create a [Writable](http://nodejs.org/api/stream.html#stream_class_stream_writable)
 or [Transform](http://nodejs.org/api/stream.html#stream_class_stream_transform) streams by
-calling `toStream({writable: true})` or
-`toStream({transform: true})` on a table.
+calling `toStream([connection, ]{writable: true})` or
+`toStream([connection, ]{transform: true})` on a table.
 
 This makes a convenient way to dump a file your database.
 
