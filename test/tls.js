@@ -9,8 +9,8 @@ var fs = require('fs');
 var path = require('path');
 var tlsOpts = {
     key: fs.readFileSync(path.join(__dirname, 'certs/my-server.key.pem')),
-    cert: fs.readFileSync(path.join(__dirname, './certs/my-server.crt.pem')),
-    ca: fs.readFileSync(path.join(__dirname, './certs/my-private-root-ca.crt.pem'))
+    cert: fs.readFileSync(path.join(__dirname, 'certs/my-server.crt.pem')),
+    ca: fs.readFileSync(path.join(__dirname, 'certs/my-private-root-ca.crt.pem'))
 };
 tls.createServer(tlsOpts, function (socket) {
     var conn = net.createConnection(config.port, config.host);
