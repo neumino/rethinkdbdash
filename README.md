@@ -142,6 +142,7 @@ on your server with:
 ```js
 var tls = require('tls');
 var net = require('net');
+var fs = require('fs');
 var tlsOpts = {
   key: fs.readFileSync('private-key.pem'),
   cert: fs.readFileSync('public-cert.pem')
