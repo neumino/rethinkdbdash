@@ -225,10 +225,10 @@ It("`merge` should throw if no argument has been passed", function* (done) {
 })
 It("`literal` should throw if no argument has been passed", function* (done) {
     try {
-        var result = yield r.db(dbName).table(tableName).literal().run();
+        var result = yield r.literal().run();
     }
     catch(e) {
-        if (e.message === "`literal` takes 1 argument, 0 provided after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+        if (e.message === "`r.literal` takes 1 argument, 0 provided.") {
             done();
         }
         else {
