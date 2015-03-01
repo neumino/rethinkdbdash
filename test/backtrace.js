@@ -4737,3 +4737,145 @@ It('Test backtrace for r.map([1,2,3], [1,2,3], function(var_1, var_2) { return v
     }
 })
 
+
+
+/*
+Frames:
+[ 0, 0 ]
+
+Error:
+Expected type STRING but found ARRAY in:
+r.expr([1, 2, 3]).split(",", 3).add(3)
+^^^^^^^^^^^^^^^^^
+*/
+It('Test backtrace for r.expr([1,2,3]).split(",", 3).add(3)', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.expr([1,2,3]).split(",", 3).add(3).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Expected type STRING but found ARRAY in:\nr.expr([1, 2, 3]).split(\",\", 3).add(3)\n^^^^^^^^^^^^^^^^^                     \n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+
+/*
+Frames:
+[]
+
+Error:
+Expected type NUMBER but found OBJECT in:
+r.expr({}).merge({
+^^^^^^^^^^^^^^^^^^
+    a: r.literal({
+    ^^^^^^^^^^^^^^
+        foo: "bar"
+        ^^^^^^^^^^
+    })
+    ^^
+}).add(2)
+^^^^^^^^^
+*/
+It('Test backtrace for r.expr({}).merge({a: r.literal({foo: "bar"})}).add(2)', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.expr({}).merge({a: r.literal({foo: "bar"})}).add(2).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Expected type NUMBER but found OBJECT in:\nr.expr({}).merge({\n^^^^^^^^^^^^^^^^^^\n    a: r.literal({\n    ^^^^^^^^^^^^^^\n        foo: \"bar\"\n        ^^^^^^^^^^\n    })\n    ^^\n}).add(2)\n^^^^^^^^^\n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+/*
+Frames:
+[]
+
+Error:
+Expected type NUMBER but found ARRAY in:
+r.monday.add([1])
+^^^^^^^^^^^^^^^^^
+*/
+It('Test backtrace for r.monday.add([1])', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.monday.add([1]).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Expected type NUMBER but found ARRAY in:\nr.monday.add([1])\n^^^^^^^^^^^^^^^^^\n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+
+/*
+Frames:
+[]
+
+Error:
+Expected type NUMBER but found ARRAY in:
+r.november.add([1])
+^^^^^^^^^^^^^^^^^^^
+*/
+It('Test backtrace for r.november.add([1])', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.november.add([1]).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Expected type NUMBER but found ARRAY in:\nr.november.add([1])\n^^^^^^^^^^^^^^^^^^^\n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+
+/*
+Frames:
+[]
+
+Error:
+Expected type NUMBER but found OBJECT in:
+r.expr({
+^^^^^^^^
+    a: r.wednesday
+    ^^^^^^^^^^^^^^
+}).add([1])
+^^^^^^^^^^^
+*/
+It('Test backtrace for r.expr({a: r.wednesday}).add([1])', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.expr({a: r.wednesday}).add([1]).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Expected type NUMBER but found OBJECT in:\nr.expr({\n^^^^^^^^\n    a: r.wednesday\n    ^^^^^^^^^^^^^^\n}).add([1])\n^^^^^^^^^^^\n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
