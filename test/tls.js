@@ -58,26 +58,33 @@ It("hello world for `tls.js`", function *(done) {
     }
 });
 
-It("hello world for `tls.js` with TLS options", function *(done) {
+/*
+    The self signed certificate is only good for localhost and not
+    other IP/hostnames that may be used in CIs, so we will only test
+    this if the environment variable WERCKER_RETHINKDB_HOST is not declared.
+*/
+if (clientConfig.host === 'localhost') {
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = "1"; // do not ignore self-signed certificates (default)
     clientConfig.tls = tlsOpts;
     r = require('../lib')(clientConfig);
-    try {
-        var doc = {
-            "id": "hello world safe!"
-        };
+    It("hello world for `tls.js` with TLS options", function *(done) {
+        try {
+            var doc = {
+                "id": "hello world safe!"
+            };
 
-        var result = yield r.db(dbName).table(tableName).insert(doc).run();
-        assert.equal(1, result.inserted);
+            var result = yield r.db(dbName).table(tableName).insert(doc).run();
+            assert.equal(1, result.inserted);
 
-        var docFromDb = yield r.db(dbName).table(tableName).get('hello world safe!').run();
-        assert.deepEqual(doc, docFromDb);
-        done();
-    }
-    catch(e) {
-        done(e);
-    }
-});
+            var docFromDb = yield r.db(dbName).table(tableName).get('hello world safe!').run();
+            assert.deepEqual(doc, docFromDb);
+            done();
+        }
+        catch(e) {
+            done(e);
+        }
+    });
+}
 
 It("cleanup for TLS options", function *(done) {
     try {
