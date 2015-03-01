@@ -1,6 +1,6 @@
 var config = require('./config.js');
 var clientConfig = JSON.parse(JSON.stringify(config)); // clone object
-clientConfig.port = 1000 + Math.floor(Math.random()*1000);
+clientConfig.port = 10000 + Math.floor(Math.random()*1000);
 clientConfig.tls = true;
 
 var tls = require('tls');
