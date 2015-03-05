@@ -101,6 +101,19 @@ It("`wait` should work", function* (done) {
     }
 })
 
+It("`wait` should work with options", function* (done) {
+    try {
+        result = yield r.db(dbName).table(tableName).wait({waitFor: 'ready_for_writes'}).run();
+        assert.equal(result.ready, 1);
+
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
+
 It("`r.wait` should work", function* (done) {
     try {
         result = yield r.wait().run();
@@ -113,12 +126,12 @@ It("`r.wait` should work", function* (done) {
     }
 })
 
-It("`wait` should throw if called with an argument", function* (done) {
+It("`wait` should throw if called with 2 arguments", function* (done) {
     try{
-        var result = yield r.db(dbName).table(tableName).wait("hello").run();
+        var result = yield r.db(dbName).table(tableName).wait("hello", "world").run();
     }
     catch(e) {
-        if (e.message.match(/^`wait` takes 0 argument, 1 provided after:/)) {
+        if (e.message.match(/^`wait` takes at most 1 argument, 2 provided after:/)) {
             done()
         }
         else {
