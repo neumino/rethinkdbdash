@@ -443,6 +443,15 @@ It("Test multiple pools - kill a server and restart it - auto: true", function* 
         }
         server2.destroy();
         yield util.sleep(1000);
+        // Attempt to fill the two remaining pools
+        for(var i=0; i<30; i++) {
+            r.expr(100).run().then(function() {
+                success++;
+            }).error(function() {
+                error++;
+            });
+        }
+
         server2 = new Server({
             host: server2.host,
             port: server2.port 
@@ -456,8 +465,19 @@ It("Test multiple pools - kill a server and restart it - auto: true", function* 
         assert.equal(r.getPool(1).options.buffer, 4);
         assert.equal(r.getPool(2).options.buffer, 4);
 
-        assert.equal(success, 6);
+        assert.equal(success, 6+30);
         assert.equal(error, 3);
+
+        var p = []
+        for(var i=0; i<40; i++) {
+            p.push(r.expr(100).run());
+        }
+        var result =yield p;
+        assert.equal(result.length, 40);
+        yield util.sleep(1000); // yield to let the connection some time to close
+        assert.equal(r.getPool(0).getLength(), 10);
+        assert.equal(r.getPool(1).getLength(), 10);
+        assert.equal(r.getPool(2).getLength(), 10);
 
         yield r.getPoolMaster().drain();
         // Restart server2 since we killed it
