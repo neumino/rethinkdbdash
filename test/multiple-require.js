@@ -12,7 +12,7 @@ var dbName, tableName;
 
 It("Multiple import should not share the same pool", function* (done) {
     try {
-        assert(r.getPool() !== r_.getPool());
+        assert(r.getPoolMaster() !== r_.getPoolMaster());
         done();
     }
     catch(e) {

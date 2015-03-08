@@ -17,7 +17,12 @@ function It(testName, generatorFn) {
         Promise.coroutine(generatorFn)(done);
     })
 }
-
+function sleep(timer) {
+    return new Promise(function(resolve, reject) {
+        setTimeout(resolve, timer);
+    });
+}
 
 module.exports.uuid = uuid
 module.exports.It = It
+module.exports.sleep = sleep
