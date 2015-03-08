@@ -594,6 +594,9 @@ It("Test removing a new server", function* (done) {
     server1.mockServersStatus([server1, server2, server3])
     server2.mockServersStatus([server1, server2, server3])
     server3.mockServersStatus([server1, server2, server3])
+    server1.mockServersStatus([server1, server3])
+    server3.mockServersStatus([server1, server3])
+
     var r = require(__dirname+'/../lib')({
         hosts: [
             {host: server1.host, port: server1.port}
