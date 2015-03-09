@@ -12,7 +12,7 @@ var dbName, tableName, tableName2, stream, result, pks, feed;
 
 var numDocs = 100; // Number of documents in the "big table" used to test the SUCCESS_PARTIAL 
 
-
+// TODO: Tests are flaky with a slow server. Rewrite them with a fake server.
 It('Init for `writable-stream.js`', function* (done) {
     try {
         dbName = uuid();
