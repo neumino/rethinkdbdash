@@ -20,7 +20,7 @@ var It = util.It;
 var uuid = util.uuid;
 var dbName, tableName, result, pks;
 
-It("Test fake server", function* (done) {
+It('Test fake server', function* (done) {
     var r = require(__dirname+'/../lib')({pool: false});
     try {
         var connection = yield r.connect({
@@ -43,7 +43,7 @@ It("Test fake server", function* (done) {
     }
 });
 
-It("Test pool no query with auto: false", function* (done) {
+It('Test pool no query with auto: false', function* (done) {
     server1.mockServersStatus([server1])
     var r = require(__dirname+'/../lib')({
         host: server1.host,
@@ -64,7 +64,7 @@ It("Test pool no query with auto: false", function* (done) {
         done(e);
     }
 });
-It("Test pool no query with auto: true", function* (done) {
+It('Test pool no query with auto: true', function* (done) {
     server1.mockServersStatus([server1])
     var r = require(__dirname+'/../lib')({
         host: server1.host,
@@ -86,7 +86,7 @@ It("Test pool no query with auto: true", function* (done) {
         done(e);
     }
 });
-It("Test expanding the pool with auto: false", function* (done) {
+It('Test expanding the pool with auto: false', function* (done) {
     server1.mockServersStatus([server1])
     var r = require(__dirname+'/../lib')({
         host: server1.host,
@@ -111,7 +111,7 @@ It("Test expanding the pool with auto: false", function* (done) {
         done(e);
     }
 });
-It("Test expanding the pool with auto: true", function* (done) {
+It('Test expanding the pool with auto: true', function* (done) {
     server1.mockServersStatus([server1])
     var r = require(__dirname+'/../lib')({
         host: server1.host,
@@ -136,7 +136,7 @@ It("Test expanding the pool with auto: true", function* (done) {
         done(e);
     }
 });
-It("Test expanding the pool to max with auto: false", function* (done) {
+It('Test expanding the pool to max with auto: false', function* (done) {
     server1.mockServersStatus([server1])
     var r = require(__dirname+'/../lib')({
         host: server1.host,
@@ -168,7 +168,7 @@ It("Test expanding the pool to max with auto: false", function* (done) {
         done(e);
     }
 });
-It("Test expanding the pool to max with auto: true", function* (done) {
+It('Test expanding the pool to max with auto: true', function* (done) {
     server1.mockServersStatus([server1])
     var r = require(__dirname+'/../lib')({
         host: server1.host,
@@ -202,7 +202,7 @@ It("Test expanding the pool to max with auto: true", function* (done) {
         done(e);
     }
 });
-It("Test multiple pools with late start", function* (done) {
+It('Test multiple pools with late start', function* (done) {
     server1.cleanMockServersStatus();
     server2.cleanMockServersStatus();
     server3.cleanMockServersStatus();
@@ -254,7 +254,7 @@ It("Test multiple pools with late start", function* (done) {
         done(e);
     }
 });
-It("Test multiple pools with early start", function* (done) {
+It('Test multiple pools with early start', function* (done) {
     server1.cleanMockServersStatus();
     server2.cleanMockServersStatus();
     server3.cleanMockServersStatus();
@@ -305,7 +305,7 @@ It("Test multiple pools with early start", function* (done) {
         done(e);
     }
 });
-It("Test multiple pools - kill a server - check options", function* (done) {
+It('Test multiple pools - kill a server - check options', function* (done) {
     server1.cleanMockServersStatus();
     server2.cleanMockServersStatus();
     server3.cleanMockServersStatus();
@@ -351,7 +351,7 @@ It("Test multiple pools - kill a server - check options", function* (done) {
         done(e);
     }
 });
-It("Test multiple pools - kill a server while running queries", function* (done) {
+It('Test multiple pools - kill a server while running queries', function* (done) {
     server1.cleanMockServersStatus();
     server2.cleanMockServersStatus();
     server3.cleanMockServersStatus();
@@ -409,7 +409,7 @@ It("Test multiple pools - kill a server while running queries", function* (done)
         done(e);
     }
 });
-It("Test multiple pools - kill a server and restart it - auto: true", function* (done) {
+It('Test multiple pools - kill a server and restart it - auto: true', function* (done) {
     server1.cleanMockServersStatus();
     server2.cleanMockServersStatus();
     server3.cleanMockServersStatus();
@@ -488,7 +488,7 @@ It("Test multiple pools - kill a server and restart it - auto: true", function* 
     }
 });
 
-It("Test multiple pools - kill a server and restart it - auto: false", function* (done) {
+It('Test multiple pools - kill a server and restart it - auto: false', function* (done) {
     server1.cleanMockServersStatus();
     server2.cleanMockServersStatus();
     server3.cleanMockServersStatus();
@@ -552,7 +552,7 @@ It("Test multiple pools - kill a server and restart it - auto: false", function*
         done(e);
     }
 });
-It("Test adding a new server", function* (done) {
+It('Test adding a new server', function* (done) {
     server1.cleanMockServersStatus();
     server2.cleanMockServersStatus();
     server3.cleanMockServersStatus();
@@ -587,7 +587,7 @@ It("Test adding a new server", function* (done) {
         done(e);
     }
 });
-It("Test removing a new server", function* (done) {
+It('Test removing a new server', function* (done) {
     server1.cleanMockServersStatus();
     server2.cleanMockServersStatus();
     server3.cleanMockServersStatus();

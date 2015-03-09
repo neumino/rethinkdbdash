@@ -4,14 +4,13 @@ var util = require(__dirname+'/util/common.js');
 var assert = require('assert');
 var Promise = require('bluebird');
 
-var uuid = util.uuid;
 var It = util.It;
-
 var uuid = util.uuid;
+
 var dbName, tableName, result, pks;
 
 
-It("Init for `administration.js`", function* (done) {
+It('Init for `administration.js`', function* (done) {
     try {
         dbName = uuid();
         tableName = uuid();
@@ -33,7 +32,7 @@ It("Init for `administration.js`", function* (done) {
     }
 })
 
-It("`config` should work", function* (done) {
+It('`config` should work', function* (done) {
     try {
         result = yield r.db(dbName).config().run();
         assert.equal(result.name, dbName);
@@ -48,7 +47,7 @@ It("`config` should work", function* (done) {
     }
 })
 
-It("`config` should throw if called with an argument", function* (done) {
+It('`config` should throw if called with an argument', function* (done) {
     try{
         var result = yield r.db(dbName).config("hello").run();
     }
@@ -62,7 +61,7 @@ It("`config` should throw if called with an argument", function* (done) {
     }
 })
 
-It("`status` should work", function* (done) {
+It('`status` should work', function* (done) {
     try {
         result = yield r.db(dbName).table(tableName).status().run();
         assert.equal(result.name, tableName);
@@ -75,7 +74,7 @@ It("`status` should work", function* (done) {
     }
 })
 
-It("`status` should throw if called with an argument", function* (done) {
+It('`status` should throw if called with an argument', function* (done) {
     try{
         var result = yield r.db(dbName).table(tableName).status("hello").run();
     }
@@ -89,7 +88,7 @@ It("`status` should throw if called with an argument", function* (done) {
     }
 })
 
-It("`wait` should work", function* (done) {
+It('`wait` should work', function* (done) {
     try {
         result = yield r.db(dbName).table(tableName).wait().run();
         assert.equal(result.ready, 1);
@@ -101,7 +100,7 @@ It("`wait` should work", function* (done) {
     }
 })
 
-It("`wait` should work with options", function* (done) {
+It('`wait` should work with options', function* (done) {
     try {
         result = yield r.db(dbName).table(tableName).wait({waitFor: 'ready_for_writes'}).run();
         assert.equal(result.ready, 1);
@@ -114,7 +113,7 @@ It("`wait` should work with options", function* (done) {
 })
 
 
-It("`r.wait` should work", function* (done) {
+It('`r.wait` should work', function* (done) {
     try {
         result = yield r.wait().run();
         assert(result.hasOwnProperty('ready'));
@@ -126,7 +125,7 @@ It("`r.wait` should work", function* (done) {
     }
 })
 
-It("`wait` should throw if called with 2 arguments", function* (done) {
+It('`wait` should throw if called with 2 arguments', function* (done) {
     try{
         var result = yield r.db(dbName).table(tableName).wait("hello", "world").run();
     }
@@ -140,7 +139,7 @@ It("`wait` should throw if called with 2 arguments", function* (done) {
     }
 })
 
-It("`reconfigure` should work - 1", function* (done) {
+It('`reconfigure` should work - 1', function* (done) {
     try {
         result = yield r.db(dbName).table(tableName).reconfigure({shards: 1, replicas: 1}).run();
         assert.equal(result.reconfigured, 1);
@@ -153,7 +152,7 @@ console.log(e);
     }
 })
 
-It("`reconfigure` should work - 2 - dryRun", function* (done) {
+It('`reconfigure` should work - 2 - dryRun', function* (done) {
     try {
         result = yield r.db(dbName).table(tableName).reconfigure({shards: 1, replicas: 1, dryRun: true}).run();
         assert.equal(result.reconfigured, 0);
@@ -164,7 +163,7 @@ It("`reconfigure` should work - 2 - dryRun", function* (done) {
         done(e);
     }
 })
-It("`r.reconfigure` should work", function* (done) {
+It('`r.reconfigure` should work', function* (done) {
     try {
         result = yield r.reconfigure({shards: 1, replicas: 1}).run();
         assert.deepEqual(result, {});
@@ -177,7 +176,7 @@ console.log(e);
     }
 })
 
-It("`reconfigure` should throw on an unrecognized key", function* (done) {
+It('`reconfigure` should throw on an unrecognized key', function* (done) {
     try {
         result = yield r.db(dbName).table(tableName).reconfigure({foo: 1}).run();
         assert.equal(result.reconfigured, 0);
@@ -195,7 +194,7 @@ It("`reconfigure` should throw on an unrecognized key", function* (done) {
 })
 
 
-It("`reconfigure` should throw on a number", function* (done) {
+It('`reconfigure` should throw on a number', function* (done) {
     try {
         result = yield r.db(dbName).table(tableName).reconfigure(1).run();
 
@@ -212,7 +211,7 @@ It("`reconfigure` should throw on a number", function* (done) {
     }
 })
 
-It("`rebalanced` should work - 1", function* (done) {
+It('`rebalanced` should work - 1', function* (done) {
     try {
         result = yield r.db(dbName).table(tableName).rebalance().run();
         assert.equal(result.rebalanced, 1);
@@ -224,7 +223,7 @@ console.log(e);
         done(e);
     }
 })
-It("`r.rebalance` should work", function* (done) {
+It('`r.rebalance` should work', function* (done) {
     try {
         result = yield r.rebalance().run();
         assert.deepEqual(result, {});
@@ -236,7 +235,7 @@ It("`r.rebalance` should work", function* (done) {
     }
 })
 
-It("`rebalance` should throw if an argument is provided", function* (done) {
+It('`rebalance` should throw if an argument is provided', function* (done) {
     try {
         result = yield r.db(dbName).table(tableName).rebalance(1).run();
 

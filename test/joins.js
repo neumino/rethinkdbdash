@@ -10,7 +10,7 @@ var uuid = util.uuid;
 var dbName, tableName, result, pks;
 
 
-It("Init for `joins.js`", function* (done) {
+It('Init for `joins.js`', function* (done) {
     try {
         dbName = uuid();
         tableName = uuid();
@@ -36,7 +36,7 @@ It("Init for `joins.js`", function* (done) {
     }
 })
 
-It("`innerJoin` should return -- array-array", function* (done) {
+It('`innerJoin` should return -- array-array', function* (done) {
     try {
         result = yield r.expr([1,2,3]).innerJoin(r.expr([1,2,3]), function(left, right) { return left.eq(right) }).run();
         assert.deepEqual(result, [{left:1, right:1}, {left:2, right: 2}, {left:3, right: 3}]);
@@ -46,7 +46,7 @@ It("`innerJoin` should return -- array-array", function* (done) {
         done(e);
     }
 })
-It("`innerJoin` should return -- array-stream", function* (done) {
+It('`innerJoin` should return -- array-stream', function* (done) {
     try {
         result = yield r.expr([1,2,3]).innerJoin(r.db(dbName).table(tableName), function(left, right) { return left.eq(right("val")) }).run();
         assert.equal(result.length, 3);
@@ -63,7 +63,7 @@ It("`innerJoin` should return -- array-stream", function* (done) {
         done(e);
     }
 })
-It("`innerJoin` should return -- stream-stream", function* (done) {
+It('`innerJoin` should return -- stream-stream', function* (done) {
     try {
         result = yield r.db(dbName).table(tableName).innerJoin(r.db(dbName).table(tableName), function(left, right) { return left.eq(right) }).run();
         assert.equal(result.length, 3);
@@ -80,7 +80,7 @@ It("`innerJoin` should return -- stream-stream", function* (done) {
         done(e);
     }
 })
-It("`innerJoin` should throw if no sequence", function* (done) {
+It('`innerJoin` should throw if no sequence', function* (done) {
     try {
         result = yield r.db(dbName).table(tableName).innerJoin().run();
     }
@@ -93,7 +93,7 @@ It("`innerJoin` should throw if no sequence", function* (done) {
         }
     }
 })
-It("`innerJoin` should throw if no predicate", function* (done) {
+It('`innerJoin` should throw if no predicate', function* (done) {
     try {
         var result = yield r.db(dbName).table(tableName).innerJoin(r.expr([1,2,3])).run();
     }
@@ -108,7 +108,7 @@ It("`innerJoin` should throw if no predicate", function* (done) {
 })
 
 
-It("`outerJoin` should return -- array-array", function* (done) {
+It('`outerJoin` should return -- array-array', function* (done) {
     try {
         result = yield r.expr([1,2,3]).outerJoin(r.expr([1,2,3]), function(left, right) { return left.eq(right) }).run();
         assert.deepEqual(result, [{left:1, right:1}, {left:2, right: 2}, {left:3, right: 3}]);
@@ -118,7 +118,7 @@ It("`outerJoin` should return -- array-array", function* (done) {
         done(e);
     }
 })
-It("`outerJoin` should return -- array-stream - 1", function* (done) {
+It('`outerJoin` should return -- array-stream - 1', function* (done) {
     try {
         result = yield r.expr([1,2,3,4]).outerJoin(r.db(dbName).table(tableName), function(left, right) { return left.eq(right("val")) }).run();
         assert.equal(result.length, 4);
@@ -136,7 +136,7 @@ It("`outerJoin` should return -- array-stream - 1", function* (done) {
     }
 })
 
-It("`outerJoin` should return -- array-stream - 2", function* (done) {
+It('`outerJoin` should return -- array-stream - 2', function* (done) {
     try {
         result = yield r.expr([1,2,3,4]).outerJoin(r.db(dbName).table(tableName), function(left, right) { return left.eq(right("val")) }).run();
         assert.equal(result.length, 4);
@@ -155,7 +155,7 @@ It("`outerJoin` should return -- array-stream - 2", function* (done) {
         done(e);
     }
 })
-It("`outerJoin` should return -- stream-stream", function* (done) {
+It('`outerJoin` should return -- stream-stream', function* (done) {
     try {
         result = yield r.db(dbName).table(tableName).outerJoin(r.db(dbName).table(tableName), function(left, right) { return left.eq(right) }).run();
         assert.equal(result.length, 3);
@@ -172,7 +172,7 @@ It("`outerJoin` should return -- stream-stream", function* (done) {
         done(e);
     }
 })
-It("`outerJoin` should throw if no sequence", function* (done) {
+It('`outerJoin` should throw if no sequence', function* (done) {
     try {
         var result = yield r.db(dbName).table(tableName).outerJoin().run();
     }
@@ -185,7 +185,7 @@ It("`outerJoin` should throw if no sequence", function* (done) {
         }
     }
 })
-It("`outerJoin` should throw if no predicate", function* (done) {
+It('`outerJoin` should throw if no predicate', function* (done) {
     try {
         var result = yield r.db(dbName).table(tableName).outerJoin(r.expr([1,2,3])).run();
     }
@@ -200,7 +200,7 @@ It("`outerJoin` should throw if no predicate", function* (done) {
 })
 
 
-It("`eqJoin` should return -- pk -- array-stream - function", function* (done) {
+It('`eqJoin` should return -- pk -- array-stream - function', function* (done) {
     try {
         var result = yield r.expr(pks).eqJoin(function(doc) { return doc; }, r.db(dbName).table(tableName)).run();
         assert.equal(result.length, 3);
@@ -217,7 +217,7 @@ It("`eqJoin` should return -- pk -- array-stream - function", function* (done) {
         done(e);
     }
 })
-It("`eqJoin` should return -- pk -- array-stream - r.row", function* (done) {
+It('`eqJoin` should return -- pk -- array-stream - r.row', function* (done) {
     try {
         var result = yield r.expr(pks).eqJoin(r.row, r.db(dbName).table(tableName)).run();
         assert.equal(result.length, 3);
@@ -235,7 +235,7 @@ It("`eqJoin` should return -- pk -- array-stream - r.row", function* (done) {
     }
 })
 
-It("`eqJoin` should return -- secondary index -- array-stream - r.row", function* (done) {
+It('`eqJoin` should return -- secondary index -- array-stream - r.row', function* (done) {
     try {
         var result = yield r.expr([1,2,3]).eqJoin(r.row, r.db(dbName).table(tableName), {index: "val"}).run();
         assert.equal(result.length, 3);
@@ -252,7 +252,7 @@ It("`eqJoin` should return -- secondary index -- array-stream - r.row", function
         done(e);
     }
 })
-It("`eqJoin` should throw if no argument", function* (done) {
+It('`eqJoin` should throw if no argument', function* (done) {
     try {
         var result = yield r.db(dbName).table(tableName).eqJoin().run();
     }
@@ -265,7 +265,7 @@ It("`eqJoin` should throw if no argument", function* (done) {
         }
     }
 })
-It("`eqJoin` should throw with a non valid key", function* (done) {
+It('`eqJoin` should throw with a non valid key', function* (done) {
     try {
         var result = yield r.expr([1,2,3]).eqJoin(r.row, r.db(dbName).table(tableName), {nonValidKey: "val"}).run();
     }
@@ -279,7 +279,7 @@ It("`eqJoin` should throw with a non valid key", function* (done) {
     }
 })
 
-It("`eqJoin` should throw if no sequence", function* (done) {
+It('`eqJoin` should throw if no sequence', function* (done) {
     try {
         var result = yield r.db(dbName).table(tableName).eqJoin("id").run();
     }
@@ -292,7 +292,7 @@ It("`eqJoin` should throw if no sequence", function* (done) {
         }
     }
 })
-It("`eqJoin` should throw if too many arguments", function* (done) {
+It('`eqJoin` should throw if too many arguments', function* (done) {
     try {
         var result = yield r.db(dbName).table(tableName).eqJoin(1, 1, 1, 1, 1).run();
     }
@@ -308,7 +308,7 @@ It("`eqJoin` should throw if too many arguments", function* (done) {
 
 
 
-It("`zip` should zip stuff", function* (done) {
+It('`zip` should zip stuff', function* (done) {
     try {
         var result = yield r.expr(pks).eqJoin(function(doc) { return doc; }, r.db(dbName).table(tableName)).zip().run();
         assert.equal(result.length, 3);

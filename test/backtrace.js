@@ -9,7 +9,7 @@ var It = util.It;
 var uuid = util.uuid;
 var dbName, tableName, pks, result;
 
-It("Init for backtraces", function* (done) {
+It('Init for backtraces', function* (done) {
     try {
         dbName = uuid();
         tableName = uuid();

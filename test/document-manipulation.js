@@ -9,7 +9,7 @@ var It = util.It;
 var uuid = util.uuid;
 var dbName, tableName, result;
 
-It("Init for `document-manipulation.js`", function* (done) {
+It('Init for `document-manipulation.js`', function* (done) {
     try {
         dbName = uuid();
         tableName = uuid();
@@ -27,7 +27,7 @@ It("Init for `document-manipulation.js`", function* (done) {
     }
 })
 
-It("`r.row` should work - 1", function* (done) {
+It('`r.row` should work - 1', function* (done) {
     try {
         result = yield r.expr([1,2,3]).map(r.row).run();
         assert.deepEqual(result, [1,2,3]);
@@ -38,7 +38,7 @@ It("`r.row` should work - 1", function* (done) {
     }
 })
 
-It("`r.row` should work - 2", function* (done) {
+It('`r.row` should work - 2', function* (done) {
     try {
         var result = yield r.db(dbName).table(tableName).insert({}).run();
         assert.equal(result.inserted, 1);
@@ -52,7 +52,7 @@ It("`r.row` should work - 2", function* (done) {
         done(e);
     }
 })
-It("`r.row` should work - 3", function* (done) {
+It('`r.row` should work - 3', function* (done) {
     try {
         var result = yield r.db(dbName).table(tableName).replace(r.row).run();
         assert.equal(result.replaced, 0);
@@ -63,7 +63,7 @@ It("`r.row` should work - 3", function* (done) {
         done(e);
     }
 })
-It("`r.row` should work - 4", function* (done) {
+It('`r.row` should work - 4', function* (done) {
     try {
         var result = yield r.db(dbName).table(tableName).replace(function(doc) {
             return doc.merge({idCopyReplace: doc("id")})
@@ -77,7 +77,7 @@ It("`r.row` should work - 4", function* (done) {
     }
 })
 
-It("`r.row` should work - 5", function* (done) {
+It('`r.row` should work - 5', function* (done) {
     try {
         var result = yield r.db(dbName).table(tableName).delete().run();
         assert.equal(result.deleted, 1);
@@ -89,7 +89,7 @@ It("`r.row` should work - 5", function* (done) {
     }
 })
 
-It("`pluck` should work", function* (done) {
+It('`pluck` should work', function* (done) {
     try {
         var result = yield r.expr({a: 0, b: 1, c: 2}).pluck("a", "b").run();
         assert.deepEqual(result, {a: 0, b: 1});
@@ -103,7 +103,7 @@ It("`pluck` should work", function* (done) {
         done(e);
     }
 })
-It("`pluck` should throw if no argument has been passed", function* (done) {
+It('`pluck` should throw if no argument has been passed', function* (done) {
     try {
         var result = yield r.db(dbName).table(tableName).pluck().run();
     }
@@ -117,7 +117,7 @@ It("`pluck` should throw if no argument has been passed", function* (done) {
     }
 })
 
-It("`without` should work", function* (done) {
+It('`without` should work', function* (done) {
     try {
         var result = yield r.expr({a: 0, b: 1, c: 2}).without("c").run();
         assert.deepEqual(result, {a: 0, b: 1});
@@ -131,7 +131,7 @@ It("`without` should work", function* (done) {
         done(e);
     }
 })
-It("`without` should throw if no argument has been passed", function* (done) {
+It('`without` should throw if no argument has been passed', function* (done) {
     try {
         var result = yield r.db(dbName).table(tableName).without().run();
     }
@@ -144,7 +144,7 @@ It("`without` should throw if no argument has been passed", function* (done) {
         }
     }
 })
-It("`merge` should work", function* (done) {
+It('`merge` should work', function* (done) {
     try {
         var result = yield r.expr({a: 0}).merge({b: 1}).run();
         assert.deepEqual(result, {a: 0, b: 1});
@@ -166,7 +166,7 @@ It("`merge` should work", function* (done) {
         done(e);
     }
 })
-It("`merge` should take an anonymous function", function* (done) {
+It('`merge` should take an anonymous function', function* (done) {
     try {
         var result = yield r.expr({a: 0}).merge(function(doc) {
             return {b: doc("a").add(1)}
@@ -185,7 +185,7 @@ It("`merge` should take an anonymous function", function* (done) {
     }
 })
 
-It("`literal` should work", function* (done) {
+It('`literal` should work', function* (done) {
     try {
         var data = r.expr({a: {b: 1}}).merge({a: r.literal({c: 2})})._self
         var result = yield r.expr({a: {b: 1}}).merge({a: r.literal({c: 2})}).run();
@@ -197,7 +197,7 @@ It("`literal` should work", function* (done) {
         done(e);
     }
 })
-It("`literal` is not defined after a term", function* (done) {
+It('`literal` is not defined after a term', function* (done) {
     try {
         result = yield r.expr(1).literal("foo").run();
     }
@@ -210,7 +210,7 @@ It("`literal` is not defined after a term", function* (done) {
         }
     }
 })
-It("`merge` should throw if no argument has been passed", function* (done) {
+It('`merge` should throw if no argument has been passed', function* (done) {
     try {
         var result = yield r.db(dbName).table(tableName).merge().run();
     }
@@ -223,7 +223,7 @@ It("`merge` should throw if no argument has been passed", function* (done) {
         }
     }
 })
-It("`literal` should throw if no argument has been passed", function* (done) {
+It('`literal` should throw if no argument has been passed', function* (done) {
     try {
         var result = yield r.literal().run();
     }
@@ -236,7 +236,7 @@ It("`literal` should throw if no argument has been passed", function* (done) {
         }
     }
 })
-It("`append` should work", function* (done) {
+It('`append` should work', function* (done) {
     try {
         var result = yield r.expr([1,2,3]).append(4).run();
         assert.deepEqual(result, [1,2,3,4]);
@@ -247,7 +247,7 @@ It("`append` should work", function* (done) {
         done(e);
     }
 })
-It("`append` should throw if no argument has been passed", function* (done) {
+It('`append` should throw if no argument has been passed', function* (done) {
     try {
         var result = yield r.db(dbName).table(tableName).append().run();
     }
@@ -260,7 +260,7 @@ It("`append` should throw if no argument has been passed", function* (done) {
         }
     }
 })
-It("`prepend` should work", function* (done) {
+It('`prepend` should work', function* (done) {
     try {
         var result = yield r.expr([1,2,3]).prepend(4).run();
         assert.deepEqual(result, [4,1,2,3]);
@@ -271,7 +271,7 @@ It("`prepend` should work", function* (done) {
         done(e);
     }
 })
-It("`prepend` should throw if no argument has been passed", function* (done) {
+It('`prepend` should throw if no argument has been passed', function* (done) {
     try {
         var result = yield r.db(dbName).table(tableName).prepend().run();
     }
@@ -284,7 +284,7 @@ It("`prepend` should throw if no argument has been passed", function* (done) {
         }
     }
 })
-It("`difference` should work", function* (done) {
+It('`difference` should work', function* (done) {
     try {
         var result = yield r.expr([1,2,3]).prepend(4).run();
         assert.deepEqual(result, [4,1,2,3]);
@@ -295,7 +295,7 @@ It("`difference` should work", function* (done) {
         done(e);
     }
 })
-It("`difference` should throw if no argument has been passed", function* (done) {
+It('`difference` should throw if no argument has been passed', function* (done) {
     try {
         var result = yield r.db(dbName).table(tableName).difference().run();
     }
@@ -308,7 +308,7 @@ It("`difference` should throw if no argument has been passed", function* (done) 
         }
     }
 })
-It("`setInsert` should work", function* (done) {
+It('`setInsert` should work', function* (done) {
     try {
         var result = yield r.expr([1,2,3]).setInsert(4).run();
         assert.deepEqual(result, [1,2,3,4]);
@@ -322,7 +322,7 @@ It("`setInsert` should work", function* (done) {
         done(e);
     }
 })
-It("`setInsert` should throw if no argument has been passed", function* (done) {
+It('`setInsert` should throw if no argument has been passed', function* (done) {
     try {
         var result = yield r.db(dbName).table(tableName).setInsert().run();
     }
@@ -335,7 +335,7 @@ It("`setInsert` should throw if no argument has been passed", function* (done) {
         }
     }
 })
-It("`setUnion` should work", function* (done) {
+It('`setUnion` should work', function* (done) {
     try {
         var result = yield r.expr([1,2,3]).setUnion([2,4]).run();
         assert.deepEqual(result, [1,2,3,4]);
@@ -346,7 +346,7 @@ It("`setUnion` should work", function* (done) {
         done(e);
     }
 })
-It("`setUnion` should throw if no argument has been passed", function* (done) {
+It('`setUnion` should throw if no argument has been passed', function* (done) {
     try {
         var result = yield r.db(dbName).table(tableName).setUnion().run();
     }
@@ -360,7 +360,7 @@ It("`setUnion` should throw if no argument has been passed", function* (done) {
     }
 })
 
-It("`setIntersection` should work", function* (done) {
+It('`setIntersection` should work', function* (done) {
     try {
         var result = yield r.expr([1,2,3]).setIntersection([2,4]).run();
         assert.deepEqual(result, [2]);
@@ -371,7 +371,7 @@ It("`setIntersection` should work", function* (done) {
         done(e);
     }
 })
-It("`setIntersection` should throw if no argument has been passed", function* (done) {
+It('`setIntersection` should throw if no argument has been passed', function* (done) {
     try {
         var result = yield r.db(dbName).table(tableName).setIntersection().run();
     }
@@ -385,7 +385,7 @@ It("`setIntersection` should throw if no argument has been passed", function* (d
     }
 })
 
-It("`setDifference` should work", function* (done) {
+It('`setDifference` should work', function* (done) {
     try {
         var result = yield r.expr([1,2,3]).setDifference([2,4]).run();
         assert.deepEqual(result, [1,3]);
@@ -396,7 +396,7 @@ It("`setDifference` should work", function* (done) {
         done(e);
     }
 })
-It("`setDifference` should throw if no argument has been passed", function* (done) {
+It('`setDifference` should throw if no argument has been passed', function* (done) {
     try {
         var result = yield r.db(dbName).table(tableName).setDifference().run();
     }
@@ -410,7 +410,7 @@ It("`setDifference` should throw if no argument has been passed", function* (don
     }
 })
 
-It("`getField` should work", function* (done) {
+It('`getField` should work', function* (done) {
     try {
         var result = yield r.expr({a:0, b:1})("a").run();
         assert.equal(result, 0);
@@ -427,7 +427,7 @@ It("`getField` should work", function* (done) {
         done(e);
     }
 })
-It("`(...)` should throw if no argument has been passed", function* (done) {
+It('`(...)` should throw if no argument has been passed', function* (done) {
     try {
         var result = yield r.db(dbName).table(tableName)().run();
     }
@@ -440,7 +440,7 @@ It("`(...)` should throw if no argument has been passed", function* (done) {
         }
     }
 })
-It("`getField` should throw if no argument has been passed", function* (done) {
+It('`getField` should throw if no argument has been passed', function* (done) {
     try {
         var result = yield r.db(dbName).table(tableName).getField().run();
     }
@@ -453,7 +453,7 @@ It("`getField` should throw if no argument has been passed", function* (done) {
         }
     }
 })
-It("`hasFields` should work", function* (done) {
+It('`hasFields` should work', function* (done) {
     try {
         var result = yield r.expr([{a: 0, b: 1, c: 2}, {a: 0, b: 10, c: 20}, {b:1, c:3}]).hasFields("a", "c").run();
         assert.deepEqual(result, [{a: 0, b: 1, c: 2}, {a: 0, b: 10, c: 20}]);
@@ -464,7 +464,7 @@ It("`hasFields` should work", function* (done) {
         done(e);
     }
 })
-It("`hasFields` should throw if no argument has been passed", function* (done) {
+It('`hasFields` should throw if no argument has been passed', function* (done) {
     try {
         var result = yield r.db(dbName).table(tableName).hasFields().run();
     }
@@ -478,7 +478,7 @@ It("`hasFields` should throw if no argument has been passed", function* (done) {
     }
 })
 
-It("`insertAt` should work", function* (done) {
+It('`insertAt` should work', function* (done) {
     try {
         var result = yield r.expr([1,2,3,4]).insertAt(0, 2).run();
         assert.deepEqual(result, [2,1,2,3,4]);
@@ -492,7 +492,7 @@ It("`insertAt` should work", function* (done) {
         done(e);
     }
 })
-It("`insertAt` should throw if no argument has been passed", function* (done) {
+It('`insertAt` should throw if no argument has been passed', function* (done) {
     try {
         var result = yield r.db(dbName).table(tableName).insertAt().run();
     }
@@ -505,7 +505,7 @@ It("`insertAt` should throw if no argument has been passed", function* (done) {
         }
     }
 })
-It("`spliceAt` should work", function* (done) {
+It('`spliceAt` should work', function* (done) {
     try {
         var result = yield r.expr([1,2,3,4]).spliceAt(1, [9, 9]).run();
         assert.deepEqual(result, [1,9,9,2,3,4]);
@@ -516,7 +516,7 @@ It("`spliceAt` should work", function* (done) {
         done(e);
     }
 })
-It("`spliceAt` should throw if no argument has been passed", function* (done) {
+It('`spliceAt` should throw if no argument has been passed', function* (done) {
     try {
         var result = yield r.db(dbName).table(tableName).spliceAt().run();
     }
@@ -529,7 +529,7 @@ It("`spliceAt` should throw if no argument has been passed", function* (done) {
         }
     }
 })
-It("`deleteAt` should work", function* (done) {
+It('`deleteAt` should work', function* (done) {
     try {
         var result = yield r.expr([1,2,3,4]).deleteAt(1).run();
         assert.deepEqual(result, [1,3,4]);
@@ -543,7 +543,7 @@ It("`deleteAt` should work", function* (done) {
         done(e);
     }
 })
-It("`deleteAt` should throw if no argument has been passed", function* (done) {
+It('`deleteAt` should throw if no argument has been passed', function* (done) {
     try {
         var result = yield r.db(dbName).table(tableName).deleteAt().run();
     }
@@ -556,7 +556,7 @@ It("`deleteAt` should throw if no argument has been passed", function* (done) {
         }
     }
 })
-It("`deleteAt` should throw if too many arguments", function* (done) {
+It('`deleteAt` should throw if too many arguments', function* (done) {
     try {
         var result = yield r.db(dbName).table(tableName).deleteAt(1, 1, 1, 1).run();
     }
@@ -569,7 +569,7 @@ It("`deleteAt` should throw if too many arguments", function* (done) {
         }
     }
 })
-It("`changeAt` should work", function* (done) {
+It('`changeAt` should work', function* (done) {
     try {
         var result = yield r.expr([1,2,3,4]).changeAt(1, 3).run();
         assert.deepEqual(result, [1,3,3,4]);
@@ -580,7 +580,7 @@ It("`changeAt` should work", function* (done) {
         done(e);
     }
 })
-It("`changeAt` should throw if no argument has been passed", function* (done) {
+It('`changeAt` should throw if no argument has been passed', function* (done) {
     try {
         var result = yield r.db(dbName).table(tableName).changeAt().run();
     }
@@ -593,7 +593,7 @@ It("`changeAt` should throw if no argument has been passed", function* (done) {
         }
     }
 })
-It("`keys` should work", function* (done) {
+It('`keys` should work', function* (done) {
     try {
         var result = yield r.expr({a:0, b:1, c:2}).keys().orderBy(r.row).run();
         assert.deepEqual(result, ["a", "b", "c"]);
@@ -604,7 +604,7 @@ It("`keys` should work", function* (done) {
         done(e);
     }
 })
-It("`keys` throw on a string", function* (done) {
+It('`keys` throw on a string', function* (done) {
     try {
         var result = yield r.expr("hello").keys().orderBy(r.row).run();
     }
@@ -618,7 +618,7 @@ It("`keys` throw on a string", function* (done) {
         }
     }
 })
-It("`object` should work", function* (done) {
+It('`object` should work', function* (done) {
     try {
         var result = yield r.object("a", 1, r.expr("2"), "foo").run();
         assert.deepEqual(result, {"a": 1, "2": "foo"});

@@ -10,7 +10,7 @@ var uuid = util.uuid;
 var dbName, tableName, result;
 var numDocs = 10;
 
-It("Init for `geo.js`", function* (done) {
+It('Init for `geo.js`', function* (done) {
     try {
         dbName = uuid();
         tableName = uuid();
@@ -38,7 +38,7 @@ It("Init for `geo.js`", function* (done) {
 })
 
 
-It("`r.circle` should work - 1", function* (done) {
+It('`r.circle` should work - 1', function* (done) {
     try {
         var result = yield r.circle([0, 0], 2).run();
         assert.equal(result.$reql_type$, "GEOMETRY")
@@ -51,7 +51,7 @@ It("`r.circle` should work - 1", function* (done) {
         done(e);
     }
 })
-It("`r.circle` should work - 2", function* (done) {
+It('`r.circle` should work - 2', function* (done) {
     try {
         var result = yield r.circle(r.point(0, 0), 2).run();
         assert.equal(result.$reql_type$, "GEOMETRY")
@@ -69,7 +69,7 @@ It("`r.circle` should work - 2", function* (done) {
         done(e);
     }
 })
-It("`r.circle` should work - 3", function* (done) {
+It('`r.circle` should work - 3', function* (done) {
     try {
         var result = yield r.circle(r.point(0, 0), 2, {numVertices: 40, fill: false}).run();
         assert.equal(result.$reql_type$, "GEOMETRY")
@@ -82,7 +82,7 @@ It("`r.circle` should work - 3", function* (done) {
         done(e);
     }
 })
-It("`r.circle` should work - 4", function* (done) {
+It('`r.circle` should work - 4', function* (done) {
     try {
         var result = yield r.circle(r.point(0, 0), 1, {unit: "km"}).eq(r.circle(r.point(0, 0), 1000, {unit: "m"})).run();
         assert(result);
@@ -93,7 +93,7 @@ It("`r.circle` should work - 4", function* (done) {
     }
 })
 
-It("`r.circle` should throw with non recognized arguments", function* (done) {
+It('`r.circle` should throw with non recognized arguments', function* (done) {
     try {
         var result = yield r.circle(r.point(0, 0), 1, {foo: "bar"}).run()
         done(new Error("Was expecting an error"));
@@ -107,7 +107,7 @@ It("`r.circle` should throw with non recognized arguments", function* (done) {
         }
     }
 })
-It("`r.circle` arity - 1", function* (done) {
+It('`r.circle` arity - 1', function* (done) {
     try {
         var result = yield r.circle(r.point(0, 0)).run()
         done(new Error("Was expecting an error"));
@@ -121,7 +121,7 @@ It("`r.circle` arity - 1", function* (done) {
         }
     }
 })
-It("`r.circle` arity - 2", function* (done) {
+It('`r.circle` arity - 2', function* (done) {
     try {
         var result = yield r.circle(0, 1, 2, 3, 4).run()
         done(new Error("Was expecting an error"));
@@ -135,7 +135,7 @@ It("`r.circle` arity - 2", function* (done) {
         }
     }
 })
-It("`distance` should work - 1", function* (done) {
+It('`distance` should work - 1', function* (done) {
     try {
         var result = yield r.point(0, 0).distance(r.point(1,1)).run();
         assert.equal(Math.floor(result), 156899);
@@ -145,7 +145,7 @@ It("`distance` should work - 1", function* (done) {
         done(e);
     }
 })
-It("`distance` should work - 2", function* (done) {
+It('`distance` should work - 2', function* (done) {
     try {
         var result = yield r.point(0, 0).distance(r.point(1,1), {unit: "km"}).run();
         assert.equal(Math.floor(result), 156);
@@ -156,7 +156,7 @@ It("`distance` should work - 2", function* (done) {
     }
 })
 
-It("`distance` arity - 1", function* (done) {
+It('`distance` arity - 1', function* (done) {
     try {
         var result = yield r.point(0, 0).distance().run();
         done(new Error("Was expecting an error"));
@@ -171,7 +171,7 @@ It("`distance` arity - 1", function* (done) {
         }
     }
 })
-It("`distance` arity - 2", function* (done) {
+It('`distance` arity - 2', function* (done) {
     try {
         var result = yield r.point(0, 0).distance(1, 2, 3).run();
         done(new Error("Was expecting an error"));
@@ -187,7 +187,7 @@ It("`distance` arity - 2", function* (done) {
     }
 })
 
-It("`fill` should work", function* (done) {
+It('`fill` should work', function* (done) {
     try {
         var result = yield r.circle(r.point(0, 0), 2, {numVertices: 40, fill: false}).fill().run();
         assert.equal(result.$reql_type$, "GEOMETRY")
@@ -200,7 +200,7 @@ It("`fill` should work", function* (done) {
         done(e);
     }
 })
-It("`fill` arity error", function* (done) {
+It('`fill` arity error', function* (done) {
     try {
         var result = yield r.circle(r.point(0, 0), 2, {numVertices: 40, fill: false}).fill(1).run();
         done(new Error("Was expecting an error"));
@@ -216,7 +216,7 @@ It("`fill` arity error", function* (done) {
 
     }
 })
-It("`geojson` should work", function* (done) {
+It('`geojson` should work', function* (done) {
     try {
         var result = yield r.geojson( {"coordinates":[0,0],"type":"Point"} ).run()
         assert.equal(result.$reql_type$, "GEOMETRY")
@@ -226,7 +226,7 @@ It("`geojson` should work", function* (done) {
         done(e);
     }
 })
-It("`geojson` arity error", function* (done) {
+It('`geojson` arity error', function* (done) {
     try {
         var result = yield r.geojson(1,2,3).run()
         done(new Error("Was expecting an error"));
@@ -242,7 +242,7 @@ It("`geojson` arity error", function* (done) {
 
     }
 })
-It("`toGeojson` should work", function* (done) {
+It('`toGeojson` should work', function* (done) {
     try {
         var result = yield r.geojson( {"coordinates":[0,0],"type":"Point"}).toGeojson().run()
         assert.equal(result.$reql_type$, undefined)
@@ -252,7 +252,7 @@ It("`toGeojson` should work", function* (done) {
         done(e);
     }
 })
-It("`toGeojson` arity error", function* (done) {
+It('`toGeojson` arity error', function* (done) {
     try {
         var result = yield r.point(0, 0).toGeojson(1, 2, 3).run()
         done(new Error("Was expecting an error"));
@@ -269,7 +269,7 @@ It("`toGeojson` arity error", function* (done) {
     }
 })
 
-It("`getIntersecting` should work", function* (done) {
+It('`getIntersecting` should work', function* (done) {
     try {
         // All points are in [0,1]x[0,1]
         var result = yield r.db(dbName).table(tableName).getIntersecting(r.polygon([0, 0], [0,1], [1,1], [1,0]), {index: "location"}).count().run()
@@ -280,7 +280,7 @@ It("`getIntersecting` should work", function* (done) {
         done(e);
     }
 })
-It("`getIntersecting` arity", function* (done) {
+It('`getIntersecting` arity', function* (done) {
     try {
         // All points are in [0,1]x[0,1]
         var result = yield r.db(dbName).table(tableName).getIntersecting(r.polygon([0, 0], [0,1], [1,1], [1,0])).count().run()
@@ -298,7 +298,7 @@ It("`getIntersecting` arity", function* (done) {
     }
 
 })
-It("`getNearest` should work", function* (done) {
+It('`getNearest` should work', function* (done) {
     try {
         // All points are in [0,1]x[0,1]
         var result = yield r.db(dbName).table(tableName).getNearest(r.point(0, 0), {index: "location", maxResults: 5}).run()
@@ -310,7 +310,7 @@ It("`getNearest` should work", function* (done) {
     }
 })
 
-It("`getNearest` arity", function* (done) {
+It('`getNearest` arity', function* (done) {
     try {
         var result = yield r.db(dbName).table(tableName).getNearest(r.point(0, 0)).count().run()
         done(new Error("Was expecting an error"));
@@ -326,7 +326,7 @@ It("`getNearest` arity", function* (done) {
     }
 })
 
-It("`includes` should work", function* (done) {
+It('`includes` should work', function* (done) {
     try {
         var point1 = r.point(-117.220406, 32.719464);
         var point2 = r.point(-117.206201, 32.725186);
@@ -338,7 +338,7 @@ It("`includes` should work", function* (done) {
         done(e);
     }
 })
-It("`includes` arity", function* (done) {
+It('`includes` arity', function* (done) {
     try {
         var result = yield r.circle([0,0], 2000).includes().run();
         done(new Error("Was expecting an error"));
@@ -354,7 +354,7 @@ It("`includes` arity", function* (done) {
     }
 })
 
-It("`intersects` should work", function* (done) {
+It('`intersects` should work', function* (done) {
     try {
         var point1 = r.point(-117.220406, 32.719464);
         var point2 = r.point(-117.206201, 32.725186);
@@ -366,7 +366,7 @@ It("`intersects` should work", function* (done) {
         done(e);
     }
 })
-It("`intersects` arity", function* (done) {
+It('`intersects` arity', function* (done) {
     try {
         // All points are in [0,1]x[0,1]
         var point1 = r.point(-117.220406, 32.719464);
@@ -386,7 +386,7 @@ It("`intersects` arity", function* (done) {
     }
 })
 
-It("`r.line` should work - 1", function* (done) {
+It('`r.line` should work - 1', function* (done) {
     try {
         var result = yield r.line([0, 0], [1, 2]).run();
         assert.equal(result.$reql_type$, "GEOMETRY")
@@ -398,7 +398,7 @@ It("`r.line` should work - 1", function* (done) {
         done(e);
     }
 })
-It("`r.line` should work - 2", function* (done) {
+It('`r.line` should work - 2', function* (done) {
     try {
         var result = yield r.line(r.point(0, 0), r.point(1, 2)).run();
         assert.equal(result.$reql_type$, "GEOMETRY")
@@ -412,7 +412,7 @@ It("`r.line` should work - 2", function* (done) {
 })
 
 
-It("`r.line` arity", function* (done) {
+It('`r.line` arity', function* (done) {
     try {
         var result = yield r.line().run();
         done(new Error("Was expecting an error"));
@@ -428,7 +428,7 @@ It("`r.line` arity", function* (done) {
     }
 })
 
-It("`r.point` should work", function* (done) {
+It('`r.point` should work', function* (done) {
     try {
         var result = yield r.point(0, 0).run();
         assert.equal(result.$reql_type$, "GEOMETRY");
@@ -441,7 +441,7 @@ It("`r.point` should work", function* (done) {
     }
 })
 
-It("`r.point` arity", function* (done) {
+It('`r.point` arity', function* (done) {
     try {
         var result = yield r.point().run();
         done(new Error("Was expecting an error"));
@@ -457,7 +457,7 @@ It("`r.point` arity", function* (done) {
     }
 })
 
-It("`r.polygon` should work", function* (done) {
+It('`r.polygon` should work', function* (done) {
     try {
         var result = yield r.polygon([0, 0], [0, 1], [1, 1]).run();
         assert.equal(result.$reql_type$, "GEOMETRY");
@@ -470,7 +470,7 @@ It("`r.polygon` should work", function* (done) {
     }
 })
 
-It("`r.polygon` arity", function* (done) {
+It('`r.polygon` arity', function* (done) {
     try {
         var result = yield r.polygon().run();
         done(new Error("Was expecting an error"));
@@ -485,7 +485,7 @@ It("`r.polygon` arity", function* (done) {
         }
     }
 })
-It("`polygonSub` should work", function* (done) {
+It('`polygonSub` should work', function* (done) {
     try {
         var result = yield r.polygon([0, 0], [0, 1], [1, 1], [1, 0]).polygonSub(r.polygon([0.4, 0.4], [0.4, 0.5], [0.5, 0.5])).run();
         assert.equal(result.$reql_type$, "GEOMETRY");
@@ -498,7 +498,7 @@ It("`polygonSub` should work", function* (done) {
     }
 })
 
-It("`polygonSub` arity", function* (done) {
+It('`polygonSub` arity', function* (done) {
     try {
         var result = yield r.polygon([0, 0], [0, 1], [1, 1]).polygonSub().run();
         done(new Error("Was expecting an error"));

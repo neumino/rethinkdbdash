@@ -10,7 +10,7 @@ var uuid = util.uuid;
 var dbName, tableName, result, result2;
 
 
-It("`r.now` should return a date", function* (done) {
+It('`r.now` should return a date', function* (done) {
     try {
         result = yield r.now().run();
         assert(result instanceof Date);
@@ -33,7 +33,7 @@ It("`r.now` should return a date", function* (done) {
         done(e);
     }
 })
-It("`now` is not defined after a term", function* (done) {
+It('`now` is not defined after a term', function* (done) {
     try {
         result = yield r.expr(1).now("foo").run();
     }
@@ -47,7 +47,7 @@ It("`now` is not defined after a term", function* (done) {
     }
 })
 
-It("`r.time` should return a date -- with date and time", function* (done) {
+It('`r.time` should return a date -- with date and time', function* (done) {
     try{
         var now = new Date();
         var result = yield r.time(1986, 11, 3, 12, 0, 0, 'Z').run();
@@ -63,7 +63,7 @@ It("`r.time` should return a date -- with date and time", function* (done) {
     }
 })
 
-It("`r.time` should work with r.args", function* (done) {
+It('`r.time` should work with r.args', function* (done) {
     try{
         var now = new Date();
         var result = yield r.time(r.args([1986, 11, 3, 12, 0, 0, 'Z'])).run();
@@ -76,7 +76,7 @@ It("`r.time` should work with r.args", function* (done) {
     }
 })
 
-It("`r.time` should return a date -- just with a date", function* (done) {
+It('`r.time` should return a date -- just with a date', function* (done) {
     try {
         var result = yield r.time(1986, 11, 3, 'Z').run();
         var result2 = yield r.time(1986, 11, 3, 0, 0, 0, 'Z').run();
@@ -88,7 +88,7 @@ It("`r.time` should return a date -- just with a date", function* (done) {
         done(e);
     }
 })
-It("`r.time` should throw if no argument has been given", function* (done) {
+It('`r.time` should throw if no argument has been given', function* (done) {
     try{
         var result = yield r.time().run();
     }
@@ -101,7 +101,7 @@ It("`r.time` should throw if no argument has been given", function* (done) {
         }
     }
 })
-It("`r.time` should throw if no 5 arguments", function* (done) {
+It('`r.time` should throw if no 5 arguments', function* (done) {
     try{
         var result = yield r.time(1, 1, 1, 1, 1).run();
     }
@@ -115,7 +115,7 @@ It("`r.time` should throw if no 5 arguments", function* (done) {
     }
 })
 
-It("`time` is not defined after a term", function* (done) {
+It('`time` is not defined after a term', function* (done) {
     try {
         result = yield r.expr(1).time(1, 2, 3, 'Z').run();
     }
@@ -129,7 +129,7 @@ It("`time` is not defined after a term", function* (done) {
     }
 })
 
-It("`epochTime` should work", function* (done) {
+It('`epochTime` should work', function* (done) {
     try {
         var now = new Date();
         result = yield r.epochTime(now.getTime()/1000).run();
@@ -141,7 +141,7 @@ It("`epochTime` should work", function* (done) {
         done(e);
     }
 })
-It("`r.epochTime` should throw if no argument has been given", function* (done) {
+It('`r.epochTime` should throw if no argument has been given', function* (done) {
     try{
         var result = yield r.epochTime().run();
     }
@@ -154,7 +154,7 @@ It("`r.epochTime` should throw if no argument has been given", function* (done) 
         }
     }
 })
-It("`epochTime` is not defined after a term", function* (done) {
+It('`epochTime` is not defined after a term', function* (done) {
     try {
         result = yield r.expr(1).epochTime(Date.now()).run();
     }
@@ -168,7 +168,7 @@ It("`epochTime` is not defined after a term", function* (done) {
     }
 })
 
-It("`ISO8601` should work", function* (done) {
+It('`ISO8601` should work', function* (done) {
     try {
         var result = yield r.ISO8601("1986-11-03T08:30:00-08:00").run();
         assert(result, new Date(1986, 11, 3, 8, 30, 0, -8));
@@ -179,7 +179,7 @@ It("`ISO8601` should work", function* (done) {
         done(e);
     }
 })
-It("`ISO8601` should work with a timezone", function* (done) {
+It('`ISO8601` should work with a timezone', function* (done) {
     try {
         var result = yield r.ISO8601("1986-11-03T08:30:00", {defaultTimezone: "-08:00"}).run();
         assert(result, new Date(1986, 11, 3, 8, 30, 0, -8));
@@ -190,7 +190,7 @@ It("`ISO8601` should work with a timezone", function* (done) {
         done(e);
     }
 })
-It("`r.ISO8601` should throw if no argument has been given", function* (done) {
+It('`r.ISO8601` should throw if no argument has been given', function* (done) {
     try{
         var result = yield r.ISO8601().run();
     }
@@ -203,7 +203,7 @@ It("`r.ISO8601` should throw if no argument has been given", function* (done) {
         }
     }
 })
-It("`r.ISO8601` should throw if too many arguments", function* (done) {
+It('`r.ISO8601` should throw if too many arguments', function* (done) {
     try{
         var result = yield r.ISO8601(1, 1, 1).run();
     }
@@ -217,7 +217,7 @@ It("`r.ISO8601` should throw if too many arguments", function* (done) {
     }
 })
 
-It("`ISO8601` is not defined after a term", function* (done) {
+It('`ISO8601` is not defined after a term', function* (done) {
     try {
         result = yield r.expr(1).ISO8601('validISOstring').run();
     }
@@ -231,7 +231,7 @@ It("`ISO8601` is not defined after a term", function* (done) {
     }
 })
 
-It("`inTimezone` should work", function* (done) {
+It('`inTimezone` should work', function* (done) {
     try {
         var result = yield r.now().inTimezone('-08:00').hours().do(function(h) {
             return r.branch(
@@ -248,7 +248,7 @@ It("`inTimezone` should work", function* (done) {
         done(e);
     }
 })
-It("`inTimezone` should throw if no argument has been given", function* (done) {
+It('`inTimezone` should throw if no argument has been given', function* (done) {
     try{
         var result = yield r.now().inTimezone().run();
     }
@@ -262,7 +262,7 @@ It("`inTimezone` should throw if no argument has been given", function* (done) {
     }
 })
 
-It("`timezone` should work", function* (done) {
+It('`timezone` should work', function* (done) {
     try {
         var result = yield r.ISO8601("1986-11-03T08:30:00-08:00").timezone().run();
         assert.equal(result, "-08:00");
@@ -274,7 +274,7 @@ It("`timezone` should work", function* (done) {
     }
 })
 
-It("`during` should work", function* (done) {
+It('`during` should work', function* (done) {
     try {
         var result = yield r.now().during(r.time(2013, 12, 1, "Z"), r.now().add(1000)).run();
         assert.equal(result, true);
@@ -291,7 +291,7 @@ It("`during` should work", function* (done) {
         done(e);
     }
 })
-It("`during` should throw if no argument has been given", function* (done) {
+It('`during` should throw if no argument has been given', function* (done) {
     try{
         var result = yield r.now().during().run();
     }
@@ -304,7 +304,7 @@ It("`during` should throw if no argument has been given", function* (done) {
         }
     }
 })
-It("`during` should throw if just one argument has been given", function* (done) {
+It('`during` should throw if just one argument has been given', function* (done) {
     try{
         var result = yield r.now().during(1).run();
     }
@@ -317,7 +317,7 @@ It("`during` should throw if just one argument has been given", function* (done)
         }
     }
 })
-It("`during` should throw if too many arguments", function* (done) {
+It('`during` should throw if too many arguments', function* (done) {
     try{
         var result = yield r.now().during(1, 1, 1, 1, 1).run();
     }
@@ -331,7 +331,7 @@ It("`during` should throw if too many arguments", function* (done) {
     }
 })
 
-It("`date` should work", function* (done) {
+It('`date` should work', function* (done) {
     try {
         var result = yield r.now().date().hours().run();
         assert.equal(result, 0);
@@ -347,7 +347,7 @@ It("`date` should work", function* (done) {
     }
 })
 
-It("`timeOfDay` should work", function* (done) {
+It('`timeOfDay` should work', function* (done) {
     try {
         var result = yield r.now().timeOfDay().run();
         assert(result>=0);
@@ -359,7 +359,7 @@ It("`timeOfDay` should work", function* (done) {
     }
 })
 
-It("`year` should work", function* (done) {
+It('`year` should work', function* (done) {
     try {
         var result = yield r.now().inTimezone(new Date().toString().match(' GMT([^ ]*)')[1]).year().run();
         assert.equal(result, new Date().getFullYear());
@@ -371,7 +371,7 @@ It("`year` should work", function* (done) {
     }
 })
 
-It("`month` should work", function* (done) {
+It('`month` should work', function* (done) {
     try {
         var result = yield r.now().inTimezone(new Date().toString().match(' GMT([^ ]*)')[1]).month().run();
         assert.equal(result, new Date().getMonth()+1);
@@ -383,7 +383,7 @@ It("`month` should work", function* (done) {
     }
 })
 
-It("`day` should work", function* (done) {
+It('`day` should work', function* (done) {
     try {
         var result = yield r.now().inTimezone(new Date().toString().match(' GMT([^ ]*)')[1]).day().run();
         assert.equal(result, new Date().getDate());
@@ -395,7 +395,7 @@ It("`day` should work", function* (done) {
     }
 })
 
-It("`dayOfYear` should work", function* (done) {
+It('`dayOfYear` should work', function* (done) {
     try {
         var result = yield r.now().inTimezone(new Date().toString().match(' GMT([^ ]*)')[1]).dayOfYear().run();
         assert(result > (new Date()).getMonth()*28+(new Date()).getDate()-1);
@@ -407,7 +407,7 @@ It("`dayOfYear` should work", function* (done) {
     }
 })
 
-It("`dayOfWeek` should work", function* (done) {
+It('`dayOfWeek` should work', function* (done) {
     try {
         var result = yield r.now().inTimezone(new Date().toString().match(' GMT([^ ]*)')[1]).dayOfWeek().run();
         if (result === 7) result = 0;
@@ -420,7 +420,7 @@ It("`dayOfWeek` should work", function* (done) {
     }
 })
 
-It("`toISO8601` should work", function* (done) {
+It('`toISO8601` should work', function* (done) {
     try {
         var result = yield r.now().toISO8601().run();
         assert.equal(typeof result, "string");
@@ -432,7 +432,7 @@ It("`toISO8601` should work", function* (done) {
     }
 })
 
-It("`toEpochTime` should work", function* (done) {
+It('`toEpochTime` should work', function* (done) {
     try {
         var result = yield r.now().toEpochTime().run();
         assert.equal(typeof result, "number");
@@ -444,7 +444,7 @@ It("`toEpochTime` should work", function* (done) {
     }
 })
 
-It("Constant terms should work", function* (done) {
+It('Constant terms should work', function* (done) {
     try {
         var result = yield r.monday.run();
         assert.equal(result, 1)
@@ -459,7 +459,7 @@ It("Constant terms should work", function* (done) {
     }
 })
 
-It("`epochTime` should work", function* (done) {
+It('`epochTime` should work', function* (done) {
     try {
         var now = new Date();
         result = yield r.epochTime(now.getTime()/1000).run({timeFormat: "raw"});

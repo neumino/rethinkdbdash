@@ -20,7 +20,7 @@ var options = {
     //silent: true
 };
 
-It("`createPool` should create a PoolMaster and `getPoolMaster` should return it", function* (done) {
+It('`createPool` should create a PoolMaster and `getPoolMaster` should return it', function* (done) {
     try {
         r = r.createPools(options);
         assert(r.getPoolMaster(config));
@@ -33,7 +33,7 @@ It("`createPool` should create a PoolMaster and `getPoolMaster` should return it
 });
 
 //TODO try to make this tests a little more deterministic
-It("`run` should work without a connection if a pool exists", function* (done) {
+It('`run` should work without a connection if a pool exists', function* (done) {
     try {
         result = yield r.expr(1).run()
         assert.equal(result, 1);
@@ -46,7 +46,7 @@ It("`run` should work without a connection if a pool exists", function* (done) {
         done(e);
     }
 });
-It("The pool should keep a buffer", function* (done) {
+It('The pool should keep a buffer', function* (done) {
     try {
         result = yield [r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run()]
         assert.deepEqual(result, [1,1,1,1,1]);
@@ -62,7 +62,7 @@ It("The pool should keep a buffer", function* (done) {
         done(e);
     }
 });
-It("A noreply query should release the connection", function* (done) {
+It('A noreply query should release the connection', function* (done) {
     try {
         var numConnections = r.getPool(0).getLength();
         yield r.expr(1).run({noreply: true})
@@ -74,7 +74,7 @@ It("A noreply query should release the connection", function* (done) {
         done(e);
     }
 });
-It("The pool shouldn't have more than `options.max` connections", function* (done) {
+It('The pool should not have more than `options.max` connections', function* (done) {
     try {
         result = yield [r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run()]
         assert.deepEqual(result, [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
@@ -91,7 +91,7 @@ It("The pool shouldn't have more than `options.max` connections", function* (don
     }
 });
 
-It("Init for `pool.js`", function* (done) {
+It('Init for `pool.js`', function* (done) {
     try {
         dbName = uuid();
         tableName = uuid();
@@ -112,7 +112,7 @@ It("Init for `pool.js`", function* (done) {
         done(e);
     }
 })
-It("Updating data to make it heavier", function* (done) {
+It('Updating data to make it heavier', function* (done) {
     try {
         //Making bigger documents to retrieve multiple batches
         var result = yield r.db(dbName).table(tableName).update({
@@ -136,7 +136,7 @@ It("Updating data to make it heavier", function* (done) {
 
 
 
-It("The pool should release a connection only when the cursor has fetch everything or get closed", function* (done) {
+It('The pool should release a connection only when the cursor has fetch everything or get closed', function* (done) {
     try {
         result = yield [r.db(dbName).table(tableName).run({cursor: true}),r.db(dbName).table(tableName).run({cursor: true}),r.db(dbName).table(tableName).run({cursor: true}),r.db(dbName).table(tableName).run({cursor: true}),r.db(dbName).table(tableName).run({cursor: true}),r.db(dbName).table(tableName).run({cursor: true}),r.db(dbName).table(tableName).run({cursor: true}),r.db(dbName).table(tableName).run({cursor: true}),r.db(dbName).table(tableName).run({cursor: true}),r.db(dbName).table(tableName).run({cursor: true})];
         assert.equal(result.length, 10);
@@ -155,7 +155,7 @@ It("The pool should release a connection only when the cursor has fetch everythi
     }
 });
 
-It("The pool should shrink if a connection is not used for some time", function* (done) {
+It('The pool should shrink if a connection is not used for some time', function* (done) {
     try{
         r.getPool(0).setOptions({timeoutGb: 100});
 
@@ -174,7 +174,7 @@ It("The pool should shrink if a connection is not used for some time", function*
     }
 });
 
-It("`poolMaster.drain` should eventually remove all the connections", function* (done) {
+It('`poolMaster.drain` should eventually remove all the connections', function* (done) {
     try{
         yield r.getPoolMaster().drain();
 
@@ -187,7 +187,7 @@ It("`poolMaster.drain` should eventually remove all the connections", function* 
         done(e);
     }
 });
-It("If the pool cannot create a connection, it should reject queries", function* (done) {
+It('If the pool cannot create a connection, it should reject queries', function* (done) {
     try {
         var r = require(__dirname+'/../lib')({host: "notarealhost", buffer: 1, max: 2, silent: true});
         yield r.expr(1).run()
@@ -202,7 +202,7 @@ It("If the pool cannot create a connection, it should reject queries", function*
         }
     }
 });
-It("If the pool cannot create a connection, it should reject queries - timeout", function* (done) {
+It('If the pool cannot create a connection, it should reject queries - timeout', function* (done) {
     try {
         var r = require(__dirname+'/../lib')({host: "notarealhost", buffer: 1, max: 2, silent: true});
         yield new Promise(function(resolve, reject) { setTimeout(resolve, 1000) });
@@ -220,7 +220,7 @@ It("If the pool cannot create a connection, it should reject queries - timeout",
 });
 
 
-It("If the pool is drained, it should reject queries", function* (done) {
+It('If the pool is drained, it should reject queries', function* (done) {
     try {
         var r = require(__dirname+'/../lib')({buffer: 1, max: 2, silent: true});
 
@@ -239,7 +239,7 @@ It("If the pool is drained, it should reject queries", function* (done) {
     }
 });
 
-It("`drain` should work in case of failures", function* (done) {
+It('`drain` should work in case of failures', function* (done) {
     try {
         r = r.createPools({
             port: 80, // non valid port
@@ -265,7 +265,7 @@ It("`drain` should work in case of failures", function* (done) {
 
 /*
 // This doesn't work anymore because since the JSON protocol was introduced.
-It("The pool should remove a connection if it errored", function* (done) {
+It('The pool should remove a connection if it errored', function* (done) {
     try{
         r.getPool(0).setOptions({timeoutGb: 60*60*1000});
 

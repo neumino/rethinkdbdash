@@ -11,7 +11,7 @@ var dbName, tableName, tableName2, cursor, result, pks, feed;
 var numDocs = 100; // Number of documents in the "big table" used to test the SUCCESS_PARTIAL 
 var smallNumDocs = 5; // Number of documents in the "small table"
 
-It("Init for `cursor.js`", function* (done) {
+It('Init for `cursor.js`', function* (done) {
     try {
         dbName = uuid();
         tableName = uuid(); // Big table to test partial sequence
@@ -27,7 +27,7 @@ It("Init for `cursor.js`", function* (done) {
         done(e);
     }
 })
-It("Inserting batch - table 1", function* (done) {
+It('Inserting batch - table 1', function* (done) {
     try {
         result = yield r.db(dbName).table(tableName).insert(eval('['+new Array(numDocs).join('{}, ')+'{}]')).run();
         assert.equal(result.inserted, numDocs);
@@ -37,7 +37,7 @@ It("Inserting batch - table 1", function* (done) {
         done(e);
     }
 })
-It("Inserting batch - table 2", function* (done) {
+It('Inserting batch - table 2', function* (done) {
     try {
         result = yield r.db(dbName).table(tableName2).insert(eval('['+new Array(smallNumDocs).join('{}, ')+'{}]')).run();
         assert.equal(result.inserted, smallNumDocs);
@@ -47,7 +47,7 @@ It("Inserting batch - table 2", function* (done) {
         done(e);
     }
 })
-It("Inserting batch", function* (done) {
+It('Inserting batch', function* (done) {
     try {
         // Add a date
         result = yield r.db(dbName).table(tableName).update({
@@ -59,7 +59,7 @@ It("Inserting batch", function* (done) {
         done(e);
     }
 })
-It("`table` should return a cursor", function* (done) {
+It('`table` should return a cursor', function* (done) {
     try {
         cursor = yield r.db(dbName).table(tableName).run({cursor: true});
         assert(cursor);
@@ -72,7 +72,7 @@ It("`table` should return a cursor", function* (done) {
     }
 })
 
-It("`next` should return a document", function* (done) {
+It('`next` should return a document', function* (done) {
     try {
         result = yield cursor.next();
         assert(result);
@@ -84,7 +84,7 @@ It("`next` should return a document", function* (done) {
         done(e);
     }
 })
-It("`each` should work", function* (done) {
+It('`each` should work', function* (done) {
     try {
         cursor = yield r.db(dbName).table(tableName).run({cursor: true});
         assert(cursor);
@@ -100,7 +100,7 @@ It("`each` should work", function* (done) {
         done(e);
     }
 })
-It("`each` should work - onFinish - reach end", function* (done) {
+It('`each` should work - onFinish - reach end', function* (done) {
     try {
         cursor = yield r.db(dbName).table(tableName).run({cursor: true});
         assert(cursor);
@@ -112,7 +112,7 @@ It("`each` should work - onFinish - reach end", function* (done) {
         done(e);
     }
 })
-It("`each` should work - onFinish - return false", function* (done) {
+It('`each` should work - onFinish - return false', function* (done) {
     try {
         cursor = yield r.db(dbName).table(tableName).run({cursor: true});
         assert(cursor);
@@ -131,7 +131,7 @@ It("`each` should work - onFinish - return false", function* (done) {
 })
 
 
-It("`toArray` should work", function* (done) {
+It('`toArray` should work', function* (done) {
     try {
         cursor = yield r.db(dbName).table(tableName).run({cursor: true});
         result = yield cursor.toArray();
@@ -143,7 +143,7 @@ It("`toArray` should work", function* (done) {
         done(e);
     }
 })
-It("`toArray` should work -- with a profile", function* (done) {
+It('`toArray` should work -- with a profile', function* (done) {
     try {
         result = yield r.db(dbName).table(tableName).run({cursor: true, profile: true});
         result = yield result.result.toArray();
@@ -155,7 +155,7 @@ It("`toArray` should work -- with a profile", function* (done) {
         done(e);
     }
 })
-It("`toArray` should work with a datum", function* (done) {
+It('`toArray` should work with a datum', function* (done) {
     try {
         cursor = yield r.expr([1,2,3]).run({cursor: true});
         result = yield cursor.toArray();
@@ -168,7 +168,7 @@ It("`toArray` should work with a datum", function* (done) {
     }
 })
 
-It("`table` should return a cursor - 2", function* (done) {
+It('`table` should return a cursor - 2', function* (done) {
     try {
         cursor = yield r.db(dbName).table(tableName2).run({cursor: true});
         assert(cursor);
@@ -180,7 +180,7 @@ It("`table` should return a cursor - 2", function* (done) {
     }
 })
 
-It("`next` should return a document - 2", function* (done) {
+It('`next` should return a document - 2', function* (done) {
     try {
         result = yield cursor.next();
         assert(result);
@@ -192,7 +192,7 @@ It("`next` should return a document - 2", function* (done) {
         done(e);
     }
 })
-It("`next` should work -- testing common pattern", function* (done) {
+It('`next` should work -- testing common pattern', function* (done) {
     try {
         cursor = yield r.db(dbName).table(tableName2).run({cursor: true});
         assert(cursor);
@@ -220,7 +220,7 @@ It("`next` should work -- testing common pattern", function* (done) {
         done(e);
     }
 })
-It("`toArray` should work - 2", function* (done) {
+It('`toArray` should work - 2', function* (done) {
     try {
         var cursor = yield r.db(dbName).table(tableName2).run({cursor: true});
         result = yield cursor.toArray();
@@ -233,7 +233,7 @@ It("`toArray` should work - 2", function* (done) {
     }
 })
 
-It("`cursor.close` should return a promise", function* (done) {
+It('`cursor.close` should return a promise', function* (done) {
     try {
         var cursor = yield r.db(dbName).table(tableName2).run({cursor: true});
         yield cursor.close();
@@ -243,7 +243,7 @@ It("`cursor.close` should return a promise", function* (done) {
         done(e);
     }
 })
-It("cursor shouldn't throw if the user try to serialize it in JSON", function* (done) {
+It('cursor shouldn\'t throw if the user try to serialize it in JSON', function* (done) {
     try {
         var cursor = yield r.db(dbName).table(tableName).run({cursor: true});
         var cursor2 = yield r.db(dbName).table(tableName2).run({cursor: true});
@@ -260,7 +260,7 @@ It("cursor shouldn't throw if the user try to serialize it in JSON", function* (
 
 
 // This test is not working for now -- need more data? Server bug?
-It("Remove the field `val` in some docs", function* (done) {
+It('Remove the field `val` in some docs', function* (done) {
     var i=0;
     try {
         result = yield r.db(dbName).table(tableName).update({val: 1}).run();
@@ -277,7 +277,7 @@ It("Remove the field `val` in some docs", function* (done) {
         done(e);
     }
 })
-It("`toArray` with multiple batches - testing empty SUCCESS_COMPLETE", function* (done) {
+It('`toArray` with multiple batches - testing empty SUCCESS_COMPLETE', function* (done) {
     var i=0;
     try {
         var connection = yield r.connect({max_batch_rows: 1, host: config.host, port: config.port, authKey: config.authKey});
@@ -293,7 +293,7 @@ It("`toArray` with multiple batches - testing empty SUCCESS_COMPLETE", function*
         done(e);
     }
 })
-It("Automatic coercion from cursor to table with multiple batches", function* (done) {
+It('Automatic coercion from cursor to table with multiple batches', function* (done) {
     var i=0;
     try {
         var connection = yield r.connect({max_batch_rows: 1, host: config.host, port: config.port, authKey: config.authKey});
@@ -307,7 +307,7 @@ It("Automatic coercion from cursor to table with multiple batches", function* (d
         done(e);
     }
 })
-It("`next` with multiple batches", function* (done) {
+It('`next` with multiple batches', function* (done) {
     var i=0;
     try {
         var connection = yield r.connect({max_batch_rows: 10, host: config.host, port: config.port, authKey: config.authKey});
@@ -337,7 +337,7 @@ It("`next` with multiple batches", function* (done) {
         done(e);
     }
 })
-It("`next` should error when hitting an error -- not on the first batch", function* (done) {
+It('`next` should error when hitting an error -- not on the first batch', function* (done) {
     var i=0;
     try {
         var connection = yield r.connect({max_batch_rows: 10, host: config.host, port: config.port, authKey: config.authKey});
@@ -371,7 +371,7 @@ It("`next` should error when hitting an error -- not on the first batch", functi
     }
 })
 
-It("`changes` should return a feed", function* (done) {
+It('`changes` should return a feed', function* (done) {
     try {
         feed = yield r.db(dbName).table(tableName).changes().run();
         assert(feed);
@@ -383,7 +383,7 @@ It("`changes` should return a feed", function* (done) {
         done(e);
     }
 })
-It("`changes` should work with squash: true", function* (done) {
+It('`changes` should work with squash: true', function* (done) {
     try {
         feed = yield r.db(dbName).table(tableName).changes({squash: true}).run();
         assert(feed);
@@ -396,7 +396,7 @@ It("`changes` should work with squash: true", function* (done) {
     }
 })
 
-It("`get.changes` should return a feed", function* (done) {
+It('`get.changes` should return a feed', function* (done) {
     try {
         feed = yield r.db(dbName).table(tableName).get(1).changes().run();
         assert(feed);
@@ -409,7 +409,7 @@ It("`get.changes` should return a feed", function* (done) {
     }
 })
 
-It("`next` should work on a feed", function* (done) {
+It('`next` should work on a feed', function* (done) {
     try {
         feed = yield r.db(dbName).table(tableName2).changes().run();
         setImmediate(function() {
@@ -431,7 +431,7 @@ It("`next` should work on a feed", function* (done) {
         done(e);
     }
 })
-It("`next` should work on an atom feed", function* (done) {
+It('`next` should work on an atom feed', function* (done) {
     try {
         var idValue = uuid();
         feed = yield r.db(dbName).table(tableName2).get(idValue).changes().run();
@@ -454,7 +454,7 @@ It("`next` should work on an atom feed", function* (done) {
 })
 
 
-It("`close` should work on feed", function* (done) {
+It('`close` should work on feed', function* (done) {
     try {
         feed = yield r.db(dbName).table(tableName2).changes().run();
         setTimeout(function() {
@@ -469,7 +469,7 @@ It("`close` should work on feed", function* (done) {
     }
 })
 
-It("`close` should work on feed with events", function* (done) {
+It('`close` should work on feed with events', function* (done) {
     try {
         feed = yield r.db(dbName).table(tableName2).changes().run();
         setTimeout(function() {
@@ -487,7 +487,7 @@ It("`close` should work on feed with events", function* (done) {
         done(e);
     }
 })
-It("`on` should work on feed", function* (done) {
+It('`on` should work on feed', function* (done) {
     try {
         feed = yield r.db(dbName).table(tableName2).changes().run();
         setImmediate(function() {
@@ -508,7 +508,7 @@ It("`on` should work on feed", function* (done) {
         done(e);
     }
 })
-It("`on` should work on cursor - a 'end' event shoul be eventually emitted on a cursor", function* (done) {
+It('`on` should work on cursor - a `end` event shoul be eventually emitted on a cursor', function* (done) {
     try {
         cursor = yield r.db(dbName).table(tableName2).run({cursor: true});
         setImmediate(function() {
@@ -526,7 +526,7 @@ It("`on` should work on cursor - a 'end' event shoul be eventually emitted on a 
     }
 })
 
-It("`next`, `each`, `toArray` should be deactivated if the EventEmitter interface is used", function* (done) {
+It('`next`, `each`, `toArray` should be deactivated if the EventEmitter interface is used', function* (done) {
     try {
         feed = yield r.db(dbName).table(tableName2).changes().run();
         setImmediate(function() {
@@ -551,7 +551,7 @@ It("`next`, `each`, `toArray` should be deactivated if the EventEmitter interfac
     }
 })
 
-It("Import with cursor as default", function* (done) {
+It('Import with cursor as default', function* (done) {
     yield util.sleep(1000);
     var r1 = require('../lib')({cursor: true, host: config.host, port: config.port, authKey: config.authKey, buffer: config.buffer, max: config.max});
     var i=0;
@@ -564,7 +564,7 @@ It("Import with cursor as default", function* (done) {
         done(e);
     }
 })
-It("`each` should not return an error if the feed is closed - 1", function* (done) {
+It('`each` should not return an error if the feed is closed - 1', function* (done) {
     try {
         feed = yield r.db(dbName).table(tableName2).changes().run();
         setImmediate(function() {
@@ -586,7 +586,7 @@ It("`each` should not return an error if the feed is closed - 1", function* (don
         done(e);
     }
 })
-It("`each` should not return an error if the feed is closed - 2", function* (done) {
+It('`each` should not return an error if the feed is closed - 2', function* (done) {
     try {
         feed = yield r.db(dbName).table(tableName2).changes().run();
         setImmediate(function() {
@@ -608,7 +608,7 @@ It("`each` should not return an error if the feed is closed - 2", function* (don
         done(e);
     }
 })
-It("events should not return an error if the feed is closed - 1", function* (done) {
+It('events should not return an error if the feed is closed - 1', function* (done) {
     try {
         feed = yield r.db(dbName).table(tableName2).get(1).changes().run();
         setImmediate(function() {
@@ -631,7 +631,7 @@ It("events should not return an error if the feed is closed - 1", function* (don
         done(e);
     }
 })
-It("events should not return an error if the feed is closed - 2", function* (done) {
+It('events should not return an error if the feed is closed - 2', function* (done) {
     try {
         feed = yield r.db(dbName).table(tableName2).changes().run();
         setImmediate(function() {

@@ -10,7 +10,7 @@ var uuid = util.uuid;
 var dbName, tableName;
 
 
-It("Init for `aggregation.js`", function* (done) {
+It('Init for `aggregation.js`', function* (done) {
     try {
         dbName = uuid();
         tableName = uuid();
@@ -28,7 +28,7 @@ It("Init for `aggregation.js`", function* (done) {
     }
 })
 
-It("`reduce` should work -- no base ", function* (done) {
+It('`reduce` should work -- no base ', function* (done) {
     try {
         var result = yield r.expr([1,2,3]).reduce(function(left, right) { return left.add(right) }).run();
         assert.equal(result, 6);
@@ -38,7 +38,7 @@ It("`reduce` should work -- no base ", function* (done) {
         done(e);
     }
 })
-It("`reduce` should throw if no argument has been passed", function* (done) {
+It('`reduce` should throw if no argument has been passed', function* (done) {
     try {
         var result = yield r.db(dbName).table(tableName).reduce().run();
     }
@@ -52,7 +52,7 @@ It("`reduce` should throw if no argument has been passed", function* (done) {
     }
 })
 
-It("`count` should work -- no arg ", function* (done) {
+It('`count` should work -- no arg ', function* (done) {
     try {
         var result = yield r.expr([0, 1, 2, 3, 4, 5]).count().run();
         assert.equal(result, 6);
@@ -63,7 +63,7 @@ It("`count` should work -- no arg ", function* (done) {
         done(e);
     }
 })
-It("`count` should work -- filter ", function* (done) {
+It('`count` should work -- filter ', function* (done) {
     try {
         var result = yield r.expr([0, 1, 2, 3, 4, 5]).count(r.row.eq(2)).run();
         assert.equal(result, 1);
@@ -77,7 +77,7 @@ It("`count` should work -- filter ", function* (done) {
         done(e);
     }
 })
-It("`group` should work ", function* (done) {
+It('`group` should work ', function* (done) {
     try {
         var result = yield r.expr([{name: "Michel", grownUp: true},{name: "Laurent", grownUp: true},
             {name: "Sophie", grownUp: true},{name: "Luke", grownUp: false},{name: "Mino", grownUp: false}]).group('grownUp').run();
@@ -91,7 +91,7 @@ It("`group` should work ", function* (done) {
         done(e);
     }
 })
-It("`group` should work with r.row", function* (done) {
+It('`group` should work with r.row', function* (done) {
     try {
         var result = yield r.expr([{name: "Michel", grownUp: true},{name: "Laurent", grownUp: true},
             {name: "Sophie", grownUp: true},{name: "Luke", grownUp: false},{name: "Mino", grownUp: false}]).group(r.row('grownUp')).run();
@@ -105,7 +105,7 @@ It("`group` should work with r.row", function* (done) {
         done(e);
     }
 })
-It("`group` should work with an index ", function* (done) {
+It('`group` should work with an index ', function* (done) {
 
     try {
         var result = yield r.db(dbName).table(tableName).insert([
@@ -129,7 +129,7 @@ It("`group` should work with an index ", function* (done) {
     }
 })
 
-It("`groupFormat` should work -- with raw", function* (done) {
+It('`groupFormat` should work -- with raw', function* (done) {
     try {
         var result = yield r.expr([{name: "Michel", grownUp: true},{name: "Laurent", grownUp: true},
             {name: "Sophie", grownUp: true},{name: "Luke", grownUp: false},{name: "Mino", grownUp: false}]).group('grownUp').run({groupFormat: "raw"});
@@ -144,7 +144,7 @@ It("`groupFormat` should work -- with raw", function* (done) {
 })
 
 
-It("`ungroup` should work ", function* (done) {
+It('`ungroup` should work ', function* (done) {
     try {
         var result = yield r.expr([{name: "Michel", grownUp: true},{name: "Laurent", grownUp: true},
             {name: "Sophie", grownUp: true},{name: "Luke", grownUp: false},{name: "Mino", grownUp: false}]).group('grownUp').ungroup().run();
@@ -159,7 +159,7 @@ It("`ungroup` should work ", function* (done) {
     }
 })
 
-It("`contains` should work ", function* (done) {
+It('`contains` should work ', function* (done) {
     try{
         var result = yield r.expr([1,2,3]).contains(2).run();
         assert.equal(result, true);
@@ -188,7 +188,7 @@ It("`contains` should work ", function* (done) {
         done(e);
     }
 })
-It("`contains` should throw if called without arguments", function* (done) {
+It('`contains` should throw if called without arguments', function* (done) {
     try {
         var result = yield r.db(dbName).table(tableName).contains().run();
     }
@@ -202,7 +202,7 @@ It("`contains` should throw if called without arguments", function* (done) {
     }
 })
 
-It("`sum` should work ", function* (done) {
+It('`sum` should work ', function* (done) {
     try{
         var result = yield r.expr([1,2,3]).sum().run();
         assert.equal(result, 6);
@@ -214,7 +214,7 @@ It("`sum` should work ", function* (done) {
     }
 })
 
-It("`sum` should work with a field", function* (done) {
+It('`sum` should work with a field', function* (done) {
     try {
         var result = yield r.expr([{a: 2}, {a: 10}, {a: 9}]).sum('a').run();
         assert.deepEqual(result, 21)
@@ -227,7 +227,7 @@ It("`sum` should work with a field", function* (done) {
 
 
 
-It("`avg` should work ", function* (done) {
+It('`avg` should work ', function* (done) {
     try{
         var result = yield r.expr([1,2,3]).avg().run();
         assert.equal(result, 2);
@@ -238,7 +238,7 @@ It("`avg` should work ", function* (done) {
     }
 })
 
-It("`avg` should work with a field", function* (done) {
+It('`avg` should work with a field', function* (done) {
     try {
         var result = yield r.expr([{a: 2}, {a: 10}, {a: 9}]).avg('a').run();
         assert.equal(result, 7);
@@ -249,7 +249,7 @@ It("`avg` should work with a field", function* (done) {
     }
 })
 
-It("`min` should work ", function* (done) {
+It('`min` should work ', function* (done) {
     try{
         var result = yield r.expr([1,2,3]).min().run();
         assert.equal(result, 1);
@@ -260,7 +260,7 @@ It("`min` should work ", function* (done) {
     }
 })
 
-It("`min` should work with a field", function* (done) {
+It('`min` should work with a field', function* (done) {
     try {
         var result = yield r.expr([{a: 2}, {a: 10}, {a: 9}]).min('a').run();
         assert.deepEqual(result, {a: 2});
@@ -271,7 +271,7 @@ It("`min` should work with a field", function* (done) {
     }
 })
 
-It("`max` should work ", function* (done) {
+It('`max` should work ', function* (done) {
     try{
         var result = yield r.expr([1,2,3]).max().run();
         assert.equal(result, 3);
@@ -282,7 +282,7 @@ It("`max` should work ", function* (done) {
     }
 })
 
-It("`distinct` should work", function* (done) {
+It('`distinct` should work', function* (done) {
     try {
         var result = yield r.expr([1,2,3,1,2,1,3,2,2,1,4]).distinct().orderBy(r.row).run();
         assert.deepEqual(result, [1,2,3,4]);
@@ -293,7 +293,7 @@ It("`distinct` should work", function* (done) {
         done(e);
     }
 })
-It("`distinct` should work with an index", function* (done) {
+It('`distinct` should work with an index', function* (done) {
     try {
         var result = yield r.db(dbName).table(tableName).distinct({index: "id"}).count().run();
         var result2 = yield r.db(dbName).table(tableName).count().run();
