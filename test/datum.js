@@ -167,6 +167,16 @@ It("`r.expr` should fail with NaN", function* (done) {
         }
     }
 })
+It("`r.expr` should not NaN if not run", function* (done) {
+    try {
+        r.expr(NaN);
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
+
 It("`r.expr` should fail with Infinity", function* (done) {
     try {
         var result = yield r.expr(Infinity).run();
@@ -182,7 +192,15 @@ It("`r.expr` should fail with Infinity", function* (done) {
         }
     }
 })
-
+It("`r.expr` should not Infinity if not run", function* (done) {
+    try {
+        r.expr(Infinity);
+        done();
+    }
+    catch(e) {
+        done(e);
+    }
+})
 It("`r.expr` should work with high unicode char", function* (done) {
     try {
         var result = yield r.expr('“').run();
@@ -233,36 +251,45 @@ It("`r.expr` should work with binaries", function* (done) {
 
 
 
-/*
-
 It("Null char in string - 1", function* (done) {
     try{
         result = yield r.expr("T\u0000EST").run();
         assert.equal(result, "T\u0000EST");
-        done();
+        done(new Error('Was expecting an error'));
     }
     catch(e) {
-        done(e);
+        assert.equal(e.message, 'The null character is currently not supported by RethinkDB.');
+        done();
     }
 })
 It("Null char in string - 2", function* (done) {
     try{
-        result = yield r.json(JSON.stringify("T\u0000EST")).run();
+        result = yield r.json(JSON.stringify('"T\u0000EST"')).run();
         assert.equal(result, JSON.stringify("T\u0000EST"));
-        done();
+        done(new Error('Was expecting an error'));
     }
     catch(e) {
-        done(e);
+        assert.equal(e.message, 'The null character is currently not supported by RethinkDB.');
+        done();
     }
 })
 It("Null char in string - 3", function* (done) {
     try{
         result = yield r.json("T\u0000EST").run();
         assert.equal(result, "T\u0000EST");
+        done(new Error('Was expecting an error'));
+    }
+    catch(e) {
+        assert.equal(e.message, 'The null character is currently not supported by RethinkDB.');
+        done();
+    }
+})
+It("Null char in string should not throw if not run", function* (done) {
+    try{
+        r.expr("\00")
         done();
     }
     catch(e) {
         done(e);
     }
-})
-*/
+});
