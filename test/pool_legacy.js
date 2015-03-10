@@ -220,12 +220,29 @@ It('If the pool cannot create a connection, it should reject queries - timeout',
 });
 
 
-It('If the pool is drained, it should reject queries', function* (done) {
+It('If the pool is drained, it should reject queries - 1', function* (done) {
     try {
         var r = require(__dirname+'/../lib')({buffer: 1, max: 2, silent: true});
 
-        r.getPool(0).drain();
+        r.getPoolMaster().drain();
+        var result = yield r.expr(1).run();
+        done(new Error("Was expecting an error"));
+    }
+    catch(e) {
+        if (e.message === "None of the pools have an opened connection and failed to open a new one.") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+});
 
+It('If the pool is drained, it should reject queries - 2', function* (done) {
+    try {
+        var r = require(__dirname+'/../lib')({buffer: 1, max: 2, silent: true});
+
+        yield r.getPoolMaster().drain();
         var result = yield r.expr(1).run();
         done(new Error("Was expecting an error"));
     }
