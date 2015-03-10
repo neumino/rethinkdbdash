@@ -43,14 +43,14 @@ It('Test fake server', function* (done) {
     }
 });
 
-It('Test pool no query with auto: false', function* (done) {
+It('Test pool no query with discovery: false', function* (done) {
     server1.mockServersStatus([server1])
     var r = require(__dirname+'/../lib')({
         host: server1.host,
         port: server1.port,
         max: 10,
         buffer: 5,
-        auto: false
+        discovery: false
     });
 
     try {
@@ -64,7 +64,7 @@ It('Test pool no query with auto: false', function* (done) {
         done(e);
     }
 });
-It('Test pool no query with auto: true', function* (done) {
+It('Test pool no query with discovery: true', function* (done) {
     server1.mockServersStatus([server1])
     var r = require(__dirname+'/../lib')({
         host: server1.host,
@@ -86,14 +86,14 @@ It('Test pool no query with auto: true', function* (done) {
         done(e);
     }
 });
-It('Test expanding the pool with auto: false', function* (done) {
+It('Test expanding the pool with discovery: false', function* (done) {
     server1.mockServersStatus([server1])
     var r = require(__dirname+'/../lib')({
         host: server1.host,
         port: server1.port,
         max: 9,
         buffer: 5,
-        auto: false
+        discovery: false
     });
     try {
         yield util.sleep(1000);
@@ -111,7 +111,7 @@ It('Test expanding the pool with auto: false', function* (done) {
         done(e);
     }
 });
-It('Test expanding the pool with auto: true', function* (done) {
+It('Test expanding the pool with discovery: true', function* (done) {
     server1.mockServersStatus([server1])
     var r = require(__dirname+'/../lib')({
         host: server1.host,
@@ -136,17 +136,16 @@ It('Test expanding the pool with auto: true', function* (done) {
         done(e);
     }
 });
-It('Test expanding the pool to max with auto: false', function* (done) {
+It('Test expanding the pool to max with discovery: false', function* (done) {
     server1.mockServersStatus([server1])
     var r = require(__dirname+'/../lib')({
         host: server1.host,
         port: server1.port,
         max: 9,
         buffer: 5,
-        auto: false
+        discovery: false
     });
     try {
-        assert.equal(r.getPool().getLength(), 5);
         var result = yield [
             r.expr(200).run(),
             r.expr(200).run(),
@@ -168,7 +167,7 @@ It('Test expanding the pool to max with auto: false', function* (done) {
         done(e);
     }
 });
-It('Test expanding the pool to max with auto: true', function* (done) {
+It('Test expanding the pool to max with discovery: true', function* (done) {
     server1.mockServersStatus([server1])
     var r = require(__dirname+'/../lib')({
         host: server1.host,
@@ -177,7 +176,6 @@ It('Test expanding the pool to max with auto: true', function* (done) {
         buffer: 5
     });
     try {
-        assert.equal(r.getPool(0).getLength(), 5);
         yield util.sleep(100);
         assert.equal(r.getPool(0).getLength(), 7);
         var result = yield [
@@ -273,9 +271,6 @@ It('Test multiple pools with early start', function* (done) {
         buffer: 5*3
     });
     try {
-        assert.equal(r.getPool(0).getLength(), 5);
-        assert.equal(r.getPool(1).getLength(), 5);
-        assert.equal(r.getPool(2).getLength(), 5);
         // All these queries are fired on an empty pool master,
         // so they will each trigger expandAll
         // There's also a fetchServer happening
@@ -330,7 +325,8 @@ It('Test multiple pools - kill a server - check options', function* (done) {
     try {
         yield util.sleep(100);
         server2.close();
-        yield util.sleep(1000);
+
+        yield util.sleep(4000);
         assert.equal(r.getPool(0).options.max, 15);
         assert.equal(r.getPool(1).options.max, 10);
         assert.equal(r.getPool(2).options.max, 15);
@@ -409,7 +405,7 @@ It('Test multiple pools - kill a server while running queries', function* (done)
         done(e);
     }
 });
-It('Test multiple pools - kill a server and restart it - auto: true', function* (done) {
+It('Test multiple pools - kill a server and restart it - discovery: true', function* (done) {
     server1.cleanMockServersStatus();
     server2.cleanMockServersStatus();
     server3.cleanMockServersStatus();
@@ -452,6 +448,7 @@ It('Test multiple pools - kill a server and restart it - auto: true', function* 
             });
         }
 
+        // Restart server2 since we killed it
         server2 = new Server({
             host: server2.host,
             port: server2.port 
@@ -480,15 +477,13 @@ It('Test multiple pools - kill a server and restart it - auto: true', function* 
         assert.equal(r.getPool(2).getLength(), 10);
 
         yield r.getPoolMaster().drain();
-        // Restart server2 since we killed it
         done();
     }
     catch(e) {
         done(e);
     }
 });
-
-It('Test multiple pools - kill a server and restart it - auto: false', function* (done) {
+It('Test multiple pools - kill a server and restart it - discovery: false', function* (done) {
     server1.cleanMockServersStatus();
     server2.cleanMockServersStatus();
     server3.cleanMockServersStatus();
@@ -508,7 +503,7 @@ It('Test multiple pools - kill a server and restart it - auto: false', function*
         max: 10*3,
         buffer: 4*3,
         silent: true,
-        auto: false
+        discovery: false
     });
     try {
         yield util.sleep(100);
@@ -540,12 +535,6 @@ It('Test multiple pools - kill a server and restart it - auto: false', function*
         assert.equal(error, 3);
 
         yield r.getPoolMaster().drain();
-        // Restart server2 since we killed it
-        server2 = new Server({
-            host: 'localhost',
-            port: server2.port
-        })
-
         done();
     }
     catch(e) {
@@ -565,7 +554,7 @@ It('Test adding a new server', function* (done) {
         max: 10*3,
         buffer: 4*3,
         silent: true,
-        auto: true
+        discovery: true
     });
     try {
         assert.equal(r.getPoolMaster().getPools().length, 1);
@@ -581,6 +570,7 @@ It('Test adding a new server', function* (done) {
         r.getPoolMaster().fetchServers();
         yield util.sleep(1000);
         assert.equal(r.getPoolMaster().getPools().length, 3);
+        yield r.getPoolMaster().drain();
         done();
     }
     catch(e) {
@@ -594,6 +584,7 @@ It('Test removing a new server', function* (done) {
     server1.mockServersStatus([server1, server2, server3])
     server2.mockServersStatus([server1, server2, server3])
     server3.mockServersStatus([server1, server2, server3])
+
     server1.mockServersStatus([server1, server3])
     server3.mockServersStatus([server1, server3])
 
@@ -604,21 +595,20 @@ It('Test removing a new server', function* (done) {
         max: 10*3,
         buffer: 4*3,
         silent: true,
-        auto: true
+        discovery: true
     });
     try {
         assert.equal(r.getPoolMaster().getPools().length, 1);
-        yield util.sleep(1000);
+        yield util.sleep(500);
         assert.equal(r.getPoolMaster().getPools().length, 3);
 
-        yield util.sleep(1000);
+        yield util.sleep(500);
         server1.mockServersStatus([server1, server3])
         server3.mockServersStatus([server1, server3])
+
         server2.close();
 
-        //TODO Why doesn't server2 doesn't trigger empty and fetchServers?
-        r.getPoolMaster().fetchServers();
-        yield util.sleep(1000);
+        yield util.sleep(500);
         assert.equal(r.getPoolMaster().getPools().length, 2);
         done();
     }

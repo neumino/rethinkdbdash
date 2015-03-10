@@ -145,7 +145,7 @@ When you import the driver, as soon as you execute the module, you will create
 a default connection pool (except if you pass `{pool: false}`. The options you
 can pass are:
 
-- `auto`: `<boolean>` - When true, the driver will regularly pull data from the table `server_status` to
+- `discovery`: `<boolean>` - When true, the driver will regularly pull data from the table `server_status` to
 keep a list of updated hosts, default `true`
 - `pool`: `<boolean>` - Set it to `false`, if you do not want to use a connection pool.
 - `buffer`: `<number>` - Minimum number of connections available in the pool, default `50`
@@ -156,7 +156,7 @@ keep a list of updated hosts, default `true`
 - `maxExponent`: `<number>` - The maximum timeout before trying to reconnect is 2^maxExponent x timeoutError, default 6 (~60 seconds for the longest wait)
 - `silent`: <boolean> - console.error errors, default `false`
 - `servers`: an of objects `{host: <string>, port: <number>}` representing instances of
-RethinkDB to initially connect to.
+RethinkDB to connect to.
 
 In case of a single instance, you can directly pass `host` and `port` in the top level parameters.
 
@@ -167,7 +167,7 @@ var r = require('rethinkdbdash')();
 
 // connect to and only to localhost:8080
 var r = require('rethinkdbdash')({
-    auto: false
+    discovery: false
 });
 
 // Do not create a connection pool
@@ -182,7 +182,8 @@ var r = require('rethinkdbdash')({
     ]
 });
 
-// Connect to a cluster containing `192.168.0.100`, `192.168.0.100`, `192.168.0.102`
+// Connect to a cluster containing `192.168.0.100`, `192.168.0.100`, `192.168.0.102` and
+use a maximum of 3000 connections and try to keep 300 connections available at all time.
 var r = require('rethinkdbdash')({
     servers: [
         {host: '192.168.0.100', port: 28015},
@@ -208,44 +209,51 @@ You should never have to worry about connections in rethinkdbdash. Connections a
 as they are needed, and in case of a host failure, the pool will try to open connections with an
 exponential back off algorithm.
 
-The driver will execute one query per connection as queries are not executed in parallel
-on a single connection at the moment - [rethinkdb/rethinkdb#3296](https://github.com/rethinkdb/rethinkdb/issues/3296).
+The driver execute one query per connection. Now that [rethinkdb/rethinkdb#3296](https://github.com/rethinkdb/rethinkdb/issues/3296)
+is solved, this behavior may be changed in the future.
 
 Because the connection pool will keep some connections available, a script will not
 terminate. If you have finished executing your queries and want your Node.js script
 to exit, you need to drain the pool with:
 
 ```js
-r.getPool().drain();
+r.getPoolMaster().drain();
 ```
 
 ##### Advanced details about the pool
 
-To access the pool, you can call the method `r.getPool()`.
+The pool is composed of a `PoolMaster` that retrieve connections for `n` pools where `n` is the number of
+servers the driver is connected to. Each pool is connected to a unique host.
 
-The pool can emits a few events:
+To access the pool master, you can call the method `r.getPoolMaster()`.
+
+The pool emits a few events:
 - `draining`: when `drain` is called
 - `queueing`: when a query is added/removed from the queue (queries waiting for a connection), the size of the queue is provided
 - `size`: when the number of connections changes, the number of connections is provided
 - `available-size`: when the number of available connections changes, the number of available connections is provided
 
-
 You can get the number of connections (opened or being opened).
 ```js
-r.getPool().getLength();
+r.getPoolMaster().getLength();
 ```
 
 You can also get the number of available connections (idle connections, without
 a query running on it).
 
 ```js
-r.getPool().getAvailableLength();
+r.getPoolMaster().getAvailableLength();
 ```
 
 You can also drain the pool as mentionned earlier with;
 
 ```js
-r.getPool().drain();
+r.getPoolMaster().drain();
+```
+
+You can access all the pools with:
+```js
+r.getPoolMaster().getPools();
 ```
 
 ##### Note about connections

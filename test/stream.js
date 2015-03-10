@@ -281,7 +281,7 @@ It('Test read', function* (done) {
 })
 
 It('Import with stream as default', function* (done) {
-    var r1 = require('../lib')({stream: true, host: config.host, port: config.port, authKey: config.authKey, buffer: config.buffer, max: config.max, auto: false});
+    var r1 = require('../lib')({stream: true, host: config.host, port: config.port, authKey: config.authKey, buffer: config.buffer, max: config.max, discovery: false});
     var i=0;
     try {
         stream = yield r1.db(dbName).table(tableName).run();
@@ -339,7 +339,7 @@ It('toStream - with grouped data', function* (done) {
 })
 
 It('pipe should work with a writable stream - 200-200', function* (done) {
-    var r1 = require('../lib')({buffer:1, max: 2, auto: false});
+    var r1 = require('../lib')({buffer:1, max: 2, discovery: false});
 
     r1.db(dbName).table(tableName).toStream({highWaterMark: 200})
         .pipe(r1.db(dbName).table(dumpTable).toStream({writable: true, highWaterMark: 200}))
@@ -361,7 +361,7 @@ It('pipe should work with a writable stream - 200-200', function* (done) {
         });
 })
 It('pipe should work with a writable stream - 200-20', function* (done) {
-    var r1 = require('../lib')({buffer:1, max: 2, auto: false});
+    var r1 = require('../lib')({buffer:1, max: 2, discovery: false});
 
     r1.db(dbName).table(tableName).toStream({highWaterMark: 200})
         .pipe(r1.db(dbName).table(dumpTable).toStream({writable: true, highWaterMark: 20}))
@@ -381,7 +381,7 @@ It('pipe should work with a writable stream - 200-20', function* (done) {
         });
 })
 It('pipe should work with a writable stream - 20-200', function* (done) {
-    var r1 = require('../lib')({buffer:1, max: 2, auto: false});
+    var r1 = require('../lib')({buffer:1, max: 2, discovery: false});
 
     r1.db(dbName).table(tableName).toStream({highWaterMark: 20})
         .pipe(r1.db(dbName).table(dumpTable).toStream({writable: true, highWaterMark: 200}))
@@ -401,7 +401,7 @@ It('pipe should work with a writable stream - 20-200', function* (done) {
         });
 })
 It('pipe should work with a writable stream - 50-50', function* (done) {
-    var r1 = require('../lib')({buffer:1, max: 2, auto: false});
+    var r1 = require('../lib')({buffer:1, max: 2, discovery: false});
 
     r1.db(dbName).table(tableName).toStream({highWaterMark: 50})
         .pipe(r1.db(dbName).table(dumpTable).toStream({writable: true, highWaterMark: 50}))
@@ -425,7 +425,7 @@ It('pipe should work with a writable stream - 50-50', function* (done) {
         });
 })
 It('toStream((writable: true}) should handle options', function* (done) {
-    var r1 = require('../lib')({buffer:1, max: 2, auto: false});
+    var r1 = require('../lib')({buffer:1, max: 2, discovery: false});
 
     var stream = r1.db(dbName).table(dumpTable).toStream({writable: true, highWaterMark: 50, conflict: 'replace'});
     stream.write({id: 1, foo: 1});
@@ -491,7 +491,7 @@ It('test pipe all streams', function* (done) {
 })
 
 It('toStream({writable: true}) should throw on something else than a table', function* (done) {
-    var r1 = require('../lib')({buffer:1, max: 2, auto: false});
+    var r1 = require('../lib')({buffer:1, max: 2, discovery: false});
 
     try {
         r.expr(dumpTable).toStream({writable: true});
@@ -503,7 +503,7 @@ It('toStream({writable: true}) should throw on something else than a table', fun
 })
 
 It('toStream({transform: true}) should throw on something else than a table', function* (done) {
-    var r1 = require('../lib')({buffer:1, max: 2, auto: false});
+    var r1 = require('../lib')({buffer:1, max: 2, discovery: false});
 
     try {
         r.expr(dumpTable).toStream({transform: true});

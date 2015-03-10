@@ -21,7 +21,7 @@ function Server(options) {
     self.host = options['host'] || 'localhost';
 
     self.numConnections = 0;
-    self.connections = {};
+    self._connections = {};
 
     self.databases = {};
     self._mock = [];
@@ -29,7 +29,7 @@ function Server(options) {
 
     var index = 0;
     self.server = net.createServer(function(connection) { //'connection' listener
-        self.connections[index] = new Connection(connection, self, {
+        self._connections[index] = new Connection(connection, self, {
             version: self.version,
             authKey: self.authKey,
             protocol: self.protocol,
@@ -44,15 +44,16 @@ function Server(options) {
 }
 
 Server.prototype.close = function() {
+    var self = this;
     this.server.close();
-    for(var id in this.connections) {
-        this.connections[id].connection.end();
+    for(var id in this._connections) {
+        this._connections[id].connection.end();
     }
 }
 Server.prototype.destroy = function() {
     this.server.close();
-    for(var id in this.connections) {
-        this.connections[id].connection.destroy();
+    for(var id in this._connections) {
+        this._connections[id].connection.destroy();
     }
 }
 
@@ -124,7 +125,7 @@ function Connection(connection, server, options) {
         self.read();
     });
     self.connection.on("end", function() {
-        delete self.server.connections[self.id]
+        delete self.server._connections[self.id]
         self.numConnections--;
     });
 }
@@ -234,6 +235,7 @@ Connection.prototype.read = function() {
                 catch(err) {
                     console.log("Fake server crashed.");
                     console.log(err);
+                    console.log(err.stack);
                     self.connection.write("Error, could not parse query");
                 }
             }

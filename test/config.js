@@ -8,5 +8,5 @@ module.exports = {
         host: process.env['WERCKER_RETHINKDB_HOST'] || 'localhost',
         port: parseInt(process.env['WERCKER_RETHINKDB_PORT'], 10)+1 || 28016,
     },
-    auto: false
+    discovery: false
 }

@@ -16,7 +16,7 @@ var options = {
     host: config.host,
     port: config.port,
     authKey: config.authKey,
-    auto: false
+    discovery: false
     //silent: true
 };
 
