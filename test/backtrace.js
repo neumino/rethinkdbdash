@@ -3735,17 +3735,16 @@ Frames:
 undefined
 
 Error:
-`random` takes at most 3 arguments, 4 provided after:
-r.undefined()
+`random` takes at most 3 arguments, 4 provided.
 */
-It('Test backtrace for r.random("foo", "bar", "bar", "bar")', function* (done) {
+It('Test backtrace for r.random("foo", "bar", "buzz", "lol")', function* (done) {
     try {
         r.nextVarId=1;
-        yield r.random("foo", "bar", "bar", "bar").run()
+        yield r.random("foo", "bar", "buzz", "lol").run()
         done(new Error("Should have thrown an error"))
     }
     catch(e) {
-        if (e.message === "`random` takes at most 3 arguments, 4 provided after:\nr.undefined()") {
+        if (e.message === "`random` takes at most 3 arguments, 4 provided.") {
             done()
         }
         else {
@@ -3753,6 +3752,7 @@ It('Test backtrace for r.random("foo", "bar", "bar", "bar")', function* (done) {
         }
     }
 })
+
 
 /*
 Frames:

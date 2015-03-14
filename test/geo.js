@@ -99,7 +99,7 @@ It('`r.circle` should throw with non recognized arguments', function* (done) {
         done(new Error("Was expecting an error"));
     }
     catch(e) {
-        if (e.message.match(/^Unrecognized option `foo` in `circle` after/) !== null) {
+        if (e.message.match(/^Unrecognized option `foo` in `circle`/) !== null) {
             done();
         }
         else {

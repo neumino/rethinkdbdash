@@ -447,6 +447,3 @@ It('`connection` should extend events.Emitter and emit an error if the server fa
     }
 })
 */
-
-
-
