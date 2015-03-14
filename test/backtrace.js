@@ -4912,3 +4912,30 @@ It('Test backtrace for r.db(dbName).table(tableName).between(r.minval, r.maxval,
     }
 })
 
+
+/*
+Frames:
+[ 0 ]
+
+Error:
+Expected type NUMBER but found STRING in:
+r.expr(1).add("bar").add(r.ISO8601("dadsa", {
+^^^^^^^^^^^^^^^^^^^^                         
+    defaultTimezone: "dsada"
+}))
+*/
+It('Test backtrace for r.expr(1).add("bar").add(r.ISO8601("dadsa",{defaultTimezone: "dsada"}))', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.expr(1).add("bar").add(r.ISO8601("dadsa",{defaultTimezone: "dsada"})).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Expected type NUMBER but found STRING in:\nr.expr(1).add(\"bar\").add(r.ISO8601(\"dadsa\", {\n^^^^^^^^^^^^^^^^^^^^                         \n    defaultTimezone: \"dsada\"\n}))\n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
