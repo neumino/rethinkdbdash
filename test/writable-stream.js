@@ -158,7 +158,7 @@ It('test pipe writable - single insert', function* (done) {
             var self = this;
             setTimeout(function() {
                 self.push({field: value});
-            }, 10);
+            }, 50);
         }
     }
 

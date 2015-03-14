@@ -1210,21 +1210,21 @@ Frames:
 
 Error:
 Expected type ARRAY but found STRING in:
-r.expr([1, 2, 3]).indexes_of("bar").add("Hello")
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+r.expr([1, 2, 3]).offsetsOf("bar").add("Hello")
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 */
-It('Test backtrace for r.expr([1,2,3]).indexesOf("bar").add("Hello")', function* (done) {
+It('Test backtrace for r.expr([1, 2, 3]).offsetsOf("bar").add("Hello")', function* (done) {
     try {
         r.nextVarId=1;
-        yield r.expr([1,2,3]).indexesOf("bar").add("Hello").run()
+        yield r.expr([1, 2, 3]).offsetsOf("bar").add("Hello").run()
         done(new Error("Should have thrown an error"))
     }
     catch(e) {
-        if (e.message === "Expected type ARRAY but found STRING in:\nr.expr([1, 2, 3]).indexes_of(\"bar\").add(\"Hello\")\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n") {
+        if (e.message === "Expected type ARRAY but found STRING in:\nr.expr([1, 2, 3]).offsetsOf(\"bar\").add(\"Hello\")\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n") {
             done()
         }
         else {
-            console.log(e.message); done(e);
+            done(e);
         }
     }
 })
@@ -4871,6 +4871,39 @@ It('Test backtrace for r.expr({a: r.wednesday}).add([1])', function* (done) {
     }
     catch(e) {
         if (e.message === "Expected type NUMBER but found OBJECT in:\nr.expr({\n^^^^^^^^\n    a: r.wednesday\n    ^^^^^^^^^^^^^^\n}).add([1])\n^^^^^^^^^^^\n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+
+/*
+Frames:
+[ 0 ]
+
+Error:
+Expected type DATUM but found TABLE_SLICE:
+SELECTION ON table(0efb72285d551009ac6f2387173b3443) in:
+r.db("d2292d5a5fb3f4780426609087b88fa4").table("0efb72285d551009ac6f2387173b3443")
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    .between(r.minval, r.maxval, {
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        index: "foo"
+        ^^^^^^^^^^^^
+    }).add(1)
+    ^^
+*/
+It('Test backtrace for r.db(dbName).table(tableName).between(r.minval, r.maxval, {index: "foo"}).add(1)', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.db(dbName).table(tableName).between(r.minval, r.maxval, {index: "foo"}).add(1).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Expected type DATUM but found TABLE_SLICE:\nSELECTION ON table("+tableName+") in:\nr.db(\""+dbName+"\").table(\""+tableName+"\")\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    .between(r.minval, r.maxval, {\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n        index: \"foo\"\n        ^^^^^^^^^^^^\n    }).add(1)\n    ^^       \n") {
             done()
         }
         else {
