@@ -450,19 +450,15 @@ It('`next` should work on a feed', function* (done) {
 It('`next` should work on an atom feed', function* (done) {
     try {
         var idValue = uuid();
-        console.log(0);
         feed = yield r.db(dbName).table(tableName2).get(idValue).changes().run();
-        console.log(0);
         setImmediate(function() {
             r.db(dbName).table(tableName2).insert({id: idValue}).run();
         })
         assert(feed);
         var i=0;
         var change = yield feed.next();
-        console.log(0);
         assert.deepEqual(change, {new_val: null});
         change = yield feed.next();
-        console.log(0);
         assert.deepEqual(change, {new_val: {id: idValue}, old_val: null});
         yield feed.close();
 
