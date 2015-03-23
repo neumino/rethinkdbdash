@@ -247,18 +247,14 @@ It('`cursor.close` should return a promise', function* (done) {
 It('cursor shouldn\'t throw if the user try to serialize it in JSON', function* (done) {
     try {
         var cursor = yield r.db(dbName).table(tableName).run({cursor: true});
-        var cursor2 = yield r.db(dbName).table(tableName2).run({cursor: true});
-        assert.deepEqual(JSON.stringify("You cannot serialize to JSON a cursor. Retrieve data from the cursor with `toArray` or `next`."), JSON.stringify(cursor));
-        assert.deepEqual(JSON.stringify("You cannot serialize to JSON a cursor. Retrieve data from the cursor with `toArray` or `next`."), JSON.stringify(cursor2));
-        yield cursor.close();
-        yield cursor2.close();
-        done();
+        cursor.toJSON()
+        done(new Error('Was expecting an error'));
     }
     catch(e) {
-        done(e);
+        assert.equal(e.message, "You cannot serialize a Cursor to JSON. Retrieve data from the cursor with `toArray` or `next`.");
+        done();
     }
 })
-
 
 // This test is not working for now -- need more data? Server bug?
 It('Remove the field `val` in some docs', function* (done) {
@@ -377,9 +373,6 @@ It('`changes` should return a feed', function* (done) {
         feed = yield r.db(dbName).table(tableName).changes().run();
         assert(feed);
         assert.equal(feed.toString(), '[object Feed]');
-        setTimeout(function() {
-            r.db(dbName).table(tableName).insert({}).run()
-        }, 4000)
         yield feed.close();
         done();
     }
@@ -428,9 +421,9 @@ It('`orderBy.limit.changes` should return a feed', function* (done) {
 It('`next` should work on a feed', function* (done) {
     try {
         feed = yield r.db(dbName).table(tableName2).changes().run();
-        setImmediate(function() {
+        setTimeout(function() {
             r.db(dbName).table(tableName2).update({foo: r.now()}).run();
-        })
+        }, 100)
         assert(feed);
         var i=0;
         while(true) {
@@ -438,6 +431,7 @@ It('`next` should work on a feed', function* (done) {
             assert(result);
             i++;
             if (i === smallNumDocs) {
+                yield feed.close();
                 done();
                 break;
             }
@@ -451,9 +445,9 @@ It('`next` should work on an atom feed', function* (done) {
     try {
         var idValue = uuid();
         feed = yield r.db(dbName).table(tableName2).get(idValue).changes().run();
-        setImmediate(function() {
+        setTimeout(function() {
             r.db(dbName).table(tableName2).insert({id: idValue}).run();
-        })
+        }, 100)
         assert(feed);
         var i=0;
         var change = yield feed.next();
@@ -505,14 +499,18 @@ It('`close` should work on feed with events', function* (done) {
 It('`on` should work on feed', function* (done) {
     try {
         feed = yield r.db(dbName).table(tableName2).changes().run();
-        setImmediate(function() {
+        setTimeout(function() {
             r.db(dbName).table(tableName2).update({foo: r.now()}).run();
-        })
+        }, 100)
         var i=0;
         feed.on('data', function() {
             i++;
             if (i === smallNumDocs) {
-                done();
+                feed.close().then(function() {
+                    done();
+                }).error(function(error) {
+                    done(error);
+                });
             }
         });
         feed.on('error', function(e) {
@@ -526,9 +524,9 @@ It('`on` should work on feed', function* (done) {
 It('`on` should work on cursor - a `end` event shoul be eventually emitted on a cursor', function* (done) {
     try {
         cursor = yield r.db(dbName).table(tableName2).run({cursor: true});
-        setImmediate(function() {
+        setTimeout(function() {
             r.db(dbName).table(tableName2).update({foo: r.now()}).run();
-        })
+        }, 100)
         cursor.on('end', function() {
             done()
         });
@@ -544,16 +542,22 @@ It('`on` should work on cursor - a `end` event shoul be eventually emitted on a 
 It('`next`, `each`, `toArray` should be deactivated if the EventEmitter interface is used', function* (done) {
     try {
         feed = yield r.db(dbName).table(tableName2).changes().run();
-        setImmediate(function() {
+        setTimeout(function() {
             r.db(dbName).table(tableName2).update({foo: r.now()}).run();
-        })
-        feed.on('data', function() {
+        }, 100)
+        feed.on('data', function() { });
+        feed.on('error', function(error) {
+            done(error);
         });
         assert.throws(function() {
             feed.next();
         }, function(e) {
             if (e.message === 'You cannot called `next` once you have bound listeners on the Feed.') {
-                done();
+                feed.close().then(function() {
+                    done();
+                }).error(function(error) {
+                    done(error);
+                });
             }
             else {
                 done(e);
@@ -573,6 +577,7 @@ It('Import with cursor as default', function* (done) {
     try {
         cursor = yield r1.db(dbName).table(tableName).run();
         assert.equal(cursor.toString(), '[object Cursor]');
+        yield cursor.close();
         done();
     }
     catch(e) {
@@ -582,18 +587,20 @@ It('Import with cursor as default', function* (done) {
 It('`each` should not return an error if the feed is closed - 1', function* (done) {
     try {
         feed = yield r.db(dbName).table(tableName2).changes().run();
-        setImmediate(function() {
+        setTimeout(function() {
             r.db(dbName).table(tableName2).limit(2).update({foo: r.now()}).run();
-        })
+        }, 100)
         var count = 0;
         feed.each(function(err, result) {
-            count++;
+            if (result.new_val.foo instanceof Date) {
+              count++;
+            }
             if (count === 1) {
-                setImmediate(function() {
+                setTimeout(function() {
                     feed.close().then(function() {
                         done();
                     }).error(done);
-                });
+                }, 100);
             }
         });
     }
@@ -604,18 +611,20 @@ It('`each` should not return an error if the feed is closed - 1', function* (don
 It('`each` should not return an error if the feed is closed - 2', function* (done) {
     try {
         feed = yield r.db(dbName).table(tableName2).changes().run();
-        setImmediate(function() {
+        setTimeout(function() {
             r.db(dbName).table(tableName2).limit(2).update({foo: r.now()}).run();
-        })
+        }, 100)
         var count = 0;
         feed.each(function(err, result) {
-            count++;
+            if (result.new_val.foo instanceof Date) {
+              count++;
+            }
             if (count === 2) {
-                setImmediate(function() {
+                setTimeout(function() {
                     feed.close().then(function() {
                         done();
                     }).error(done);
-                });
+                }, 100);
             }
         });
     }
@@ -626,16 +635,14 @@ It('`each` should not return an error if the feed is closed - 2', function* (don
 It('events should not return an error if the feed is closed - 1', function* (done) {
     try {
         feed = yield r.db(dbName).table(tableName2).get(1).changes().run();
-        setImmediate(function() {
+        setTimeout(function() {
             r.db(dbName).table(tableName2).insert({id: 1}).run();
-        })
-        var count = 0;
+        }, 100)
         feed.each(function(err, result) {
             if (err) {
                 return done(err);
             }
-            count++;
-            if (count === 1) {
+            if ((result.new_val != null) && (result.new_val.id === 1)) {
                 feed.close().then(function() {
                     done();
                 }).error(done);
@@ -649,18 +656,20 @@ It('events should not return an error if the feed is closed - 1', function* (don
 It('events should not return an error if the feed is closed - 2', function* (done) {
     try {
         feed = yield r.db(dbName).table(tableName2).changes().run();
-        setImmediate(function() {
+        setTimeout(function() {
             r.db(dbName).table(tableName2).limit(2).update({foo: r.now()}).run();
-        })
+        },100)
         var count = 0;
         feed.on('data', function(result) {
-            count++;
+            if (result.new_val.foo instanceof Date) {
+              count++;
+            }
             if (count === 1) {
-                setImmediate(function() {
+                setTimeout(function() {
                     feed.close().then(function() {
                         done();
                     }).error(done);
-                });
+                }, 100);
             }
         });
     }

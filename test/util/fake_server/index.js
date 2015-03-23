@@ -5,7 +5,7 @@
  * Do not use :)
  */
 var net = require('net');
-var protodef = require(__dirname+"/protodef.js");
+var protodef = require(__dirname+"/../../../lib/protodef.js");
 var Query = require(__dirname+"/query.js");
 var util = require('util');
 var _util = require(__dirname+'/../common.js');
@@ -15,7 +15,7 @@ function Server(options) {
     var self = this;
 
     self.authKey = "";
-    self.version = protodef.VersionDummy.Version.V0_3;
+    self.version = protodef.VersionDummy.Version.V0_4;
     self.protocol = protodef.VersionDummy.Protocol.JSON; // Support for JSON protocol only
     self.port = options['port'] || 28015;
     self.host = options['host'] || 'localhost';

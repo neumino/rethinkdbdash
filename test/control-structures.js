@@ -452,4 +452,3 @@ It('`r.uuid` should work', function* (done) {
         done(e)
     }
 })
-
