@@ -3868,14 +3868,13 @@ It('Test backtrace for r.do(1,function( b) { return b.add("foo") })', function* 
 
 
 /*
-Broken backtrace, see https://github.com/rethinkdb/rethinkdb/issues/3689
 Frames:
 [ 0 ]
 
 Error:
-Expected type DATUM but found SELECTION:
-SELECTION ON table(4c73c8ff60ce03ce66aedf52832bac20) in:
-r.db("1335c6baaaed71ecff52b82776fcc926").table("4c73c8ff60ce03ce66aedf52832bac20")
+Expected type DATUM but found TABLE_SLICE:
+SELECTION ON table(e1bf8f82ad33ed56f7e04e0c2ba97fcc) in:
+r.db("0c24bc6421463a0da33452e38a842f20").table("e1bf8f82ad33ed56f7e04e0c2ba97fcc")
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     .between("foo", "bar", {
     ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -3891,7 +3890,7 @@ It('Test backtrace for r.db(dbName).table(tableName).between("foo", "bar", {inde
         done(new Error("Should have thrown an error"))
     }
     catch(e) {
-        if (e.message === "Expected type DATUM but found SELECTION:\nSELECTION ON table("+tableName+") in:\nr.db(\""+dbName+"\").table(\""+tableName+"\")\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    .between(\"foo\", \"bar\", {\n    ^^^^^^^^^^^^^^^^^^^^^^^^\n        index: \"id\"\n        ^^^^^^^^^^^\n    }).add(1)\n    ^^       \n") {
+        if (e.message === "Expected type DATUM but found TABLE_SLICE:\nSELECTION ON table("+tableName+") in:\nr.db(\""+dbName+"\").table(\""+tableName+"\")\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    .between(\"foo\", \"bar\", {\n    ^^^^^^^^^^^^^^^^^^^^^^^^\n        index: \"id\"\n        ^^^^^^^^^^^\n    }).add(1)\n    ^^       \n") {
             done()
         }
         else {
