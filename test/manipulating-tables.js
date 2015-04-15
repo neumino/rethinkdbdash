@@ -10,7 +10,7 @@ var uuid = util.uuid;
 var dbName, tableName, result;
 
 
-It("Init for `manipulating-tables.js`", function* (done) {
+It('Init for `manipulating-tables.js`', function* (done) {
     try {
         dbName = uuid(); // export to the global scope
         var result = yield r.dbCreate(dbName).run();
@@ -23,7 +23,7 @@ It("Init for `manipulating-tables.js`", function* (done) {
     }
 })
 
-It("`tableList` should return a cursor", function* (done) {
+It('`tableList` should return a cursor', function* (done) {
     try {
         result = yield r.db(dbName).tableList().run();
         assert(Array.isArray(result));
@@ -34,7 +34,7 @@ It("`tableList` should return a cursor", function* (done) {
     }
 })
 
-It("`tableList` should show the table we created", function* (done) {
+It('`tableList` should show the table we created', function* (done) {
     try {
         tableName = uuid(); // export to the global scope
 
@@ -65,7 +65,7 @@ It("`tableList` should show the table we created", function* (done) {
 })
 
 
-It("'`tableCreate` should create a table'", function* (done) {
+It('`tableCreate` should create a table', function* (done) {
     try {
         tableName = uuid(); // export to the global scope
 
@@ -78,7 +78,7 @@ It("'`tableCreate` should create a table'", function* (done) {
         done(e);
     }
 })
-It("'`tableCreate` should create a table -- primaryKey'", function* (done) {
+It('`tableCreate` should create a table -- primaryKey', function* (done) {
     try {
         tableName = uuid();
 
@@ -94,7 +94,7 @@ It("'`tableCreate` should create a table -- primaryKey'", function* (done) {
         done(e);
     }
 })
-It("'`tableCreate` should create a table -- all args'", function* (done) {
+It('`tableCreate` should create a table -- all args', function* (done) {
     try {
         tableName = uuid();
 
@@ -110,7 +110,7 @@ It("'`tableCreate` should create a table -- all args'", function* (done) {
         done(e);
     }
 })
-It("'`tableCreate` should throw -- non valid args'", function* (done) {
+It('`tableCreate` should throw -- non valid args', function* (done) {
     try {
         tableName = uuid();
 
@@ -125,7 +125,7 @@ It("'`tableCreate` should throw -- non valid args'", function* (done) {
         }
     }
 })
-It("`tableCreate` should throw if no argument is given", function* (done) {
+It('`tableCreate` should throw if no argument is given', function* (done) {
     try {
         result = yield r.db(dbName).tableCreate().run();
     }
@@ -138,7 +138,7 @@ It("`tableCreate` should throw if no argument is given", function* (done) {
         }
     }
 })
-It("'`tableCreate` should throw is the name contains special char'", function* (done) {
+It('`tableCreate` should throw is the name contains special char', function* (done) {
     try {
         result = yield r.db(dbName).tableCreate("-_-").run();
     }
@@ -150,7 +150,7 @@ It("'`tableCreate` should throw is the name contains special char'", function* (
 
 
 
-It("`tableDrop` should drop a table", function* (done) {
+It('`tableDrop` should drop a table', function* (done) {
     try {
         tableName = uuid();
 
@@ -181,7 +181,7 @@ It("`tableDrop` should drop a table", function* (done) {
     }
 })
 
-It("`tableDrop` should throw if no argument is given", function* (done) {
+It('`tableDrop` should throw if no argument is given', function* (done) {
     try {
         result = yield r.db(dbName).tableDrop().run();
     }
@@ -196,7 +196,7 @@ It("`tableDrop` should throw if no argument is given", function* (done) {
 })
 
 
-It("index operations", function* (done) {
+It('index operations', function* (done) {
     try {
         dbName = uuid();
         tableName = uuid();
@@ -242,7 +242,7 @@ It("index operations", function* (done) {
 })
 
 
-It("`indexCreate` should work with options", function* (done) {
+It('`indexCreate` should work with options', function* (done) {
     try {
         var result = yield r.db(dbName).table(tableName).indexCreate("foo", {multi: true}).run();
         assert.deepEqual(result, {created: 1});
@@ -302,7 +302,7 @@ It("`indexCreate` should work with options", function* (done) {
 
 })
 
-It("`indexCreate` should throw if no argument is passed", function* (done) {
+It('`indexCreate` should throw if no argument is passed', function* (done) {
     try {
         var result = yield r.db(dbName).table(tableName).indexCreate().run();
     }
@@ -315,7 +315,7 @@ It("`indexCreate` should throw if no argument is passed", function* (done) {
         }
     }
 })
-It("`indexDrop` should throw if no argument is passed", function* (done) {
+It('`indexDrop` should throw if no argument is passed', function* (done) {
     try {
         var result = yield r.db(dbName).table(tableName).indexDrop().run();
     }
@@ -328,7 +328,7 @@ It("`indexDrop` should throw if no argument is passed", function* (done) {
         }
     }
 })
-It("`indexRename` should work", function* (done) {
+It('`indexRename` should work', function* (done) {
     var toRename = uuid();
     var renamed = uuid();
     var existing = uuid();
@@ -355,7 +355,7 @@ It("`indexRename` should work", function* (done) {
     }
 
 })
-It("`indexRename` should not overwrite an index if not specified", function* (done) {
+It('`indexRename` should not overwrite an index if not specified', function* (done) {
     try {
         var name = uuid();
         var otherName = uuid();
@@ -376,7 +376,7 @@ It("`indexRename` should not overwrite an index if not specified", function* (do
         }
     }
 })
-It("`indexRename` should throw -- non valid args", function* (done) {
+It('`indexRename` should throw -- non valid args', function* (done) {
     try {
         tableName = uuid();
 

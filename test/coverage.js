@@ -7,11 +7,12 @@ var keys = Object.keys(protodef.Term.TermType);
 var fs = require('fs');
 
 // Test that the term appears somewhere in the file, which find terms that were not implemented
-It("All terms should be present in term.js", function* (done) {
+It('All terms should be present in term.js', function* (done) {
     var str = fs.readFileSync(__dirname+'/../lib/term.js', 'utf8');
     var ignoredKeys = { // not implemented since we use the JSON protocol
         DATUM: true,
-        MAKE_OBJ: true
+        MAKE_OBJ: true,
+        BETWEEN_DEPRECATED: true,
     }
     var missing = [];
     for(var i=0; i<keys.length; i++) {
@@ -31,11 +32,12 @@ It("All terms should be present in term.js", function* (done) {
     }
 
 })
-It("All terms should be present in error.js", function* (done) {
+It('All terms should be present in error.js', function* (done) {
     var str = fs.readFileSync(__dirname+'/../lib/error.js', 'utf8');
     var ignoredKeys = {
         DATUM: true,
-        MAKE_OBJ: true
+        MAKE_OBJ: true,
+        BETWEEN_DEPRECATED: true,
     }
     var missing = [];
     for(var i=0; i<keys.length; i++) {

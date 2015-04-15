@@ -10,16 +10,16 @@ var It = util.It;
 var uuid = util.uuid;
 var dbName, tableName;
 
-It("Multiple import should not share the same pool", function* (done) {
+It('Multiple import should not share the same pool', function* (done) {
     try {
-        assert(r.getPool() !== r_.getPool());
+        assert(r.getPoolMaster() !== r_.getPoolMaster());
         done();
     }
     catch(e) {
         done(e);
     }
 })
-It("Multiple import should not share the same nestingLevel value", function* (done) {
+It('Multiple import should not share the same nestingLevel value', function* (done) {
     try {
         r.setNestingLevel(19);
         r_.setNestingLevel(100);
@@ -33,7 +33,7 @@ It("Multiple import should not share the same nestingLevel value", function* (do
     }
 })
 
-It("Multiple import should not share the same `nextVarId`", function* (done) {
+It('Multiple import should not share the same `nextVarId`', function* (done) {
     try {
         r.expr(1).do(function(a, b, c) { return 1});
         r_.expr(2).do(function(d) { return 2});

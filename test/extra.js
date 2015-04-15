@@ -9,7 +9,7 @@ var It = util.It;
 var uuid = util.uuid;
 var dbName, tableName, result;
 
-It("Init for `extra.js`", function* (done) {
+It('Init for `extra.js`', function* (done) {
     try {
         dbName = uuid();
         tableName = uuid(); // Big table to test partial sequence
@@ -26,7 +26,7 @@ It("Init for `extra.js`", function* (done) {
         done(e);
     }
 })
-It("Change the default database on the fly in run", function* (done) {
+It('Change the default database on the fly in run', function* (done) {
     try {
         result = yield r.tableList().run({db: dbName})
         assert.deepEqual(result, [tableName]);
@@ -38,7 +38,7 @@ It("Change the default database on the fly in run", function* (done) {
     }
 })
 
-It("Anonymous function should throw if they return undefined", function* (done) {
+It('Anonymous function should throw if they return undefined', function* (done) {
     try {
         r.expr(1).do(function() {});
     }
@@ -52,7 +52,7 @@ It("Anonymous function should throw if they return undefined", function* (done) 
     }
 })
 
-It("toString should work", function* (done) {
+It('toString should work', function* (done) {
     try {
         assert.equal(r.expr(1).add(2).toString(), "r.expr(1).add(2)");
         assert.equal(r.expr(1).toString(), "r.expr(1)");
@@ -63,7 +63,7 @@ It("toString should work", function* (done) {
     }
 })
 
-It("yield a query should work - 1", function* (done) {
+It('yield a query should work - 1', function* (done) {
     try {
         var result = yield r.expr(1);
         assert.equal(result, 1);
@@ -77,7 +77,7 @@ It("yield a query should work - 1", function* (done) {
         done(e);
     }
 })
-It("yield a query should work - 2", function* (done) {
+It('yield a query should work - 2', function* (done) {
     try {
         var result = yield r.expr(1).add("foo");
         done(new Error("Was expecting an error"));

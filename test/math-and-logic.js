@@ -9,7 +9,7 @@ var It = util.It;
 var uuid = util.uuid;
 var dbName, tableName, result;
 
-It("`add` should work", function* (done) {
+It('`add` should work', function* (done) {
     try {
         result = yield r.expr(1).add(1).run();
         assert.equal(result, 2);
@@ -29,7 +29,7 @@ It("`add` should work", function* (done) {
         done(e);
     }
 })
-It("`add` should throw if no argument has been passed", function* (done) {
+It('`add` should throw if no argument has been passed', function* (done) {
     try {
         var result = yield r.expr(1).add().run();
     }
@@ -43,7 +43,7 @@ It("`add` should throw if no argument has been passed", function* (done) {
     }
 })
 
-It("`add` should throw if no argument has been passed -- r.add", function* (done) {
+It('`add` should throw if no argument has been passed -- r.add', function* (done) {
     try {
         var result = yield r.add().run();
     }
@@ -56,7 +56,7 @@ It("`add` should throw if no argument has been passed -- r.add", function* (done
         }
     }
 })
-It("`add` should throw if just one argument has been passed -- r.add", function* (done) {
+It('`add` should throw if just one argument has been passed -- r.add', function* (done) {
     try {
         var result = yield r.add(1).run();
     }
@@ -70,7 +70,7 @@ It("`add` should throw if just one argument has been passed -- r.add", function*
     }
 })
 
-It("`sub` should work", function* (done) {
+It('`sub` should work', function* (done) {
     try {
         var result = yield r.expr(1).sub(1).run();
         assert.equal(result, 0);
@@ -84,7 +84,7 @@ It("`sub` should work", function* (done) {
         done(e);
     }
 })
-It("`sub` should throw if no argument has been passed", function* (done) {
+It('`sub` should throw if no argument has been passed', function* (done) {
     try {
         var result = yield r.expr(1).sub().run();
     }
@@ -97,7 +97,7 @@ It("`sub` should throw if no argument has been passed", function* (done) {
         }
     }
 })
-It("`sub` should throw if no argument has been passed -- r.sub", function* (done) {
+It('`sub` should throw if no argument has been passed -- r.sub', function* (done) {
     try {
         var result = yield r.sub().run();
     }
@@ -110,7 +110,7 @@ It("`sub` should throw if no argument has been passed -- r.sub", function* (done
         }
     }
 })
-It("`sub` should throw if just one argument has been passed -- r.sub", function* (done) {
+It('`sub` should throw if just one argument has been passed -- r.sub', function* (done) {
     try {
         var result = yield r.sub(1).run();
     }
@@ -123,7 +123,7 @@ It("`sub` should throw if just one argument has been passed -- r.sub", function*
         }
     }
 })
-It("`mul` should work", function* (done) {
+It('`mul` should work', function* (done) {
     try {
         var result = yield r.expr(2).mul(3).run();
         assert.equal(result, 6);
@@ -137,7 +137,7 @@ It("`mul` should work", function* (done) {
         done(e);
     }
 })
-It("`mul` should throw if no argument has been passed", function* (done) {
+It('`mul` should throw if no argument has been passed', function* (done) {
     try {
         var result = yield r.expr(1).mul().run();
     }
@@ -150,7 +150,7 @@ It("`mul` should throw if no argument has been passed", function* (done) {
         }
     }
 })
-It("`mul` should throw if no argument has been passed -- r.mul", function* (done) {
+It('`mul` should throw if no argument has been passed -- r.mul', function* (done) {
     try {
         var result = yield r.mul().run();
     }
@@ -163,7 +163,7 @@ It("`mul` should throw if no argument has been passed -- r.mul", function* (done
         }
     }
 })
-It("`mul` should throw if just one argument has been passed -- r.mul", function* (done) {
+It('`mul` should throw if just one argument has been passed -- r.mul', function* (done) {
     try {
         var result = yield r.mul(1).run();
     }
@@ -176,7 +176,7 @@ It("`mul` should throw if just one argument has been passed -- r.mul", function*
         }
     }
 })
-It("`div` should work", function* (done) {
+It('`div` should work', function* (done) {
     try {
         var result = yield r.expr(24).div(2).run();
         assert.equal(result, 12);
@@ -190,7 +190,7 @@ It("`div` should work", function* (done) {
         done(e);
     }
 })
-It("`div` should throw if no argument has been passed", function* (done) {
+It('`div` should throw if no argument has been passed', function* (done) {
     try {
         var result = yield r.expr(1).div().run();
     }
@@ -203,7 +203,7 @@ It("`div` should throw if no argument has been passed", function* (done) {
         }
     }
 })
-It("`div` should throw if no argument has been passed -- r.div", function* (done) {
+It('`div` should throw if no argument has been passed -- r.div', function* (done) {
     try {
         var result = yield r.div().run();
     }
@@ -216,7 +216,7 @@ It("`div` should throw if no argument has been passed -- r.div", function* (done
         }
     }
 })
-It("`div` should throw if just one argument has been passed -- r.div", function* (done) {
+It('`div` should throw if just one argument has been passed -- r.div', function* (done) {
     try {
         var result = yield r.div(1).run();
     }
@@ -229,7 +229,7 @@ It("`div` should throw if just one argument has been passed -- r.div", function*
         }
     }
 })
-It("`mod` should work", function* (done) {
+It('`mod` should work', function* (done) {
     try {
         var result = yield r.expr(24).mod(7).run();
         assert.equal(result, 3);
@@ -243,7 +243,7 @@ It("`mod` should work", function* (done) {
         done(e);
     }
 })
-It("`mod` should throw if no argument has been passed", function* (done) {
+It('`mod` should throw if no argument has been passed', function* (done) {
     try {
         var result = yield r.expr(1).mod().run();
     }
@@ -256,7 +256,7 @@ It("`mod` should throw if no argument has been passed", function* (done) {
         }
     }
 })
-It("`mod` should throw if more than two arguments -- r.mod", function* (done) {
+It('`mod` should throw if more than two arguments -- r.mod', function* (done) {
     try {
         var result = yield r.mod(24, 7, 2).run();
     }
@@ -269,7 +269,7 @@ It("`mod` should throw if more than two arguments -- r.mod", function* (done) {
         }
     }
 })
-It("`and` should work", function* (done) {
+It('`and` should work', function* (done) {
     try {
         var result = yield r.expr(true).and(false).run();
         assert.equal(result, false);
@@ -289,7 +289,7 @@ It("`and` should work", function* (done) {
         done(e);
     }
 })
-It("`and` should throw if no argument has been passed", function* (done) {
+It('`and` should throw if no argument has been passed', function* (done) {
     try {
         var result = yield r.expr(1).and().run();
     }
@@ -302,7 +302,7 @@ It("`and` should throw if no argument has been passed", function* (done) {
         }
     }
 })
-It("`and` should throw if no argument has been passed -- r.and", function* (done) {
+It('`and` should throw if no argument has been passed -- r.and', function* (done) {
     try {
         var result = yield r.and().run();
     }
@@ -315,7 +315,7 @@ It("`and` should throw if no argument has been passed -- r.and", function* (done
         }
     }
 })
-It("`and` should throw if just one argument has been passed -- r.and", function* (done) {
+It('`and` should throw if just one argument has been passed -- r.and', function* (done) {
     try {
         var result = yield r.and(1).run();
     }
@@ -328,7 +328,7 @@ It("`and` should throw if just one argument has been passed -- r.and", function*
         }
     }
 })
-It("`or` should work", function* (done) {
+It('`or` should work', function* (done) {
     try {
         var result = yield r.expr(true).or(false).run();
         assert.equal(result, true);
@@ -347,7 +347,7 @@ It("`or` should work", function* (done) {
         done(e);
     }
 })
-It("`or` should throw if no argument has been passed", function* (done) {
+It('`or` should throw if no argument has been passed', function* (done) {
     try {
         var result = yield r.expr(1).or().run();
     }
@@ -360,7 +360,7 @@ It("`or` should throw if no argument has been passed", function* (done) {
         }
     }
 })
-It("`or` should throw if no argument has been passed -- r.or", function* (done) {
+It('`or` should throw if no argument has been passed -- r.or', function* (done) {
     try {
         var result = yield r.or().run();
     }
@@ -373,7 +373,7 @@ It("`or` should throw if no argument has been passed -- r.or", function* (done) 
         }
     }
 })
-It("`or` should throw if just one argument has been passed -- r.or", function* (done) {
+It('`or` should throw if just one argument has been passed -- r.or', function* (done) {
     try {
         var result = yield r.or(1).run();
     }
@@ -386,7 +386,7 @@ It("`or` should throw if just one argument has been passed -- r.or", function* (
         }
     }
 })
-It("`eq` should work", function* (done) {
+It('`eq` should work', function* (done) {
     try {
         var result = yield r.expr(1).eq(1).run();
         assert.equal(result, true);
@@ -406,7 +406,7 @@ It("`eq` should work", function* (done) {
         done(e);
     }
 })
-It("`eq` should throw if no argument has been passed", function* (done) {
+It('`eq` should throw if no argument has been passed', function* (done) {
     try {
         var result = yield r.expr(1).eq().run();
     }
@@ -419,7 +419,7 @@ It("`eq` should throw if no argument has been passed", function* (done) {
         }
     }
 })
-It("`eq` should throw if no argument has been passed -- r.eq", function* (done) {
+It('`eq` should throw if no argument has been passed -- r.eq', function* (done) {
     try {
         var result = yield r.eq().run();
     }
@@ -432,7 +432,7 @@ It("`eq` should throw if no argument has been passed -- r.eq", function* (done) 
         }
     }
 })
-It("`eq` should throw if just one argument has been passed -- r.eq", function* (done) {
+It('`eq` should throw if just one argument has been passed -- r.eq', function* (done) {
     try {
         var result = yield r.eq(1).run();
     }
@@ -445,7 +445,7 @@ It("`eq` should throw if just one argument has been passed -- r.eq", function* (
         }
     }
 })
-It("`ne` should work", function* (done) {
+It('`ne` should work', function* (done) {
     try {
         var result = yield r.expr(1).ne(1).run();
         assert.equal(result, false);
@@ -466,7 +466,7 @@ It("`ne` should work", function* (done) {
         done(e);
     }
 })
-It("`ne` should throw if no argument has been passed", function* (done) {
+It('`ne` should throw if no argument has been passed', function* (done) {
     try {
         var result = yield r.expr(1).ne().run();
     }
@@ -479,7 +479,7 @@ It("`ne` should throw if no argument has been passed", function* (done) {
         }
     }
 })
-It("`ne` should throw if no argument has been passed -- r.ne", function* (done) {
+It('`ne` should throw if no argument has been passed -- r.ne', function* (done) {
     try {
         var result = yield r.ne().run();
     }
@@ -492,7 +492,7 @@ It("`ne` should throw if no argument has been passed -- r.ne", function* (done) 
         }
     }
 })
-It("`ne` should throw if just one argument has been passed -- r.ne", function* (done) {
+It('`ne` should throw if just one argument has been passed -- r.ne', function* (done) {
     try {
         var result = yield r.ne(1).run();
     }
@@ -505,7 +505,7 @@ It("`ne` should throw if just one argument has been passed -- r.ne", function* (
         }
     }
 })
-It("`gt` should work", function* (done) {
+It('`gt` should work', function* (done) {
     try {
         var result = yield r.expr(1).gt(2).run();
         assert.equal(result, false);
@@ -526,7 +526,7 @@ It("`gt` should work", function* (done) {
         done(e);
     }
 })
-It("`gt` should throw if no argument has been passed", function* (done) {
+It('`gt` should throw if no argument has been passed', function* (done) {
     try {
         var result = yield r.expr(1).gt().run();
     }
@@ -539,7 +539,7 @@ It("`gt` should throw if no argument has been passed", function* (done) {
         }
     }
 })
-It("`gt` should throw if no argument has been passed -- r.gt", function* (done) {
+It('`gt` should throw if no argument has been passed -- r.gt', function* (done) {
     try {
         var result = yield r.gt().run();
     }
@@ -552,7 +552,7 @@ It("`gt` should throw if no argument has been passed -- r.gt", function* (done) 
         }
     }
 })
-It("`gt` should throw if just one argument has been passed -- r.gt", function* (done) {
+It('`gt` should throw if just one argument has been passed -- r.gt', function* (done) {
     try {
         var result = yield r.gt(1).run();
     }
@@ -565,7 +565,7 @@ It("`gt` should throw if just one argument has been passed -- r.gt", function* (
         }
     }
 })
-It("`ge` should work", function* (done) {
+It('`ge` should work', function* (done) {
     try {
         var result = yield r.expr(1).ge(2).run();
         assert.equal(result, false);
@@ -589,7 +589,7 @@ It("`ge` should work", function* (done) {
         done(e);
     }
 })
-It("`ge` should throw if no argument has been passed", function* (done) {
+It('`ge` should throw if no argument has been passed', function* (done) {
     try {
         var result = yield r.expr(1).ge().run();
     }
@@ -602,7 +602,7 @@ It("`ge` should throw if no argument has been passed", function* (done) {
         }
     }
 })
-It("`ge` should throw if no argument has been passed -- r.ge", function* (done) {
+It('`ge` should throw if no argument has been passed -- r.ge', function* (done) {
     try {
         var result = yield r.ge().run();
     }
@@ -615,7 +615,7 @@ It("`ge` should throw if no argument has been passed -- r.ge", function* (done) 
         }
     }
 })
-It("`ge` should throw if just one argument has been passed -- r.ge", function* (done) {
+It('`ge` should throw if just one argument has been passed -- r.ge', function* (done) {
     try {
         var result = yield r.ge(1).run();
     }
@@ -628,7 +628,7 @@ It("`ge` should throw if just one argument has been passed -- r.ge", function* (
         }
     }
 })
-It("`lt` should work", function* (done) {
+It('`lt` should work', function* (done) {
     try {
         var result = yield r.expr(1).lt(2).run();
         assert.equal(result, true);
@@ -652,7 +652,7 @@ It("`lt` should work", function* (done) {
         done(e);
     }
 })
-It("`lt` should throw if no argument has been passed", function* (done) {
+It('`lt` should throw if no argument has been passed', function* (done) {
     try {
         var result = yield r.expr(1).lt().run();
     }
@@ -665,7 +665,7 @@ It("`lt` should throw if no argument has been passed", function* (done) {
         }
     }
 })
-It("`lt` should throw if no argument has been passed -- r.lt", function* (done) {
+It('`lt` should throw if no argument has been passed -- r.lt', function* (done) {
     try {
         var result = yield r.lt().run();
     }
@@ -678,7 +678,7 @@ It("`lt` should throw if no argument has been passed -- r.lt", function* (done) 
         }
     }
 })
-It("`lt` should throw if just one argument has been passed -- r.lt", function* (done) {
+It('`lt` should throw if just one argument has been passed -- r.lt', function* (done) {
     try {
         var result = yield r.lt(1).run();
     }
@@ -691,7 +691,7 @@ It("`lt` should throw if just one argument has been passed -- r.lt", function* (
         }
     }
 })
-It("`le` should work", function* (done) {
+It('`le` should work', function* (done) {
     try {
         var result = yield r.expr(1).le(2).run();
         assert.equal(result, true);
@@ -715,7 +715,7 @@ It("`le` should work", function* (done) {
         done(e);
     }
 })
-It("`le` should throw if no argument has been passed", function* (done) {
+It('`le` should throw if no argument has been passed', function* (done) {
     try {
         var result = yield r.expr(1).le().run();
     }
@@ -728,7 +728,7 @@ It("`le` should throw if no argument has been passed", function* (done) {
         }
     }
 })
-It("`le` should throw if no argument has been passed -- r.le", function* (done) {
+It('`le` should throw if no argument has been passed -- r.le', function* (done) {
     try {
         var result = yield r.le().run();
     }
@@ -741,7 +741,7 @@ It("`le` should throw if no argument has been passed -- r.le", function* (done) 
         }
     }
 })
-It("`le` should throw if just one argument has been passed -- r.le", function* (done) {
+It('`le` should throw if just one argument has been passed -- r.le', function* (done) {
     try {
         var result = yield r.le(1).run();
     }
@@ -754,7 +754,7 @@ It("`le` should throw if just one argument has been passed -- r.le", function* (
         }
     }
 })
-It("`not` should work", function* (done) {
+It('`not` should work', function* (done) {
     try {
         var result = yield r.expr(true).not().run();
         assert.equal(result, false);
@@ -767,7 +767,7 @@ It("`not` should work", function* (done) {
         done(e);
     }
 })
-It("`random` should work", function* (done) {
+It('`random` should work', function* (done) {
     try {
         var result = yield r.random().run();
         assert((result > 0) && (result < 1));

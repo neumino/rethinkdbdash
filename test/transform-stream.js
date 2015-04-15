@@ -14,7 +14,7 @@ var dbName, tableName, tableName2, stream, result, pks, feed;
 var numDocs = 100; // Number of documents in the "big table" used to test the SUCCESS_PARTIAL 
 
 
-It("Init for `transform-stream.js`", function* (done) {
+It('Init for `transform-stream.js`', function* (done) {
     try {
         dbName = uuid();
         tableName = uuid(); // Big table to test partial sequence
@@ -34,7 +34,7 @@ It("Init for `transform-stream.js`", function* (done) {
         done(e);
     }
 })
-It("Inserting batch - table 1", function* (done) {
+It('Inserting batch - table 1', function* (done) {
     try {
         result = yield r.db(dbName).table(tableName).insert(eval('['+new Array(numDocs).join('{}, ')+'{}]')).run();
         assert.equal(result.inserted, numDocs);
@@ -45,7 +45,7 @@ It("Inserting batch - table 1", function* (done) {
     }
 })
 
-It("test pipe transform - fast input", function* (done) {
+It('test pipe transform - fast input', function* (done) {
     var stream = new Readable({objectMode: true});
     var size = 35;
     var value = uuid();
@@ -65,7 +65,7 @@ It("test pipe transform - fast input", function* (done) {
         }).pipe(devnull({objectMode: true}));
 })
 
-It("test pipe transform - slow input - 1", function* (done) {
+It('test pipe transform - slow input - 1', function* (done) {
     var stream = new Readable({objectMode: true});
     var size = 10;
     var values = [uuid(), uuid()];
@@ -104,7 +104,7 @@ It("test pipe transform - slow input - 1", function* (done) {
             });
         }).pipe(devnull({objectMode: true}));
 })
-It("test pipe transform - slow input - 2", function* (done) {
+It('test pipe transform - slow input - 2', function* (done) {
     var stream = new Readable({objectMode: true});
     var size = 10;
     var values = [uuid(), uuid()];
@@ -143,7 +143,7 @@ It("test pipe transform - slow input - 2", function* (done) {
             });
         }).pipe(devnull({objectMode: true}));
 })
-It("test pipe transform - single insert", function* (done) {
+It('test pipe transform - single insert', function* (done) {
     // Create a transform stream that will convert data to a string
     //var stream = new Input();
     var stream = new Readable({objectMode: true});

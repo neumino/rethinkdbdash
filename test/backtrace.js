@@ -9,7 +9,7 @@ var It = util.It;
 var uuid = util.uuid;
 var dbName, tableName, pks, result;
 
-It("Init for backtraces", function* (done) {
+It('Init for backtraces', function* (done) {
     try {
         dbName = uuid();
         tableName = uuid();
@@ -1210,21 +1210,21 @@ Frames:
 
 Error:
 Expected type ARRAY but found STRING in:
-r.expr([1, 2, 3]).indexes_of("bar").add("Hello")
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+r.expr([1, 2, 3]).offsetsOf("bar").add("Hello")
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 */
-It('Test backtrace for r.expr([1,2,3]).indexesOf("bar").add("Hello")', function* (done) {
+It('Test backtrace for r.expr([1, 2, 3]).offsetsOf("bar").add("Hello")', function* (done) {
     try {
         r.nextVarId=1;
-        yield r.expr([1,2,3]).indexesOf("bar").add("Hello").run()
+        yield r.expr([1, 2, 3]).offsetsOf("bar").add("Hello").run()
         done(new Error("Should have thrown an error"))
     }
     catch(e) {
-        if (e.message === "Expected type ARRAY but found STRING in:\nr.expr([1, 2, 3]).indexes_of(\"bar\").add(\"Hello\")\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n") {
+        if (e.message === "Expected type ARRAY but found STRING in:\nr.expr([1, 2, 3]).offsetsOf(\"bar\").add(\"Hello\")\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n") {
             done()
         }
         else {
-            console.log(e.message); done(e);
+            done(e);
         }
     }
 })
@@ -3735,17 +3735,16 @@ Frames:
 undefined
 
 Error:
-`random` takes at most 3 arguments, 4 provided after:
-r.undefined()
+`random` takes at most 3 arguments, 4 provided.
 */
-It('Test backtrace for r.random("foo", "bar", "bar", "bar")', function* (done) {
+It('Test backtrace for r.random("foo", "bar", "buzz", "lol")', function* (done) {
     try {
         r.nextVarId=1;
-        yield r.random("foo", "bar", "bar", "bar").run()
+        yield r.random("foo", "bar", "buzz", "lol").run()
         done(new Error("Should have thrown an error"))
     }
     catch(e) {
-        if (e.message === "`random` takes at most 3 arguments, 4 provided after:\nr.undefined()") {
+        if (e.message === "`random` takes at most 3 arguments, 4 provided.") {
             done()
         }
         else {
@@ -3753,6 +3752,7 @@ It('Test backtrace for r.random("foo", "bar", "bar", "bar")', function* (done) {
         }
     }
 })
+
 
 /*
 Frames:
@@ -3868,14 +3868,13 @@ It('Test backtrace for r.do(1,function( b) { return b.add("foo") })', function* 
 
 
 /*
-Broken backtrace, see https://github.com/rethinkdb/rethinkdb/issues/3689
 Frames:
 [ 0 ]
 
 Error:
-Expected type DATUM but found SELECTION:
-SELECTION ON table(4c73c8ff60ce03ce66aedf52832bac20) in:
-r.db("1335c6baaaed71ecff52b82776fcc926").table("4c73c8ff60ce03ce66aedf52832bac20")
+Expected type DATUM but found TABLE_SLICE:
+SELECTION ON table(e1bf8f82ad33ed56f7e04e0c2ba97fcc) in:
+r.db("0c24bc6421463a0da33452e38a842f20").table("e1bf8f82ad33ed56f7e04e0c2ba97fcc")
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     .between("foo", "bar", {
     ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -3891,7 +3890,7 @@ It('Test backtrace for r.db(dbName).table(tableName).between("foo", "bar", {inde
         done(new Error("Should have thrown an error"))
     }
     catch(e) {
-        if (e.message === "Expected type DATUM but found SELECTION:\nSELECTION ON table("+tableName+") in:\nr.db(\""+dbName+"\").table(\""+tableName+"\")\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    .between(\"foo\", \"bar\", {\n    ^^^^^^^^^^^^^^^^^^^^^^^^\n        index: \"id\"\n        ^^^^^^^^^^^\n    }).add(1)\n    ^^       \n") {
+        if (e.message === "Expected type DATUM but found TABLE_SLICE:\nSELECTION ON table("+tableName+") in:\nr.db(\""+dbName+"\").table(\""+tableName+"\")\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    .between(\"foo\", \"bar\", {\n    ^^^^^^^^^^^^^^^^^^^^^^^^\n        index: \"id\"\n        ^^^^^^^^^^^\n    }).add(1)\n    ^^       \n") {
             done()
         }
         else {
@@ -4879,3 +4878,63 @@ It('Test backtrace for r.expr({a: r.wednesday}).add([1])', function* (done) {
     }
 })
 
+
+/*
+Frames:
+[ 0 ]
+
+Error:
+Expected type DATUM but found TABLE_SLICE:
+SELECTION ON table(0efb72285d551009ac6f2387173b3443) in:
+r.db("d2292d5a5fb3f4780426609087b88fa4").table("0efb72285d551009ac6f2387173b3443")
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    .between(r.minval, r.maxval, {
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        index: "foo"
+        ^^^^^^^^^^^^
+    }).add(1)
+    ^^
+*/
+It('Test backtrace for r.db(dbName).table(tableName).between(r.minval, r.maxval, {index: "foo"}).add(1)', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.db(dbName).table(tableName).between(r.minval, r.maxval, {index: "foo"}).add(1).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Expected type DATUM but found TABLE_SLICE:\nSELECTION ON table("+tableName+") in:\nr.db(\""+dbName+"\").table(\""+tableName+"\")\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    .between(r.minval, r.maxval, {\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n        index: \"foo\"\n        ^^^^^^^^^^^^\n    }).add(1)\n    ^^       \n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+
+/*
+Frames:
+[ 0 ]
+
+Error:
+Expected type NUMBER but found STRING in:
+r.expr(1).add("bar").add(r.ISO8601("dadsa", {
+^^^^^^^^^^^^^^^^^^^^                         
+    defaultTimezone: "dsada"
+}))
+*/
+It('Test backtrace for r.expr(1).add("bar").add(r.ISO8601("dadsa",{defaultTimezone: "dsada"}))', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.expr(1).add("bar").add(r.ISO8601("dadsa",{defaultTimezone: "dsada"})).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Expected type NUMBER but found STRING in:\nr.expr(1).add(\"bar\").add(r.ISO8601(\"dadsa\", {\n^^^^^^^^^^^^^^^^^^^^                         \n    defaultTimezone: \"dsada\"\n}))\n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})

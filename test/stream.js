@@ -12,8 +12,7 @@ var dbName, tableName, tableName2, stream, result, pks, feed;
 var numDocs = 100; // Number of documents in the "big table" used to test the SUCCESS_PARTIAL 
 var smallNumDocs = 5; // Number of documents in the "small table"
 
-
-It("Init for `stream.js`", function* (done) {
+It('Init for `stream.js`', function* (done) {
     try {
         dbName = uuid();
         tableName = uuid(); // Big table to test partial sequence
@@ -35,7 +34,7 @@ It("Init for `stream.js`", function* (done) {
         done(e);
     }
 })
-It("Inserting batch - table 1", function* (done) {
+It('Inserting batch - table 1', function* (done) {
     try {
         result = yield r.db(dbName).table(tableName).insert(eval('['+new Array(numDocs).join('{}, ')+'{}]')).run();
         assert.equal(result.inserted, numDocs);
@@ -45,7 +44,7 @@ It("Inserting batch - table 1", function* (done) {
         done(e);
     }
 })
-It("Inserting batch - table 2", function* (done) {
+It('Inserting batch - table 2', function* (done) {
     try {
         result = yield r.db(dbName).table(tableName2).insert(eval('['+new Array(smallNumDocs).join('{}, ')+'{}]')).run();
         assert.equal(result.inserted, smallNumDocs);
@@ -55,7 +54,7 @@ It("Inserting batch - table 2", function* (done) {
         done(e);
     }
 })
-It("Inserting batch", function* (done) {
+It('Inserting batch', function* (done) {
     try {
         // Add a date
         result = yield r.db(dbName).table(tableName).update({
@@ -67,7 +66,7 @@ It("Inserting batch", function* (done) {
         done(e);
     }
 })
-It("`table` should return a stream", function* (done) {
+It('`table` should return a stream', function* (done) {
     try {
         stream = yield r.db(dbName).table(tableName).run({stream: true});
         assert(stream);
@@ -80,7 +79,7 @@ It("`table` should return a stream", function* (done) {
         done(e);
     }
 })
-It("Arrays should return a stream", function* (done) {
+It('Arrays should return a stream', function* (done) {
     try {
         var data = [10, 11, 12, 13, 14, 15, 16];
         stream = yield r.expr(data).run({stream: true});
@@ -100,7 +99,7 @@ It("Arrays should return a stream", function* (done) {
     }
 })
 
-It("changes() should return a stream", function* (done) {
+It('changes() should return a stream', function* (done) {
     try {
         var data = [{}, {}, {}, {}];
         stream = yield r.db(dbName).table(tableName).changes().run({stream: true});
@@ -122,7 +121,7 @@ It("changes() should return a stream", function* (done) {
     }
 })
 
-It("get().changes() should return a stream", function* (done) {
+It('get().changes() should return a stream', function* (done) {
     try {
         stream = yield r.db(dbName).table(tableName).get(1).changes().run({stream: true});
         assert(stream);
@@ -145,7 +144,7 @@ It("get().changes() should return a stream", function* (done) {
     }
 })
 
-It("`table` should return a stream - testing empty SUCCESS_COMPLETE", function* (done) {
+It('`table` should return a stream - testing empty SUCCESS_COMPLETE', function* (done) {
     var i=0;
     try {
         var connection = yield r.connect({max_batch_rows: 1, host: config.host, port: config.port, authKey: config.authKey});
@@ -163,7 +162,7 @@ It("`table` should return a stream - testing empty SUCCESS_COMPLETE", function* 
 })
 
 
-It("Test flowing - event data", function* (done) {
+It('Test flowing - event data', function* (done) {
     var i=0;
     try {
         var connection = yield r.connect({max_batch_rows: 1, host: config.host, port: config.port, authKey: config.authKey});
@@ -183,7 +182,7 @@ It("Test flowing - event data", function* (done) {
     }
 })
 
-It("Test read", function* (done) {
+It('Test read', function* (done) {
     try {
         var connection = yield r.connect({max_batch_rows: 1, host: config.host, port: config.port, authKey: config.authKey});
         assert(connection);
@@ -208,7 +207,7 @@ It("Test read", function* (done) {
     }
 })
 
-It("Test flowing - event data", function* (done) {
+It('Test flowing - event data', function* (done) {
     var i=0;
     try {
         var connection = yield r.connect({max_batch_rows: 1, host: config.host, port: config.port, authKey: config.authKey});
@@ -233,7 +232,7 @@ It("Test flowing - event data", function* (done) {
     }
 })
 
-It("Test read with null value", function* (done) {
+It('Test read with null value', function* (done) {
     try {
         var connection = yield r.connect({max_batch_rows: 1, host: config.host, port: config.port, authKey: config.authKey});
         assert(connection);
@@ -257,7 +256,7 @@ It("Test read with null value", function* (done) {
     }
 })
 
-It("Test read", function* (done) {
+It('Test read', function* (done) {
     try {
         var connection = yield r.connect({max_batch_rows: 1, host: config.host, port: config.port, authKey: config.authKey});
         assert(connection);
@@ -281,8 +280,8 @@ It("Test read", function* (done) {
     }
 })
 
-It("Import with stream as default", function* (done) {
-    var r1 = require('../lib')({stream: true, host: config.host, port: config.port, authKey: config.authKey, buffer: config.buffer, max: config.max});
+It('Import with stream as default', function* (done) {
+    var r1 = require('../lib')({stream: true, host: config.host, port: config.port, authKey: config.authKey, buffer: config.buffer, max: config.max, discovery: false});
     var i=0;
     try {
         stream = yield r1.db(dbName).table(tableName).run();
@@ -294,7 +293,7 @@ It("Import with stream as default", function* (done) {
     }
 })
 
-It("toStream", function* (done) {
+It('toStream', function* (done) {
     try {
         stream = r.db(dbName).table(tableName).toStream();
         stream.once('readable', function() {
@@ -316,7 +315,7 @@ It("toStream", function* (done) {
     }
 
 })
-It("toStream - with grouped data", function* (done) {
+It('toStream - with grouped data', function* (done) {
     try {
         stream = r.db(dbName).table(tableName).group({index: 'id'}).toStream();
         stream.once('readable', function() {
@@ -339,8 +338,8 @@ It("toStream - with grouped data", function* (done) {
 
 })
 
-It("pipe should work with a writable stream - 200-200", function* (done) {
-    var r1 = require('../lib')({buffer:1, max: 2});
+It('pipe should work with a writable stream - 200-200', function* (done) {
+    var r1 = require('../lib')({buffer:1, max: 2, discovery: false});
 
     r1.db(dbName).table(tableName).toStream({highWaterMark: 200})
         .pipe(r1.db(dbName).table(dumpTable).toStream({writable: true, highWaterMark: 200}))
@@ -354,13 +353,15 @@ It("pipe should work with a writable stream - 200-200", function* (done) {
                 }
                 return r1.db(dbName).table(dumpTable).delete()
             }).then(function() {
-                r1.getPool().drain();
-                done();
+                r1.getPool(0).drain();
+            }).then(function() {
+                setTimeout(done, 1000);
+                //done();
             }).error(done);
         });
 })
-It("pipe should work with a writable stream - 200-20", function* (done) {
-    var r1 = require('../lib')({buffer:1, max: 2});
+It('pipe should work with a writable stream - 200-20', function* (done) {
+    var r1 = require('../lib')({buffer:1, max: 2, discovery: false});
 
     r1.db(dbName).table(tableName).toStream({highWaterMark: 200})
         .pipe(r1.db(dbName).table(dumpTable).toStream({writable: true, highWaterMark: 20}))
@@ -374,13 +375,13 @@ It("pipe should work with a writable stream - 200-20", function* (done) {
                 }
                 return r1.db(dbName).table(dumpTable).delete()
             }).then(function() {
-                r1.getPool().drain();
+                r1.getPool(0).drain();
                 done();
             }).error(done);
         });
 })
-It("pipe should work with a writable stream - 20-200", function* (done) {
-    var r1 = require('../lib')({buffer:1, max: 2});
+It('pipe should work with a writable stream - 20-200', function* (done) {
+    var r1 = require('../lib')({buffer:1, max: 2, discovery: false});
 
     r1.db(dbName).table(tableName).toStream({highWaterMark: 20})
         .pipe(r1.db(dbName).table(dumpTable).toStream({writable: true, highWaterMark: 200}))
@@ -394,13 +395,13 @@ It("pipe should work with a writable stream - 20-200", function* (done) {
                 }
                 return r1.db(dbName).table(dumpTable).delete()
             }).then(function() {
-                r1.getPool().drain();
+                r1.getPool(0).drain();
                 done();
             }).error(done);
         });
 })
-It("pipe should work with a writable stream - 50-50", function* (done) {
-    var r1 = require('../lib')({buffer:1, max: 2});
+It('pipe should work with a writable stream - 50-50', function* (done) {
+    var r1 = require('../lib')({buffer:1, max: 2, discovery: false});
 
     r1.db(dbName).table(tableName).toStream({highWaterMark: 50})
         .pipe(r1.db(dbName).table(dumpTable).toStream({writable: true, highWaterMark: 50}))
@@ -415,7 +416,7 @@ It("pipe should work with a writable stream - 50-50", function* (done) {
                 }
                 return r1.db(dbName).table(dumpTable).delete()
             }).then(function() {
-                r1.getPool().drain();
+                r1.getPool(0).drain();
                 done();
             }).error(function(err) {
                 console.log(err);
@@ -423,8 +424,8 @@ It("pipe should work with a writable stream - 50-50", function* (done) {
             });
         });
 })
-It("toStream((writable: true}) should handle options", function* (done) {
-    var r1 = require('../lib')({buffer:1, max: 2});
+It('toStream((writable: true}) should handle options', function* (done) {
+    var r1 = require('../lib')({buffer:1, max: 2, discovery: false});
 
     var stream = r1.db(dbName).table(dumpTable).toStream({writable: true, highWaterMark: 50, conflict: 'replace'});
     stream.write({id: 1, foo: 1});
@@ -438,13 +439,13 @@ It("toStream((writable: true}) should handle options", function* (done) {
             assert.deepEqual(result, {id: 1, foo: 3});
             return r1.db(dbName).table(dumpTable).delete();
         }).then(function(result) {
-            r1.getPool().drain();
+            r1.getPool(0).drain();
             done();
         }).error(done);
     });
 })
 
-It("test pipe all streams", function* (done) {
+It('test pipe all streams', function* (done) {
     // Create a transform stream that will convert data to a string
     var stream = require('stream')
     var addfoobar = new stream.Transform();
@@ -484,13 +485,13 @@ It("test pipe all streams", function* (done) {
                 return r.db(dbName).table(dumpTable).delete();
             }).then(function(result) {
                 done();
-                r.getPool().drain();
+                r.getPool(0).drain();
             });
         });
 })
 
-It("toStream({writable: true}) should throw on something else than a table", function* (done) {
-    var r1 = require('../lib')({buffer:1, max: 2});
+It('toStream({writable: true}) should throw on something else than a table', function* (done) {
+    var r1 = require('../lib')({buffer:1, max: 2, discovery: false});
 
     try {
         r.expr(dumpTable).toStream({writable: true});
@@ -501,8 +502,8 @@ It("toStream({writable: true}) should throw on something else than a table", fun
     }
 })
 
-It("toStream({transform: true}) should throw on something else than a table", function* (done) {
-    var r1 = require('../lib')({buffer:1, max: 2});
+It('toStream({transform: true}) should throw on something else than a table', function* (done) {
+    var r1 = require('../lib')({buffer:1, max: 2, discovery: false});
 
     try {
         r.expr(dumpTable).toStream({transform: true});

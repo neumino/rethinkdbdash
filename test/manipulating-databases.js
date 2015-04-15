@@ -10,7 +10,7 @@ var uuid = util.uuid;
 var dbName, tableName, result;
 
 
-It("Init for `manipulating-databases.js`", function* (done) {
+It('Init for `manipulating-databases.js`', function* (done) {
     try {
         result = yield r.expr(1).run();
         assert(result, 1);
@@ -21,7 +21,7 @@ It("Init for `manipulating-databases.js`", function* (done) {
     }
 })
 
-It("`dbList` should return a cursor", function* (done) {
+It('`dbList` should return a cursor', function* (done) {
     try {
         result = yield r.dbList().run();
         assert(Array.isArray(result));
@@ -32,7 +32,7 @@ It("`dbList` should return a cursor", function* (done) {
     }
 })
 
-It("'`dbCreate` should create a database'", function* (done) {
+It('`dbCreate` should create a database', function* (done) {
     try {
         dbName = uuid(); // export to the global scope
 
@@ -45,7 +45,7 @@ It("'`dbCreate` should create a database'", function* (done) {
         done(e);
     }
 })
-It("`dbCreate` should throw if no argument is given", function* (done) {
+It('`dbCreate` should throw if no argument is given', function* (done) {
     try {
         result = yield r.dbCreate().run();
     }
@@ -58,7 +58,7 @@ It("`dbCreate` should throw if no argument is given", function* (done) {
         }
     }
 })
-It("`dbCreate` is not defined after a term", function* (done) {
+It('`dbCreate` is not defined after a term', function* (done) {
     try {
         result = yield r.expr(1).dbCreate("foo").run();
     }
@@ -71,7 +71,7 @@ It("`dbCreate` is not defined after a term", function* (done) {
         }
     }
 })
-It("`dbCreate` is not defined after a term", function* (done) {
+It('`dbCreate` is not defined after a term', function* (done) {
     try {
         result = yield r.expr(1).db("foo").run();
     }
@@ -84,7 +84,7 @@ It("`dbCreate` is not defined after a term", function* (done) {
         }
     }
 })
-It("'`db` should throw is the name contains special char'", function* (done) {
+It('`db` should throw is the name contains special char', function* (done) {
     try {
         result = yield r.db("-_-").run();
     }
@@ -93,7 +93,7 @@ It("'`db` should throw is the name contains special char'", function* (done) {
         else { done(e); }
     }
 })
-It("`dbList` should show the database we created", function* (done) {
+It('`dbList` should show the database we created', function* (done) {
     try {
         result = yield r.dbList().run();
         assert(Array.isArray(result));
@@ -113,7 +113,7 @@ It("`dbList` should show the database we created", function* (done) {
         done(e);
     }
 })
-It("`dbDrop` should drop a table", function* (done) {
+It('`dbDrop` should drop a table', function* (done) {
     try {
         result = yield r.dbDrop(dbName).run();
         assert.deepEqual(result.dbs_dropped, 1);
@@ -125,7 +125,7 @@ It("`dbDrop` should drop a table", function* (done) {
         done(e);
     }
 })
-It("`dbDrop` should throw if no argument is given", function* (done) {
+It('`dbDrop` should throw if no argument is given', function* (done) {
     try {
         result = yield r.dbDrop("foo", "bar", "ette").run();
     }
@@ -138,7 +138,7 @@ It("`dbDrop` should throw if no argument is given", function* (done) {
         }
     }
 })
-It("`dbDrop` should throw if no argument is given", function* (done) {
+It('`dbDrop` should throw if no argument is given', function* (done) {
     try {
         result = yield r.dbDrop().run();
     }
@@ -151,7 +151,7 @@ It("`dbDrop` should throw if no argument is given", function* (done) {
         }
     }
 })
-It("`dbDrop` is not defined after a term", function* (done) {
+It('`dbDrop` is not defined after a term', function* (done) {
     try {
         result = yield r.expr(1).dbDrop("foo").run();
     }
@@ -164,7 +164,7 @@ It("`dbDrop` is not defined after a term", function* (done) {
         }
     }
 })
-It("`dbList` is not defined after a term", function* (done) {
+It('`dbList` is not defined after a term', function* (done) {
     try {
         result = yield r.expr(1).dbList("foo").run();
     }
@@ -179,7 +179,7 @@ It("`dbList` is not defined after a term", function* (done) {
 })
 
 
-It("`dbList` shouldn't show the database we dropped", function* (done) {
+It('`dbList` should not show the database we dropped', function* (done) {
     try {
         result = yield r.dbList().run();
         assert(Array.isArray(result));

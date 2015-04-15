@@ -8,7 +8,7 @@ var It = util.It;
 
 var dbName, tableName, result;
 
-It("`do` should work", function* (done) {
+It('`do` should work', function* (done) {
     try {
         var result = yield r.expr({a: 1}).do( function(doc) { return doc("a") }).run();
         assert.equal(result, 1);
@@ -19,7 +19,7 @@ It("`do` should work", function* (done) {
         done(e);
     }
 })
-It("`r.do` should work", function* (done) {
+It('`r.do` should work', function* (done) {
     try {
         result = yield r.do(1, 2, function(a, b) { return a }).run();
         assert.equal(result, 1);
@@ -36,7 +36,7 @@ It("`r.do` should work", function* (done) {
 })
 
 
-It("`do` should throw if no argument has been given", function* (done) {
+It('`do` should throw if no argument has been given', function* (done) {
     try{
         var result = yield r.expr(1).do().run();
     }
@@ -51,7 +51,7 @@ It("`do` should throw if no argument has been given", function* (done) {
 })
 
 
-It("`branch` should work", function* (done) {
+It('`branch` should work', function* (done) {
     try {
         var result = yield r.branch(true, 1, 2).run();
         assert.equal(result, 1);
@@ -65,7 +65,7 @@ It("`branch` should work", function* (done) {
         done(e);
     }
 })
-It("`branch` should throw if no argument has been given", function* (done) {
+It('`branch` should throw if no argument has been given', function* (done) {
     try{
         var result = yield r.branch().run();
     }
@@ -78,7 +78,7 @@ It("`branch` should throw if no argument has been given", function* (done) {
         }
     }
 })
-It("`branch` should throw if just one argument has been given", function* (done) {
+It('`branch` should throw if just one argument has been given', function* (done) {
     try{
         var result = yield r.branch(true).run();
     }
@@ -91,7 +91,7 @@ It("`branch` should throw if just one argument has been given", function* (done)
         }
     }
 })
-It("`branch` should throw if just two arguments have been given", function* (done) {
+It('`branch` should throw if just two arguments have been given', function* (done) {
     try{
         var result = yield r.branch(true, true).run();
     }
@@ -104,7 +104,7 @@ It("`branch` should throw if just two arguments have been given", function* (don
         }
     }
 })
-It("`branch` is not defined after a term", function* (done) {
+It('`branch` is not defined after a term', function* (done) {
     try {
         result = yield r.expr(1).branch(true, true, true).run();
     }
@@ -117,7 +117,7 @@ It("`branch` is not defined after a term", function* (done) {
         }
     }
 })
-It("`forEach` should work", function* (done) {
+It('`forEach` should work', function* (done) {
     try{
         var dbName = uuid();
         var tableName = uuid();
@@ -139,7 +139,7 @@ It("`forEach` should work", function* (done) {
         done(e);
     }
 })
-It("`forEach` should throw if not given a function", function* (done) {
+It('`forEach` should throw if not given a function', function* (done) {
     try{
         result = yield r.expr([{foo: "bar"}, {foo: "foo"}]).forEach().run();
     }
@@ -153,7 +153,7 @@ It("`forEach` should throw if not given a function", function* (done) {
     }
 })
 
-It("`r.range(x)` should work", function* (done) {
+It('`r.range(x)` should work', function* (done) {
     try {
         var result = yield r.range(10).run();
         assert.deepEqual(result, [0,1,2,3,4,5,6,7,8,9]);
@@ -165,7 +165,7 @@ It("`r.range(x)` should work", function* (done) {
         done(e);
     }
 })
-It("`r.range(x, y)` should work", function* (done) {
+It('`r.range(x, y)` should work', function* (done) {
     try {
         var result = yield r.range(3,10).run();
         assert.deepEqual(result, [3,4,5,6,7,8,9]);
@@ -177,7 +177,7 @@ It("`r.range(x, y)` should work", function* (done) {
         done(e);
     }
 })
-It("`r.range(1,2,3)` should throw - arity", function* (done) {
+It('`r.range(1,2,3)` should throw - arity', function* (done) {
     try {
         var result = yield r.range(1,2,3).run()
         done(new Error("Was expecting an error"));
@@ -191,7 +191,7 @@ It("`r.range(1,2,3)` should throw - arity", function* (done) {
         }
     }
 })
-It("`r.range()` should throw - arity", function* (done) {
+It('`r.range()` should throw - arity', function* (done) {
     try {
         var result = yield r.range().run()
         done(new Error("Was expecting an error"));
@@ -206,7 +206,7 @@ It("`r.range()` should throw - arity", function* (done) {
     }
 })
 
-It("`default` should work", function* (done) {
+It('`default` should work', function* (done) {
     try {
         var result = yield r.expr({a:1})("b").default("Hello").run();
         assert.equal(result, "Hello");
@@ -217,7 +217,7 @@ It("`default` should work", function* (done) {
         done(e);
     }
 })
-It("`default` should throw if no argument has been given", function* (done) {
+It('`default` should throw if no argument has been given', function* (done) {
     try{
         var result = yield r.expr({})("").default().run();
     }
@@ -232,7 +232,7 @@ It("`default` should throw if no argument has been given", function* (done) {
 })
 
 
-It("`r.js` should work", function* (done) {
+It('`r.js` should work', function* (done) {
     try {
         var result = yield r.js("1").run();
         assert.equal(result, 1);
@@ -243,7 +243,7 @@ It("`r.js` should work", function* (done) {
         done(e);
     }
 })
-It("`js` is not defined after a term", function* (done) {
+It('`js` is not defined after a term', function* (done) {
     try {
         result = yield r.expr(1).js("foo").run();
     }
@@ -256,7 +256,7 @@ It("`js` is not defined after a term", function* (done) {
         }
     }
 })
-It("`js` should throw if no argument has been given", function* (done) {
+It('`js` should throw if no argument has been given', function* (done) {
     try{
         var result = yield r.js().run();
     }
@@ -271,7 +271,7 @@ It("`js` should throw if no argument has been given", function* (done) {
 })
 
 
-It("`coerceTo` should work", function* (done) {
+It('`coerceTo` should work', function* (done) {
     try {
         var result = yield r.expr(1).coerceTo("STRING").run();
         assert.equal(result, "1");
@@ -282,7 +282,7 @@ It("`coerceTo` should work", function* (done) {
         done(e);
     }
 })
-It("`coerceTo` should throw if no argument has been given", function* (done) {
+It('`coerceTo` should throw if no argument has been given', function* (done) {
     try{
         var result = yield r.expr(1).coerceTo().run();
     }
@@ -296,7 +296,7 @@ It("`coerceTo` should throw if no argument has been given", function* (done) {
     }
 })
 
-It("`typeOf` should work", function* (done) {
+It('`typeOf` should work', function* (done) {
     try {
         var result = yield r.expr(1).typeOf().run();
         assert.equal(result, "NUMBER");
@@ -307,7 +307,7 @@ It("`typeOf` should work", function* (done) {
         done(e);
     }
 })
-It("`json` should work", function* (done) {
+It('`json` should work', function* (done) {
     try {
         var result = yield r.json(JSON.stringify({a:1})).run();
         assert.deepEqual(result, {a:1});
@@ -321,7 +321,7 @@ It("`json` should work", function* (done) {
         done(e);
     }
 })
-It("`json` should throw if no argument has been given", function* (done) {
+It('`json` should throw if no argument has been given', function* (done) {
     try{
         var result = yield r.json().run();
     }
@@ -334,7 +334,7 @@ It("`json` should throw if no argument has been given", function* (done) {
         }
     }
 })
-It("`json` is not defined after a term", function* (done) {
+It('`json` is not defined after a term', function* (done) {
     try {
         result = yield r.expr(1).json("1").run();
     }
@@ -347,7 +347,7 @@ It("`json` is not defined after a term", function* (done) {
         }
     }
 })
-It("`toJSON` and `toJsonString` should work", function* (done) {
+It('`toJSON` and `toJsonString` should work', function* (done) {
     try {
         var result = yield r.expr({a:1}).toJSON().run();
         assert.equal(result, '{"a":1}');
@@ -361,7 +361,7 @@ It("`toJSON` and `toJsonString` should work", function* (done) {
         done(e);
     }
 })
-It("`toJSON` should throw if an argument is provided", function* (done) {
+It('`toJSON` should throw if an argument is provided', function* (done) {
     try {
         var result = yield r.expr({a:1}).toJSON('foo').run();
         done(new Error("Expecting error..."));
@@ -376,7 +376,7 @@ It("`toJSON` should throw if an argument is provided", function* (done) {
     }
 })
 
-It("`args` should work", function* (done) {
+It('`args` should work', function* (done) {
     try {
         var result = yield r.args([10, 20, 30]).run();
         assert.deepEqual(result, [10, 20, 30]);
@@ -391,7 +391,7 @@ It("`args` should work", function* (done) {
         done(e)
     }
 })
-It("`args` should throw if an implicit var is passed inside", function* (done) {
+It('`args` should throw if an implicit var is passed inside', function* (done) {
     try {
         var cursor = yield r.table("foo").eqJoin(r.args([r.row, r.table("bar")])).run();
         done();
@@ -405,7 +405,7 @@ It("`args` should throw if an implicit var is passed inside", function* (done) {
         }
     }
 })
-It("`http` should work", function* (done) {
+It('`http` should work', function* (done) {
     try {
         var result = yield r.http('http://google.com').run();
         assert.equal(typeof result, 'string');
@@ -416,7 +416,7 @@ It("`http` should work", function* (done) {
         done(e)
     }
 })
-It("`http` should work with options", function* (done) {
+It('`http` should work with options', function* (done) {
     try {
         var result = yield r.http('http://google.com', {timeout: 60}).run();
         assert.equal(typeof result, 'string');
@@ -427,7 +427,7 @@ It("`http` should work with options", function* (done) {
         done(e)
     }
 })
-It("`http` should throw with an unrecognized option", function* (done) {
+It('`http` should throw with an unrecognized option', function* (done) {
     try {
         var result = yield r.http('http://google.com', {foo: 60}).run();
         done(new Error("Expecting error..."));
@@ -441,7 +441,7 @@ It("`http` should throw with an unrecognized option", function* (done) {
         }
     }
 })
-It("`r.uuid` should work", function* (done) {
+It('`r.uuid` should work', function* (done) {
     try {
         var result = yield r.uuid().run();
         assert.equal(typeof result, 'string');
@@ -452,4 +452,3 @@ It("`r.uuid` should work", function* (done) {
         done(e)
     }
 })
-

@@ -90,7 +90,7 @@ here are the few things to do:
   ```js
   var r = require('rethinkdbdash')();
   // Or if you do not connect to the default local instance:
-  // var r = require('rethinkdbdash')({host: ..., port: ...});
+  // var r = require('rethinkdbdash')(servers: [{host: ..., port: ...}]);
   ```
 
 2. Remove everything related to a connection:
@@ -145,19 +145,54 @@ When you import the driver, as soon as you execute the module, you will create
 a default connection pool (except if you pass `{pool: false}`. The options you
 can pass are:
 
-- `{pool: false}` -- if you do not want to use a connection pool.
-- the options for the connection pool, which can be:
+- `discovery`: `<boolean>` - When true, the driver will regularly pull data from the table `server_status` to
+keep a list of updated hosts, default `true`
+- `pool`: `<boolean>` - Set it to `false`, if you do not want to use a connection pool.
+- `buffer`: `<number>` - Minimum number of connections available in the pool, default `50`
+- `max`: ``<number>` - Maximum number of connections available in the pool, default `1000`
+- `timeout`: `<number> - The number of seconds for a connection to be opened, default `20`
+- `timeoutError`: `<number> - Wait time before reconnecting in case of an error (in ms), default 1000
+- `imeoutGb`: `<number>` - How long the pool keep a connection that hasn't been used (in ms), default 60*60*1000
+- `maxExponent`: `<number>` - The maximum timeout before trying to reconnect is 2^maxExponent x timeoutError, default 6 (~60 seconds for the longest wait)
+- `silent`: <boolean> - console.error errors, default `false`
+- `servers`: an of objects `{host: <string>, port: <number>}` representing instances of
+RethinkDB to connect to.
 
-```js
-{
-    buffer: <number>, // minimum number of connections available in the pool, default 50
-    max: <number>, // maximum number of connections in the pool, default 1000
-    timeout: <number>, // number of seconds for a connection to be opened, default 20
-    timeoutError: <number>, // wait time before reconnecting in case of an error (in ms), default 1000
-    timeoutGb: <number>, // how long the pool keep a connection that hasn't been used (in ms), default 60*60*1000
-    maxExponent: <number>, // the maximum timeout before trying to reconnect is 2^maxExponent*timeoutError, default 6 (~60 seconds for the longest wait)
-    silent: <boolean> // console.error errors (default false)
-}
+In case of a single instance, you can directly pass `host` and `port` in the top level parameters.
+
+Examples:
+```
+// connect to localhost:8080, and let the driver find other instances
+var r = require('rethinkdbdash')();
+
+// connect to and only to localhost:8080
+var r = require('rethinkdbdash')({
+    discovery: false
+});
+
+// Do not create a connection pool
+var r = require('rethinkdbdash')({pool: false});
+
+// Connect to a cluster seeding from `192.168.0.100`, `192.168.0.100`, `192.168.0.102`
+var r = require('rethinkdbdash')({
+    servers: [
+        {host: '192.168.0.100', port: 28015},
+        {host: '192.168.0.101', port: 28015},
+        {host: '192.168.0.102', port: 28015},
+    ]
+});
+
+// Connect to a cluster containing `192.168.0.100`, `192.168.0.100`, `192.168.0.102` and
+use a maximum of 3000 connections and try to keep 300 connections available at all time.
+var r = require('rethinkdbdash')({
+    servers: [
+        {host: '192.168.0.100', port: 28015},
+        {host: '192.168.0.101', port: 28015},
+        {host: '192.168.0.102', port: 28015},
+    ],
+    buffer: 300,
+    max: 3000
+});
 ```
 
 You can also pass `{cursor: true}` if you want to retrieve RethinkDB streams as cursors
@@ -171,47 +206,54 @@ As mentionned before, `rethinkdbdash` has a connection pool and manage all the c
 itself. The connection pool is initialized as soon as you execute the module.
 
 You should never have to worry about connections in rethinkdbdash. Connections are created
-as they are needed, and in case of failure, the pool will try to open connections with an
+as they are needed, and in case of a host failure, the pool will try to open connections with an
 exponential back off algorithm.
 
-The driver will execute one query per connection as queries are not executed in parallel
-on a single connection at the moment - [rethinkdb/rethinkdb#3296](https://github.com/rethinkdb/rethinkdb/issues/3296).
+The driver execute one query per connection. Now that [rethinkdb/rethinkdb#3296](https://github.com/rethinkdb/rethinkdb/issues/3296)
+is solved, this behavior may be changed in the future.
 
 Because the connection pool will keep some connections available, a script will not
 terminate. If you have finished executing your queries and want your Node.js script
 to exit, you need to drain the pool with:
 
 ```js
-r.getPool().drain();
+r.getPoolMaster().drain();
 ```
 
 ##### Advanced details about the pool
 
-To access the pool, you can call the method `r.getPool()`.
+The pool is composed of a `PoolMaster` that retrieve connections for `n` pools where `n` is the number of
+servers the driver is connected to. Each pool is connected to a unique host.
 
-The pool can emits a few events:
+To access the pool master, you can call the method `r.getPoolMaster()`.
+
+The pool emits a few events:
 - `draining`: when `drain` is called
 - `queueing`: when a query is added/removed from the queue (queries waiting for a connection), the size of the queue is provided
 - `size`: when the number of connections changes, the number of connections is provided
 - `available-size`: when the number of available connections changes, the number of available connections is provided
 
-
 You can get the number of connections (opened or being opened).
 ```js
-r.getPool().getLength();
+r.getPoolMaster().getLength();
 ```
 
 You can also get the number of available connections (idle connections, without
 a query running on it).
 
 ```js
-r.getPool().getAvailableLength();
+r.getPoolMaster().getAvailableLength();
 ```
 
 You can also drain the pool as mentionned earlier with;
 
 ```js
-r.getPool().drain();
+r.getPoolMaster().drain();
+```
+
+You can access all the pools with:
+```js
+r.getPoolMaster().getPools();
 ```
 
 ##### Note about connections
