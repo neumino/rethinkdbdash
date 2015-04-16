@@ -209,7 +209,7 @@ It('Test multiple pools with late start', function* (done) {
     server2.mockServersStatus([server1, server2, server3])
     server3.mockServersStatus([server1, server2, server3])
     var r = require(__dirname+'/../lib')({
-        hosts: [
+        servers: [
             {host: server1.host, port: server1.port},
             {host: server2.host, port: server2.port},
             {host: server3.host, port: server3.port}
@@ -262,7 +262,7 @@ It('Test multiple pools with early start', function* (done) {
     server3.mockServersStatus([server1, server2, server3])
 
     var r = require(__dirname+'/../lib')({
-        hosts: [
+        servers: [
             {host: server1.host, port: server1.port},
             {host: server2.host, port: server2.port},
             {host: server3.host, port: server3.port}
@@ -313,7 +313,7 @@ It('Test multiple pools - kill a server - check options', function* (done) {
     server3.mockServersStatus([server1, server2, server3])
 
     var r = require(__dirname+'/../lib')({
-        hosts: [
+        servers: [
             {host: server1.host, port: server1.port},
             {host: server2.host, port: server2.port},
             {host: server3.host, port: server3.port}
@@ -360,7 +360,7 @@ It('Test multiple pools - kill a server while running queries', function* (done)
     server3.mockServersStatus([server1, server2, server3])
 
     var r = require(__dirname+'/../lib')({
-        hosts: [
+        servers: [
             {host: server1.host, port: server1.port},
             {host: server2.host, port: server2.port},
             {host: server3.host, port: server3.port}
@@ -417,7 +417,7 @@ It('Test multiple pools - kill a server and restart it - discovery: true', funct
     server2.mockServersStatus([server1, server2, server3])
     server3.mockServersStatus([server1, server2, server3])
     var r = require(__dirname+'/../lib')({
-        hosts: [
+        servers: [
             {host: server1.host, port: server1.port},
             {host: server2.host, port: server2.port},
             {host: server3.host, port: server3.port}
@@ -495,7 +495,7 @@ It('Test multiple pools - kill a server and restart it - discovery: false', func
     server2.mockServersStatus([server1, server2, server3])
     server3.mockServersStatus([server1, server2, server3])
     var r = require(__dirname+'/../lib')({
-        hosts: [
+        servers: [
             {host: server1.host, port: server1.port},
             {host: server2.host, port: server2.port},
             {host: server3.host, port: server3.port}
@@ -548,7 +548,7 @@ It('Test adding a new server', function* (done) {
     server1.mockServersStatus([server1, server2])
     server2.mockServersStatus([server1, server2])
     var r = require(__dirname+'/../lib')({
-        hosts: [
+        servers: [
             {host: server1.host, port: server1.port}
         ],
         max: 10*3,
@@ -589,7 +589,7 @@ It('Test removing a new server', function* (done) {
     server3.mockServersStatus([server1, server3])
 
     var r = require(__dirname+'/../lib')({
-        hosts: [
+        servers: [
             {host: server1.host, port: server1.port}
         ],
         max: 10*3,
