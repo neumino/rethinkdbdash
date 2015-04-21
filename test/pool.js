@@ -70,7 +70,8 @@ It('Test pool no query with discovery: true', function* (done) {
         host: server1.host,
         port: server1.port,
         max: 10,
-        buffer: 5
+        buffer: 5,
+        discovery: true
     });
 
     try {
@@ -117,7 +118,8 @@ It('Test expanding the pool with discovery: true', function* (done) {
         host: server1.host,
         port: server1.port,
         max: 11,
-        buffer: 5
+        buffer: 5,
+        discovery: true
     });
     try {
         yield util.sleep(300);
@@ -173,7 +175,8 @@ It('Test expanding the pool to max with discovery: true', function* (done) {
         host: server1.host,
         port: server1.port,
         max: 9,
-        buffer: 5
+        buffer: 5,
+        discovery: true
     });
     try {
         yield util.sleep(100);
@@ -215,7 +218,8 @@ It('Test multiple pools with late start', function* (done) {
             {host: server3.host, port: server3.port}
         ],
         max: 15*3,
-        buffer: 5*3 
+        buffer: 5*3,
+        discovery: true
     });
     try {
         yield util.sleep(500);
@@ -268,7 +272,8 @@ It('Test multiple pools with early start', function* (done) {
             {host: server3.host, port: server3.port}
         ],
         max: 15*3,
-        buffer: 5*3
+        buffer: 5*3,
+        discovery: true
     });
     try {
         // All these queries are fired on an empty pool master,
@@ -424,7 +429,8 @@ It('Test multiple pools - kill a server and restart it - discovery: true', funct
         ],
         max: 10*3,
         buffer: 4*3,
-        silent: true
+        silent: true,
+        discovery: true
     });
     try {
         yield util.sleep(100);
