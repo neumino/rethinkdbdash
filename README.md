@@ -146,7 +146,7 @@ a default connection pool (except if you pass `{pool: false}`. The options you
 can pass are:
 
 - `discovery`: `<boolean>` - When true, the driver will regularly pull data from the table `server_status` to
-keep a list of updated hosts, default `true`
+keep a list of updated hosts, default `false`
 - `pool`: `<boolean>` - Set it to `false`, if you do not want to use a connection pool.
 - `buffer`: `<number>` - Minimum number of connections available in the pool, default `50`
 - `max`: ``<number>` - Maximum number of connections available in the pool, default `1000`
@@ -163,12 +163,12 @@ In case of a single instance, you can directly pass `host` and `port` in the top
 Examples:
 ```
 // connect to localhost:8080, and let the driver find other instances
-var r = require('rethinkdbdash')();
+var r = require('rethinkdbdash')({
+    discovery: true
+});
 
 // connect to and only to localhost:8080
-var r = require('rethinkdbdash')({
-    discovery: false
-});
+var r = require('rethinkdbdash')();
 
 // Do not create a connection pool
 var r = require('rethinkdbdash')({pool: false});
