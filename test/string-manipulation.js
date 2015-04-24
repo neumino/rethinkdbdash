@@ -11,76 +11,76 @@ var dbName, tableName, result;
 
 
 It('`match` should work', function* (done) {
-    try {
-        result = yield r.expr("hello").match("hello").run()
-        assert.deepEqual(result, {"end":5,"groups":[],"start":0,"str":"hello"});
-        done();
-    }
-    catch(e) {
-        done(e);
-    }
+  try {
+    result = yield r.expr("hello").match("hello").run()
+    assert.deepEqual(result, {"end":5,"groups":[],"start":0,"str":"hello"});
+    done();
+  }
+  catch(e) {
+    done(e);
+  }
 })
 It('`match` should throw if no arguement has been passed', function* (done) {
-    try {
-        result = yield r.expr("foo").match().run();
+  try {
+    result = yield r.expr("foo").match().run();
+  }
+  catch(e) {
+    if (e.message === "`match` takes 1 argument, 0 provided after:\nr.expr(\"foo\")") {
+      done();
     }
-    catch(e) {
-        if (e.message === "`match` takes 1 argument, 0 provided after:\nr.expr(\"foo\")") {
-            done();
-        }
-        else {
-            done(e);
-        }
+    else {
+      done(e);
     }
+  }
 })
 It('`upcase` should work', function* (done) {
-    try {
-        result = yield r.expr("helLo").upcase().run();
-        assert.equal(result, "HELLO");
-        done();
-    }
-    catch(e) {
-        done(e);
-    }
+  try {
+    result = yield r.expr("helLo").upcase().run();
+    assert.equal(result, "HELLO");
+    done();
+  }
+  catch(e) {
+    done(e);
+  }
 })
 It('`downcase` should work', function* (done) {
-    try {
-        result = yield r.expr("HElLo").downcase().run();
-        assert.equal(result, "hello");
-        done();
-    }
-    catch(e) {
-        done(e);
-    }
+  try {
+    result = yield r.expr("HElLo").downcase().run();
+    assert.equal(result, "hello");
+    done();
+  }
+  catch(e) {
+    done(e);
+  }
 })
 It('`split` should work', function* (done) {
-    try {
-        result = yield r.expr("foo  bar bax").split().run();
-        assert.deepEqual(result, ["foo",  "bar", "bax"]);
-        done();
-    }
-    catch(e) {
-        done(e);
-    }
+  try {
+    result = yield r.expr("foo  bar bax").split().run();
+    assert.deepEqual(result, ["foo",  "bar", "bax"]);
+    done();
+  }
+  catch(e) {
+    done(e);
+  }
 })
 It('`split(separator)` should work', function* (done) {
    try {
-        result = yield r.expr("12,37,,22,").split(",").run();
-        assert.deepEqual(result, ["12", "37", "", "22", ""]);
-        done();
-    }
-    catch(e) {
-        done(e);
-    }
+    result = yield r.expr("12,37,,22,").split(",").run();
+    assert.deepEqual(result, ["12", "37", "", "22", ""]);
+    done();
+  }
+  catch(e) {
+    done(e);
+  }
 })
 It('`split(separtor, max)` should work', function* (done) {
-    try {
-        result = yield r.expr("foo  bar bax").split(null, 1).run();
-        assert.deepEqual(result, ["foo", "bar bax"]);
-        done();
-    }
-    catch(e) {
-        done(e);
-    }
+  try {
+    result = yield r.expr("foo  bar bax").split(null, 1).run();
+    assert.deepEqual(result, ["foo", "bar bax"]);
+    done();
+  }
+  catch(e) {
+    done(e);
+  }
 })
 
