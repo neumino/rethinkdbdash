@@ -13,6 +13,7 @@ It('All terms should be present in term.js', function* (done) {
     DATUM: true,
     MAKE_OBJ: true,
     BETWEEN_DEPRECATED: true,
+    ERROR: true, // define in index, error is defined for behaving like a promise
   }
   var missing = [];
   for(var i=0; i<keys.length; i++) {
