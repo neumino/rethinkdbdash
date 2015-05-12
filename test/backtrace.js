@@ -4938,3 +4938,35 @@ It('Test backtrace for r.expr(1).add("bar").add(r.ISO8601("dadsa",{defaultTimezo
     }
   }
 })
+
+/*
+Frames:
+[ 1, 'bar' ]
+
+Error:
+Expected type STRING but found NUMBER in:
+r.expr({
+    foo: "bar"
+}).merge({
+    foo: r.literal(),
+    bar: r.expr("lol").add(1)
+         ^^^^^^^^^^^^^^^^^^^^
+})
+*/
+It('Test backtrace for r.expr({foo: "bar"}).merge({foo: r.literal(), bar: r.expr("lol").add(1)})', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.expr({foo: "bar"}).merge({foo: r.literal(), bar: r.expr("lol").add(1)}).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Expected type STRING but found NUMBER in:\nr.expr({\n    foo: \"bar\"\n}).merge({\n    foo: r.literal(),\n    bar: r.expr(\"lol\").add(1)\n         ^^^^^^^^^^^^^^^^^^^^\n})\n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+

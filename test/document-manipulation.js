@@ -223,17 +223,14 @@ It('`merge` should throw if no argument has been passed', function* (done) {
     }
   }
 })
-It('`literal` should throw if no argument has been passed', function* (done) {
+It('`literal` should work with no argument', function* (done) {
   try {
-    var result = yield r.literal().run();
+    var result = yield r.expr({foo: 'bar'}).merge({foo: r.literal()}).run();
+    assert.deepEqual(result, {});
+    done();
   }
   catch(e) {
-    if (e.message === "`r.literal` takes 1 argument, 0 provided.") {
-      done();
-    }
-    else {
-      done(e);
-    }
+    done(e);
   }
 })
 It('`append` should work', function* (done) {
