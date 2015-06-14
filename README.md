@@ -90,7 +90,7 @@ here are the few things to do:
   ```js
   var r = require('rethinkdbdash')();
   // Or if you do not connect to the default local instance:
-  // var r = require('rethinkdbdash')(servers: [{host: ..., port: ...}]);
+  // var r = require('rethinkdbdash')({servers: [{host: ..., port: ...}]});
   ```
 
 2. Remove everything related to a connection:
