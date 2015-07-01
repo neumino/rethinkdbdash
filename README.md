@@ -461,9 +461,5 @@ Tests are also being run on [wercker](http://wercker.com/):
 
 - __Can I contribute?__
 
-  Because I would like to give rethinkdbdash to RethinkDB, I would like to
-  keep ownership of the code (mostly because I don't like dealing with legal stuff).
-  So I would rather not merge pull requests. That being said, feedback,
-  bug reports etc. are welcome!
-
-  If you want to write code, come help with [thinky](https://github.com/neumino/thinky)!
+  Feel free to send a pull request. If you want to implement a new feature, please open
+  an issue first, especially if it's a non backward compatible one.
