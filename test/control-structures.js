@@ -307,6 +307,18 @@ It('`typeOf` should work', function* (done) {
     done(e);
   }
 })
+It('`r.typeOf` should work', function* (done) {
+  try {
+    var result = yield r.typeOf(1).run();
+    assert.equal(result, "NUMBER");
+
+    done();
+  }
+  catch(e) {
+    done(e);
+  }
+})
+
 It('`json` should work', function* (done) {
   try {
     var result = yield r.json(JSON.stringify({a:1})).run();
