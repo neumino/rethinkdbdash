@@ -1,48 +1,94 @@
-var Server = require(__dirname+'/util/fake_server/index.js')
 var config = require(__dirname+'/config.js');
-var server1 = new Server({
-  host: 'localhost',
-  port: config.port+17
-})
-var server2 = new Server({
-  host: 'localhost',
-  port: config.port+18
-})
-var server3 = new Server({
-  host: 'localhost',
-  port: config.port+19
-})
 var assert = require('assert');
 var util = require(__dirname+'/util/common.js');
 var uuid = util.uuid;
 var It = util.It;
 
-var uuid = util.uuid;
-var dbName, tableName, result, pks;
+var spawn = require('child_process').spawn
+var cmd = '/home/michel/projects/rethinkdb-all/rethinkdb/build/debug/rethinkdb';//'rethinkdb';
+var host = config.host;
+var dataDir = 'rethinkdbdash_datadir';
+var initialOffset = 180;
+var clusterPort = 29015
+var driverPort = 28015;
 
-It('Test fake server', function* (done) {
-  var r = require(__dirname+'/../lib')({pool: false});
-  try {
-    var connection = yield r.connect({
-      host: server1.host,
-      port: server1.port
-    });
-    var expected = 200;
-    var start = Date.now();
-    //var result = yield r.expr(expected).run(connection);
-    var result = yield r.expr(expected).run(connection);
-    var end = Date.now();
-    assert(end-start >= expected);
-    assert(end-start < expected+100);
-    assert.equal(result, expected);
-    yield connection.close();
-    done();
+
+It('Test that pools are created and identified with discovery: true', function* (done) {
+  var servers = [];
+  for(var portOffset=initialOffset; portOffset<initialOffset+3; portOffset++) {
+
+    var child = spawn(cmd, [
+        '--port-offset',  portOffset,
+        '--directory', dataDir+portOffset,
+        '--server-name',  'rethinkdbdash'+portOffset,
+        '--join', 'localhost:'+(29015+initialOffset)
+    ])
+    child.stdout.on('data', function(x) { console.log(x.toString())});
+    child.stderr.on('data', function(x) { console.log(x.toString())});
+    servers.push(child);
   }
-  catch(e) {
-    done(e);
+  yield util.sleep(2000);
+  var r = require(__dirname+'/../lib')({
+    host: host,
+    port: driverPort+initialOffset,
+    discovery: true,
+    max: 10,
+    buffer: 5,
+
+  });
+  yield util.sleep(2000);
+  assert.equal(r.getPoolMaster()._healthyPools.length, 3);
+  assert.equal(Object.keys(r.getPoolMaster()._pools).length, 3+1); //+1 for UNKNOWN_POOLS
+  yield r.getPoolMaster().drain();
+  for(var i=0; i<servers.length; i++) {
+    servers[i].kill();
   }
+  yield util.sleep(2000);
+  done();
 });
 
+It('Test that pools are created but not identified with discovery: false', function* (done) {
+  var servers = [];
+  for(var portOffset=initialOffset; portOffset<initialOffset+3; portOffset++) {
+
+    var child = spawn(cmd, [
+        '--port-offset',  portOffset,
+        '--directory', dataDir+portOffset,
+        '--server-name',  'rethinkdbdash'+portOffset,
+        '--join', 'localhost:'+(29015+initialOffset)
+    ])
+    child.stdout.on('data', function(x) { console.log(x.toString())});
+    child.stderr.on('data', function(x) { console.log(x.toString())});
+    servers.push(child);
+  }
+  yield util.sleep(2000);
+  var r = require(__dirname+'/../lib')({
+    host: host,
+    port: driverPort+initialOffset,
+    discovery: false,
+    max: 10,
+    buffer: 5,
+    servers: [
+      {host: host, port: driverPort+initialOffset},
+      {host: host, port: driverPort+initialOffset+1},
+      {host: host, port: driverPort+initialOffset+2},
+    ],
+
+
+  });
+  yield util.sleep(2000);
+  assert.equal(r.getPoolMaster()._healthyPools.length, 3);
+  assert.deepEqual(Object.keys(r.getPoolMaster()._pools), ['unknownPools']);
+  r.getPoolMaster().drain();
+  yield util.sleep(2000);
+  for(var i=0; i<servers.length; i++) {
+    servers[i].kill();
+  }
+  done();
+});
+
+
+/*
 It('Test pool no query with discovery: false', function* (done) {
   server1.mockServersStatus([server1])
   var r = require(__dirname+'/../lib')({
@@ -622,3 +668,4 @@ It('Test removing a new server', function* (done) {
     done(e);
   }
 });
+*/

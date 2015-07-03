@@ -17,7 +17,7 @@ var options = {
   port: config.port,
   authKey: config.authKey,
   discovery: false
-  //silent: true
+  silent: true
 };
 
 It('`createPool` should create a PoolMaster and `getPoolMaster` should return it', function* (done) {
@@ -194,7 +194,7 @@ It('If the pool cannot create a connection, it should reject queries', function*
     done(new Error("Was expecting an error"));
   }
   catch(e) {
-    if (e.message === "None of the pools have an opened connection and failed to open a new one.") {
+    if (e.message === "None of the pools have an opened connection and we failed to open a new one.") {
       done()
     }
     else {
