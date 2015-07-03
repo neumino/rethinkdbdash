@@ -13,11 +13,12 @@ var clusterPort = 29015
 var driverPort = 28015;
 
 var FEED_QUERY = 'r.db("rethinkdb")\n .table("server_status")\n .union(["feedSeparator"])\n .union(r.db("rethinkdb").table("server_status").changes())';
+var NUM_SERVERS = 3;
 
 It('Test that pools are created and identified with discovery: true', function* (done) {
   console.log('++ Starting servers');
   var servers = [];
-  for(var portOffset=initialOffset; portOffset<initialOffset+3; portOffset++) {
+  for(var portOffset=initialOffset; portOffset<initialOffset+NUM_SERVERS; portOffset++) {
 
     var child = spawn(cmd, [
         '--port-offset',  portOffset,
@@ -39,11 +40,11 @@ It('Test that pools are created and identified with discovery: true', function* 
     max: 10,
     buffer: 5,
   });
-  yield util.sleep(1000);
-  // Expect 3 different pools
-  assert.equal(r.getPoolMaster()._healthyPools.length, 3);
-  // Expect 3 known pools
-  assert.equal(Object.keys(r.getPoolMaster()._pools).length, 3+1); // +1 for UNKNOWN_POOLS
+  yield util.sleep(2000);
+  // Expect NUM_SERVERS different pools
+  assert.equal(r.getPoolMaster()._healthyPools.length, NUM_SERVERS);
+  // Expect NUM_SERVERS known pools
+  assert.equal(Object.keys(r.getPoolMaster()._pools).length, NUM_SERVERS+1); // +1 for UNKNOWN_POOLS
 
   // Assert that a changefeed on table_status exists
   var queries = yield r.db('rethinkdb').table('jobs')('info')('query').run();
@@ -57,7 +58,7 @@ It('Test that pools are created and identified with discovery: true', function* 
   assert(found, 'Feed opened');
 
   // Kill one server, test, then restart it
-  for(var portOffset=initialOffset; portOffset<initialOffset+3; portOffset++) {
+  for(var portOffset=initialOffset; portOffset<initialOffset+NUM_SERVERS; portOffset++) {
     var server = servers.shift();
     console.log('++ Killing a server');
     server.kill();
@@ -89,10 +90,10 @@ It('Test that pools are created and identified with discovery: true', function* 
     servers.push(child);
     yield util.sleep(2000);
 
-    // Expect 3 different pools
-    assert.equal(r.getPoolMaster()._healthyPools.length, 3);
-    // Expect 3 known pools
-    assert.equal(Object.keys(r.getPoolMaster()._pools).length, 3+1); // +1 for UNKNOWN_POOLS
+    // Expect NUM_SERVERS different pools
+    assert.equal(r.getPoolMaster()._healthyPools.length, NUM_SERVERS);
+    // Expect NUM_SERVERS known pools
+    assert.equal(Object.keys(r.getPoolMaster()._pools).length, NUM_SERVERS+1); // +1 for UNKNOWN_POOLS
   }
 
   // Add a new server
@@ -107,7 +108,7 @@ It('Test that pools are created and identified with discovery: true', function* 
   //child.stdout.on('data', function(x) { console.log(x.toString())});
   //child.stderr.on('data', function(x) { console.log(x.toString())});
   servers.push(child);
-  yield util.sleep(1000);
+  yield util.sleep(2000);
   // Expect 4 different pools
   assert.equal(r.getPoolMaster()._healthyPools.length, 4);
   // Expect 4 known pools
@@ -116,11 +117,58 @@ It('Test that pools are created and identified with discovery: true', function* 
   console.log('++ Removing the extra server');
   var server = servers.pop();
   server.kill();
-  yield util.sleep(1000);
-  // Expect 4 different pools
-  assert.equal(r.getPoolMaster()._healthyPools.length, 3);
-  // Expect 4 known pools
-  assert.equal(Object.keys(r.getPoolMaster()._pools).length, 3+1); // +1 for UNKNOWN_POOLS
+  yield util.sleep(2000);
+  // Expect NUM_SERVERS different pools
+  assert.equal(r.getPoolMaster()._healthyPools.length, NUM_SERVERS);
+  // Expect NUM_SERVERS known pools
+  assert.equal(Object.keys(r.getPoolMaster()._pools).length, NUM_SERVERS+1); // +1 for UNKNOWN_POOLS
+
+
+  // Kill all servers except the last one
+  console.log('++ Removing all the servers except the last one');
+  while (servers.length > 1) {
+    var server = servers.shift();
+    server.kill();
+  }
+  yield util.sleep(2000);
+  // Expect 1 different pools
+  assert.equal(r.getPoolMaster()._healthyPools.length, 1);
+  // Expect 1 known pools
+  assert.equal(Object.keys(r.getPoolMaster()._pools).length, 1+1); // +1 for UNKNOWN_POOLS
+
+  console.log('++ Removing the last server');
+  // Kill the last server
+  var server = servers.pop();
+  server.kill();
+  yield util.sleep(2000);
+
+  // Expect 1 different pools
+  assert.equal(r.getPoolMaster()._healthyPools.length, 0);
+  // Expect 1 known pools
+  // In discovery mode, when the last pool dies, we don't delete it as we may use it to seed
+  // things again
+  assert.equal(Object.keys(r.getPoolMaster()._pools).length, 1+1); // +1 for UNKNOWN_POOLS
+
+  // Restart all the servers except the last one
+  console.log('++ Restart all the servers except the last one (includes the seed)');
+  for(var portOffset=initialOffset; portOffset<initialOffset+NUM_SERVERS-1; portOffset++) {
+
+    var child = spawn(cmd, [
+        '--port-offset',  portOffset,
+        '--directory', dataDir+portOffset,
+        '--server-name',  'rethinkdbdash'+portOffset,
+        '--join', 'localhost:'+(29015+initialOffset)
+    ])
+    //child.stdout.on('data', function(x) { console.log(x.toString())});
+    //child.stderr.on('data', function(x) { console.log(x.toString())});
+    servers.push(child);
+  }
+  yield util.sleep(5000);
+
+  // Expect 2 different pools since the first one is part of the seed
+  assert.equal(r.getPoolMaster()._healthyPools.length, 2);
+  // Expect 2 known pools
+  assert.equal(Object.keys(r.getPoolMaster()._pools).length, 2+1); // +1 for UNKNOWN_POOLS
 
 
   yield r.getPoolMaster().drain();
