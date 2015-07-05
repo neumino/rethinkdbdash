@@ -367,6 +367,8 @@ r.db("d095569a80834591e8053539e111299a").table("be4967584fdf58b6a5dab0cd633ba046
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   .indexWait("foo", "bar")
 */
+// https://github.com/rethinkdb/rethinkdb/issues/4501
+/*
 It('Test backtrace for r.db(dbName).table(tableName).indexWait("foo", "bar")', function* (done) {
   try {
     r.nextVarId=1;
@@ -382,6 +384,7 @@ It('Test backtrace for r.db(dbName).table(tableName).indexWait("foo", "bar")', f
     }
   }
 })
+*/
 
 
 /*
@@ -413,33 +416,34 @@ It('Test backtrace for r.db(dbName).table(tableName).indexStatus().and( r.expr(1
 
 
 /*
-//TODO Broken on the server
 Frames:
-[ { type: 'POS', pos: 1 }, { type: 'POS', pos: 0 } ]
+[ 1 ]
 
 Error:
-Index `bar` was not found in:
-r.db("ac3121b4d58dae39ed8b4ccd6828c3fa").table("1ea1431ffa29a51ce3d2fe9cd192a905")
+Index `bar` was not found on table `64f4fc7f01449d2b7aa567576b291659.449aba951895d77bc975046902f51310` in:
+r.db("64f4fc7f01449d2b7aa567576b291659").table("449aba951895d77bc975046902f51310")
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  .indexStatus("foo", "bar").do(function(var_1) {
-    return var_1.add("a")
-  })
+    .indexStatus("foo", "bar").do(function(var_1) {
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^                     
+        return var_1.add("a")
+    })
 */
 It('Test backtrace for r.db(dbName).table(tableName).indexStatus("foo", "bar").do(function(x) { return x.add("a") })', function* (done) {
-  try {
-    r.nextVarId=1;
-    yield r.db(dbName).table(tableName).indexStatus("foo", "bar").do(function(x) { return x.add("a") }).run()
-    done(new Error("Should have thrown an error"))
-  }
-  catch(e) {
-    if (e.message === "Index `bar` was not found on table `"+dbName+"."+tableName+"` in:\nr.db(\""+dbName+"\").table(\""+tableName+"\")\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    .indexStatus(\"foo\", \"bar\").do(function(var_1) {\n        return var_1.add(\"a\")\n    })\n") {
-      done()
+    try {
+        r.nextVarId=1;
+        yield r.db(dbName).table(tableName).indexStatus("foo", "bar").do(function(x) { return x.add("a") }).run()
+        done(new Error("Should have thrown an error"))
     }
-    else {
-      console.log(e.message); done(e);
+    catch(e) {
+        if (e.message === "Index `bar` was not found on table `"+dbName+"."+tableName+"` in:\nr.db(\""+dbName+"\").table(\""+tableName+"\")\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    .indexStatus(\"foo\", \"bar\").do(function(var_1) {\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^                     \n        return var_1.add(\"a\")\n    })\n") {
+            done()
+        }
+        else {
+            done(e);
+        }
     }
-  }
 })
+
 
 /*
 Frames:
@@ -1395,33 +1399,35 @@ It('Test backtrace for r.expr([1,2,3]).contains("foo", "bar").add("Hello")', fun
 })
 
 
-
 /*
 Frames:
-[ { type: 'POS', pos: 0 }, { type: 'POS', pos: 0 } ]
+[ 0, 0 ]
 
 Error:
 Expected type SELECTION but found DATUM:
-[1, 2, 3] in:
+[
+  1,
+  2,
+  3
+] in:
 r.expr([1, 2, 3]).update(r.row("foo")).add("Hello")
 ^^^^^^^^^^^^^^^^^
 */
 It('Test backtrace for r.expr([1,2,3]).update(r.row("foo")).add("Hello")', function* (done) {
-  try {
-    r.nextVarId=1;
-    yield r.expr([1,2,3]).update(r.row("foo")).add("Hello").run()
-    done(new Error("Should have thrown an error"))
-  }
-  catch(e) {
-    if (e.message === "Expected type SELECTION but found DATUM:\n[1, 2, 3] in:\nr.expr([1, 2, 3]).update(r.row(\"foo\")).add(\"Hello\")\n^^^^^^^^^^^^^^^^^                                  \n") {
-      done()
+    try {
+        r.nextVarId=1;
+        yield r.expr([1,2,3]).update(r.row("foo")).add("Hello").run()
+        done(new Error("Should have thrown an error"))
     }
-    else {
-      console.log(e.message); done(e);
+    catch(e) {
+        if (e.message === "Expected type SELECTION but found DATUM:\n[\n\t1,\n\t2,\n\t3\n] in:\nr.expr([1, 2, 3]).update(r.row(\"foo\")).add(\"Hello\")\n^^^^^^^^^^^^^^^^^                                  \n") {
+            done()
+        }
+        else {
+            done(e);
+        }
     }
-  }
 })
-
 
 
 /*
@@ -3002,27 +3008,27 @@ It('Test backtrace for r.expr(2).add("foo").info()', function* (done) {
 
 /*
 Frames:
-[ { type: 'POS', pos: 1 } ]
+[ 1 ]
 
 Error:
-Failed to parse "foo" as JSON in:
+Failed to parse "foo" as JSON: Invalid value in:
 r.expr(2).add(r.json("foo"))
-        ^^^^^^^^^^^^^
+              ^^^^^^^^^^^^^
 */
 It('Test backtrace for r.expr(2).add(r.json("foo"))', function* (done) {
-  try {
-    r.nextVarId=1;
-    yield r.expr(2).add(r.json("foo")).run()
-    done(new Error("Should have thrown an error"))
-  }
-  catch(e) {
-    if (e.message === "Failed to parse \"foo\" as JSON in:\nr.expr(2).add(r.json(\"foo\"))\n              ^^^^^^^^^^^^^ \n") {
-      done()
+    try {
+        r.nextVarId=1;
+        yield r.expr(2).add(r.json("foo")).run()
+        done(new Error("Should have thrown an error"))
     }
-    else {
-      console.log(e.message); done(e);
+    catch(e) {
+        if (e.message === "Failed to parse \"foo\" as JSON: Invalid value in:\nr.expr(2).add(r.json(\"foo\"))\n              ^^^^^^^^^^^^^ \n") {
+            done()
+        }
+        else {
+            done(e);
+        }
     }
-  }
 })
 
 
@@ -3413,31 +3419,37 @@ It('Test backtrace for r.expr([1,2,3]).group("foo")', function* (done) {
   }
 })
 
+
 /*
 Frames:
-[ { type: 'POS', pos: 0 } ]
+[ 0 ]
 
 Error:
 Expected type GROUPED_DATA but found DATUM:
-[1, 2, 3] in:
+[
+  1,
+  2,
+  3
+] in:
 r.expr([1, 2, 3]).ungroup()
 ^^^^^^^^^^^^^^^^^
 */
 It('Test backtrace for r.expr([1,2,3]).ungroup()', function* (done) {
-  try {
-    r.nextVarId=1;
-    yield r.expr([1,2,3]).ungroup().run()
-    done(new Error("Should have thrown an error"))
-  }
-  catch(e) {
-    if (e.message === "Expected type GROUPED_DATA but found DATUM:\n[1, 2, 3] in:\nr.expr([1, 2, 3]).ungroup()\n^^^^^^^^^^^^^^^^^          \n") {
-      done()
+    try {
+        r.nextVarId=1;
+        yield r.expr([1,2,3]).ungroup().run()
+        done(new Error("Should have thrown an error"))
     }
-    else {
-      console.log(e.message); done(e);
+    catch(e) {
+        if (e.message === "Expected type GROUPED_DATA but found DATUM:\n[\n\t1,\n\t2,\n\t3\n] in:\nr.expr([1, 2, 3]).ungroup()\n^^^^^^^^^^^^^^^^^          \n") {
+            done()
+        }
+        else {
+            done(e);
+        }
     }
-  }
 })
+
 
 /*
 Frames:
@@ -4246,25 +4258,31 @@ Frames:
 [ 1 ]
 
 Error:
-Not a GEOMETRY pseudotype: `[0, 1, 3]` in:
+Not a GEOMETRY pseudotype: `[
+  0,
+  1,
+  3
+]` in:
 r.polygon([0, 0], [0, 1], [1, 1]).includes([0, 1, 3])
-                       ^^^^^^^^^
+                                           ^^^^^^^^^
 */
 It('Test backtrace for r.polygon([0, 0], [0, 1], [1, 1]).includes(r.expr([0, 1, 3]))', function* (done) {
-  try {
-    r.nextVarId=1;
-    yield r.polygon([0, 0], [0, 1], [1, 1]).includes(r.expr([0, 1, 3])).run()
-    done(new Error("Should have thrown an error"))
-  }
-  catch(e) {
-    if (e.message === "Not a GEOMETRY pseudotype: `[0, 1, 3]` in:\nr.polygon([0, 0], [0, 1], [1, 1]).includes([0, 1, 3])\n                                           ^^^^^^^^^ \n") {
-      done()
+    try {
+        r.nextVarId=1;
+        yield r.polygon([0, 0], [0, 1], [1, 1]).includes(r.expr([0, 1, 3])).run()
+        done(new Error("Should have thrown an error"))
     }
-    else {
-      done(e);
+    catch(e) {
+        if (e.message === "Not a GEOMETRY pseudotype: `[\n\t0,\n\t1,\n\t3\n]` in:\nr.polygon([0, 0], [0, 1], [1, 1]).includes([0, 1, 3])\n                                           ^^^^^^^^^ \n") {
+            done()
+        }
+        else {
+            done(e);
+        }
     }
-  }
 })
+
+
 
 
 /*
@@ -4272,24 +4290,60 @@ Frames:
 [ 1 ]
 
 Error:
-Not a GEOMETRY pseudotype: `[0, 1, 3]` in:
+Not a GEOMETRY pseudotype: `[
+  0,
+  1,
+  3
+]` in:
 r.polygon([0, 0], [0, 1], [1, 1]).intersects([0, 1, 3])
-                       ^^^^^^^^^
+                                             ^^^^^^^^^
 */
 It('Test backtrace for r.polygon([0, 0], [0, 1], [1, 1]).intersects(r.expr([0, 1, 3]))', function* (done) {
-  try {
-    r.nextVarId=1;
-    yield r.polygon([0, 0], [0, 1], [1, 1]).intersects(r.expr([0, 1, 3])).run()
-    done(new Error("Should have thrown an error"))
-  }
-  catch(e) {
-    if (e.message === "Not a GEOMETRY pseudotype: `[0, 1, 3]` in:\nr.polygon([0, 0], [0, 1], [1, 1]).intersects([0, 1, 3])\n                                             ^^^^^^^^^ \n") {
-      done()
+    try {
+        r.nextVarId=1;
+        yield r.polygon([0, 0], [0, 1], [1, 1]).intersects(r.expr([0, 1, 3])).run()
+        done(new Error("Should have thrown an error"))
     }
-    else {
-      done(e);
+    catch(e) {
+        if (e.message === "Not a GEOMETRY pseudotype: `[\n\t0,\n\t1,\n\t3\n]` in:\nr.polygon([0, 0], [0, 1], [1, 1]).intersects([0, 1, 3])\n                                             ^^^^^^^^^ \n") {
+            done()
+        }
+        else {
+            done(e);
+        }
     }
-  }
+})
+
+
+
+
+/*
+Frames:
+[ 1 ]
+
+Error:
+Not a GEOMETRY pseudotype: `[
+  0,
+  1,
+  3
+]` in:
+r.polygon([0, 0], [0, 1], [1, 1]).includes([0, 1, 3])
+                                           ^^^^^^^^^
+*/
+It('Test backtrace for r.polygon([0, 0], [0, 1], [1, 1]).includes(r.expr([0, 1, 3]))', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.polygon([0, 0], [0, 1], [1, 1]).includes(r.expr([0, 1, 3])).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Not a GEOMETRY pseudotype: `[\n\t0,\n\t1,\n\t3\n]` in:\nr.polygon([0, 0], [0, 1], [1, 1]).includes([0, 1, 3])\n                                           ^^^^^^^^^ \n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
 })
 
 

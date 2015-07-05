@@ -1,5 +1,5 @@
 var config = require(__dirname+'/config.js');
-var r = require(__dirname+'/../lib')({pool: false});
+var r = require(__dirname+'/../lib')({pool: false, silent: true});
 var util = require(__dirname+'/util/common.js');
 var assert = require('assert');
 

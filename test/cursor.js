@@ -572,7 +572,7 @@ It('`next`, `each`, `toArray` should be deactivated if the EventEmitter interfac
 
 It('Import with cursor as default', function* (done) {
   yield util.sleep(1000);
-  var r1 = require('../lib')({cursor: true, host: config.host, port: config.port, authKey: config.authKey, buffer: config.buffer, max: config.max});
+  var r1 = require('../lib')({cursor: true, host: config.host, port: config.port, authKey: config.authKey, buffer: config.buffer, max: config.max, silent: true});
   var i=0;
   try {
     cursor = yield r1.db(dbName).table(tableName).run();
