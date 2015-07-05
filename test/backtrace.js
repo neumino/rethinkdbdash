@@ -5024,3 +5024,111 @@ It('Test backtrace for r.expr({foo: "bar"}).merge({foo: r.literal(), bar: r.expr
 })
 
 
+
+
+/*
+Frames:
+[ 0 ]
+
+Error:
+Expected type NUMBER but found STRING in:
+r.expr("hello").floor()
+^^^^^^^^^^^^^^^
+*/
+It('Test backtrace for r.floor("hello")', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.floor("hello").run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Expected type NUMBER but found STRING in:\nr.expr(\"hello\").floor()\n^^^^^^^^^^^^^^^        \n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+
+
+/*
+Frames:
+undefined
+
+Error:
+`r.floor` takes 1 argument, 0 provided.
+*/
+It('Test backtrace for r.floor()', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.floor().run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "`r.floor` takes 1 argument, 0 provided.") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+
+
+/*
+Frames:
+[ 0 ]
+
+Error:
+Expected type NUMBER but found STRING in:
+r.expr("hello").round()
+^^^^^^^^^^^^^^^
+*/
+It('Test backtrace for r.round("hello")', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.round("hello").run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Expected type NUMBER but found STRING in:\nr.expr(\"hello\").round()\n^^^^^^^^^^^^^^^        \n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+
+
+
+
+/*
+Frames:
+[ 0 ]
+
+Error:
+Expected type NUMBER but found STRING in:
+r.expr("hello").ceil()
+^^^^^^^^^^^^^^^
+*/
+It('Test backtrace for r.ceil("hello")', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.ceil("hello").run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Expected type NUMBER but found STRING in:\nr.expr(\"hello\").ceil()\n^^^^^^^^^^^^^^^       \n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+

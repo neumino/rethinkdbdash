@@ -794,3 +794,55 @@ It('`random` should work', function* (done) {
     done(e);
   }
 })
+It('`r.floor` should work', function* (done) {
+  try {
+    var result = yield r.floor(1.2).run();
+    assert.equal(result, 1);
+    result = yield r.expr(1.2).floor().run();
+    assert.equal(result, 1);
+    result = yield r.floor(1.8).run();
+    assert.equal(result, 1);
+    result = yield r.expr(1.8).floor().run();
+    assert.equal(result, 1);
+
+    done();
+  }
+  catch(e) {
+    done(e);
+  }
+})
+It('`r.ceil` should work', function* (done) {
+  try {
+    var result = yield r.ceil(1.2).run();
+    assert.equal(result, 2);
+    result = yield r.expr(1.2).ceil().run();
+    assert.equal(result, 2);
+    result = yield r.ceil(1.8).run();
+    assert.equal(result, 2);
+    result = yield r.expr(1.8).ceil().run();
+    assert.equal(result, 2);
+
+    done();
+  }
+  catch(e) {
+    done(e);
+  }
+})
+It('`r.round` should work', function* (done) {
+  try {
+    var result = yield r.round(1.8).run();
+    assert.equal(result, 2);
+    result = yield r.expr(1.8).round().run();
+    assert.equal(result, 2);
+    result = yield r.round(1.2).run();
+    assert.equal(result, 1);
+    result = yield r.expr(1.2).round().run();
+    assert.equal(result, 1);
+
+    done();
+  }
+  catch(e) {
+    done(e);
+  }
+})
+
