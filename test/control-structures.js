@@ -261,7 +261,7 @@ It('`js` should throw if no argument has been given', function* (done) {
     var result = yield r.js().run();
   }
   catch(e) {
-    if (e.message.match(/^`r.js` takes 1 argument, 0 provided/)) {
+    if (e.message.match(/^`r.js` takes at least 1 argument, 0 provided/)) {
       done()
     }
     else {
