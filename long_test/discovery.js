@@ -1,50 +1,72 @@
-var config = require(__dirname+'/config.js');
+var config = require(__dirname+'/../test/config.js');
+var longConfig = require(__dirname+'/config.js');
+
 var assert = require('assert');
-var util = require(__dirname+'/util/common.js');
+var util = require(__dirname+'/../test/util/common.js');
 var uuid = util.uuid;
 var It = util.It;
 
 var spawn = require('child_process').spawn
-var cmd = '/home/michel/projects/rethinkdb-all/rethinkdb/build/debug/rethinkdb';//'rethinkdb';
+var cmd = longConfig.cmd;
 var host = config.host;
-var dataDir = 'rethinkdbdash_datadir';
-var initialOffset = 180;
-var clusterPort = 29015
-var driverPort = 28015;
 
-var FEED_QUERY = 'r.db("rethinkdb")\n .table("server_status")\n .union(["feedSeparator"])\n .union(r.db("rethinkdb").table("server_status").changes())';
-var NUM_SERVERS = 3;
+var INITIAL_OFFSET = longConfig.initialOffset;
+var CLUSTER_PORT = 29015
+var DRIVER_PORT = 28015;
+var DATA_DIR = longConfig.dataDir;
+
+var FEED_QUERY = longConfig.feedQuery;
+var NUM_SERVERS = longConfig.numServers;
 
 It('Test that pools are created and identified with discovery: true', function* (done) {
+  console.log('');
   console.log('++ Starting servers');
   var servers = [];
-  for(var portOffset=initialOffset; portOffset<initialOffset+NUM_SERVERS; portOffset++) {
-
+  for(var portOffset=INITIAL_OFFSET; portOffset<INITIAL_OFFSET+NUM_SERVERS; portOffset++) {
     var child = spawn(cmd, [
         '--port-offset',  portOffset,
-        '--directory', dataDir+portOffset,
+        '--directory', DATA_DIR+portOffset,
         '--server-name',  'rethinkdbdash'+portOffset,
-        '--join', 'localhost:'+(29015+initialOffset)
+        '--bind', 'all',
+        '--join', 'localhost:'+(CLUSTER_PORT+INITIAL_OFFSET)
     ])
     //child.stdout.on('data', function(x) { console.log(x.toString())});
     //child.stderr.on('data', function(x) { console.log(x.toString())});
     servers.push(child);
   }
+
   // Give 2 seconds for the servers to start
   yield util.sleep(2000);
   console.log('++ Starting rethinkdbdash');
   var r = require(__dirname+'/../lib')({
     host: host,
-    port: driverPort+initialOffset,
+    port: DRIVER_PORT+INITIAL_OFFSET,
     discovery: true,
     max: 10,
     buffer: 5,
   });
-  yield util.sleep(2000);
-  // Expect NUM_SERVERS different pools
-  assert.equal(r.getPoolMaster()._healthyPools.length, NUM_SERVERS);
-  // Expect NUM_SERVERS known pools
-  assert.equal(Object.keys(r.getPoolMaster()._pools).length, NUM_SERVERS+1); // +1 for UNKNOWN_POOLS
+
+  // Make sure we have enough healthy pools, try and retest every second for at most 5 seconds.
+  var wait = 0;
+  var extra = 1000;
+  var maxWait = 5000;
+  var pass = false;
+  while (pass === false && wait < maxWait) {
+    yield util.sleep(extra);
+    try {
+      // Expect NUM_SERVERS different pools
+      assert.equal(r.getPoolMaster()._healthyPools.length, NUM_SERVERS);
+      // Expect NUM_SERVERS known pools
+      assert.equal(Object.keys(r.getPoolMaster()._pools).length, NUM_SERVERS+1); // +1 for UNKNOWN_POOLS
+      pass = true;
+    }
+    catch(err) {
+      wait += extra;
+    }
+  }
+  if (pass === false) {
+    done(new Error('Could not find '+NUM_SERVERS+' healthy pools.'));
+  }
 
   // Assert that a changefeed on table_status exists
   var queries = yield r.db('rethinkdb').table('jobs')('info')('query').run();
@@ -58,17 +80,34 @@ It('Test that pools are created and identified with discovery: true', function* 
   assert(found, 'Feed opened');
 
   // Kill one server, test, then restart it
-  for(var portOffset=initialOffset; portOffset<initialOffset+NUM_SERVERS; portOffset++) {
+  for(var portOffset=INITIAL_OFFSET; portOffset<INITIAL_OFFSET+NUM_SERVERS; portOffset++) {
     var server = servers.shift();
     console.log('++ Killing a server');
     server.kill();
-    yield util.sleep(2000);
-    // Expect 2 different pools
-    assert.equal(r.getPoolMaster()._healthyPools.length, 2);
-    // Expect 2 known pools
-    assert.equal(Object.keys(r.getPoolMaster()._pools).length, 2+1); // +1 for UNKNOWN_POOLS
+
+    var wait = 0;
+    var extra = 1000;
+    var maxWait = 5000;
+    var pass = false;
+    while (pass === false && wait < maxWait) {
+      yield util.sleep(extra);
+      try {
+        // Expect NUM_SERVERS-1 different pools
+        assert.equal(r.getPoolMaster()._healthyPools.length, NUM_SERVERS-1);
+        // Expect NUM_SERVERS known pools
+        assert.equal(Object.keys(r.getPoolMaster()._pools).length, NUM_SERVERS-1+1); // +1 for UNKNOWN_POOLS
+        pass = true;
+      }
+      catch(err) {
+        wait += extra;
+      }
+    }
+    if (pass === false) {
+      done(new Error('Could not find '+NUM_SERVERS+' healthy pools.'));
+    }
 
     var found = false;
+    var queries = yield r.db('rethinkdb').table('jobs')('info')('query').run();
     for(var i=0; i<queries.length; i++) {
       if (queries[i] === FEED_QUERY) {
         found = true;
@@ -77,99 +116,196 @@ It('Test that pools are created and identified with discovery: true', function* 
     }
     assert(found, 'Feed opened');
 
-
     console.log('++ Restarting a server');
     var child = spawn(cmd, [
         '--port-offset',  portOffset,
-        '--directory', dataDir+portOffset,
+        '--directory', DATA_DIR+portOffset,
         '--server-name',  'rethinkdbdash'+portOffset,
-        '--join', 'localhost:'+(29015+initialOffset)
+        '--bind', 'all',
+        '--join', 'localhost:'+(CLUSTER_PORT+INITIAL_OFFSET)
     ])
     //child.stdout.on('data', function(x) { console.log(x.toString())});
     //child.stderr.on('data', function(x) { console.log(x.toString())});
     servers.push(child);
-    yield util.sleep(2000);
 
-    // Expect NUM_SERVERS different pools
-    assert.equal(r.getPoolMaster()._healthyPools.length, NUM_SERVERS);
-    // Expect NUM_SERVERS known pools
-    assert.equal(Object.keys(r.getPoolMaster()._pools).length, NUM_SERVERS+1); // +1 for UNKNOWN_POOLS
+    var wait = 0;
+    var extra = 1000;
+    var maxWait = 5000;
+    var pass = false;
+    while (pass === false && wait < maxWait) {
+      yield util.sleep(extra);
+      try {
+        // Expect NUM_SERVERS different pools
+        assert.equal(r.getPoolMaster()._healthyPools.length, NUM_SERVERS);
+        // Expect NUM_SERVERS known pools
+        assert.equal(Object.keys(r.getPoolMaster()._pools).length, NUM_SERVERS+1); // +1 for UNKNOWN_POOLS
+        pass = true;
+      }
+      catch(err) {
+        wait += extra;
+      }
+    }
+    if (pass === false) {
+      done(new Error('Could not find '+NUM_SERVERS+' healthy pools.'));
+    }
   }
 
   // Add a new server
   console.log('++ Adding a new server');
-  var portOffset = 4;
+  var portOffset = NUM_SERVERS+1;
   var child = spawn(cmd, [
-      '--port-offset',  initialOffset+portOffset,
-      '--directory', dataDir+portOffset,
+      '--port-offset',  INITIAL_OFFSET+portOffset,
+      '--directory', DATA_DIR+portOffset,
       '--server-name',  'rethinkdbdash'+portOffset,
-      '--join', 'localhost:'+(29015+initialOffset)
+        '--bind', 'all',
+      '--join', 'localhost:'+(CLUSTER_PORT+INITIAL_OFFSET)
   ])
   //child.stdout.on('data', function(x) { console.log(x.toString())});
   //child.stderr.on('data', function(x) { console.log(x.toString())});
   servers.push(child);
-  yield util.sleep(2000);
-  // Expect 4 different pools
-  assert.equal(r.getPoolMaster()._healthyPools.length, 4);
-  // Expect 4 known pools
-  assert.equal(Object.keys(r.getPoolMaster()._pools).length, 4+1); // +1 for UNKNOWN_POOLS
+
+
+  var wait = 0;
+  var extra = 1000;
+  var maxWait = 5000;
+  var pass = false;
+  while (pass === false && wait < maxWait) {
+    yield util.sleep(extra);
+    // Expect NUM_SERVERS+1 different pools
+    try {
+      assert.equal(r.getPoolMaster()._healthyPools.length, NUM_SERVERS+1);
+      // Expect NUM_SERVERS+1 known pools
+      assert.equal(Object.keys(r.getPoolMaster()._pools).length, NUM_SERVERS+1+1); // +1 for UNKNOWN_POOLS
+
+      pass = true;
+    }
+    catch(err) {
+      wait += extra;
+    }
+  }
+  if (pass === false) {
+    done(new Error('Could not find '+NUM_SERVERS+' healthy pools.'));
+  }
 
   console.log('++ Removing the extra server');
   var server = servers.pop();
   server.kill();
-  yield util.sleep(2000);
-  // Expect NUM_SERVERS different pools
-  assert.equal(r.getPoolMaster()._healthyPools.length, NUM_SERVERS);
-  // Expect NUM_SERVERS known pools
-  assert.equal(Object.keys(r.getPoolMaster()._pools).length, NUM_SERVERS+1); // +1 for UNKNOWN_POOLS
 
+  var wait = 0;
+  var extra = 1000;
+  var maxWait = 5000;
+  var pass = false;
+  while (pass === false && wait < maxWait) {
+    yield util.sleep(extra);
+    // Expect NUM_SERVERS different pools
+    try {
+      assert.equal(r.getPoolMaster()._healthyPools.length, NUM_SERVERS);
+      // Expect NUM_SERVERS known pools
+      assert.equal(Object.keys(r.getPoolMaster()._pools).length, NUM_SERVERS+1); // +1 for UNKNOWN_POOLS
+      pass = true;
+    }
+    catch(err) {
+      wait += extra;
+    }
+  }
+  if (pass === false) {
+    done(new Error('Could not find '+NUM_SERVERS+' healthy pools.'));
+  }
 
+ 
   // Kill all servers except the last one
   console.log('++ Removing all the servers except the last one');
   while (servers.length > 1) {
     var server = servers.shift();
     server.kill();
   }
-  yield util.sleep(2000);
-  // Expect 1 different pools
-  assert.equal(r.getPoolMaster()._healthyPools.length, 1);
-  // Expect 1 known pools
-  assert.equal(Object.keys(r.getPoolMaster()._pools).length, 1+1); // +1 for UNKNOWN_POOLS
+
+  var wait = 0;
+  var extra = 1000;
+  var maxWait = 5000;
+  var pass = false;
+  while (pass === false && wait < maxWait) {
+    yield util.sleep(extra);
+    try {
+      // Expect 1 different pools
+      assert.equal(r.getPoolMaster()._healthyPools.length, 1);
+      // Expect 1 known pools
+      assert.equal(Object.keys(r.getPoolMaster()._pools).length, 1+1); // +1 for UNKNOWN_POOLS
+      pass = true;
+    }
+    catch(err) {
+      wait += extra;
+    }
+  }
+  if (pass === false) {
+    done(new Error('Could not find '+NUM_SERVERS+' healthy pools.'));
+  }
 
   console.log('++ Removing the last server');
   // Kill the last server
   var server = servers.pop();
   server.kill();
-  yield util.sleep(2000);
 
-  // Expect 1 different pools
-  assert.equal(r.getPoolMaster()._healthyPools.length, 0);
-  // Expect 1 known pools
-  // In discovery mode, when the last pool dies, we don't delete it as we may use it to seed
-  // things again
-  assert.equal(Object.keys(r.getPoolMaster()._pools).length, 1+1); // +1 for UNKNOWN_POOLS
+  var wait = 0;
+  var extra = 1000;
+  var maxWait = 5000;
+  var pass = false;
+  while (pass === false && wait < maxWait) {
+    yield util.sleep(extra);
+    try {
+      // Expect 0 healthy pools
+      assert.equal(r.getPoolMaster()._healthyPools.length, 0);
+
+      // Expect 1 known pools
+      // In discovery mode, when the last pool dies, we don't delete it as we may use it to seed
+      // things again
+      assert.equal(Object.keys(r.getPoolMaster()._pools).length, 1+1); // +1 for UNKNOWN_POOLS
+      pass = true;
+    }
+    catch(err) {
+      wait += extra;
+    }
+  }
+  if (pass === false) {
+    done(new Error('Could not find '+NUM_SERVERS+' healthy pools.'));
+  }
 
   // Restart all the servers except the last one
   console.log('++ Restart all the servers except the last one (includes the seed)');
-  for(var portOffset=initialOffset; portOffset<initialOffset+NUM_SERVERS-1; portOffset++) {
-
+  for(var portOffset=INITIAL_OFFSET; portOffset<INITIAL_OFFSET+NUM_SERVERS-1; portOffset++) {
     var child = spawn(cmd, [
         '--port-offset',  portOffset,
-        '--directory', dataDir+portOffset,
+        '--directory', DATA_DIR+portOffset,
         '--server-name',  'rethinkdbdash'+portOffset,
-        '--join', 'localhost:'+(29015+initialOffset)
+        '--bind', 'all',
+        '--join', 'localhost:'+(CLUSTER_PORT+INITIAL_OFFSET)
     ])
     //child.stdout.on('data', function(x) { console.log(x.toString())});
     //child.stderr.on('data', function(x) { console.log(x.toString())});
     servers.push(child);
   }
-  yield util.sleep(5000);
 
-  // Expect 2 different pools since the first one is part of the seed
-  assert.equal(r.getPoolMaster()._healthyPools.length, 2);
-  // Expect 2 known pools
-  assert.equal(Object.keys(r.getPoolMaster()._pools).length, 2+1); // +1 for UNKNOWN_POOLS
-
+  // Make sure we have enough healthy pools, try and retest every second for at most 5 seconds.
+  var wait = 0;
+  var extra = 1000;
+  var maxWait = 5000;
+  var pass = false;
+  while (pass === false && wait < maxWait) {
+    yield util.sleep(extra);
+    try {
+      // Expect NUM_SERVERS different pools
+      assert.equal(r.getPoolMaster()._healthyPools.length, NUM_SERVERS-1);
+      // Expect NUM_SERVERS-1 known pools
+      assert.equal(Object.keys(r.getPoolMaster()._pools).length, NUM_SERVERS-1+1); // +1 for UNKNOWN_POOLS
+      pass = true;
+    }
+    catch(err) {
+      wait += extra;
+    }
+  }
+  if (pass === false) {
+    done(new Error('Could not find '+NUM_SERVERS+' healthy pools.'));
+  }
 
   yield r.getPoolMaster().drain();
   for(var i=0; i<servers.length; i++) {
