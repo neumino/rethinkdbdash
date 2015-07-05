@@ -76,17 +76,12 @@ It('Test that pools are created and identified with discovery: true', function* 
     assert.equal(r.getPool(i).options.max, Math.ceil(MAX/NUM_SERVERS));
   }
 
-  // Fire sequentially MAX*NUM_SERVERS queries
-  for(var i=0; i<MAX*NUM_SERVERS; i++) {
-    yield r.expr(1).run();
-  }
   // Time to close the extra connection;
   yield util.sleep(1000);
   for(var i=0; i<r.getPoolMaster()._healthyPools.length; i++) {
     // We have one change feed opened somewhere
-    if (r.getPool(i).getLength() !== Math.ceil(BUFFER/NUM_SERVERS)
-        && r.getPool(i).getLength() !== (1+Math.ceil(BUFFER/NUM_SERVERS))) {
-      done(new Error('Unexpected number of opened connections'))
+    if (r.getPool(i).getAvailableLength() < Math.ceil(BUFFER/NUM_SERVERS)) {
+      done(new Error('Not enough available connections'))
     }
   }
 

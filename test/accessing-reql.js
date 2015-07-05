@@ -199,10 +199,10 @@ It('`run` should take an argument', function* (done) {
     connection = yield r.connect(config);
     assert(connection);
 
-    result = yield r.expr(1).run(connection, {useOutdated: true});
+    result = yield r.expr(1).run(connection, {readMode: 'primary'});
     assert.equal(result, 1);
 
-    result = yield r.expr(1).run(connection, {useOutdated: false});
+    result = yield r.expr(1).run(connection, {readMode: 'majority'});
     assert.equal(result, 1);
 
     result = yield r.expr(1).run(connection, {profile: false});
@@ -230,7 +230,7 @@ It('`run` should throw on an unrecognized argument', function* (done) {
     result = yield r.expr(1).run(connection, {foo: 'bar'});
   }
   catch(e) {
-    if (e.message === 'Unrecognized option `foo` in `run`. Available options are useOutdated <bool>, durability <string>, noreply <bool>, timeFormat <string>, groupFormat: <string>, profile <bool>, binaryFormat <bool>, cursor <bool>, stream <bool>.') {
+    if (e.message === 'Unrecognized option `foo` in `run`. Available options are readMode <string>, durability <string>, noreply <bool>, timeFormat <string>, groupFormat: <string>, profile <bool>, binaryFormat <bool>, cursor <bool>, stream <bool>.') {
       done();
     }
     else{

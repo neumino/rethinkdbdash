@@ -62,12 +62,12 @@ It('`table` should work', function* (done) {
     done(e);
   }
 })
-It('`table` should work with useOutdated', function* (done) {
+It('`table` should work with readMode', function* (done) {
   try {
-    var result = yield r.db(dbName).table(tableName, {useOutdated: true}).run();
+    var result = yield r.db(dbName).table(tableName, {readMode: 'majority'}).run();
     assert.equal(result.length, 100)
 
-    result = yield r.db(dbName).table(tableName, {useOutdated: false}).run();
+    result = yield r.db(dbName).table(tableName, {readMode: 'majority'}).run();
     assert.equal(result.length, 100)
 
     done();
@@ -81,7 +81,7 @@ It('`table` should throw with non valid otpions', function* (done) {
     var result = yield r.db(dbName).table(tableName, {nonValidKey: false}).run();
   }
   catch(e) {
-    if (e.message === 'Unrecognized option `nonValidKey` in `table` after:\nr.db("'+dbName+'")\nAvailable option is useOutdated <bool>') {
+    if (e.message === 'Unrecognized option `nonValidKey` in `table` after:\nr.db("'+dbName+'")\nAvailable option is readMode <string>') {
       done();
     }
     else {
