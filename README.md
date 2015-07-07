@@ -145,6 +145,7 @@ When you import the driver, as soon as you execute the module, you will create
 a default connection pool (except if you pass `{pool: false}`. The options you
 can pass are:
 
+- `db`: `<string>` - The default database to use if none is mentioned.
 - `discovery`: `<boolean>` - When true, the driver will regularly pull data from the table `server_status` to
 keep a list of updated hosts, default `false`
 - `pool`: `<boolean>` - Set it to `false`, if you do not want to use a connection pool.
