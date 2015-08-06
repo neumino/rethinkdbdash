@@ -174,7 +174,7 @@ var r = require('rethinkdbdash')();
 // Do not create a connection pool
 var r = require('rethinkdbdash')({pool: false});
 
-// Connect to a cluster seeding from `192.168.0.100`, `192.168.0.100`, `192.168.0.102`
+// Connect to a cluster seeding from `192.168.0.100`, `192.168.0.101`, `192.168.0.102`
 var r = require('rethinkdbdash')({
     servers: [
         {host: '192.168.0.100', port: 28015},
