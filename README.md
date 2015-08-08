@@ -150,9 +150,9 @@ can pass are:
 keep a list of updated hosts, default `false`
 - `pool`: `<boolean>` - Set it to `false`, if you do not want to use a connection pool.
 - `buffer`: `<number>` - Minimum number of connections available in the pool, default `50`
-- `max`: ``<number>` - Maximum number of connections available in the pool, default `1000`
+- `max`: `<number>` - Maximum number of connections available in the pool, default `1000`
 - `timeout`: `<number> - The number of seconds for a connection to be opened, default `20`
-- `timeoutError`: `<number> - Wait time before reconnecting in case of an error (in ms), default 1000
+- `timeoutError`: `<number>` - Wait time before reconnecting in case of an error (in ms), default 1000
 - `timeoutGb`: `<number>` - How long the pool keep a connection that hasn't been used (in ms), default 60*60*1000
 - `maxExponent`: `<number>` - The maximum timeout before trying to reconnect is 2^maxExponent x timeoutError, default 6 (~60 seconds for the longest wait)
 - `silent`: <boolean> - console.error errors, default `false`
@@ -219,6 +219,14 @@ to exit, you need to drain the pool with:
 
 ```js
 r.getPoolMaster().drain();
+```
+
+The pool master by default will log all errors/new states on `stderr`. If you do not
+want to pollute `stderr`, pass `silent: true` when you import the driver. You can retrieve the
+logs by binding a listener for the `log` event on the pool master.
+
+```js
+r.getPoolMaster().on('log', console.log);
 ```
 
 ##### Advanced details about the pool
