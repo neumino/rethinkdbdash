@@ -145,6 +145,7 @@ When you import the driver, as soon as you execute the module, you will create
 a default connection pool (except if you pass `{pool: false}`. The options you
 can pass are:
 
+- `db`: `<string>` - The default database to use if none is mentioned.
 - `discovery`: `<boolean>` - When true, the driver will regularly pull data from the table `server_status` to
 keep a list of updated hosts, default `false`
 - `pool`: `<boolean>` - Set it to `false`, if you do not want to use a connection pool.
@@ -152,7 +153,7 @@ keep a list of updated hosts, default `false`
 - `max`: ``<number>` - Maximum number of connections available in the pool, default `1000`
 - `timeout`: `<number> - The number of seconds for a connection to be opened, default `20`
 - `timeoutError`: `<number> - Wait time before reconnecting in case of an error (in ms), default 1000
-- `imeoutGb`: `<number>` - How long the pool keep a connection that hasn't been used (in ms), default 60*60*1000
+- `timeoutGb`: `<number>` - How long the pool keep a connection that hasn't been used (in ms), default 60*60*1000
 - `maxExponent`: `<number>` - The maximum timeout before trying to reconnect is 2^maxExponent x timeoutError, default 6 (~60 seconds for the longest wait)
 - `silent`: <boolean> - console.error errors, default `false`
 - `servers`: an of objects `{host: <string>, port: <number>}` representing instances of
@@ -173,7 +174,7 @@ var r = require('rethinkdbdash')();
 // Do not create a connection pool
 var r = require('rethinkdbdash')({pool: false});
 
-// Connect to a cluster seeding from `192.168.0.100`, `192.168.0.100`, `192.168.0.102`
+// Connect to a cluster seeding from `192.168.0.100`, `192.168.0.101`, `192.168.0.102`
 var r = require('rethinkdbdash')({
     servers: [
         {host: '192.168.0.100', port: 28015},
