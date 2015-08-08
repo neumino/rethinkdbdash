@@ -133,6 +133,41 @@ removing `toArray`:
   ```
 
 
+#### Using TLS Connections
+
+RethinkDB does not support TLS connections to the server yet, but in case you want
+to run it over an untrusted network and need encryption, you can easily run a TLS proxy
+on your server with:
+
+```js
+var tls = require('tls');
+var net = require('net');
+var tlsOpts = {
+  key: '', // You private key
+  cert: '' // Public certificate
+};
+tls.createServer(tlsOpts, function (encryptedConnection) {
+  var rethinkdbConn = net.connect({
+    host: 'localhost',
+    port: 28015
+  });
+  encryptedConnection.pipe(rethinkdbConn).pipe(encryptedConnection);
+}).listen(29015);
+```
+
+And then safely connect to it with the `tls` option:
+
+```js
+var r = require('rethinkdbdash')({
+  port: 29015,
+  host: 'place-with-no-firewall.com',
+  tls: true
+});
+```
+
+`tls` may also be an object that will be passed as the `options` argument to
+[`tls.connect`](http://nodejs.org/api/tls.html#tls_tls_connect_options_callback).
+
 
 ### New features and differences
 
