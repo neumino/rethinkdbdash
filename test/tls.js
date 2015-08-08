@@ -58,7 +58,7 @@ if (clientConfig.host === 'localhost') {
 
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = "1"; // do not ignore self-signed certificates (default)
     clientConfig.tls = tlsOpts;
-    r = require('../lib')(clientConfig);
+    var r = require('../lib')(clientConfig);
 
     try {
       var result = yield r.expr(3).add(4).run()
