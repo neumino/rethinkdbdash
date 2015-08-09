@@ -135,6 +135,8 @@ removing `toArray`:
 
 #### Using TLS Connections
 
+_Note_: Support for a TLS proxy is experimental.
+
 RethinkDB does not support TLS connections to the server yet, but in case you want
 to run it over an untrusted network and need encryption, you can easily run a TLS proxy
 on your server with:
