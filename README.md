@@ -324,7 +324,7 @@ r.expr([1, 2, 3]).run().then(function(result) {
 ```
 
 ```js
-r.expr([1, 2, 3]).run({cursor: true}).then(function(result) {
+r.expr([1, 2, 3]).run({cursor: true}).then(function(cursor) {
   cursor.toArray().then(function(result) {
     console.log(JSON.stringify(result)) // print [1, 2, 3]
   });
