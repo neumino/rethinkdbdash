@@ -163,11 +163,11 @@ And then safely connect to it with the `tls` option:
 var r = require('rethinkdbdash')({
   port: 29015,
   host: 'place-with-no-firewall.com',
-  tls: true
+  ssl: true
 });
 ```
 
-`tls` may also be an object that will be passed as the `options` argument to
+`ssl` may also be an object that will be passed as the `options` argument to
 [`tls.connect`](http://nodejs.org/api/tls.html#tls_tls_connect_options_callback).
 
 

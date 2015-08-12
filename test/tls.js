@@ -1,7 +1,7 @@
 var config = require('./config.js');
 var clientConfig = JSON.parse(JSON.stringify(config)); // clone object
 clientConfig.port = 10000 + Math.floor(Math.random()*1000);
-clientConfig.tls = true;
+clientConfig.ssl = true;
 
 var tls = require('tls');
 var net = require('net');
@@ -57,7 +57,7 @@ if (clientConfig.host === 'localhost') {
     //server.on('clientError', console.log);
 
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = "1"; // do not ignore self-signed certificates (default)
-    clientConfig.tls = tlsOpts;
+    clientConfig.ssl = tlsOpts;
     var r = require('../lib')(clientConfig);
 
     try {
