@@ -463,6 +463,13 @@ Make sure you run a version of Node that supports generators and run:
 npm test
 ```
 
+Longer tests for the pool:
+
+```
+mocha --harmony-generators long_test/discovery.js -t 50000
+mocha --harmony-generators long_test/static.js -t 50000
+```
+
 
 Tests are also being run on [wercker](http://wercker.com/):
 - Builds: [https://app.wercker.com/#applications/52dffe8ba4acb3ef16010ef8/tab](https://app.wercker.com/#applications/52dffe8ba4acb3ef16010ef8/tab)
