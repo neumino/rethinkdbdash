@@ -210,7 +210,7 @@ It('If the pool cannot create a connection, it should reject queries - timeout',
     done(new Error("Was expecting an error"));
   }
   catch(e) {
-    if (e.message === "None of the pools have an opened connection and failed to open a new one.") {
+    if (e.message === "None of the pools have an opened connection and we failed to open a new one.") {
       done()
     }
     else {
