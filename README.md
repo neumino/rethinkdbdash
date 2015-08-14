@@ -367,6 +367,8 @@ or [Transform](http://nodejs.org/api/stream.html#stream_class_stream_transform) 
 calling `toStream([connection, ]{writable: true})` or
 `toStream([connection, ]{transform: true})` on a table.
 
+A transform stream will return the saved documents.
+
 This makes a convenient way to dump a file your database.
 
 ```js
