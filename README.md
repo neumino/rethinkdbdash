@@ -325,7 +325,7 @@ r.expr([1, 2, 3]).run().then(function(result) {
 ```
 
 ```js
-r.expr([1, 2, 3]).run({cursor: true}).then(function(result) {
+r.expr([1, 2, 3]).run({cursor: true}).then(function(cursor) {
   cursor.toArray().then(function(result) {
     console.log(JSON.stringify(result)) // print [1, 2, 3]
   });
@@ -462,6 +462,13 @@ Update `test/config.js` if your RethinkDB instance doesn't run on the default pa
 Make sure you run a version of Node that supports generators and run:
 ```
 npm test
+```
+
+Longer tests for the pool:
+
+```
+mocha --harmony-generators long_test/discovery.js -t 50000
+mocha --harmony-generators long_test/static.js -t 50000
 ```
 
 
