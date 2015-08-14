@@ -194,6 +194,7 @@ keep a list of updated hosts, default `false`
 - `maxExponent`: `<number>` - The maximum timeout before trying to reconnect is 2^maxExponent x timeoutError, default 6 (~60 seconds for the longest wait)
 - `silent`: <boolean> - console.error errors, default `false`
 - `servers`: an of objects `{host: <string>, port: <number>}` representing instances of
+- `optionalRun`: <boolean> - if `false`, yielding a query will not run it, default `true`
 RethinkDB to connect to.
 
 In case of a single instance, you can directly pass `host` and `port` in the top level parameters.
