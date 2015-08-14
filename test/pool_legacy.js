@@ -37,9 +37,6 @@ It('`run` should work without a connection if a pool exists', function* (done) {
   try {
     result = yield r.expr(1).run()
     assert.equal(result, 1);
-
-    assert(r.getPool().getAvailableLength() >= 2); // This can be 2 because r.expr(1) may be run BEFORE a connection in the buffer is available
-    assert(r.getPool().getAvailableLength() <= r.getPool().getLength())
     done()
   }
   catch(e) {
