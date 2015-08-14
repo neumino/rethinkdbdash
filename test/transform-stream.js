@@ -3,6 +3,7 @@ var r = require('../lib')(config);
 var util = require(__dirname+'/util/common.js');
 var assert = require('assert');
 var Readable = require('stream').Readable;
+var Stream = require('stream')
 var _util = require('util');
 var devnull = require('dev-null');
 
@@ -174,4 +175,105 @@ It('test pipe transform - single insert', function* (done) {
         done();
       });
     }).pipe(devnull({objectMode: true}));
+})
+
+It('test transform output - object', function* (done) {
+  var stream = new Readable({objectMode: true});
+  var i = 0;
+  var values = [uuid(), uuid()];
+  stream._read = function() {
+    var self = this;
+    i++;
+    if (i <= 3) {
+      self.push({field: values[0]});
+    }
+    else if (i === 4) {
+      setTimeout(function() {
+        self.push({field: values[1]});
+      }, 300)
+    }
+    else if (i <= 10) {
+      self.push({field: values[1]});
+    }
+    else {
+      self.push(null);
+    }
+  }
+
+  var table = r.db(dbName).table(dumpTable).toStream({
+    transform: true
+  });
+
+  var result = [];
+  var endStream = new Stream.Transform();
+  endStream._writableState.objectMode = true;
+  endStream._readableState.objectMode = true;
+  endStream._transform = function (data, encoding, done) {
+    result.push(data);
+    this.push(data);
+    done();
+  }
+
+  stream.pipe(table)
+    .on('error', done)
+    .pipe(endStream)
+    .on('error', done)
+    .on('finish', function() {
+      assert(result.length, 10);
+      for(var i=0; i<result.length; i++) {
+        assert(Object.prototype.toString.call(result[i]), '[object Object]');
+      }
+      done();
+    });
+})
+
+It('test transform output - string', function* (done) {
+  var stream = new Readable({objectMode: true});
+  var i = 0;
+  var values = [uuid(), uuid()];
+  stream._read = function() {
+    var self = this;
+    i++;
+    if (i <= 3) {
+      self.push({field: values[0]});
+    }
+    else if (i === 4) {
+      setTimeout(function() {
+        self.push({field: values[1]});
+      }, 300)
+    }
+    else if (i <= 10) {
+      self.push({field: values[1]});
+    }
+    else {
+      self.push(null);
+    }
+  }
+
+  var table = r.db(dbName).table(dumpTable).toStream({
+    transform: true,
+    format: 'primaryKey'
+  });
+
+  var result = [];
+  var endStream = new Stream.Transform();
+  endStream._writableState.objectMode = true;
+  endStream._readableState.objectMode = true;
+  endStream._transform = function (data, encoding, done) {
+    result.push(data);
+    this.push(data);
+    done();
+  }
+
+  stream.pipe(table)
+    .on('error', done)
+    .pipe(endStream)
+    .on('error', done)
+    .on('finish', function() {
+      assert(result.length, 10);
+      for(var i=0; i<result.length; i++) {
+        assert(typeof result[i], 'string');
+      }
+      done();
+    });
 })

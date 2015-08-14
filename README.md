@@ -369,7 +369,8 @@ or [Transform](http://nodejs.org/api/stream.html#stream_class_stream_transform) 
 calling `toStream([connection, ]{writable: true})` or
 `toStream([connection, ]{transform: true})` on a table.
 
-A transform stream will return the saved documents.
+By default, a transform stream will return the saved documents. You can return the primary
+key of the new document by passing the option `format: 'primaryKey'`.
 
 This makes a convenient way to dump a file your database.
 
