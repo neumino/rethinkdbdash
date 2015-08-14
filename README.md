@@ -239,6 +239,8 @@ and not arrays by default.
 
 _Note_: The option `{stream: true}` that asynchronously returns a stream is deprecated. Use `toStream` instead.
 
+_Note_: The option `{optionalRun: false}` will disable the optional run for all instances of the driver.
+
 #### Connection pool
 
 As mentionned before, `rethinkdbdash` has a connection pool and manage all the connections
