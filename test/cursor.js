@@ -51,7 +51,7 @@ It('Updating batch', function* (done) {
   try {
     // Add a date
     result = yield r.db(dbName).table(tableName).update({
-      date: r.now().sub(r.random()*1000000),
+      date: r.now().sub(r.random().mul(1000000)),
       value: r.random()
     }, {nonAtomic: true}).run();
     done();

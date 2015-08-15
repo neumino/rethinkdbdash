@@ -43,7 +43,7 @@ It('Anonymous function should throw if they return undefined', function* (done) 
     r.expr(1).do(function() {});
   }
   catch(e) {
-    if (e.message === "Annonymous function returned `undefined`. Did you forget a `return`?") {
+    if (e.message === "Annonymous function returned `undefined`. Did you forget a `return`? In:\nfunction () {}.") {
       done()
     }
     else {

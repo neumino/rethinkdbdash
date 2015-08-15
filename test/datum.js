@@ -158,7 +158,7 @@ It("`r.expr` should fail with NaN", function* (done) {
     done(new Error("NaN should throw an error"));
   }
   catch(e) {
-    if (e.message === "Cannot convert `NaN` to JSON.") {
+    if (e.message.match(/^Cannot convert `NaN` to JSON/)) {
       done();
     }
     else {
@@ -183,7 +183,7 @@ It("`r.expr` should fail with Infinity", function* (done) {
     done(new Error("Infinity should throw an error"));
   }
   catch(e) {
-    if (e.message === "Cannot convert `Infinity` to JSON.") {
+    if (e.message.match(/^Cannot convert `Infinity` to JSON/)) {
       done();
     }
     else {
@@ -251,6 +251,8 @@ It("`r.expr` should work with binaries", function* (done) {
 
 
 
+/*
+// RethinkDB seems to properly handle the null character now
 It("Null char in string - 1", function* (done) {
   try{
     result = yield r.expr("T\u0000EST").run();
@@ -258,19 +260,31 @@ It("Null char in string - 1", function* (done) {
     done(new Error('Was expecting an error'));
   }
   catch(e) {
-    assert.equal(e.message, 'The null character is currently not supported by RethinkDB.');
-    done();
+    if (e.message.match(/^The null character is currently not supported by RethinkDB/)) {
+      done();
+    }
+    else {
+      console.log(e.message);
+      done(e);
+    }
   }
 })
 It("Null char in string - 2", function* (done) {
   try{
-    result = yield r.json(JSON.stringify('"T\u0000EST"')).run();
+    result = yield r.expr(1).do(function(key) {
+      return r.json(JSON.stringify('"T\u0000EST"'))
+    }).run();
     assert.equal(result, JSON.stringify("T\u0000EST"));
     done(new Error('Was expecting an error'));
   }
   catch(e) {
-    assert.equal(e.message, 'The null character is currently not supported by RethinkDB.');
-    done();
+    if (e.message.match(/^The null character is currently not supported by RethinkDB/)) {
+      done();
+    }
+    else {
+      console.log(e.message);
+      done(e);
+    }
   }
 })
 It("Null char in string - 3", function* (done) {
@@ -280,8 +294,13 @@ It("Null char in string - 3", function* (done) {
     done(new Error('Was expecting an error'));
   }
   catch(e) {
-    assert.equal(e.message, 'The null character is currently not supported by RethinkDB.');
-    done();
+    if (e.message.match(/^The null character is currently not supported by RethinkDB/)) {
+      done();
+    }
+    else {
+      console.log(e.message);
+      done(e);
+    }
   }
 })
 It("Null char in string should not throw if not run", function* (done) {
@@ -293,3 +312,4 @@ It("Null char in string should not throw if not run", function* (done) {
     done(e);
   }
 });
+*/
