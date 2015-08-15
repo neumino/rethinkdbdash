@@ -514,7 +514,7 @@ It('`isEmpty` should work', function* (done) {
   }
 })
 
-It('`union` should work', function* (done) {
+It('`union` should work - 1', function* (done) {
   try{
     result = yield r.expr([0, 1, 2]).union([3, 4, 5]).run();
     assert.deepEqual(result, [0, 1, 2, 3, 4, 5]);
@@ -525,19 +525,29 @@ It('`union` should work', function* (done) {
     done(e);
   }
 })
-It('`union` should throw if no argument has been passed', function* (done) {
-  try {
-    result = yield r.db(dbName).table(tableName).union().run();
+It('`union` should work - 2', function* (done) {
+  try{
+    result = yield r.union([0, 1, 2], [3, 4, 5], [6, 7]).run();
+    assert.deepEqual(result, [0, 1, 2, 3, 4, 5, 6, 7]);
+
+    done()
   }
   catch(e) {
-    if (e.message.match(/^`union` takes 1 argument, 0 provided after/) ){
-      done()
-    }
-    else {
-      done(e);
-    }
+    done(e);
   }
 })
+It('`union` should work - 3', function* (done) {
+  try{
+    result = yield r.union().run();
+    assert.deepEqual(result, []);
+
+    done()
+  }
+  catch(e) {
+    done(e);
+  }
+})
+
 It('`sample` should work', function* (done) {
   try{
     result = yield r.expr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).sample(2).run();

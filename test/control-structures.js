@@ -104,17 +104,16 @@ It('`branch` should throw if just two arguments have been given', function* (don
     }
   }
 })
-It('`branch` is not defined after a term', function* (done) {
+It('`branch` is defined after a term', function* (done) {
   try {
-    result = yield r.expr(1).branch(true, true, true).run();
+    result = yield r.expr(true).branch(2, 3).run();
+    assert.equal(result, 2);
+    result = yield r.expr(false).branch(2, 3).run();
+    assert.equal(result, 3);
+    done();
   }
   catch(e) {
-    if (e.message === "`branch` is not defined after:\nr.expr(1)") {
-      done()
-    }
-    else {
-      done(e)
-    }
+    done(e);
   }
 })
 It('`forEach` should work', function* (done) {
