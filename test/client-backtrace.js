@@ -119,3 +119,51 @@ It('Test backtrace for r.db(dbName).table(tableName).map(function(doc) { return 
     }
 })
 
+
+
+Cannot convert `NaN` to JSON in:
+r.db("aa802b7a7ec470632ddb3c515e7ab30b").table("fe82af2d2203e8fbed96e0cbbc29e936")
+    .merge(function(var_1) {
+        return r.branch(var_1("location").eq("US"), {
+            adult: var_1("age").gt(NaN)
+                                   ^^^ 
+        }, {
+            radult: var_1("age").gt(18)
+        })
+    })
+
+
+
+
+/*
+Frames:
+[ 1, 1, 1, 'adult', 1 ]
+
+Error:
+Cannot convert `NaN` to JSON in:
+r.db("aa802b7a7ec470632ddb3c515e7ab30b").table("fe82af2d2203e8fbed96e0cbbc29e936")
+    .merge(function(var_1) {
+        return r.branch(var_1("location").eq("US"), {
+            adult: var_1("age").gt(NaN)
+                                   ^^^ 
+        }, {
+            radult: var_1("age").gt(18)
+        })
+    })
+*/
+It('Test backtrace for r.db(dbName).table(tableName).merge(function(user) { return r.branch( user("location").eq("US"), { adult: user("age").gt(NaN) }, {radult: user("age").gt(18) }) })', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.db(dbName).table(tableName).merge(function(user) { return r.branch( user("location").eq("US"), { adult: user("age").gt(NaN) }, {radult: user("age").gt(18) }) }).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Cannot convert `NaN` to JSON in:\nr.db(\""+dbName+"\").table(\""+tableName+"\")\n    .merge(function(var_1) {\n        return r.branch(var_1(\"location\").eq(\"US\"), {\n            adult: var_1(\"age\").gt(NaN)\n                                   ^^^ \n        }, {\n            radult: var_1(\"age\").gt(18)\n        })\n    })\n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
