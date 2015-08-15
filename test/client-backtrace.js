@@ -121,20 +121,6 @@ It('Test backtrace for r.db(dbName).table(tableName).map(function(doc) { return 
 
 
 
-Cannot convert `NaN` to JSON in:
-r.db("aa802b7a7ec470632ddb3c515e7ab30b").table("fe82af2d2203e8fbed96e0cbbc29e936")
-    .merge(function(var_1) {
-        return r.branch(var_1("location").eq("US"), {
-            adult: var_1("age").gt(NaN)
-                                   ^^^ 
-        }, {
-            radult: var_1("age").gt(18)
-        })
-    })
-
-
-
-
 /*
 Frames:
 [ 1, 1, 1, 'adult', 1 ]
