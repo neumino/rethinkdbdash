@@ -164,13 +164,14 @@ It('The pool should shrink if a connection is not used for some time', function*
       assert.equal(r.getPool(0).getAvailableLength(), options.buffer)
       assert.equal(r.getPool(0).getLength(), options.buffer)
       done()
-    },400)
+    },1000)
   }
   catch(e) {
     done(e);
   }
 });
 
+/*
 It('`poolMaster.drain` should eventually remove all the connections', function* (done) {
   try{
     yield r.getPoolMaster().drain();
