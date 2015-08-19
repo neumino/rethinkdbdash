@@ -171,7 +171,6 @@ It('The pool should shrink if a connection is not used for some time', function*
   }
 });
 
-/*
 It('`poolMaster.drain` should eventually remove all the connections', function* (done) {
   try{
     yield r.getPoolMaster().drain();
