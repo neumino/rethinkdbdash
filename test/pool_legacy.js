@@ -17,7 +17,7 @@ var options = {
   port: config.port,
   authKey: config.authKey,
   discovery: false,
-//  silent: true
+  silent: true
 };
 
 It('`createPool` should create a PoolMaster and `getPoolMaster` should return it', function* (done) {
@@ -34,7 +34,6 @@ It('`createPool` should create a PoolMaster and `getPoolMaster` should return it
 
 //TODO try to make this tests a little more deterministic
 It('`run` should work without a connection if a pool exists', function* (done) {
-  console.log('================')
   try {
     result = yield r.expr(1).run()
     assert.equal(result, 1);
@@ -45,7 +44,6 @@ It('`run` should work without a connection if a pool exists', function* (done) {
   }
 });
 It('The pool should keep a buffer', function* (done) {
-  console.log('================')
   try {
     result = yield [r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run(), r.expr(1).run()]
     assert.deepEqual(result, [1,1,1,1,1]);
@@ -61,7 +59,6 @@ It('The pool should keep a buffer', function* (done) {
     done(e);
   }
 });
-/*
 It('A noreply query should release the connection', function* (done) {
   try {
     var numConnections = r.getPool(0).getLength();
@@ -174,7 +171,6 @@ It('The pool should shrink if a connection is not used for some time', function*
   }
 });
 
-/*
 It('`poolMaster.drain` should eventually remove all the connections', function* (done) {
   try{
     yield r.getPoolMaster().drain();
