@@ -420,6 +420,7 @@ It('`orderBy.limit.changes` should return a feed', function* (done) {
 
 It('`next` should work on a feed', function* (done) {
   try {
+    yield util.sleep(1000);
     feed = yield r.db(dbName).table(tableName2).changes().run();
     setTimeout(function() {
       r.db(dbName).table(tableName2).update({foo: r.now()}).run();
