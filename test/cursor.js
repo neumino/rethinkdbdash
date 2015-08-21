@@ -64,7 +64,7 @@ It('`table` should return a cursor', function* (done) {
   try {
     cursor = yield r.db(dbName).table(tableName).run({cursor: true});
     assert(cursor);
-    assert.equal(cursor.toString(), '[object Cursor]');
+    assert.equal(cursor.toString(), '[object cursor]');
 
     done();
   }
@@ -205,7 +205,7 @@ It('`next` should work -- testing common pattern', function* (done) {
         i++;
       }
       catch(e) {
-        if (e.message === "No more rows in the Cursor.") {
+        if (e.message === "No more rows in the cursor.") {
           assert.equal(smallNumDocs, i);
           done();
           break;
@@ -251,7 +251,7 @@ It('cursor shouldn\'t throw if the user try to serialize it in JSON', function* 
     done(new Error('Was expecting an error'));
   }
   catch(e) {
-    assert.equal(e.message, "You cannot serialize a Cursor to JSON. Retrieve data from the cursor with `toArray` or `next`.");
+    assert.equal(e.message, "You cannot serialize a cursor to JSON. Retrieve data from the cursor with `toArray` or `next`.");
     done();
   }
 })
@@ -319,7 +319,7 @@ It('`next` with multiple batches', function* (done) {
         i++;
       }
       catch(e) {
-        if ((i > 0) && (e.message === "No more rows in the Cursor.")) {
+        if ((i > 0) && (e.message === "No more rows in the cursor.")) {
           connection.close();
           done()
         }
@@ -576,7 +576,7 @@ It('Import with cursor as default', function* (done) {
   var i=0;
   try {
     cursor = yield r1.db(dbName).table(tableName).run();
-    assert.equal(cursor.toString(), '[object Cursor]');
+    assert.equal(cursor.toString(), '[object cursor]');
     yield cursor.close();
     done();
   }
