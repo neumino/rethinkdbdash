@@ -64,7 +64,7 @@ It('`table` should return a cursor', function* (done) {
   try {
     cursor = yield r.db(dbName).table(tableName).run({cursor: true});
     assert(cursor);
-    assert.equal(cursor.toString(), '[object cursor]');
+    assert.equal(cursor.toString(), '[object Cursor]');
 
     done();
   }
@@ -576,7 +576,7 @@ It('Import with cursor as default', function* (done) {
   var i=0;
   try {
     cursor = yield r1.db(dbName).table(tableName).run();
-    assert.equal(cursor.toString(), '[object cursor]');
+    assert.equal(cursor.toString(), '[object Cursor]');
     yield cursor.close();
     done();
   }
