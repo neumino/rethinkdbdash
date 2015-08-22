@@ -251,7 +251,7 @@ It('cursor shouldn\'t throw if the user try to serialize it in JSON', function* 
     done(new Error('Was expecting an error'));
   }
   catch(e) {
-    assert.equal(e.message, "You cannot serialize a cursor to JSON. Retrieve data from the cursor with `toArray` or `next`.");
+    assert.equal(e.message, "You cannot serialize a Cursor to JSON. Retrieve data from the cursor with `toArray` or `next`.");
     done();
   }
 })
