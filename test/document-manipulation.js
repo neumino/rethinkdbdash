@@ -199,7 +199,6 @@ It('`merge` should take an anonymous function', function* (done) {
 
 It('`literal` should work', function* (done) {
   try {
-    var data = r.expr({a: {b: 1}}).merge({a: r.literal({c: 2})})._self
     var result = yield r.expr({a: {b: 1}}).merge({a: r.literal({c: 2})}).run();
     assert.deepEqual(result, {a: {c: 2}});
 
