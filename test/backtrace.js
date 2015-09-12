@@ -49,7 +49,7 @@ Frames:
 Error:
 Expected type STRING but found NUMBER in:
 r.dbDrop(1)
-     ^ 
+     ^
 */
 It('Test backtrace for r.dbDrop(1)', function* (done) {
   try {
@@ -75,7 +75,7 @@ Frames:
 Error:
 Expected type STRING but found NUMBER in:
 r.dbCreate(1)
-       ^ 
+       ^
 */
 It('Test backtrace for r.dbCreate(1)', function* (done) {
   try {
@@ -424,7 +424,7 @@ Index `bar` was not found on table `64f4fc7f01449d2b7aa567576b291659.449aba95189
 r.db("64f4fc7f01449d2b7aa567576b291659").table("449aba951895d77bc975046902f51310")
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     .indexStatus("foo", "bar").do(function(var_1) {
-    ^^^^^^^^^^^^^^^^^^^^^^^^^^                     
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^
         return var_1.add("a")
     })
 */
@@ -452,7 +452,7 @@ Frames:
 Error:
 Table `882c5069473a016b03069a24679271c5.nonExistingTable` does not exist in:
 r.db("882c5069473a016b03069a24679271c5").table("nonExistingTable").update({
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^         
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   foo: "bar"
 })
 */
@@ -480,7 +480,7 @@ Frames:
 Error:
 Table `8d192301ed6e6937c7d2e6d836f79b20.nonExistingTable` does not exist in:
 r.db("8d192301ed6e6937c7d2e6d836f79b20").table("nonExistingTable").update(function(var_1) {
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^                         
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   return var_1("foo")
 })
 */
@@ -510,7 +510,7 @@ Frames:
 Error:
 Table `nonExistingTable` does not exist in:
 r.db("e7e04bbadd0f0b43f3561b32f2e1b5d6").table("nonExistingTable").replace({
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^          
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   foo: "bar"
 })
 */
@@ -539,7 +539,7 @@ Frames:
 Error:
 Table `nonExistingTable` does not exist in:
 r.db("9ca06265cbe173eeb27decb1baedb031").table("nonExistingTable").replace(function(var_1) {
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^                          
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   return var_1("foo")
 })
 */
@@ -706,7 +706,7 @@ SELECTION ON table(0c2967f3799eb2025b4cd92342dfe4a9) in:
 r.db("cd911f3c958c1ec7637f7f2dc2827245").table("0c2967f3799eb2025b4cd92342dfe4a9")
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   .getAll(1, 2, 3).do(function(var_1) {
-  ^^^^^^^^^^^^^^^^                     
+  ^^^^^^^^^^^^^^^^
     return var_1.add(3)
   })
 */
@@ -743,7 +743,7 @@ r.db("52bdcbc788f0c0b00357fa1840f62a81").table("2fb59ffdec1b6605369953703547f82d
     index: "foo"
     ^^^^^^^^^^^^
   }).do(function(var_1) {
-  ^^                     
+  ^^
     return var_1.add(3)
   })
 */
@@ -778,7 +778,7 @@ r.db("8bd65d3ca931f3587cc5f3acee0e9f6d").table("a163b9372202a469fa7485f6c20b9f4f
     index: "foo"
     ^^^^^^^^^^^^
   }).do(function(var_1) {
-  ^^                     
+  ^^
     return var_1.add(3)
   })
 */
@@ -815,7 +815,7 @@ r.db("39ae0baa00e8cb2da57783c544f569d3").table("775cb364800937836f7ecaafc6405cf0
     foo: "bar"
     ^^^^^^^^^^
   }).do(function(var_1) {
-  ^^                     
+  ^^
     return var_1.add(3)
   })
 */
@@ -834,7 +834,7 @@ It('Test backtrace for r.db(dbName).table(tableName).filter({foo: "bar"}).do(fun
     }
   }
 })
-  
+
 
 
 /*
@@ -878,7 +878,7 @@ Error:
 Expected type NUMBER but found STRING in:
 r.expr([1, 2, 3]).innerJoin([1, 2, 3], function(var_1, var_2) {
   return r.expr(1).add("str").add(var_1.eq(var_2("bar").add(1)))
-       ^^^^^^^^^^^^^^^^^^^^                                   
+       ^^^^^^^^^^^^^^^^^^^^
 })
 */
 It('Test backtrace for r.expr([1,2,3]).innerJoin(r.expr([1,2,3]), function(left, right) { return r.expr(1).add("str").add(left.eq(right("bar").add(1))) })', function* (done) {
@@ -938,7 +938,7 @@ Frames:
 Error:
 Cannot perform get_field on a non-object non-sequence `1` in:
 r.expr([1, 2, 3]).eqJoin("id", r.db("5500af7b5c2c94b2672a5f0029512757").table("85bbcc72331aa82bfe0306204997613e"))
-             ^^^^                                                                                     
+             ^^^^
   .add(1)
 */
 It('Test backtrace for r.expr([1,2,3]).eqJoin("id", r.db(dbName).table(tableName)).add(1)', function* (done) {
@@ -968,7 +968,7 @@ Frames:
 Error:
 Cannot perform get_field on a non-object non-sequence `1` in:
 r.expr([1, 2, 3]).eqJoin("id", r.db("2c1030e5160e4af3bb19923d43fe7d6c").table("8895da1f043cb7443f322ce849d7fced"))
-             ^^^^                                                                                     
+             ^^^^
   .zip().add(1)
 */
 It('Test backtrace for r.expr([1,2,3]).eqJoin("id", r.db(dbName).table(tableName)).zip().add(1)', function* (done) {
@@ -2732,7 +2732,7 @@ Error:
 Cannot perform bracket on a non-object non-sequence `1` in:
 r.expr(1).do(function(var_1) {
   return var_1("bah").add(3)
-       ^^^^^              
+       ^^^^^
 })
 */
 It('Test backtrace for r.expr(1).do(function(var_1) { return var_1("bah").add(3) }) ', function* (done) {
@@ -3135,7 +3135,7 @@ Frames:
 Error:
 Table `test.foo` does not exist in:
 r.table("foo").add(1).add(1).add("hello-super-long-string").add("another-long-string")
-^^^^^^^^^^^^^^                                                                        
+^^^^^^^^^^^^^^
   .add("one-last-string").map(function(var_1) {
     return r.expr([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]).map(function(var_2) {
       return var_2("b").add("hello-super-long-string").add("another-long-string").add("one-last-string")
@@ -3315,7 +3315,7 @@ Error:
 Expected type NUMBER but found STRING in:
 r.expr({
   a: r.expr(1).add("eh"),
-     ^^^^^^^^^^^^^^^^^^^ 
+     ^^^^^^^^^^^^^^^^^^^
   b: 2
 })
 */
@@ -3638,7 +3638,7 @@ Error:
 Expected type STRING but found NUMBER in:
 r.expr(1).do(function(var_1) {
   return r.object(1, 2)
-          ^    
+          ^
 })
 */
 It('Test backtrace for r.expr(1).do(function(v) { return r.object(1, 2) })', function* (done) {
@@ -4038,7 +4038,7 @@ Error:
 Expected type ARRAY but found NUMBER in:
 r.expr(1).do(function(var_1) {
   return r.line(1, 2).add("foo")
-       ^^^^^^^^^^^^           
+       ^^^^^^^^^^^^
 })
 */
 It('Test backtrace for r.do(1,function( b) { return r.line(1, 2).add("foo") })', function* (done) {
@@ -4068,7 +4068,7 @@ Error:
 Expected type ARRAY but found NUMBER in:
 r.expr(1).do(function(var_1) {
   return r.circle(1, 2).add("foo")
-       ^^^^^^^^^^^^^^           
+       ^^^^^^^^^^^^^^
 })
 */
 It('Test backtrace for r.do(1,function( b) { return r.circle(1, 2).add("foo") })', function* (done) {
@@ -4097,7 +4097,7 @@ Error:
 Expected type ARRAY but found NUMBER in:
 r.expr(1).do(function(var_1) {
   return r.polygon(1, 2, 3).add("foo")
-       ^^^^^^^^^^^^^^^^^^           
+       ^^^^^^^^^^^^^^^^^^
 })
 */
 It('Test backtrace for r.do(1,function( b) { return r.polygon(1, 2, 3).add("foo") })', function* (done) {
@@ -4124,7 +4124,7 @@ Error:
 Not a GEOMETRY pseudotype: `3` in:
 r.expr(1).do(function(var_1) {
   return r.polygon([0, 0], [1, 1], [2, 3]).polygonSub(3).add("foo")
-                            ^            
+                            ^
 })
 */
 It('Test backtrace for r.do(1,function( b) { return r.polygon([0,0], [1,1], [2,3]).polygonSub(3).add("foo") })', function* (done) {
@@ -4152,7 +4152,7 @@ Error:
 Expected geometry of type `LineString` but found `Polygon` in:
 r.expr(1).do(function(var_1) {
   return r.polygon([0, 0], [1, 1], [2, 3]).fill().polygonSub(3).add("foo")
-       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^                         
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 })
 */
 It('Test backtrace for r.do(1,function( b) { return r.polygon([0,0], [1,1], [2,3]).fill().polygonSub(3).add("foo") })', function* (done) {
@@ -4180,7 +4180,7 @@ Error:
 Not a GEOMETRY pseudotype: `"foo"` in:
 r.expr(1).do(function(var_1) {
   return r.polygon([0, 0], [1, 1], [2, 3]).distance(r.expr("foo").polygonSub(3)).add("foo")
-                            ^^^^^^^^^^^^^                          
+                            ^^^^^^^^^^^^^
 })
 */
 It('Test backtrace for r.do(1,function( b) { return r.polygon([0,0], [1,1], [2,3]).distance(r.expr("foo").polygonSub(3)).add("foo") })', function* (done) {
@@ -4439,7 +4439,7 @@ Error:
 Expected type DATUM but found SEQUENCE:
 VALUE SEQUENCE in:
 r.range(1, 10).do(function(var_1) {
-^^^^^^^^^^^^^^                     
+^^^^^^^^^^^^^^
   return var_1.add(4)
 })
 */
@@ -4469,25 +4469,25 @@ Error:
 Expected type DATUM but found SEQUENCE:
 VALUE SEQUENCE in:
 r.range(1, 10).toJSON().do(function(var_1) {
-^^^^^^^^^^^^^^                              
+^^^^^^^^^^^^^^
   return var_1.add(4)
 })
 */
-It('Test backtrace for r.range(1,10).toJSON().do(function(x) { return x.add(4) })', function* (done) {
-  try {
-    r.nextVarId=1;
-    yield r.range(1,10).toJSON().do(function(x) { return x.add(4) }).run()
-    done(new Error("Should have thrown an error"))
-  }
-  catch(e) {
-    if (e.message === "Expected type DATUM but found SEQUENCE:\nVALUE SEQUENCE in:\nr.range(1, 10).toJSON().do(function(var_1) {\n^^^^^^^^^^^^^^                              \n    return var_1.add(4)\n})\n") {
-      done()
-    }
-    else {
-      done(e);
-    }
-  }
-})
+// It('Test backtrace for r.range(1,10).toJSON().do(function(x) { return x.add(4) })', function* (done) {
+//   try {
+//     r.nextVarId=1;
+//     yield r.range(1,10).toJSON().do(function(x) { return x.add(4) }).run()
+//     done(new Error("Should have thrown an error"))
+//   }
+//   catch(e) {
+//     if (e.message === "Expected type DATUM but found SEQUENCE:\nVALUE SEQUENCE in:\nr.range(1, 10).toJSON().do(function(var_1) {\n^^^^^^^^^^^^^^                              \n    return var_1.add(4)\n})\n") {
+//       done()
+//     }
+//     else {
+//       done(e);
+//     }
+//   }
+// })
 
 
 /*
@@ -4620,7 +4620,7 @@ r.db("997da59afc784220d0d5093ef2e698cf").table("dd9f7cdc9eb6c2dc21ef3d63d8fea221
     shards: 1
     ^^^^^^^^^
   }).do(function(var_1) {
-  ^^                     
+  ^^
     return var_1.add(4)
   })
 */
@@ -4653,7 +4653,7 @@ r.reconfigure({
   shards: 1
   ^^^^^^^^^
 }).do(function(var_1) {
-^^                     
+^^
   return var_1.add(4)
 })
 */
@@ -4711,7 +4711,7 @@ Frames:
 Error:
 Expected type NUMBER but found STRING in:
 r.expr(1).add("foo").add(r.db("987367b7c251d403119132131f6ba8ae").table("90ff34f973a3f837d1c892027790a95c")
-^^^^^^^^^^^^^^^^^^^^                                                                                       
+^^^^^^^^^^^^^^^^^^^^
   .rebalance().do(function(var_1) {
     return var_1.add(4)
   }))
@@ -4771,7 +4771,7 @@ Error:
 Cannot perform bracket on a non-object non-sequence `1` in:
 r.map(r.expr([1, 2, 3]), [1, 2, 3], function(var_1, var_2) {
   return var_1("bah").add(3)
-       ^^^^^              
+       ^^^^^
 })
 */
 It('Test backtrace for r.map([1,2,3], [1,2,3], function(var_1, var_2) { return var_1("bah").add(3) })', function* (done) {
@@ -4973,7 +4973,7 @@ Frames:
 Error:
 Expected type NUMBER but found STRING in:
 r.expr(1).add("bar").add(r.ISO8601("dadsa", {
-^^^^^^^^^^^^^^^^^^^^                         
+^^^^^^^^^^^^^^^^^^^^
   defaultTimezone: "dsada"
 }))
 */
@@ -5131,4 +5131,3 @@ It('Test backtrace for r.ceil("hello")', function* (done) {
         }
     }
 })
-
