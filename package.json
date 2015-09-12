@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "mocha --check-leaks --harmony-generators -t 20000"
+    "test": "mocha --check-leaks --harmony-generators --harmony-proxies -t 20000"
   },
   "repository": {
     "type": "git",
@@ -24,8 +24,9 @@
   "bugs": {
     "url": "https://github.com/neumino/rethinkdbdash/issues"
   },
-  "dependencies":{
-    "bluebird": ">= 2.0.0"
+  "dependencies": {
+    "bluebird": ">= 2.0.0",
+    "harmony-reflect": "^1.4.2"
   },
   "devDependencies": {
     "mocha": ">= 1.20.0",

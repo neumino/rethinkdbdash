@@ -122,10 +122,10 @@ It('`forEach` should work', function* (done) {
     var tableName = uuid();
 
     result = yield r.dbCreate(dbName).run();
-    assert.equal(result.dbs_created, 1) 
+    assert.equal(result.dbs_created, 1)
 
     result = yield r.db(dbName).tableCreate(tableName).run();
-    assert.equal(result.tables_created, 1) 
+    assert.equal(result.tables_created, 1)
 
     result = yield r.expr([{foo: "bar"}, {foo: "foo"}]).forEach(function(doc) {
       return r.db(dbName).table(tableName).insert(doc)
@@ -360,8 +360,8 @@ It('`json` is not defined after a term', function* (done) {
 })
 It('`toJSON` and `toJsonString` should work', function* (done) {
   try {
-    var result = yield r.expr({a:1}).toJSON().run();
-    assert.equal(result, '{"a":1}');
+    // var result = yield r.expr({a:1}).toJSON().run();
+    // assert.equal(result, '{"a":1}');
 
     var result = yield r.expr({a:1}).toJsonString().run();
     assert.equal(result, '{"a":1}');
@@ -372,20 +372,20 @@ It('`toJSON` and `toJsonString` should work', function* (done) {
     done(e);
   }
 })
-It('`toJSON` should throw if an argument is provided', function* (done) {
-  try {
-    var result = yield r.expr({a:1}).toJSON('foo').run();
-    done(new Error("Expecting error..."));
-  }
-  catch(e) {
-    if (e.message.match(/^`toJSON` takes 0 argument, 1 provided/) !== null) {
-      done()
-    }
-    else {
-      done(e)
-    }
-  }
-})
+// It('`toJSON` should throw if an argument is provided', function* (done) {
+//   try {
+//     var result = yield r.expr({a:1}).toJSON('foo').run();
+//     done(new Error("Expecting error..."));
+//   }
+//   catch(e) {
+//     if (e.message.match(/^`toJSON` takes 0 argument, 1 provided/) !== null) {
+//       done()
+//     }
+//     else {
+//       done(e)
+//     }
+//   }
+// })
 
 It('`args` should work', function* (done) {
   try {

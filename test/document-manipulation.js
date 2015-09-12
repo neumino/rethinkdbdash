@@ -69,7 +69,7 @@ It('`r.row` should work - 4', function* (done) {
       return doc.merge({idCopyReplace: doc("id")})
     }).run();
     assert.equal(result.replaced, 1);
- 
+
     done();
   }
   catch(e) {
@@ -81,6 +81,18 @@ It('`r.row` should work - 5', function* (done) {
   try {
     var result = yield r.db(dbName).table(tableName).delete().run();
     assert.equal(result.deleted, 1);
+
+    done();
+  }
+  catch(e) {
+    done(e);
+  }
+})
+
+It('`r.row` Proxy should work - 1', function* (done) {
+  try {
+    var result = yield r.expr({ foo: { bar: 'baz' } }).foo.bar.run();
+    assert.equal(result, 'baz');
 
     done();
   }
@@ -187,7 +199,6 @@ It('`merge` should take an anonymous function', function* (done) {
 
 It('`literal` should work', function* (done) {
   try {
-    var data = r.expr({a: {b: 1}}).merge({a: r.literal({c: 2})})._self
     var result = yield r.expr({a: {b: 1}}).merge({a: r.literal({c: 2})}).run();
     assert.deepEqual(result, {a: {c: 2}});
 
