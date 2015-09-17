@@ -552,7 +552,7 @@ It('`next`, `each`, `toArray` should be deactivated if the EventEmitter interfac
     assert.throws(function() {
       feed.next();
     }, function(e) {
-      if (e.message === 'You cannot called `next` once you have bound listeners on the Feed.') {
+      if (e.message === 'You cannot call `next` once you have bound listeners on the Feed.') {
         feed.close().then(function() {
           done();
         }).error(function(error) {
