@@ -305,6 +305,25 @@ You can access all the pools with:
 r.getPoolMaster().getPools();
 ```
 
+The pool master emits the `healthy` when its state change. Its state is defined as:
+- healthy when at least one pool is healthy: Queries can be immediately executed or will be queued.
+- not healthy when no pool is healthy: Queries will immediately fail.
+
+A pool being healthy is it has at least one available connection, or it was just
+created and opening a connection hasn't failed.
+
+```js
+r.getPoolMaster().on('healthy', function(healthy) {
+  if (healthy === true) {
+    console.log('We can run queries.');
+  }
+  else {
+    console.log('No queries can be run.');
+  }
+});
+```
+
+
 ##### Note about connections
 
 If you do not wish to use rethinkdbdash connection pool, you can implement yours. The
