@@ -297,20 +297,7 @@ It('`and` should throw if no argument has been passed -- r.and', function* (done
     var result = yield r.and().run();
   }
   catch(e) {
-    if (e.message === "`r.and` takes at least 2 arguments, 0 provided.") {
-      done();
-    }
-    else {
-      done(e);
-    }
-  }
-})
-It('`and` should throw if just one argument has been passed -- r.and', function* (done) {
-  try {
-    var result = yield r.and(1).run();
-  }
-  catch(e) {
-    if (e.message === "`r.and` takes at least 2 arguments, 1 provided.") {
+    if (e.message === "`r.and` takes at least 1 argument, 0 provided.") {
       done();
     }
     else {
@@ -346,7 +333,7 @@ It('`or` should throw if no argument has been passed -- r.or', function* (done) 
     var result = yield r.or().run();
   }
   catch(e) {
-    if (e.message === "`r.or` takes at least 2 arguments, 0 provided.") {
+    if (e.message === "`r.or` takes at least 1 argument, 0 provided.") {
       done();
     }
     else {
@@ -354,19 +341,7 @@ It('`or` should throw if no argument has been passed -- r.or', function* (done) 
     }
   }
 })
-It('`or` should throw if just one argument has been passed -- r.or', function* (done) {
-  try {
-    var result = yield r.or(1).run();
-  }
-  catch(e) {
-    if (e.message === "`r.or` takes at least 2 arguments, 1 provided.") {
-      done();
-    }
-    else {
-      done(e);
-    }
-  }
-})
+
 It('`eq` should work', function* (done) {
   try {
     var result = yield r.expr(1).eq(1).run();
