@@ -193,7 +193,7 @@ keep a list of updated hosts, default `false`
 - `timeoutGb`: `<number>` - How long the pool keep a connection that hasn't been used (in ms), default 60\*60\*1000
 - `maxExponent`: `<number>` - The maximum timeout before trying to reconnect is 2^maxExponent x timeoutError, default 6 (~60 seconds for the longest wait)
 - `silent`: <boolean> - console.error errors, default `false`
-- `servers`: an of objects `{host: <string>, port: <number>}` representing instances of
+- `servers`: an array of objects `{host: <string>, port: <number>}` representing RethinkDB nodes to connect to
 - `optionalRun`: <boolean> - if `false`, yielding a query will not run it, default `true`
 RethinkDB to connect to.
 
