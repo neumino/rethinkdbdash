@@ -89,6 +89,18 @@ It('`r.row` should work - 5', function* (done) {
   }
 })
 
+It('`r.row` Proxy should work - 1', function* (done) {
+  try {
+    var result = yield r.expr({ foo: { bar: 'baz' } }).foo.bar.run();
+    assert.equal(result, 'baz');
+
+    done();
+  }
+  catch(e) {
+    done(e);
+  }
+})
+
 It('`pluck` should work', function* (done) {
   try {
     var result = yield r.expr({a: 0, b: 1, c: 2}).pluck("a", "b").run();
