@@ -5132,3 +5132,37 @@ It('Test backtrace for r.ceil("hello")', function* (done) {
     }
 })
 
+
+/*
+Frames:
+[]
+
+Error:
+Expected type ARRAY but found NUMBER in:
+r.expr({
+^^^^^^^^
+    a: 1,
+    ^^^^^
+    b: 2,
+    ^^^^^
+    c: 3
+    ^^^^
+}).values().add(2)
+^^^^^^^^^^^^^^^^^^
+*/
+It('Test backtrace for r.expr({a:1, b:2, c: 3}).values().add(2)', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.expr({a:1, b:2, c: 3}).values().add(2).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Expected type ARRAY but found NUMBER in:\nr.expr({\n^^^^^^^^\n    a: 1,\n    ^^^^^\n    b: 2,\n    ^^^^^\n    c: 3\n    ^^^^\n}).values().add(2)\n^^^^^^^^^^^^^^^^^^\n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+

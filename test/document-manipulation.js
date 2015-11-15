@@ -617,6 +617,18 @@ It('`keys` throw on a string', function* (done) {
     }
   }
 })
+It('`values` should work', function* (done) {
+  try {
+    var result = yield r.expr({a:0, b:1, c:2}).values().orderBy(r.row).run();
+    assert.deepEqual(result, [0, 1, 2]);
+
+    done()
+  }
+  catch(e) {
+    done(e);
+  }
+})
+
 It('`object` should work', function* (done) {
   try {
     var result = yield r.object("a", 1, r.expr("2"), "foo").run();
