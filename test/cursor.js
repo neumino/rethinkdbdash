@@ -205,7 +205,7 @@ It('`next` should work -- testing common pattern', function* (done) {
         i++;
       }
       catch(e) {
-        if (e.message === "No more rows in the Cursor.") {
+        if (e.message === "No more rows in the cursor.") {
           assert.equal(smallNumDocs, i);
           done();
           break;
@@ -319,7 +319,7 @@ It('`next` with multiple batches', function* (done) {
         i++;
       }
       catch(e) {
-        if ((i > 0) && (e.message === "No more rows in the Cursor.")) {
+        if ((i > 0) && (e.message === "No more rows in the cursor.")) {
           connection.close();
           done()
         }
@@ -552,7 +552,7 @@ It('`next`, `each`, `toArray` should be deactivated if the EventEmitter interfac
     assert.throws(function() {
       feed.next();
     }, function(e) {
-      if (e.message === 'You cannot called `next` once you have bound listeners on the Feed.') {
+      if (e.message === 'You cannot call `next` once you have bound listeners on the Feed.') {
         feed.close().then(function() {
           done();
         }).error(function(error) {
