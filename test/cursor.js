@@ -444,7 +444,7 @@ It('`next` should work on a feed', function* (done) {
 It('`next` should work on an atom feed', function* (done) {
   try {
     var idValue = uuid();
-    feed = yield r.db(dbName).table(tableName2).get(idValue).changes().run();
+    feed = yield r.db(dbName).table(tableName2).get(idValue).changes({includeInitial: true}).run();
     setTimeout(function() {
       r.db(dbName).table(tableName2).insert({id: idValue}).run();
     }, 100)
@@ -679,7 +679,7 @@ It('events should not return an error if the feed is closed - 2', function* (don
 })
 It('`includeStates` should work', function* (done) {
   try {
-    feed = yield r.db(dbName).table(tableName).orderBy({index: 'id'}).limit(10).changes({includeStates: true}).run();
+    feed = yield r.db(dbName).table(tableName).orderBy({index: 'id'}).limit(10).changes({includeStates: true, includeInitial: true}).run();
     var i = 0;
     feed.each(function(err, change) {
       i++;
