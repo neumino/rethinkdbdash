@@ -9,6 +9,7 @@ var It = util.It;
 var connection; // global connection
 var dbName, tableName, result;
 
+
 It('Testing `run` without connection', function* (done) {
   try {
     r.expr(1).run()
@@ -354,9 +355,18 @@ It('Test timeout', function* (done) {
   }
 })
 
-
-
-
+It('`server` should work', function* (done) {
+  try{
+    connection = yield r.connect(config);
+    var response = yield connection.server();
+    assert(typeof response.name === 'string');
+    assert(typeof response.id === 'string');
+    done();
+  }
+  catch(e) {
+    done(e);
+  }
+})
 
 /* Since 1.13, the token is stored oustide the query, so this error shouldn't happen anymore
 It('`connection` should extend events.Emitter and emit an error if the server failed to parse the protobuf message', function* (done) {
