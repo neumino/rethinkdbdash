@@ -1046,33 +1046,32 @@ It('Test backtrace for r.expr([1,2,3]).withFields("foo", "bar").add(1)', functio
 
 /*
 Frames:
-[ { type: 'POS', pos: 0 } ]
+[ 0, 1 ]
 
 Error:
 Cannot convert NUMBER to SEQUENCE in:
 r.expr([1, 2, 3]).concatMap(function(var_1) {
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  return var_1
-  ^^^^^^^^^^^^
+                            ^^^^^^^^^^^^^^^^^
+    return var_1
+    ^^^^^^^^^^^^
 }).add(1)
-^^
+^
 */
 It('Test backtrace for r.expr([1,2,3]).concatMap(function(v) { return v}).add(1)', function* (done) {
-  try {
-    r.nextVarId=1;
-    yield r.expr([1,2,3]).concatMap(function(v) { return v}).add(1).run()
-    done(new Error("Should have thrown an error"))
-  }
-  catch(e) {
-    if (e.message === "Cannot convert NUMBER to SEQUENCE in:\nr.expr([1, 2, 3]).concatMap(function(var_1) {\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    return var_1\n    ^^^^^^^^^^^^\n}).add(1)\n^^       \n") {
-      done()
+    try {
+        r.nextVarId=1;
+        yield r.expr([1,2,3]).concatMap(function(v) { return v}).add(1).run()
+        done(new Error("Should have thrown an error"))
     }
-    else {
-      console.log(e.message); done(e);
+    catch(e) {
+        if (e.message === "Cannot convert NUMBER to SEQUENCE in:\nr.expr([1, 2, 3]).concatMap(function(var_1) {\n                            ^^^^^^^^^^^^^^^^^\n    return var_1\n    ^^^^^^^^^^^^\n}).add(1)\n^        \n") {
+            done()
+        }
+        else {
+            done(e);
+        }
     }
-  }
 })
-
 
 
 /*
