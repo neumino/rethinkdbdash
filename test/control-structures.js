@@ -463,3 +463,14 @@ It('`r.uuid` should work', function* (done) {
     done(e)
   }
 })
+
+It('`r.uuid("foo")` should work', function* (done) {
+  try {
+    var result = yield r.uuid("rethinkdbdash").run();
+    assert.equal(result, '291a8039-bc4b-5472-9b2a-f133254e3283');
+    done();
+  }
+  catch(e) {
+    done(e)
+  }
+})
