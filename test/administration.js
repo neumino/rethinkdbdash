@@ -93,6 +93,7 @@ It('`wait` should work', function* (done) {
     result = yield r.db(dbName).table(tableName).wait().run();
     assert.equal(result.ready, 1);
 
+    yield r.db(dbName).table(tableName).wait({waitFor: 'ready_for_writes', timeout: 2000}).run();
     done();
   }
   catch(e) {
