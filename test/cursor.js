@@ -101,6 +101,41 @@ It('`each` should work', function* (done) {
     done(e);
   }
 })
+It('`eachAsync` should work', function* (done) {
+  try {
+    cursor = yield r.db(dbName).table(tableName).run({cursor: true});
+    assert(cursor);
+    var history = [];
+    var count = 0;
+    var promisesWait = 0;
+    cursor.eachAsync(function(err, result) {
+      history.push(count);
+      count++;
+      return new Promise(function(resolve, reject) {
+        setTimeout(function() {
+          history.push(promisesWait);
+          promisesWait--;
+
+          if (count === numDocs) {
+            var expected = [];
+            for(var i=0; i<numDocs; i++) {
+              expected.push(i);
+              expected.push(-1*i);
+            }
+            assert.deepEqual(history, expected)
+            done();
+          }
+
+          resolve();
+
+        }, 1);
+      });
+    })
+  }
+  catch(e) {
+    done(e);
+  }
+})
 It('`each` should work - onFinish - reach end', function* (done) {
   try {
     cursor = yield r.db(dbName).table(tableName).run({cursor: true});
