@@ -3,7 +3,29 @@ import * as util from 'util';
 import {Cursor} from './cursor';
 
 export class ReadableStream extends Readable {
+  private Cursor = Cursor;
   _recursion;
+  _highWaterMark;
+  _maxRecursion;
+  _index;
+  _pending;
+  _cursor;
+  _count;
+
+  constructor(options, cursor?) {
+// Experimental, but should work fine.
+    super();
+    if (cursor) this._cursor = cursor;
+    this._pending = 0; // How many time we called _read while no cursor was available
+    this._index = 0;
+    this._maxRecursion = 1000; // Hardcoded
+    this._highWaterMark = options.highWaterMark;
+
+    Readable.call(this, {
+      objectMode: true,
+      highWaterMark: this._highWaterMark
+    });
+  }
 
   close() {
     this.push(null);
@@ -124,29 +146,6 @@ export class ReadableStream extends Readable {
     }
     this._cursor = cursor;
     this._fetchAndDecrement();
-  }
-
-  private Cursor = Cursor;
-  _highWaterMark;
-  _maxRecursion;
-  _index;
-  _pending;
-  _cursor;
-  _count;
-
-  constructor(options, cursor) {
-// Experimental, but should work fine.
-    super();
-    if (cursor) this._cursor = cursor;
-    this._pending = 0; // How many time we called _read while no cursor was available
-    this._index = 0;
-    this._maxRecursion = 1000; // Hardcoded
-    this._highWaterMark = options.highWaterMark;
-
-    Readable.call(this, {
-      objectMode: true,
-      highWaterMark: this._highWaterMark
-    });
   }
 };
 

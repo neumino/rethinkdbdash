@@ -236,7 +236,7 @@ export class Term {
   _toReadableStream(connection, options) {
     var stream;
 
-    var _options = {};
+    var _options:any = {};
     if (helper.isPlainObject(connection) && (typeof connection._isConnection === 'function') && (connection._isConnection() === true)) {
       //toStream make sure that options is an object
       helper.loopKeys(options, (obj, key) => {
