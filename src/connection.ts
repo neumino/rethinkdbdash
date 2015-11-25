@@ -539,15 +539,20 @@ export class Connection extends events.EventEmitter {
       family = 'IPv6';
     }
 
-    var connectionArgs = {
-      host: this.host,
-      port: this.port,
-      family: family
-    };
     var tlsOptions = options.ssl || false;
     if (tlsOptions === false) {
-      this.connection = net.connect(connectionArgs);
+      var connectionArgsNet = {
+        host: this.host,
+        port: this.port,
+        family: family == 'IPv4' ? 4 : 6
+      };
+      this.connection = net.connect(connectionArgsNet);
     } else {
+      var connectionArgs = {
+        host: this.host,
+        port: this.port,
+        family: family
+      };
       if (helper.isPlainObject(tlsOptions)) {
         // Copy the TLS options in connectionArgs
         helper.loopKeys(tlsOptions, (tlsOptions, key) => {
