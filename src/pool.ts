@@ -14,7 +14,7 @@ export class Pool extends events.EventEmitter {
     var self = this;
     this._log('Draining the pool connected to ' + this.getAddress());
     this.emit('draining');
-    var p = new Promise((resolve, reject) => {
+    var p = new Promise<any>((resolve, reject) => {
       var connection = this._pool.pop();
       this.emit('available-size', this._pool.getLength());
       this.emit('available-size-diff', -1);

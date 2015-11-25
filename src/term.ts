@@ -329,10 +329,10 @@ export class Term {
       var p = new Promise((resolve, reject) => {
         var token = connection._getToken();
 
-        var query = [protodef.Query.QueryType.START];
+        var query:any = [protodef.Query.QueryType.START];
         query.push(this._query);
 
-        var _options = {};
+        var _options:any = {};
         var sendOptions = false;
         if (connection.db != null) {
           sendOptions = true;
@@ -413,7 +413,7 @@ export class Term {
             var query = [protodef.Query.QueryType.START];
             query.push(this._query);
 
-            var _options = {};
+            var _options:any = {};
             var sendOptions = false;
             if (connection.db != null) {
               sendOptions = true;
@@ -1460,7 +1460,8 @@ export class Term {
     return term;
   }
 
-  indexesOf() { return this.offsetsOf() }
+  indexesOf(predicate) { return this.offsetsOf(predicate) }
+  
   default(expression) {
     if (this._fastArity(arguments.length, 1) === false) {
       var _len = arguments.length; var _args = new Array(_len); for (var _i = 0; _i < _len; _i++) { _args[_i] = arguments[_i]; }
@@ -1848,7 +1849,7 @@ export class Term {
     return term;
   }
 
-  ISO8601(isoTime, options) {
+  ISO8601(isoTime, options?) {
     this._noPrefix(this, 'ISO8601');
     if (this._fastArityRange(arguments.length, 1, 2) === false) {
       var _len = arguments.length; var _args = new Array(_len); for (var _i = 0; _i < _len; _i++) { _args[_i] = arguments[_i]; }
@@ -1870,7 +1871,7 @@ export class Term {
 
     return term;
 
-    return new ISO8601(this._r, isoTime, options);
+    // return new ISO8601(this._r, isoTime, options);
   }
 
   epochTime(epochTime) {
@@ -2452,7 +2453,7 @@ export class Term {
     return term;
   }
 
-  circle(center, radius, options) {
+  circle(center, radius, options?) {
     var self = this;
 
     // Arity check is done by r.circle
