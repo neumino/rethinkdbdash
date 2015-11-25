@@ -5,6 +5,20 @@ import {EventEmitter} from 'events';
 
 export class Cursor {
   _eventEmitter;
+  _setIncludesStates;
+  _type;
+  _closed;
+  _pendingPromises;
+  _canFetch;
+  _fetching;
+  _data;
+  _index;
+  next;
+  eachAsync;
+  each;
+  options;
+  token;
+  connection;
 
   _eachCb(err, data) {
     // We should silent things if the cursor/feed is closed
@@ -19,16 +33,16 @@ export class Cursor {
   }
 
   _makeEmitter() {
-    this.next = function () {
+    this.next = () => {
       throw new Err.ReqlDriverError('You cannot call `next` once you have bound listeners on the ' + this._type);
     };
-    this.each = function () {
+    this.each = () => {
       throw new Err.ReqlDriverError('You cannot call `each` once you have bound listeners on the ' + this._type);
     };
-    this.eachAsync = function () {
+    this.eachAsync = () => {
       throw new Err.ReqlDriverError('You cannot call `eachAsync` once you have bound listeners on the ' + this._type);
     };
-    this.toArray = function () {
+    this.toArray = () => {
       throw new Err.ReqlDriverError('You cannot call `toArray` once you have bound listeners on the ' + this._type);
     };
     this._eventEmitter = new EventEmitter();
@@ -156,21 +170,6 @@ export class Cursor {
   toString() {
     return '[object ' + this._type + ']';
   }
-  
-  next;
-  eachAsync;
-  each;
-  _setIncludesStates;
-  _type;
-  _closed;
-  options;
-  _pendingPromises;
-  _canFetch;
-  _fetching;
-  _data;
-  _index;
-  token;
-  connection;
 
   constructor(connection, token, options, type) {
     this.connection = connection;
@@ -211,7 +210,7 @@ export class Cursor {
         callback(err);
       }
     };
-    var resolve = data => callback(null, data).then(function () {
+    var resolve = data => callback(null, data).then(() => {
       if (this._closed === false) {
         return this._next().then(resolve).error(error => {
           if ((error.message !== 'You cannot retrieve data from a cursor that is closed.') &&
@@ -295,7 +294,7 @@ export class Cursor {
 
   _next(callback?) {
     var self = this;
-    var p = new Promise(function (resolve, reject) {
+    var p = new Promise((resolve, reject) => {
       if (this._closed === true) {
         reject(new Err.ReqlDriverError('You cannot call `next` on a closed ' + this._type));
       }
@@ -344,19 +343,19 @@ var methods = [
   'emit'
 ];
 
-for(var i=0; i<methods.length; i++) {
-  (function(n) {
+for (var i=0; i<methods.length; i++) {
+  ((n) => {
     var method = methods[n];
-    Cursor.prototype[method] = function() {
+    Cursor.prototype[method] = () => {
       var self = this;
       if (this._eventEmitter == null) {
         this._makeEmitter();
-        setImmediate(function() {
+        setImmediate(() => {
           if ((this._type === 'feed') || (this._type === 'atomFeed')) {
             this._each(this._eachCb.bind(self));
           }
           else {
-            this._each(this._eachCb.bind(self), function() {
+            this._each(this._eachCb.bind(self), () => {
               this._eventEmitter.emit('end');
             });
           }

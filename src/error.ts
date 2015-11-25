@@ -453,7 +453,7 @@ var _specialType = {
   DATUM(term, index, father, frames, options, optarg) {
     optarg = optarg || false;
 
-    var underline = Array.isArray(frames) && (frames.length === 0);
+    var underline:boolean = Array.isArray(frames) && (frames.length === 0);
     var currentFrame, backtrace;
     if (Array.isArray(frames)) currentFrame = frames.shift();
 
@@ -538,11 +538,11 @@ var _specialType = {
       str: '',
       car: ''
     };
-    var backtrace, underline, currentFrame;
+    var backtrace, underline:boolean, currentFrame;
 
 
     if ((term.length === 1) || (term[1].length === 0) || (term[1][0][0] !== termTypes.DB)) {
-      var underline = Array.isArray(frames) && (frames.length === 0);
+      var underline:boolean = Array.isArray(frames) && (frames.length === 0);
       if (Array.isArray(frames)) currentFrame = frames.shift();
 
       carify(result, 'r.'+typeToString[term[0]]+'(', underline);
@@ -584,9 +584,9 @@ var _specialType = {
       str: '',
       car: ''
     };
-    var backtrace, underline, currentFrame;
+    var backtrace, underline:boolean, currentFrame;
 
-    var underline = Array.isArray(frames) && (frames.length === 0);
+    var underline:boolean = Array.isArray(frames) && (frames.length === 0);
     if (Array.isArray(frames)) currentFrame = frames.shift();
 
     if ((currentFrame != null) && (currentFrame === 0)) {
@@ -620,9 +620,9 @@ var _specialType = {
       str: '',
       car: ''
     };
-    var backtrace, underline, currentFrame;
+    var backtrace, underline:boolean, currentFrame;
 
-    var underline = Array.isArray(frames) && (frames.length === 0);
+    var underline:boolean = Array.isArray(frames) && (frames.length === 0);
     if (Array.isArray(frames)) currentFrame = frames.shift();
 
     if ((index === 0) && ((father == null) || (!nonPrefix[father[0]]))) carify(result, 'r.expr(', underline);
@@ -662,9 +662,9 @@ var _specialType = {
       str: '',
       car: ''
     };
-    var backtrace, underline, currentFrame;
+    var backtrace, underline:boolean, currentFrame;
 
-    var underline = Array.isArray(frames) && (frames.length === 0);
+    var underline:boolean = Array.isArray(frames) && (frames.length === 0);
     if (Array.isArray(frames)) currentFrame = frames.shift();
 
     if ((term[1][0][1].length === 1) && (helper.hasImplicit(term[1][1]))) {
@@ -720,9 +720,9 @@ var _specialType = {
       str: '',
       car: ''
     };
-    var backtrace, underline, currentFrame;
+    var backtrace, underline:boolean, currentFrame;
 
-    var underline = Array.isArray(frames) && (frames.length === 0);
+    var underline:boolean = Array.isArray(frames) && (frames.length === 0);
     if (Array.isArray(frames)) currentFrame = frames.shift();
 
     carify(result, 'var_'+term[1][0], underline);
@@ -736,9 +736,9 @@ var _specialType = {
       str: '',
       car: ''
     };
-    var backtrace, underline, currentFrame;
+    var backtrace, underline:boolean, currentFrame;
 
-    var underline = Array.isArray(frames) && (frames.length === 0);
+    var underline:boolean = Array.isArray(frames) && (frames.length === 0);
     if (Array.isArray(frames)) currentFrame = frames.shift();
 
     if (term[1].length === 2) {
@@ -792,9 +792,9 @@ var _specialType = {
       str: '',
       car: ''
     };
-    var backtrace, underline, currentFrame;
+    var backtrace, underline:boolean, currentFrame;
 
-    var underline = Array.isArray(frames) && (frames.length === 0);
+    var underline:boolean = Array.isArray(frames) && (frames.length === 0);
     if (Array.isArray(frames)) currentFrame = frames.shift();
 
     carify(result, 'r.row', underline);
@@ -807,7 +807,7 @@ var _specialType = {
       str: '',
       car: ''
     };
-    var backtrace, underline, currentFrame;
+    var backtrace, underline:boolean, currentFrame;
 
     if (term.length === 1 || term[1].length === 0) {
       backtrace = generateWithoutPrefixBacktrace(term, index, father, frames, options);
@@ -826,7 +826,7 @@ var _specialType = {
       str: '',
       car: ''
     };
-    var backtrace, underline, currentFrame;
+    var backtrace, underline:boolean, currentFrame;
 
     if (term.length > 1 && term[1].length > 2) {
       backtrace = generateWithoutPrefixBacktrace(term, index, father, frames, options);
@@ -879,7 +879,7 @@ function makeOptargs(term, index, father, frames, options, currentFrame) {
     //if ((currentFrame != null) && (frames != null)) frames.unshift(currentFrame);
 
     //underline = Array.isArray(frames) && (frames.length === 0);
-    var underline = false;
+    var underline:boolean = false;
     //if (Array.isArray(frames)) currentFrame = frames.shift();
 
     // This works before there is no prefix term than can be called with no normal argument but with an optarg
@@ -909,7 +909,7 @@ function generateNormalBacktrace(term, index, father, frames, options) {
   var backtrace, currentFrame, underline;
 
   //if (term[1]) {
-    var underline = Array.isArray(frames) && (frames.length === 0);
+    var underline:boolean = Array.isArray(frames) && (frames.length === 0);
     if (Array.isArray(frames)) currentFrame = frames.shift();
 
     if ((currentFrame != null) && (currentFrame === 0)) {
@@ -978,7 +978,7 @@ function generateWithoutPrefixBacktrace(term, index, father, frames, options) {
   };
   var backtrace, currentFrame, underline;
 
-  var underline = Array.isArray(frames) && (frames.length === 0);
+  var underline:boolean = Array.isArray(frames) && (frames.length === 0);
   if (Array.isArray(frames)) currentFrame = frames.shift();
 
   if (constants[term[0]]) {
@@ -1025,7 +1025,7 @@ function generateBacktrace(term, index, father, frames, options) {
 
   if (Array.isArray(term)) {
     if (term.length === 0) {
-      var underline = Array.isArray(frames) && (frames.length === 0);
+      var underline:boolean = Array.isArray(frames) && (frames.length === 0);
       carify(result, 'undefined', underline);
     }
     else if (specialType[term[0]]) {

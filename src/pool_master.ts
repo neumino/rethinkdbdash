@@ -40,7 +40,7 @@ export class PoolMaster extends events.EventEmitter {
       for (var i = 0; i < pools.length; i++) {
         pools[i].removeAllListeners();
       }
-    }).error(function (error) {
+    }).error((error) => {
       if (this._options.silent !== true) {
         this._log('Failed to drain all the pools:');
         this._log(error.message);
@@ -93,23 +93,23 @@ export class PoolMaster extends events.EventEmitter {
     // Bind listeners on the pools
     var self = this;
 
-    pool.on('size-diff', function (diff) {
+    pool.on('size-diff', (diff) => {
       this._numConnections += diff;
       this.emit('size', this._numConnections);
     });
-    pool.on('available-size-diff', function (diff) {
+    pool.on('available-size-diff', (diff) => {
       this._numAvailableConnections += diff;
       this.emit('available-size', this._numAvailableConnections);
     });
 
-    pool.on('new-connection', function () {
+    pool.on('new-connection', () => {
       if (this._line.getLength() > 0) {
         var p = this._line.shift();
         this.getConnection().then(p.resolve).error(p.reject);
         this.emit('queueing', this._line.getLength());
       }
     });
-    pool.on('not-empty', function () {
+    pool.on('not-empty', () => {
       if (this._draining === false) {
         var found = false;
         for (var i = 0; i < this._healthyPools.length; i++) {
@@ -126,7 +126,7 @@ export class PoolMaster extends events.EventEmitter {
         }
       }
     });
-    pool.on('empty', function () {
+    pool.on('empty', () => {
       // A pool that become empty is considered unhealthy
       for (var i = 0; i < this._healthyPools.length; i++) {
         if (this._healthyPools[i] === this) {
@@ -141,7 +141,7 @@ export class PoolMaster extends events.EventEmitter {
 
       this.resetBufferParameters();
     });
-    pool.on('draining', function () {
+    pool.on('draining', () => {
       for (var i = 0; i < this._healthyPools.length; i++) {
         if (this._healthyPools[i] === this) {
           this._healthyPools.splice(i, 1);
@@ -177,7 +177,7 @@ export class PoolMaster extends events.EventEmitter {
       this._seed++;
       var promise = this._r.connect(settings).then(connection => query.run(connection, { cursor: true }));
     }
-    promise.then(function (feed) {
+    promise.then((feed) => {
       if (this._draining === true) {
         // There is no need to close the feed here as we'll close the connections
         return;
@@ -185,13 +185,13 @@ export class PoolMaster extends events.EventEmitter {
       this._feed = feed;
       var initializing = true;
       var servers = [];
-      feed.each(function (err, change) {
+      feed.each((err, change) => {
         if (err) {
           this._log('The changefeed on server_status returned an error: ' + err.toString());
           // We have to refetch everything as the server that was serving the feed may
           // have died.
           if (!this._draining) {
-            setTimeout(function () {
+            setTimeout(() => {
               this.fetchServers();
             }, 0); // Give a timeout to let the driver clean the pools
           }
@@ -203,10 +203,10 @@ export class PoolMaster extends events.EventEmitter {
             this.handleAllServersResponse(servers);
             // Rerun the whole query after to make sure that a change did not skip/sneak between the union. As long
             // as RethinkDB does not provide initial results
-            setTimeout(function () {
-              this._r.db('rethinkdb').table('server_status').run({ cursor: false }).then(function (servers) {
+            setTimeout(() => {
+              this._r.db('rethinkdb').table('server_status').run({ cursor: false }).then((servers) => {
                 this.handleAllServersResponse(servers);
-              }).error(function (error) {
+              }).error((error) => {
                 this._log('Fail to retrieve a second copy of server_status');
                 //TODO Retry
               });
@@ -236,12 +236,12 @@ export class PoolMaster extends events.EventEmitter {
                 (server.network.reql_port === this._pools[UNKNOWN_POOLS][i].options.connection.port)) {
                 found = true;
 
-                (function (pool) {
+                ((pool) => {
                   this._log('Removing pool connected to: ' + pool.getAddress());
                   var pool = this._pools[UNKNOWN_POOLS].splice(i, 1)[0];
                   pool.drain().then(() => {
                     pool.removeAllListeners();
-                  }).error(function (error) {
+                  }).error((error) => {
                     if (this._options.silent !== true) {
                       this._log('Pool connected to: ' + pool.getAddress() + ' could not be properly drained.');
                       this._log(error.message);
@@ -261,7 +261,7 @@ export class PoolMaster extends events.EventEmitter {
         // is available or not.
         // else if (change.new_val !== null && change.old_val !== null) {}
       });
-    }).error(function (error) {
+    }).error((error) => {
       this._log('Could not retrieve the data from server_status: ' + JSON.stringify(error));
 
       var timeout;
@@ -271,7 +271,7 @@ export class PoolMaster extends events.EventEmitter {
       else {
         timeout = (1 << Math.min(this._maxExponent, this._consecutiveFails)) * this._timeoutError;
       }
-      setTimeout(function () {
+      setTimeout(() => {
         this.fetchServers(true);
       }, timeout);
     });
@@ -284,7 +284,7 @@ export class PoolMaster extends events.EventEmitter {
     this._log('Removing pool connected to: ' + pool.getAddress());
     pool.drain().then(() => {
       pool.removeAllListeners();
-    }).error(function (error) {
+    }).error((error) => {
       this._log('Pool connected to: ' + this._pools[key].getAddress() + ' could not be properly drained.');
       this._log(error.message);
       this._log(error.stack);
@@ -377,7 +377,7 @@ export class PoolMaster extends events.EventEmitter {
     } // Each server know has a pool
 
     // Check if we need to remove pools
-    helper.loopKeys(this._pools, function (pools, key) { // among the pools with a server id
+    helper.loopKeys(this._pools, (pools, key) => { // among the pools with a server id
       if (key !== UNKNOWN_POOLS) {
         if (knownServer.hasOwnProperty(key) === false) {
           this.deletePool(key); // We just found a pool that doesn't map to any known RethinkDB server
@@ -393,7 +393,7 @@ export class PoolMaster extends events.EventEmitter {
       this._log('Removing pool connected to: ' + pool.getAddress());
       pool.drain().then(() => {
         pool.removeAllListeners();
-      }).error(function (error) {
+      }).error((error) => {
         this._log('Pool connected to: ' + this._pools[UNKNOWN_POOLS][i].getAddress() + ' could not be properly drained.');
         this._log(error.message);
         this._log(error.stack);
@@ -433,7 +433,7 @@ export class PoolMaster extends events.EventEmitter {
     }
     else {
       // All pool are busy, buffer the request
-      return new Promise(function (resolve, reject) {
+      return new Promise((resolve, reject) => {
         this._line.push({
           resolve: resolve,
           reject: reject
@@ -557,7 +557,7 @@ export class PoolMaster extends events.EventEmitter {
       this.initPool(this._pools[UNKNOWN_POOLS][i]);
     }
     if ((this._discovery === true)) {
-      this._timeout = setTimeout(function () { this.fetchServers() }, 0);
+      this._timeout = setTimeout(() => { this.fetchServers() }, 0);
     }
   }
 }

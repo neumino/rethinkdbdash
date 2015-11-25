@@ -120,7 +120,7 @@ export class Pool extends events.EventEmitter {
       if ((this._slowlyGrowing === false) && (this._slowGrowth === true) && (this._openingConnections === 0)) {
         this._consecutiveFails++;
         this._slowlyGrowing = true;
-        this.timeoutReconnect = setTimeout(function () {
+        this.timeoutReconnect = setTimeout(() => {
           this.createConnection();
           //this._expandBuffer();
         }, (1 << Math.min(this.options.maxExponent, this._consecutiveFails)) * this.options.timeoutError);
@@ -134,7 +134,7 @@ export class Pool extends events.EventEmitter {
         this._aggressivelyExpandBuffer();
       }
 
-      connection.on('error', function (e) {
+      connection.on('error', (e) => {
         // We are going to close connection, but we don't want another process to use it before
         // So we remove it from the pool now (if it's inside)
         this._log('Error emitted by a connection: ' + JSON.stringify(error));
@@ -150,15 +150,15 @@ export class Pool extends events.EventEmitter {
         clearTimeout(connection.timeout);
 
         // Not sure what happened here, so let's be safe and close this connection.
-        connection.close().then(function () {
+        connection.close().then(() => {
           this._expandBuffer();
-        }).error(function (e) {
+        }).error((e) => {
           // We failed to close this connection, but we removed it from the pool... so err, let's just ignore that.
           this._expandBuffer();
         });
         clearTimeout(connection.timeout);
       });
-      connection.on('end', function (e) {
+      connection.on('end', (e) => {
         // The connection was closed by the server, let's clean...
         for (var i = 0; i < this.getAvailableLength(); i++) {
           if (this._pool.get(i) === this) {
@@ -173,7 +173,7 @@ export class Pool extends events.EventEmitter {
         this._decreaseNumConnections();
         this._expandBuffer();
       });
-      connection.on('timeout', function () {
+      connection.on('timeout', () => {
         for (var i = 0; i < this.getAvailableLength(); i++) {
           if (this._pool.get(i) === this) {
             this._pool.delete(i);
@@ -187,7 +187,7 @@ export class Pool extends events.EventEmitter {
         this._decreaseNumConnections();
         this._expandBuffer();
       });
-      connection.on('release', function () {
+      connection.on('release', () => {
         if (this._isOpen()) this.putConnection(this);
       });
       this.putConnection(connection);
@@ -208,7 +208,7 @@ export class Pool extends events.EventEmitter {
 
       if (this._openingConnections === 0) {
         this._consecutiveFails++;
-        this.timeoutReconnect = setTimeout(function () {
+        this.timeoutReconnect = setTimeout(() => {
           //this._expandBuffer();
           this.createConnection();
         }, (1 << Math.min(this.options.maxExponent, this._consecutiveFails)) * this.options.timeoutError);
@@ -248,7 +248,7 @@ export class Pool extends events.EventEmitter {
     else if (this.getAvailableLength()+1 > this.options.buffer) { // +1 for the connection we may put back
       // Note that because we have available connections here, the pool master has no pending
       // queries.
-      connection.close().error(function(error) {
+      connection.close().error((error) => {
         this._log('Fail to properly close a connection. Error:'+JSON.stringify(error));
       });
       clearTimeout(connection.timeout);

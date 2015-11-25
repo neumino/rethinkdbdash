@@ -14,6 +14,21 @@ import protodef from './protodef';
 var responseTypes = protodef.Response.ResponseType;
 
 export class Connection extends events.EventEmitter {
+  rejectMap;
+  timeout;
+  open;
+  metadata;
+  buffer;
+  token;
+  db;
+  timeoutConnect;
+  authKey;
+  port;
+  host;
+  r;
+  connection;
+  timeoutOpen;
+
   _flush() {
     helper.loopKeys(this.metadata, (metadata, key) => {
       if (typeof metadata[key].reject === 'function') {
@@ -54,7 +69,7 @@ export class Connection extends events.EventEmitter {
     throw new Err.ReqlDriverError('Did you mean to use `noreplyWait` instead of `noReplyWait`?');
   }
 
-  close(options, callback?) {
+  close(options?, callback?) {
     if (typeof options === 'function') {
       callback = options;
       options = {};
@@ -62,7 +77,7 @@ export class Connection extends events.EventEmitter {
     var p = new Promise((resolve, reject) => {
       if (!helper.isPlainObject(options)) options = {};
       if (options.noreplyWait === true) {
-        this.noreplyWait().then(function (r) {
+        this.noreplyWait().then((r) => {
           this.open = false;
           this.connection.end();
           resolve(r);
@@ -160,7 +175,7 @@ export class Connection extends events.EventEmitter {
 
     if (options.noreplyWait === true) {
       var p = new Promise((resolve, reject) => {
-        this.close(options).then(function () {
+        this.close(options).then(() => {
           this.r.connect({
             host: this.host,
             port: this.port,
@@ -498,20 +513,6 @@ export class Connection extends events.EventEmitter {
 
   }
 
-  timeout;
-  open;
-  metadata;
-  buffer;
-  token;
-  db;
-  timeoutConnect;
-  authKey;
-  port;
-  host;
-  r;
-  connection;
-  timeoutOpen;
-
   constructor(r, options, resolve, reject) {
     super();
     var self = this;
@@ -584,7 +585,7 @@ export class Connection extends events.EventEmitter {
     });
     this.connection.on('connect', () => {
       this.connection.removeAllListeners('error');
-      this.connection.on('error', function (error) {
+      this.connection.on('error', (error) => {
         this.emit('error', error);
       });
 
@@ -595,9 +596,9 @@ export class Connection extends events.EventEmitter {
       lengthBuffer.writeUInt32LE(authBuffer.length, 0);
       var protocolBuffer = new Buffer(4);
       protocolBuffer.writeUInt32LE(protodef.VersionDummy.Protocol.JSON, 0);
-      helper.tryCatch(function () {
+      helper.tryCatch(() => {
         this.connection.write(Buffer.concat([initBuffer, lengthBuffer, authBuffer, protocolBuffer]));
-      }, function (err) {
+      }, (err) => {
         // The TCP connection is open, but the ReQL connection wasn't established.
         // We can just abort the whole thing
         this.open = false;
@@ -628,7 +629,7 @@ export class Connection extends events.EventEmitter {
           }
         }
         this.connection.removeAllListeners('error');
-        this.connection.on('error', function (e) {
+        this.connection.on('error', (e) => {
           this.open = false;
         });
       }

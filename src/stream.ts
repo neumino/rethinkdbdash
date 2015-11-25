@@ -20,7 +20,7 @@ export class ReadableStream extends Readable {
         // Silently drop null values for now
         if (data === null) {
           if (this._recursion++ === this._maxRecursion) {
-            process.nextTick(function() {
+            process.nextTick(() => {
               this._fetch();
             });
           }
@@ -31,7 +31,7 @@ export class ReadableStream extends Readable {
         else {
           if (this.push(data) !== false) {
             if (this._recursion++ === this._maxRecursion) {
-              process.nextTick(function() {
+              process.nextTick(() => {
                 this._fetch();
               });
             }
@@ -71,7 +71,7 @@ export class ReadableStream extends Readable {
         if (data === null) {
           if (this._recursion++ === this._maxRecursion) {
             //Avoid maximum call stack errors
-            process.nextTick(function() {
+            process.nextTick(() => {
               this._fetchAndDecrement();
             });
           }
@@ -82,7 +82,7 @@ export class ReadableStream extends Readable {
         else {
           if (this.push(data) !== false) {
             if (this._recursion++ === this._maxRecursion) {
-              process.nextTick(function() {
+              process.nextTick(() => {
                 this._fetchAndDecrement();
               });
             }

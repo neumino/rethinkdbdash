@@ -57,7 +57,7 @@ export class Term {
 
     if (helper.isPlainObject(options)) {
       // There is no need to translate here
-      helper.loopKeys(options, function (obj, key) {
+      helper.loopKeys(options, (obj, key) => {
         if ((key !== 'multi') && (key !== 'geo')) {
           throw new Error.ReqlDriverError('Unrecognized option `' + key + '` in `indexCreate`', this._query, 'Available option is multi <bool> and geo <bool>');
         }
@@ -133,7 +133,7 @@ export class Term {
 
     if (helper.isPlainObject(options)) {
       // Check for non valid key
-      helper.loopKeys(options, function (obj, key) {
+      helper.loopKeys(options, (obj, key) => {
         if ((key !== 'primaryKey')
           && (key !== 'durability')
           && (key !== 'shards')
@@ -291,11 +291,11 @@ export class Term {
       }
 
       if (connection._isOpen() !== true) {
-        return new Promise(function (resolve, reject) {
+        return new Promise((resolve, reject) => {
           reject(new Error.ReqlDriverError('`run` was called with a closed connection', this._query).setOperational());
         });
       }
-      var p = new Promise(function (resolve, reject) {
+      var p = new Promise((resolve, reject) => {
         var token = connection._getToken();
 
         var query = [protodef.Query.QueryType.START];
@@ -315,7 +315,7 @@ export class Term {
 
 
         var keepGoing = true; // we need it just to avoir calling resolve/reject multiple times
-        helper.loopKeys(options, function (options, key) {
+        helper.loopKeys(options, (options, key) => {
           if (keepGoing === true) {
             if ((key === 'readMode') || (key === 'durability') || (key === 'db') ||
               (key === 'noreply') || (key === 'arrayLimit') || (key === 'profile') ||
@@ -377,7 +377,7 @@ export class Term {
 
 
         var p = new Promise((resolve, reject) => {
-          poolMaster.getConnection().then(function (connection) {
+          poolMaster.getConnection().then((connection) => {
             var token = connection._getToken();
             var query = [protodef.Query.QueryType.START];
             query.push(this._query);
@@ -394,7 +394,7 @@ export class Term {
             };
 
             var keepGoing = true;
-            helper.loopKeys(options, function (options, key) {
+            helper.loopKeys(options, (options, key) => {
               if (keepGoing === true) {
                 if ((key === 'readMode') || (key === 'durability') || (key === 'db') ||
                   (key === 'noreply') || (key === 'arrayLimit') || (key === 'profile')) {
@@ -448,7 +448,7 @@ export class Term {
 
   constructor(r, value, error) {
     var self = this;
-    var term = function (field) {
+    var term = (field) => {
       if (Term.prototype._fastArity(arguments.length, 1) === false) {
         var _len = arguments.length; var _args = new Array(_len); for (var _i = 0; _i < _len; _i++) { _args[_i] = arguments[_i]; }
         Term.prototype._arity(_args, 1, '(...)', self);
@@ -760,7 +760,7 @@ export class Term {
     }
     if (_args.length > 0) {
       if (helper.isPlainObject(_args[_args.length - 1])) {
-        helper.loopKeys(_args[_args.length - 1], function (obj, key) {
+        helper.loopKeys(_args[_args.length - 1], (obj, key) => {
           if ((key !== 'index')
             && (key !== 'multi')) {
             throw new Error.ReqlDriverError('Unrecognized option `' + key + '` in `group`', this._query, 'Available options are index: <string>, multi <boolean>');
@@ -795,7 +795,7 @@ export class Term {
 
     if (helper.isPlainObject(options)) {
       var keepGoing = true;
-      helper.loopKeys(options, function (obj, key) {
+      helper.loopKeys(options, (obj, key) => {
         if ((keepGoing === true) && (key !== 'index')) {
           throw new Error.ReqlDriverError('Unrecognized option `' + key + '` in `distinct`', this._query, 'Available option is index: <string>');
           keepGoing = false;
@@ -1113,7 +1113,7 @@ export class Term {
     term._fillArgs(args);
 
     if (helper.isPlainObject(options)) {
-      helper.loopKeys(options, function (obj, key) {
+      helper.loopKeys(options, (obj, key) => {
         if (key !== 'index') {
           throw new Error.ReqlDriverError('Unrecognized option `' + key + '` in `eqJoin`', this._query, 'Available option is index <string>');
         }
@@ -1168,7 +1168,7 @@ export class Term {
     term._fillArgs(args);
 
     if (helper.isPlainObject(options)) {
-      helper.loopKeys(options, function (obj, key) {
+      helper.loopKeys(options, (obj, key) => {
         if (key !== 'default') {
           throw new Error.ReqlDriverError('Unrecognized option `' + key + '` in `filter`', this._query, 'Available option is filter');
         }
@@ -1203,7 +1203,7 @@ export class Term {
     term._fillArgs(args);
 
     if (helper.isPlainObject(options)) {
-      helper.loopKeys(options, function (obj, key) {
+      helper.loopKeys(options, (obj, key) => {
         if ((key !== 'index') && (key !== 'leftBound') && (key !== 'rightBound')) {
           throw new Error.ReqlDriverError('Unrecognized option `' + key + '` in `between`', this._query, 'Available options are index <string>, leftBound <string>, rightBound <string>');
         }
@@ -1267,7 +1267,7 @@ export class Term {
     term._fillArgs(args);
 
     if (helper.isPlainObject(options)) {
-      helper.loopKeys(options, function (obj, key) {
+      helper.loopKeys(options, (obj, key) => {
         if (key !== 'readMode') {
           throw new Error.ReqlDriverError('Unrecognized option `' + key + '` in `table`', this._query, 'Available option is readMode <string>');
         }
@@ -1317,7 +1317,7 @@ export class Term {
     term._fillArgs(args);
 
     if (helper.isPlainObject(options)) {
-      helper.loopKeys(options, function (obj, key) {
+      helper.loopKeys(options, (obj, key) => {
         if ((key !== 'returnChanges') && (key !== 'durability')) {
           throw new Error.ReqlDriverError('Unrecognized option `' + key + '` in `delete`', this._query, 'Available options are returnChanges <bool>, durability <string>');
         }
@@ -1340,7 +1340,7 @@ export class Term {
     term._fillArgs(args);
 
     if (helper.isPlainObject(options)) {
-      helper.loopKeys(options, function (obj, key) {
+      helper.loopKeys(options, (obj, key) => {
         if ((key !== 'returnChanges') && (key !== 'durability') && (key !== 'nonAtomic')) {
           throw new Error.ReqlDriverError('Unrecognized option `' + key + '` in `replace`', this._query, 'Available options are returnChanges <bool>, durability <string>, nonAtomic <bool>');
         }
@@ -1363,7 +1363,7 @@ export class Term {
     term._fillArgs(args);
 
     if (helper.isPlainObject(options)) {
-      helper.loopKeys(options, function (obj, key) {
+      helper.loopKeys(options, (obj, key) => {
         if ((key !== 'returnChanges') && (key !== 'durability') && (key !== 'nonAtomic')) {
           throw new Error.ReqlDriverError('Unrecognized option `' + key + '` in `update`', this._query, 'Available options are returnChanges <bool>, durability <string>, nonAtomic <bool>');
         }
@@ -1386,7 +1386,7 @@ export class Term {
     term._fillArgs(args);
 
     if (helper.isPlainObject(options)) {
-      helper.loopKeys(options, function (obj, key) {
+      helper.loopKeys(options, (obj, key) => {
         if ((key !== 'returnChanges') && (key !== 'durability') && (key !== 'conflict')) {
           throw new Error.ReqlDriverError('Unrecognized option `' + key + '` in `insert`', this._query, 'Available options are returnChanges <bool>, durability <string>, conflict <string>');
         }
@@ -1408,7 +1408,7 @@ export class Term {
     var args = [self];
     term._fillArgs(args);
     if (helper.isPlainObject(options)) {
-      helper.loopKeys(options, function (obj, key) {
+      helper.loopKeys(options, (obj, key) => {
         if ((key !== 'squash') && (key !== 'includeStates')
           && (key !== 'includeInitial')) {
           throw new Error.ReqlDriverError('Unrecognized option `' + key + '` in `changes`', this._query, 'Available options are squash <bool>');
@@ -1432,7 +1432,7 @@ export class Term {
     term._fillArgs(args);
 
     if (helper.isPlainObject(options)) {
-      helper.loopKeys(options, function (obj, key) {
+      helper.loopKeys(options, (obj, key) => {
         if (key !== 'overwrite') {
           throw new Error.ReqlDriverError('Unrecognized option `' + key + '` in `indexRename`', this._query, 'Available options are overwrite <bool>');
         }
@@ -1968,7 +1968,7 @@ export class Term {
     }
     if (_args.length > 0) {
       if (helper.isPlainObject(_args[_args.length - 1])) {
-        helper.loopKeys(_args[_args.length - 1], function (obj, key) {
+        helper.loopKeys(_args[_args.length - 1], (obj, key) => {
           if (key !== 'float') {
             throw new Error.ReqlDriverError('Unrecognized option `' + key + '` in `random`', this._query, 'Available option is float: <boolean>');
           }
@@ -2380,7 +2380,7 @@ export class Term {
     var args = [this, new Term(this._r).expr(geometry)];
     term._fillArgs(args);
     if (helper.isPlainObject(options)) {
-      helper.loopKeys(options, function (obj, key) {
+      helper.loopKeys(options, (obj, key) => {
         if (key !== 'index') {
           throw new Error.ReqlDriverError('Unrecognized option `' + key + '` in `distance`', this._query, 'Available options are index <string>');
         }
@@ -2438,7 +2438,7 @@ export class Term {
     var args = [self, new Term(this._r).expr(geometry)];
     term._fillArgs(args);
     if (helper.isPlainObject(options)) {
-      helper.loopKeys(options, function (obj, key) {
+      helper.loopKeys(options, (obj, key) => {
         if ((key !== 'geoSystem') && (key !== 'unit')) {
           throw new Error.ReqlDriverError('Unrecognized option `' + key + '` in `distance`', this._query, 'Available options are geoSystem <string>, unit <string>');
         }
@@ -2460,7 +2460,7 @@ export class Term {
 
     if (helper.isPlainObject(options)) {
       // There is no need to translate here
-      helper.loopKeys(options, function (obj, key) {
+      helper.loopKeys(options, (obj, key) => {
         if ((key !== 'numVertices') && (key !== 'geoSystem') && (key !== 'unit') && (key !== 'fill')) {
           throw new Error.ReqlDriverError('Unrecognized option `' + key + '` in `circle`', this._query, 'Available options are numVertices <number>, geoSsystem <string>, unit <string> and fill <bool>');
         }
@@ -2668,7 +2668,7 @@ export class Term {
       var term = new Term(this._r);
       var optArgs = {};
       var foundError = false;
-      helper.loopKeys(expression, function (expression, key) {
+      helper.loopKeys(expression, (expression, key) => {
         if (expression[key] !== undefined) {
           var optArg = new Term(this._r).expr(expression[key], _nestingLevel - 1);
           if (optArg instanceof Term && !foundError && optArg._error != null) {
@@ -2758,7 +2758,7 @@ export class Term {
       term._query.push([]);
     }
     if (helper.isPlainObject(config)) {
-      helper.loopKeys(config, function (obj, key) {
+      helper.loopKeys(config, (obj, key) => {
         if ((key !== 'shards') && (key !== 'replicas') &&
           (key !== 'dryRun') && (key !== 'primaryReplicaTag') &&
           (key !== 'nonvotingReplicaTags') && (key !== 'emergencyRepair')) {
@@ -2786,7 +2786,7 @@ export class Term {
       term._fillArgs(args);
     }
     if (helper.isPlainObject(options)) {
-      helper.loopKeys(options, function (obj, key) {
+      helper.loopKeys(options, (obj, key) => {
         if ((key !== 'waitFor') && (key !== 'timeout')) {
           throw new Error.ReqlDriverError('Unrecognized option `' + key + '` in `wait`', this._query, 'Available options are waitFor: <string>, timeout: <number>');
         }
@@ -2942,7 +2942,7 @@ export class Term {
     var args = [self, new Term(this._r).expr(geometry)];
     term._fillArgs(args);
     if (helper.isPlainObject(options)) {
-      helper.loopKeys(options, function (obj, key) {
+      helper.loopKeys(options, (obj, key) => {
         if ((key !== 'index') && (key !== 'maxResults') && (key !== 'maxDist') && (key !== 'unit') && (key !== 'geoSystem')) {
           throw new Error.ReqlDriverError('Unrecognized option `' + key + '` in `getNearest`', this._query, 'Available options are index <string>, maxResults <number>, maxDist <number>, unit <string>, geoSystem <string>');
         }
@@ -3029,7 +3029,7 @@ export class Term {
     maxBatchBytes: 'max_batch_bytes',
     maxBatchSeconds: 'max_batch_seconds',
     firstBatchScaledownFactor: 'first_batch_scaledown_factor'
-  };
+  }
   
   _wrap() {
     var self = this;
@@ -3038,12 +3038,12 @@ export class Term {
         throw new Error.ReqlDriverError('Implicit variable `r.row` cannot be used inside `r.args`');
       }
       //Must pass at least one variable to the function or it won't accept r.row
-      return new Term(this._r).expr(function (doc) { return self; });
+      return new Term(this._r).expr((doc) => { return self; });
     }
     else {
       return self;
     }
-  };
+  }
   
   _fillArgs(args) {
     var foundError = false;
@@ -3064,19 +3064,22 @@ export class Term {
     }
     this._query.push(internalArgs);
     return this;
-  };
+  }
 
   _setNestingLevel(nestingLevel) {
     Term.prototype._nestingLevel = nestingLevel;
-  };
+  }
+  
   _setArrayLimit(arrayLimit) {
     Term.prototype._arrayLimit = arrayLimit;
-  };
+  }
+  
   _fastArity(len, num) {
     // Cheap arity check. If it fails, return false, and then we are expected to call _arity/_arityRange
     return (len === num);
-  };
+  }
+  
   _fastArityRange(len, min, max) {
     return ((len >= min) && (len <= max));
-  };
+  }
 }

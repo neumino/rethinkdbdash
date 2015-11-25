@@ -5,7 +5,7 @@ import * as net from 'net';
 
 
 export function createLogger(poolMaster, silent) {
-  return function(message) {
+  return (message) => {
     if (silent !== true) {
       console.error(message);
     }

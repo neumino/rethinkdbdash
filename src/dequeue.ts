@@ -2,6 +2,10 @@
 // The buffer can expand but currently doesn't automatically shrink
 // as it is not a desired behavior. We may want to explicitly resize it though.
 export class Dequeue {
+  buffer;
+  end;
+  start;
+  
   getLength() {
     if (this.start <= this.end) {
       return this.end-this.start;
@@ -140,10 +144,6 @@ export class Dequeue {
       return this.buffer[this.start+index];
     }
   }
-
-  buffer;
-  end;
-  start;
 
   constructor(size) {
     this.start = 0;
