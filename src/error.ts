@@ -5,183 +5,195 @@ var IS_OPERATIONAL = 'isOperational';
 
 var protodef = require('./protodef.js');
 var responseTypes = protodef.Response.ResponseType;
-var protoErrorType = protodef.Response.ErrorType;
 var termTypes = protodef.Term.TermType;
 var datumTypes = protodef.Datum.DatumType;
 var frameTypes = protodef.Frame.FrameType;
 
 
-function ReqlDriverError(message, query, secondMessage) {
-  Error.captureStackTrace(this, ReqlDriverError);
-  this.message = message;
-  if ((Array.isArray(query) && (query.length > 0)) || (!Array.isArray(query) && query != null)) {
-    if ((this.message.length > 0) && (this.message[this.message.length-1] === '.')) {
-      this.message = this.message.slice(0, this.message.length-1);
-    }
+export class ReqlDriverError extends Error {
+  setOperational() {
+    this[IS_OPERATIONAL] = true;
+    return this;
+  };
+  message;
+  name = 'ReqlDriverError';
+  static generateBacktrace = generateBacktrace;
+  static ReqlClientError = ReqlClientError;
+  static ReqlCompileError = ReqlCompileError;
+  static ReqlRuntimeError = ReqlRuntimeError;
+  static ReqlServerError = ReqlServerError;
 
-    this.message += ' after:\n';
-
-    var backtrace = generateBacktrace(query, 0, null, [], {indent: 0, extra: 0});
-
-    this.message += backtrace.str;
-  }
-  else {
-    if (this.message[this.message.length-1] !== '?') this.message += '.';
-  }
-  if (secondMessage) this.message += '\n'+secondMessage;
-};
-ReqlDriverError.prototype = new Error();
-ReqlDriverError.prototype.name = 'ReqlDriverError';
-ReqlDriverError.prototype.setOperational = function() {
-  this[IS_OPERATIONAL] = true;
-  return this;
-};
-
-module.exports.ReqlDriverError = ReqlDriverError;
-
-
-function ReqlServerError(message, query) {
-  Error.captureStackTrace(this, ReqlServerError);
-  this.message = message;
-
-  if ((Array.isArray(query) && (query.length > 0)) || (!Array.isArray(query) && query != null)) {
-    if ((this.message.length > 0) && (this.message[this.message.length-1] === '.')) {
-      this.message = this.message.slice(0, this.message.length-1);
-    }
-
-    this.message += ' for:\n';
-
-    var backtrace = generateBacktrace(query, 0, null, [], {indent: 0, extra: 0});
-
-    this.message += backtrace.str;
-  }
-  else {
-    if (this.message[this.message.length-1] !== '?') this.message += '.';
-  }
-};
-ReqlServerError.prototype = new Error();
-ReqlServerError.prototype.name = 'ReqlServerError';
-ReqlServerError.prototype[IS_OPERATIONAL] = true;
-
-module.exports.ReqlServerError = ReqlServerError;
-
-
-function ReqlRuntimeError(message, query, frames) {
-  Error.captureStackTrace(this, ReqlRuntimeError);
-  this.message = message;
-
-  if ((query != null) && (frames)) {
-    if ((this.message.length > 0) && (this.message[this.message.length-1] === '.')) {
-      this.message = this.message.slice(0, this.message.length-1);
-    }
-    this.message += ' in:\n';
-
-    frames = frames.b;
-    if (frames) this.frames = frames.slice(0);
-    //this.frames = JSON.stringify(frames, null, 2);
-
-    var backtrace = generateBacktrace(query, 0, null, frames, {indent: 0, extra: 0});
-
-    var queryLines = backtrace.str.split('\n');
-    var carrotLines = backtrace.car.split('\n');
-
-    for(var i=0; i<queryLines.length; i++) {
-      this.message += queryLines[i]+'\n';
-      if (carrotLines[i].match(/\^/)) {
-        var pos = queryLines[i].match(/[^\s]/);
-        if ((pos) && (pos.index)) {
-          this.message += space(pos.index)+carrotLines[i].slice(pos.index)+'\n';
-        }
-        else {
-          this.message += carrotLines[i]+'\n';
-        }
+  constructor(message, query, secondMessage) {
+    super(message);
+    Error.captureStackTrace(this, ReqlDriverError);
+    this.message = message;
+    if ((Array.isArray(query) && (query.length > 0)) || (!Array.isArray(query) && query != null)) {
+      if ((this.message.length > 0) && (this.message[this.message.length - 1] === '.')) {
+        this.message = this.message.slice(0, this.message.length - 1);
       }
+
+      this.message += ' after:\n';
+
+      var backtrace = generateBacktrace(query, 0, null, [], { indent: 0, extra: 0 });
+
+      this.message += backtrace.str;
+    }
+    else {
+      if (this.message[this.message.length - 1] !== '?') this.message += '.';
+    }
+    if (secondMessage) this.message += '\n' + secondMessage;
+  }
+};
+
+export class ReqlServerError extends Error {
+  message;
+  name = 'ReqlServerError';
+  static IS_OPERATIONAL = true;
+
+  constructor(message, query) {
+    super(message);
+    Error.captureStackTrace(this, ReqlServerError);
+    this.message = message;
+
+    if ((Array.isArray(query) && (query.length > 0)) || (!Array.isArray(query) && query != null)) {
+      if ((this.message.length > 0) && (this.message[this.message.length-1] === '.')) {
+        this.message = this.message.slice(0, this.message.length-1);
+      }
+
+      this.message += ' for:\n';
+
+      var backtrace = generateBacktrace(query, 0, null, [], {indent: 0, extra: 0});
+
+      this.message += backtrace.str;
+    }
+    else {
+      if (this.message[this.message.length-1] !== '?') this.message += '.';
     }
   }
-  //this.query = JSON.stringify(query, null, 2);
 };
-ReqlRuntimeError.prototype = new Error();
-ReqlRuntimeError.prototype.name = 'ReqlRuntimeError';
-ReqlRuntimeError.prototype.setName = function(type) {
-  switch(type) {
-    case protoErrorType.INTERNAL:
+
+export class ReqlRuntimeError extends Error {
+  static IS_OPERATIONAL = true;
+  setName(type) {
+    switch(type) {
+    case this.protoErrorType.INTERNAL:
       this.name = 'ReqlInternalError';
       break;
-    case protoErrorType.RESOURCE_LIMIT:
+    case this.protoErrorType.RESOURCE_LIMIT:
       this.name = 'ReqlResourceError';
       break;
-    case protoErrorType.QUERY_LOGIC:
+    case this.protoErrorType.QUERY_LOGIC:
       this.name = 'ReqlLogicError';
       break;
-    case protoErrorType.OP_FAILED:
+    case this.protoErrorType.OP_FAILED:
       this.name = 'ReqlOpFailedError';
       break;
-    case protoErrorType.OP_INDETERMINATE:
+    case this.protoErrorType.OP_INDETERMINATE:
       this.name = 'ReqlOpIndeterminateError';
       break;
-    case protoErrorType.USER:
+    case this.protoErrorType.USER:
       this.name = 'ReqlUserError';
       break;
-    //default: // Do nothing
-  }
-}
-ReqlRuntimeError.prototype[IS_OPERATIONAL] = true;
-
-module.exports.ReqlRuntimeError = ReqlRuntimeError;
-
-
-function ReqlCompileError(message, query, frames) {
-  Error.captureStackTrace(this, ReqlCompileError);
-  this.message = message;
-
-  if ((query != null) && (frames)) {
-    if ((this.message.length > 0) && (this.message[this.message.length-1] === '.')) {
-      this.message = this.message.slice(0, this.message.length-1);
+      //default: // Do nothing
     }
+  }
 
-    this.message += ' in:\n';
+  private protoErrorType = protodef.Response.ErrorType;
+  frames;
+  message;
+  name = 'ReqlRuntimeError';
 
-    frames = frames.b;
-    if (frames) this.frames = frames.slice(0);
-    //this.frames = JSON.stringify(frames, null, 2);
+  constructor(message, query, frames) {
+    super(message);
+    Error.captureStackTrace(this, ReqlRuntimeError);
+    this.message = message;
 
-    var backtrace = generateBacktrace(query, 0, null, frames, {indent: 0, extra: 0});
+    if ((query != null) && (frames)) {
+      if ((this.message.length > 0) && (this.message[this.message.length-1] === '.')) {
+        this.message = this.message.slice(0, this.message.length-1);
+      }
+      this.message += ' in:\n';
 
-    var queryLines = backtrace.str.split('\n');
-    var carrotLines = backtrace.car.split('\n');
+      frames = frames.b;
+      if (frames) this.frames = frames.slice(0);
+      //this.frames = JSON.stringify(frames, null, 2);
 
-    for(var i=0; i<queryLines.length; i++) {
-      this.message += queryLines[i]+'\n';
-      if (carrotLines[i].match(/\^/)) {
-        var pos = queryLines[i].match(/[^\s]/);
-        if ((pos) && (pos.index)) {
-          this.message += space(pos.index)+carrotLines[i].slice(pos.index)+'\n';
+      var backtrace = generateBacktrace(query, 0, null, frames, {indent: 0, extra: 0});
+
+      var queryLines = backtrace.str.split('\n');
+      var carrotLines = backtrace.car.split('\n');
+
+      for(var i=0; i<queryLines.length; i++) {
+        this.message += queryLines[i]+'\n';
+        if (carrotLines[i].match(/\^/)) {
+          var pos = queryLines[i].match(/[^\s]/);
+          if ((pos) && (pos.index)) {
+            this.message += space(pos.index)+carrotLines[i].slice(pos.index)+'\n';
+          }
+          else {
+            this.message += carrotLines[i]+'\n';
+          }
         }
-        else {
-          this.message += carrotLines[i]+'\n';
+      }
+    }
+    //this.query = JSON.stringify(query, null, 2);
+  }
+};
+
+export class ReqlCompileError extends Error {
+  static IS_OPERATIONAL = true;
+  frames;
+  message;
+  name = 'ReqlCompileError';
+
+  constructor(message, query, frames) {
+    super(message);
+    Error.captureStackTrace(this, ReqlCompileError);
+    this.message = message;
+
+    if ((query != null) && (frames)) {
+      if ((this.message.length > 0) && (this.message[this.message.length-1] === '.')) {
+        this.message = this.message.slice(0, this.message.length-1);
+      }
+
+      this.message += ' in:\n';
+
+      frames = frames.b;
+      if (frames) this.frames = frames.slice(0);
+      //this.frames = JSON.stringify(frames, null, 2);
+
+      var backtrace = generateBacktrace(query, 0, null, frames, {indent: 0, extra: 0});
+
+      var queryLines = backtrace.str.split('\n');
+      var carrotLines = backtrace.car.split('\n');
+
+      for(var i=0; i<queryLines.length; i++) {
+        this.message += queryLines[i]+'\n';
+        if (carrotLines[i].match(/\^/)) {
+          var pos = queryLines[i].match(/[^\s]/);
+          if ((pos) && (pos.index)) {
+            this.message += space(pos.index)+carrotLines[i].slice(pos.index)+'\n';
+          }
+          else {
+            this.message += carrotLines[i]+'\n';
+          }
         }
       }
     }
   }
 };
-ReqlCompileError.prototype = new Error();
-ReqlCompileError.prototype.name = 'ReqlCompileError';
-ReqlCompileError.prototype[IS_OPERATIONAL] = true;
 
-module.exports.ReqlCompileError = ReqlCompileError;
+export class ReqlClientError extends Error {
+  message;
+  name = 'ReqlClientError';
+  static IS_OPERATIONAL = true;
 
-
-function ReqlClientError(message) {
-  Error.captureStackTrace(this, ReqlClientError);
-  this.message = message;
+  constructor(message) {
+    super(message);
+    Error.captureStackTrace(this, ReqlClientError);
+    this.message = message;
+  }
 };
-ReqlClientError.prototype = new Error();
-ReqlClientError.prototype.name = 'ReqlClientError';
-ReqlClientError.prototype[IS_OPERATIONAL] = true;
-
-module.exports.ReqlClientError = ReqlClientError;
-
-
 
 var _constants = {
   MONDAY: true,
@@ -205,7 +217,7 @@ var _constants = {
   DECEMBER: true,
   MINVAL: true,
   MAXVAL: true,
-}
+};
 var constants = {};
 for(var key in _constants) {
   constants[termTypes[key]] = true;
@@ -242,7 +254,7 @@ var _nonPrefix = {
   ASC: true,
   RANGE: true,
   LITERAL: 'true'
-}
+};
 var nonPrefix = {};
 for(var key in _nonPrefix) {
   nonPrefix[termTypes[key]] = true;
@@ -422,7 +434,7 @@ var _typeToString = {
   DECEMBER: 'december' ,
   MINVAL: 'minval',
   MAXVAL: 'maxval',
-}
+};
 var typeToString = {};
 for(var key in _typeToString) {
   typeToString[termTypes[key]] = _typeToString[key];
@@ -430,14 +442,14 @@ for(var key in _typeToString) {
 
 var _noPrefixOptargs = {
   ISO8601: true,
-}
+};
 var noPrefixOptargs = {};
 for(var key in _noPrefixOptargs) {
   noPrefixOptargs[termTypes[key]] = true;
 }
 
 var _specialType = {
-  DATUM: function(term, index, father, frames, options, optarg) {
+  DATUM(term, index, father, frames, options, optarg) {
     optarg = optarg || false;
 
     var underline = Array.isArray(frames) && (frames.length === 0);
@@ -447,15 +459,13 @@ var _specialType = {
     var result = {
       str: '',
       car: ''
-    }
-
+    };
     if ((helper.isPlainObject(term)) && (term.$reql_type$ === 'BINARY')) {
       carify(result, 'r.binary(<Buffer>)', underline);
       return result;
     }
 
-    if ((index === 0) && ((father == null) || (!nonPrefix[father[0]]))) carify(result, 'r.expr(', underline)
-
+    if ((index === 0) && ((father == null) || (!nonPrefix[father[0]]))) carify(result, 'r.expr(', underline);
     if (typeof term === 'string' ) {
       carify(result, '"'+term+'"', underline);
     }
@@ -522,11 +532,11 @@ var _specialType = {
 
     return result;
   },
-  TABLE: function(term, index, father, frames, options) {
+  TABLE(term, index, father, frames, options) {
     var result = {
       str: '',
       car: ''
-    }
+    };
     var backtrace, underline, currentFrame;
 
 
@@ -542,17 +552,17 @@ var _specialType = {
 
           if ((currentFrame != null) && (currentFrame === 1)) {
             // +1 for index because it's like if there was a r.db(...) before .table(...)
-            backtrace = generateBacktrace(term[1][i], i+1, term, frames, options)
+            backtrace = generateBacktrace(term[1][i], i+1, term, frames, options);
           }
           else {
-            backtrace = generateBacktrace(term[1][i], i+1, term, null, options)
+            backtrace = generateBacktrace(term[1][i], i+1, term, null, options);
           }
           result.str += backtrace.str;
-          result.car += backtrace.car
+          result.car += backtrace.car;
         }
       }
 
-      backtrace = makeOptargs(term, i, term, frames, options, currentFrame)
+      backtrace = makeOptargs(term, i, term, frames, options, currentFrame);
       result.str += backtrace.str;
       result.car += backtrace.car;
 
@@ -568,21 +578,21 @@ var _specialType = {
 
     return result;
   },
-  GET_FIELD: function(term, index, father, frames, options) {
+  GET_FIELD(term, index, father, frames, options) {
     var result = {
       str: '',
       car: ''
-    }
+    };
     var backtrace, underline, currentFrame;
 
     var underline = Array.isArray(frames) && (frames.length === 0);
     if (Array.isArray(frames)) currentFrame = frames.shift();
 
     if ((currentFrame != null) && (currentFrame === 0)) {
-      backtrace = generateBacktrace(term[1][0], 0, term, frames, options)
+      backtrace = generateBacktrace(term[1][0], 0, term, frames, options);
     }
     else {
-      backtrace = generateBacktrace(term[1][0], 0, term, null, options)
+      backtrace = generateBacktrace(term[1][0], 0, term, null, options);
     }
     result.str = backtrace.str;
     result.car = backtrace.car;
@@ -590,10 +600,10 @@ var _specialType = {
     carify(result, '(', underline);
 
     if ((currentFrame != null) && (currentFrame === 1)) {
-      backtrace = generateBacktrace(term[1][1], 1, term, frames, options)
+      backtrace = generateBacktrace(term[1][1], 1, term, frames, options);
     }
     else {
-      backtrace = generateBacktrace(term[1][1], 1, term, null, options)
+      backtrace = generateBacktrace(term[1][1], 1, term, null, options);
     }
     result.str += backtrace.str;
     result.car += backtrace.car;
@@ -604,7 +614,7 @@ var _specialType = {
 
     return result;
   },
-  MAKE_ARRAY: function(term, index, father, frames, options) {
+  MAKE_ARRAY(term, index, father, frames, options) {
     var result = {
       str: '',
       car: ''
@@ -614,8 +624,7 @@ var _specialType = {
     var underline = Array.isArray(frames) && (frames.length === 0);
     if (Array.isArray(frames)) currentFrame = frames.shift();
 
-    if ((index === 0) && ((father == null) || (!nonPrefix[father[0]]))) carify(result, 'r.expr(', underline)
-
+    if ((index === 0) && ((father == null) || (!nonPrefix[father[0]]))) carify(result, 'r.expr(', underline);
     if (!((options) && (options.noBracket))) {
       carify(result, '[', underline);
     }
@@ -647,7 +656,7 @@ var _specialType = {
 
     return result;
   },
-  FUNC: function(term, index, father, frames, options) {
+  FUNC(term, index, father, frames, options) {
     var result = {
       str: '',
       car: ''
@@ -705,11 +714,11 @@ var _specialType = {
 
     return result;
   },
-  VAR: function(term, index, father, frames, options) {
+  VAR(term, index, father, frames, options) {
     var result = {
       str: '',
       car: ''
-    }
+    };
     var backtrace, underline, currentFrame;
 
     var underline = Array.isArray(frames) && (frames.length === 0);
@@ -720,7 +729,7 @@ var _specialType = {
     if (underline) result.car = result.str.replace(/./g, '^');
     return result;
   },
-  FUNCALL: function(term, index, father, frames, options) {
+  FUNCALL(term, index, father, frames, options) {
     // The syntax is args[1].do(args[0])
     var result = {
       str: '',
@@ -777,11 +786,11 @@ var _specialType = {
 
     return result;
   },
-  IMPLICIT_VAR: function(term, index, father, frames, options) {
+  IMPLICIT_VAR(term, index, father, frames, options) {
     var result = {
       str: '',
       car: ''
-    }
+    };
     var backtrace, underline, currentFrame;
 
     var underline = Array.isArray(frames) && (frames.length === 0);
@@ -792,11 +801,11 @@ var _specialType = {
     if (underline) result.car = result.str.replace(/./g, '^');
     return result;
   },
-  WAIT: function(term, index, father, frames, options) {
+  WAIT(term, index, father, frames, options) {
     var result = {
       str: '',
       car: ''
-    }
+    };
     var backtrace, underline, currentFrame;
 
     if (term.length === 1 || term[1].length === 0) {
@@ -811,11 +820,11 @@ var _specialType = {
     }
     return result;
   },
-  MAP: function(term, index, father, frames, options) {
+  MAP(term, index, father, frames, options) {
     var result = {
       str: '',
       car: ''
-    }
+    };
     var backtrace, underline, currentFrame;
 
     if (term.length > 1 && term[1].length > 2) {
@@ -830,24 +839,24 @@ var _specialType = {
     }
     return result;
   },
-}
-_specialType.TABLE_CREATE = _specialType.TABLE;
-_specialType.TABLE_DROP = _specialType.TABLE;
-_specialType.TABLE_LIST = _specialType.TABLE;
-_specialType.RECONFIGURE = _specialType.WAIT;
-_specialType.REBALANCE = _specialType.WAIT;
-_specialType.BRACKET = _specialType.GET_FIELD;
+  TABLE_CREATE: _specialType.TABLE,
+  TABLE_DROP: _specialType.TABLE,
+  TABLE_LIST: _specialType.TABLE,
+  RECONFIGURE: _specialType.WAIT,
+  REBALANCE: _specialType.WAIT,
+  BRACKET: _specialType.GET_FIELD,
+};
 
 var specialType = {};
 for(var key in _specialType) {
   specialType[termTypes[key]] = _specialType[key];
 }
 
-
 function space(n) {
   return new Array(n+1).join(' ');
 }
-function carify(result, str, underline) {
+
+function carify(result: any, str: any, underline: boolean) {
   if (underline === true) {
     result.str += str;
     result.car += str.replace(/[^\n]/g, '^');
@@ -857,11 +866,12 @@ function carify(result, str, underline) {
     result.car += str.replace(/[^\n]/g, ' ');
   }
 }
+
 function makeOptargs(term, index, father, frames, options, currentFrame) {
   var result = {
     str: '',
     car: ''
-  }
+  };
   var backtrace, currentFrame, underline;
 
   if (helper.isPlainObject(term[2])) {
@@ -889,11 +899,12 @@ function makeOptargs(term, index, father, frames, options, currentFrame) {
 
   return result;
 }
+
 function generateNormalBacktrace(term, index, father, frames, options) {
   var result = {
     str: '',
     car: ''
-  }
+  };
   var backtrace, currentFrame, underline;
 
   //if (term[1]) {
@@ -938,8 +949,8 @@ function generateNormalBacktrace(term, index, father, frames, options) {
       result.car += backtrace.car;
     }
 
-    backtrace = makeOptargs(term, i, term, frames, options, currentFrame)
-    result.str += backtrace.str;
+    backtrace = makeOptargs(term, i, term, frames, options, currentFrame);
+  result.str += backtrace.str;
     result.car += backtrace.car;
 
     options.indent -= extraToRemove;
@@ -963,8 +974,7 @@ function generateWithoutPrefixBacktrace(term, index, father, frames, options) {
   var result = {
     str: '',
     car: ''
-  }
-
+  };
   var backtrace, currentFrame, underline;
 
   var underline = Array.isArray(frames) && (frames.length === 0);
@@ -979,20 +989,19 @@ function generateWithoutPrefixBacktrace(term, index, father, frames, options) {
 
   if (Array.isArray(term[1])) {
     for(var i=0; i<term[1].length; i++) {
-      if (i !== 0) carify(result, ', ', underline)
-
+      if (i !== 0) carify(result, ', ', underline);
       if ((currentFrame != null) && (currentFrame === i)) {
-        backtrace = generateBacktrace(term[1][i], i, term, frames, options)
+        backtrace = generateBacktrace(term[1][i], i, term, frames, options);
       }
       else {
-        backtrace = generateBacktrace(term[1][i], i, term, null, options)
+        backtrace = generateBacktrace(term[1][i], i, term, null, options);
       }
       result.str += backtrace.str;
       result.car += backtrace.car;
     }
   }
 
-  backtrace = makeOptargs(term, i, term, frames, options, currentFrame)
+  backtrace = makeOptargs(term, i, term, frames, options, currentFrame);
   result.str += backtrace.str;
   result.car += backtrace.car;
 
@@ -1007,7 +1016,7 @@ function generateBacktrace(term, index, father, frames, options) {
   var result = {
     str: '',
     car: ''
-  }
+  };
   var backtrace, currentFrame, underline;
 
   // frames = null -> do not underline
@@ -1047,7 +1056,5 @@ function generateBacktrace(term, index, father, frames, options) {
 }
 
 function camelCase(str) {
-  return str.replace(/_(.)/g, function (m, char) { return char.toUpperCase() });
+  return str.replace(/_(.)/g, (m, char) => char.toUpperCase());
 }
-module.exports.generateBacktrace = generateBacktrace;
-

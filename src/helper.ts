@@ -4,27 +4,24 @@ var datumTypes = protodef.Datum.DatumType;
 var net = require('net');
 
 
-function createLogger(poolMaster, silent) {
+export function createLogger(poolMaster, silent) {
   return function(message) {
     if (silent !== true) {
       console.error(message);
     }
     poolMaster.emit('log', message);
-  }
+  };
 }
-module.exports.createLogger = createLogger;
 
-function isPlainObject(obj) {
+export function isPlainObject(obj) {
   return Object.prototype.toString.call(obj) === '[object Object]';
 }
-module.exports.isPlainObject = isPlainObject;
 
-function toArray(args) {
+export function toArray(args) {
   return Array.prototype.slice.call(args);
 }
-module.exports.toArray = toArray;
 
-function hasImplicit(arg) {
+export function hasImplicit(arg) {
   if (Array.isArray(arg)) {
     if (arg[0] === termTypes.IMPLICIT_VAR) return true;
 
@@ -46,9 +43,8 @@ function hasImplicit(arg) {
   }
   return false;
 }
-module.exports.hasImplicit = hasImplicit;
 
-function loopKeys(obj, fn) {
+export function loopKeys(obj, fn) {
   var keys = Object.keys(obj);
   var result;
   var keysLength = keys.length;
@@ -57,9 +53,8 @@ function loopKeys(obj, fn) {
     if (result === false) return;
   }
 }
-module.exports.loopKeys = loopKeys;
 
-function convertPseudoType(obj, options) {
+export function convertPseudoType(obj, options) {
   if (Array.isArray(obj)) {
     for(var i=0; i<obj.length; i++) {
       obj[i] = convertPseudoType(obj[i], options);
@@ -78,7 +73,7 @@ function convertPseudoType(obj, options) {
         result.push({
           group: obj.data[i][0],
           reduction: obj.data[i][1],
-        })
+        });
       }
       obj = result;
     }
@@ -92,29 +87,25 @@ function convertPseudoType(obj, options) {
   }
   return obj;
 }
-function makeAtom(response, options) {
+export function makeAtom(response, options) {
   options = options || {};
   return convertPseudoType(response.r[0], options);
 }
-module.exports.makeAtom = makeAtom;
 
-function makeSequence(response, options) {
+export function makeSequence(response, options) {
   var result = [];
   options = options || {};
 
   return convertPseudoType(response.r, options);
 }
 
-module.exports.makeSequence = makeSequence;
-
-function changeProto(object, other) {
+export function changeProto(object, other) {
   object.__proto__ = other.__proto__;
 }
-module.exports.changeProto = changeProto;
 
 // Try to extract the most global address
 // Note: Mutate the input
-function getCanonicalAddress(addresses) {
+export function getCanonicalAddress(addresses) {
   // We suppose that the addresses are all valid, and therefore use loose regex
   for(var i=0; i<addresses.length; i++) {
     var addresse = addresses[i];
@@ -153,20 +144,18 @@ function getCanonicalAddress(addresses) {
   }
   return result;
 }
-module.exports.getCanonicalAddress = getCanonicalAddress;
 
-
-module.exports.localhostAliases = {
+export const localhostAliases = {
   'localhost': true,
   '127.0.0.1': true,
   '::1': true
-}
+};
 
-module.exports.tryCatch = function tryCatch(toTry, handleError) {
+export function tryCatch(toTry, handleError) {
   try{
-  toTry()
+  toTry();
   }
   catch(err) {
-  handleError(err)
+  handleError(err);
   }
-}
+};
