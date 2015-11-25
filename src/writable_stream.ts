@@ -4,18 +4,31 @@ import * as util from 'util';
 
 // Experimental, but should work fine.
 export class WritableStream extends Writable {
+  _i;
+  _sequence;
+  _insertOptions;
+  _highWaterMark;
+  _connection;
+  _delayed;
+  _inserting;
+  _pendingCallback;
+  _cache;
+  _options;
+  _table;
+  _writableState;
+  
   _insert() {
     var self = this;
-    self._inserting = true;
+    this._inserting = true;
 
-    var cache = self._cache;
-    self._cache = [];
+    var cache = this._cache;
+    this._cache = [];
 
-    if (Array.isArray(self._sequence)) {
-      self._sequence.push(cache.length);
+    if (Array.isArray(this._sequence)) {
+      this._sequence.push(cache.length);
     }
 
-    self._table.insert(cache, self._insertOptions).run(self._connection).then(result => {
+    this._table.insert(cache, this._insertOptions).run(this._connection).then(result => {
       this._inserting = false;
       if (result.errors > 0) {
         this._inserting = false;
@@ -54,7 +67,7 @@ export class WritableStream extends Writable {
             var self = this;
             this._delayed = true;
             setImmediate(() => {
-              self._next(value, encoding, done);
+              this._next(value, encoding, done);
             });
           }
 
@@ -79,7 +92,7 @@ export class WritableStream extends Writable {
           var self = this;
           this._delayed = true;
           setImmediate(() => {
-            self._next(value, encoding, done);
+            this._next(value, encoding, done);
           });
         }
       }
@@ -96,19 +109,6 @@ export class WritableStream extends Writable {
     this._cache.push(value);
     this._next(value, encoding, done);
   }
-
-  _i;
-  _sequence;
-  _insertOptions;
-  _highWaterMark;
-  _connection;
-  _delayed;
-  _inserting;
-  _pendingCallback;
-  _cache;
-  _options;
-  _table;
-  _writableState;
 
   constructor(table, options, connection) {
     super();

@@ -1,5 +1,6 @@
 import {Readable} from 'stream';
 import * as util from 'util';
+import {Cursor} from './cursor';
 
 export class ReadableStream extends Readable {
   _recursion;
@@ -11,11 +12,11 @@ export class ReadableStream extends Readable {
 
   _fetch() {
     var self = this;
-    if (self._cursor._closed === true) {
-      self.push(null);
+    if (this._cursor._closed === true) {
+      this.push(null);
     }
     else {
-      self._cursor._next().then(data => {
+      this._cursor._next().then(data => {
         // Silently drop null values for now
         if (data === null) {
           if (this._recursion++ === this._maxRecursion) {
@@ -56,16 +57,16 @@ export class ReadableStream extends Readable {
 
   _fetchAndDecrement() {
     var self = this;
-    self._pending--;
-    if (self._pending < 0) {
+    this._pending--;
+    if (this._pending < 0) {
       return;
     }
 
-    if (self._cursor._closed === true) {
-      self.push(null);
+    if (this._cursor._closed === true) {
+      this.push(null);
     }
     else {
-      self._cursor._next().then(data => {
+      this._cursor._next().then(data => {
         // Silently drop null values for now
         if (data === null) {
           if (this._recursion++ === this._maxRecursion) {
@@ -125,7 +126,7 @@ export class ReadableStream extends Readable {
     this._fetchAndDecrement();
   }
 
-  private Cursor = require('./cursor.js');
+  private Cursor = Cursor;
   _highWaterMark;
   _maxRecursion;
   _index;

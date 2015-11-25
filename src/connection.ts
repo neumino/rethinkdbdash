@@ -40,7 +40,7 @@ export class Connection extends events.EventEmitter {
 
   noreplyWait(callback?) {
     var self = this;
-    var token = self._getToken();
+    var token = this._getToken();
 
     var p = new Promise((resolve, reject) => {
       var query = [protodef.Query.QueryType.NOREPLY_WAIT];
@@ -54,7 +54,7 @@ export class Connection extends events.EventEmitter {
     throw new Err.ReqlDriverError('Did you mean to use `noreplyWait` instead of `noReplyWait`?');
   }
 
-  close(options, callback) {
+  close(options, callback?) {
     if (typeof options === 'function') {
       callback = options;
       options = {};
@@ -123,14 +123,14 @@ export class Connection extends events.EventEmitter {
 
     // noreply instead of noReply because the otpions are translated for the server
     if ((!helper.isPlainObject(options)) || (options.noreply != true)) {
-      if (!self.metadata[token]) {
-        self.metadata[token] = new Metadata(resolve, reject, originalQuery, options);
+      if (!this.metadata[token]) {
+        this.metadata[token] = new Metadata(resolve, reject, originalQuery, options);
       }
       else if (end === true) {
-        self.metadata[token].setEnd(resolve, reject);
+        this.metadata[token].setEnd(resolve, reject);
       }
       else {
-        self.metadata[token].setCallbacks(resolve, reject);
+        this.metadata[token].setCallbacks(resolve, reject);
       }
     }
     else {
@@ -177,11 +177,11 @@ export class Connection extends events.EventEmitter {
       }).nodeify(callback);
     }
     else {
-      return self.r.connect({
-        host: self.host,
-        port: self.port,
-        authKey: self.authKey,
-        db: self.db
+      return this.r.connect({
+        host: this.host,
+        port: this.port,
+        authKey: this.authKey,
+        db: this.db
       }, callback);
     }
 
@@ -202,108 +202,108 @@ export class Connection extends events.EventEmitter {
     var options;
 
     if (type === responseTypes.COMPILE_ERROR) {
-      self.emit('release');
-      if (typeof self.metadata[token].reject === 'function') {
-        self.metadata[token].reject(new Err.ReqlCompileError(helper.makeAtom(response), self.metadata[token].query, response));
+      this.emit('release');
+      if (typeof this.metadata[token].reject === 'function') {
+        this.metadata[token].reject(new Err.ReqlCompileError(helper.makeAtom(response), this.metadata[token].query, response));
       }
 
-      delete self.metadata[token];
+      delete this.metadata[token];
     }
     else if (type === responseTypes.CLIENT_ERROR) {
-      self.emit('release');
+      this.emit('release');
 
-      if (typeof self.metadata[token].reject === 'function') {
-        currentResolve = self.metadata[token].resolve;
-        currentReject = self.metadata[token].reject;
-        self.metadata[token].removeCallbacks();
-        currentReject(new Err.ReqlClientError(helper.makeAtom(response), self.metadata[token].query, response));
-        if (typeof self.metadata[token].endReject !== 'function') {
+      if (typeof this.metadata[token].reject === 'function') {
+        currentResolve = this.metadata[token].resolve;
+        currentReject = this.metadata[token].reject;
+        this.metadata[token].removeCallbacks();
+        currentReject(new Err.ReqlClientError(helper.makeAtom(response), this.metadata[token].query, response));
+        if (typeof this.metadata[token].endReject !== 'function') {
           // No pending STOP query, we can delete
-          delete self.metadata[token];
+          delete this.metadata[token];
         }
       }
-      else if (typeof self.metadata[token].endResolve === 'function') {
-        currentResolve = self.metadata[token].endResolve;
-        currentReject = self.metadata[token].endReject;
-        self.metadata[token].removeEndCallbacks();
-        currentReject(new Err.ReqlClientError(helper.makeAtom(response), self.metadata[token].query, response));
-        delete self.metadata[token];
+      else if (typeof this.metadata[token].endResolve === 'function') {
+        currentResolve = this.metadata[token].endResolve;
+        currentReject = this.metadata[token].endReject;
+        this.metadata[token].removeEndCallbacks();
+        currentReject(new Err.ReqlClientError(helper.makeAtom(response), this.metadata[token].query, response));
+        delete this.metadata[token];
       }
       else if (token === -1) { // This should not happen now since 1.13 took the token out of the query
         var error = new Err.ReqlClientError(helper.makeAtom(response) + '\nClosing all outstanding queries...');
-        self.emit('error', error);
+        this.emit('error', error);
         // We don't want a function to yield forever, so we just reject everything
-        helper.loopKeys(self.rejectMap, (rejectMap, key) => {
+        helper.loopKeys(this.rejectMap, (rejectMap, key) => {
           rejectMap[key](error);
         });
-        self.close();
-        delete self.metadata[token];
+        this.close();
+        delete this.metadata[token];
       }
     }
     else if (type === responseTypes.RUNTIME_ERROR) {
-      self.emit('release');
-      if (typeof self.metadata[token].reject === 'function') {
+      this.emit('release');
+      if (typeof this.metadata[token].reject === 'function') {
       }
 
-      if (typeof self.metadata[token].reject === 'function') {
-        currentResolve = self.metadata[token].resolve;
-        currentReject = self.metadata[token].reject;
-        self.metadata[token].removeCallbacks();
-        var error = new Err.ReqlRuntimeError(helper.makeAtom(response), self.metadata[token].query, response);
+      if (typeof this.metadata[token].reject === 'function') {
+        currentResolve = this.metadata[token].resolve;
+        currentReject = this.metadata[token].reject;
+        this.metadata[token].removeCallbacks();
+        var error = new Err.ReqlRuntimeError(helper.makeAtom(response), this.metadata[token].query, response);
         error.setName(response.e);
         currentReject(error);
-        if (typeof self.metadata[token].endReject !== 'function') {
+        if (typeof this.metadata[token].endReject !== 'function') {
           // No pending STOP query, we can delete
-          delete self.metadata[token];
+          delete this.metadata[token];
         }
       }
-      else if (typeof self.metadata[token].endResolve === 'function') {
-        currentResolve = self.metadata[token].endResolve;
-        currentReject = self.metadata[token].endReject;
-        self.metadata[token].removeEndCallbacks();
-        currentReject(new Err.ReqlRuntimeError(helper.makeAtom(response), self.metadata[token].query, response));
-        delete self.metadata[token];
+      else if (typeof this.metadata[token].endResolve === 'function') {
+        currentResolve = this.metadata[token].endResolve;
+        currentReject = this.metadata[token].endReject;
+        this.metadata[token].removeEndCallbacks();
+        currentReject(new Err.ReqlRuntimeError(helper.makeAtom(response), this.metadata[token].query, response));
+        delete this.metadata[token];
       }
     }
     else if (type === responseTypes.SUCCESS_ATOM) {
-      self.emit('release');
-      // self.metadata[token].resolve is always a function
-      datum = helper.makeAtom(response, self.metadata[token].options);
+      this.emit('release');
+      // this.metadata[token].resolve is always a function
+      datum = helper.makeAtom(response, this.metadata[token].options);
 
       if ((Array.isArray(datum)) &&
-        ((self.metadata[token].options.cursor === true) || ((self.metadata[token].options.cursor === undefined) && (self.r._options.cursor === true)))) {
-        cursor = new Cursor(self, token, self.metadata[token].options, 'cursor');
-        if (self.metadata[token].options.profile === true) {
-          self.metadata[token].resolve({
+        ((this.metadata[token].options.cursor === true) || ((this.metadata[token].options.cursor === undefined) && (this.r._options.cursor === true)))) {
+        cursor = new Cursor(self, token, this.metadata[token].options, 'cursor');
+        if (this.metadata[token].options.profile === true) {
+          this.metadata[token].resolve({
             profile: response.p,
             result: cursor
           });
         }
         else {
-          self.metadata[token].resolve(cursor);
+          this.metadata[token].resolve(cursor);
         }
 
         cursor._push({ done: true, response: { r: datum } });
       }
       else if ((Array.isArray(datum)) &&
-        ((self.metadata[token].options.stream === true || self.r._options.stream === true))) {
-        cursor = new Cursor(self, token, self.metadata[token].options, 'cursor');
+        ((this.metadata[token].options.stream === true || this.r._options.stream === true))) {
+        cursor = new Cursor(self, token, this.metadata[token].options, 'cursor');
         stream = new ReadableStream({}, cursor);
-        if (self.metadata[token].options.profile === true) {
-          self.metadata[token].resolve({
+        if (this.metadata[token].options.profile === true) {
+          this.metadata[token].resolve({
             profile: response.p,
             result: stream
           });
         }
         else {
-          self.metadata[token].resolve(stream);
+          this.metadata[token].resolve(stream);
         }
 
         cursor._push({ done: true, response: { r: datum } });
 
       }
       else {
-        if (self.metadata[token].options.profile === true) {
+        if (this.metadata[token].options.profile === true) {
           result = {
             profile: response.p,
             result: cursor || datum
@@ -312,21 +312,21 @@ export class Connection extends events.EventEmitter {
         else {
           result = datum;
         }
-        self.metadata[token].resolve(result);
+        this.metadata[token].resolve(result);
       }
 
-      delete self.metadata[token];
+      delete this.metadata[token];
     }
     else if (type === responseTypes.SUCCESS_PARTIAL) {
       // We save the current resolve function because we are going to call cursor._fetch before resuming the user's yield
-      currentResolve = self.metadata[token].resolve;
-      currentReject = self.metadata[token].reject;
+      currentResolve = this.metadata[token].resolve;
+      currentReject = this.metadata[token].reject;
 
       // We need to delete before calling cursor._push
-      self.metadata[token].removeCallbacks();
+      this.metadata[token].removeCallbacks();
 
-      if (!self.metadata[token].cursor) { //No cursor, let's create one
-        self.metadata[token].cursor = true;
+      if (!this.metadata[token].cursor) { //No cursor, let's create one
+        this.metadata[token].cursor = true;
 
         var typeResult = 'Cursor';
         var includesStates = false;;
@@ -353,13 +353,13 @@ export class Connection extends events.EventEmitter {
             }
           }
         }
-        cursor = new Cursor(self, token, self.metadata[token].options, typeResult);
+        cursor = new Cursor(self, token, this.metadata[token].options, typeResult);
         if (includesStates === true) {
           cursor.setIncludesStates();
         }
-        if ((self.metadata[token].options.cursor === true) || ((self.metadata[token].options.cursor === undefined) && (self.r._options.cursor === true))) {
+        if ((this.metadata[token].options.cursor === true) || ((this.metadata[token].options.cursor === undefined) && (this.r._options.cursor === true))) {
           // Return a cursor
-          if (self.metadata[token].options.profile === true) {
+          if (this.metadata[token].options.profile === true) {
             currentResolve({
               profile: response.p,
               result: cursor
@@ -369,9 +369,9 @@ export class Connection extends events.EventEmitter {
             currentResolve(cursor);
           }
         }
-        else if ((self.metadata[token].options.stream === true || self.r._options.stream === true)) {
+        else if ((this.metadata[token].options.stream === true || this.r._options.stream === true)) {
           stream = new ReadableStream({}, cursor);
-          if (self.metadata[token].options.profile === true) {
+          if (this.metadata[token].options.profile === true) {
             currentResolve({
               profile: response.p,
               result: stream
@@ -383,7 +383,7 @@ export class Connection extends events.EventEmitter {
         }
         else if (typeResult !== 'Cursor') {
           // Return a feed
-          if (self.metadata[token].options.profile === true) {
+          if (this.metadata[token].options.profile === true) {
             currentResolve({
               profile: response.p,
               result: cursor
@@ -394,9 +394,9 @@ export class Connection extends events.EventEmitter {
           }
         }
         else {
-          // When we get SUCCESS_SEQUENCE, we will delete self.metadata[token].options
+          // When we get SUCCESS_SEQUENCE, we will delete this.metadata[token].options
           // So we keep a reference of it here
-          options = self.metadata[token].options;
+          options = this.metadata[token].options;
 
           // Fetch everything and return an array
           cursor.toArray().then(result => {
@@ -418,24 +418,24 @@ export class Connection extends events.EventEmitter {
       }
     }
     else if (type === responseTypes.SUCCESS_SEQUENCE) {
-      self.emit('release');
+      this.emit('release');
 
-      if (typeof self.metadata[token].resolve === 'function') {
-        currentResolve = self.metadata[token].resolve;
-        currentReject = self.metadata[token].reject;
-        self.metadata[token].removeCallbacks();
+      if (typeof this.metadata[token].resolve === 'function') {
+        currentResolve = this.metadata[token].resolve;
+        currentReject = this.metadata[token].reject;
+        this.metadata[token].removeCallbacks();
       }
-      else if (typeof self.metadata[token].endResolve === 'function') {
-        currentResolve = self.metadata[token].endResolve;
-        currentReject = self.metadata[token].endReject;
-        self.metadata[token].removeEndCallbacks();
+      else if (typeof this.metadata[token].endResolve === 'function') {
+        currentResolve = this.metadata[token].endResolve;
+        currentReject = this.metadata[token].endReject;
+        this.metadata[token].removeEndCallbacks();
       }
 
-      if (!self.metadata[token].cursor) { // No cursor, let's create one
-        cursor = new Cursor(self, token, self.metadata[token].options, 'Cursor');
+      if (!this.metadata[token].cursor) { // No cursor, let's create one
+        cursor = new Cursor(self, token, this.metadata[token].options, 'Cursor');
 
-        if ((self.metadata[token].options.cursor === true) || ((self.metadata[token].options.cursor === undefined) && (self.r._options.cursor === true))) {
-          if (self.metadata[token].options.profile === true) {
+        if ((this.metadata[token].options.cursor === true) || ((this.metadata[token].options.cursor === undefined) && (this.r._options.cursor === true))) {
+          if (this.metadata[token].options.profile === true) {
             currentResolve({
               profile: response.p,
               result: cursor
@@ -446,11 +446,11 @@ export class Connection extends events.EventEmitter {
           }
 
           // We need to keep the options in the else statement, so we clean it inside the if/else blocks
-          delete self.metadata[token];
+          delete this.metadata[token];
         }
-        else if ((self.metadata[token].options.stream === true || self.r._options.stream === true)) {
+        else if ((this.metadata[token].options.stream === true || this.r._options.stream === true)) {
           stream = new ReadableStream({}, cursor);
-          if (self.metadata[token].options.profile === true) {
+          if (this.metadata[token].options.profile === true) {
             currentResolve({
               profile: response.p,
               result: stream
@@ -461,7 +461,7 @@ export class Connection extends events.EventEmitter {
           }
 
           // We need to keep the options in the else statement, so we clean it inside the if/else blocks
-          delete self.metadata[token];
+          delete this.metadata[token];
         }
         else {
           cursor.toArray().then(result => {
@@ -484,16 +484,16 @@ export class Connection extends events.EventEmitter {
       }
     }
     else if (type === responseTypes.WAIT_COMPLETE) {
-      self.emit('release');
-      self.metadata[token].resolve();
+      this.emit('release');
+      this.metadata[token].resolve();
 
-      delete self.metadata[token];
+      delete this.metadata[token];
     }
     else if (type === responseTypes.SERVER_INFO) {
-      self.emit('release');
-      datum = helper.makeAtom(response, self.metadata[token].options);
-      self.metadata[token].resolve(datum);
-      delete self.metadata[token];
+      this.emit('release');
+      datum = helper.makeAtom(response, this.metadata[token].options);
+      this.metadata[token].resolve(datum);
+      delete this.metadata[token];
     }
 
   }
@@ -510,6 +510,7 @@ export class Connection extends events.EventEmitter {
   host;
   r;
   connection;
+  timeoutOpen;
 
   constructor(r, options, resolve, reject) {
     super();
@@ -533,18 +534,18 @@ export class Connection extends events.EventEmitter {
     this.timeout = null;
 
     var family = 'IPv4';
-    if (net.isIPv6(self.host)) {
+    if (net.isIPv6(this.host)) {
       family = 'IPv6';
     }
 
     var connectionArgs = {
-      host: self.host,
-      port: self.port,
+      host: this.host,
+      port: this.port,
       family: family
     };
     var tlsOptions = options.ssl || false;
     if (tlsOptions === false) {
-      self.connection = net.connect(connectionArgs);
+      this.connection = net.connect(connectionArgs);
     } else {
       if (helper.isPlainObject(tlsOptions)) {
         // Copy the TLS options in connectionArgs
@@ -552,24 +553,24 @@ export class Connection extends events.EventEmitter {
           connectionArgs[key] = tlsOptions[key];
         });
       }
-      self.connection = tls.connect(connectionArgs);
+      this.connection = tls.connect(connectionArgs);
     }
 
-    self.connection.setKeepAlive(true);
+    this.connection.setKeepAlive(true);
 
-    self.timeoutOpen = setTimeout(() => {
+    this.timeoutOpen = setTimeout(() => {
       this.connection.end(); // Send a FIN packet
       reject(new Err.ReqlDriverError('Failed to connect to ' + this.host + ':' + this.port + ' in less than ' + this.timeoutConnect + 's').setOperational());
-    }, self.timeoutConnect * 1000);
+    }, this.timeoutConnect * 1000);
 
-    self.connection.on('end', error => {
+    this.connection.on('end', error => {
       // We emit end or close just once
       this.connection.removeAllListeners();
       this.emit('end');
       // We got a FIN packet, so we'll just flush
       this._flush();
     });
-    self.connection.on('close', error => {
+    this.connection.on('close', error => {
       // We emit end or close just once
       clearTimeout(this.timeoutOpen);
       this.connection.removeAllListeners();
@@ -577,11 +578,11 @@ export class Connection extends events.EventEmitter {
       // The connection is fully closed, flush (in case 'end' was not triggered)
       this._flush();
     });
-    self.connection.setNoDelay();
-    self.connection.once('error', error => {
+    this.connection.setNoDelay();
+    this.connection.once('error', error => {
       reject(new Err.ReqlDriverError('Failed to connect to ' + this.host + ':' + this.port + '\nFull error:\n' + JSON.stringify(error)).setOperational());
     });
-    self.connection.on('connect', () => {
+    this.connection.on('connect', () => {
       this.connection.removeAllListeners('error');
       this.connection.on('error', function (error) {
         this.emit('error', error);
@@ -603,11 +604,11 @@ export class Connection extends events.EventEmitter {
         reject(new Err.ReqlDriverError('Failed to perform handshake with ' + this.host + ':' + this.port));
       });
     });
-    self.connection.once('end', () => {
+    this.connection.once('end', () => {
       this.open = false;
     });
 
-    self.connection.on('data', buffer => {
+    this.connection.on('data', buffer => {
       this.buffer = Buffer.concat([this.buffer, buffer]);
 
       if (this.open == false) {
@@ -648,11 +649,11 @@ export class Connection extends events.EventEmitter {
       }
     });
 
-    self.connection.on('timeout', buffer => {
+    this.connection.on('timeout', buffer => {
       this.connection.open = false;
       this.emit('timeout');
     });
-    self.connection.toJSON = () => '"A socket object cannot be converted to JSON due to circular references."';
+    this.connection.toJSON = () => '"A socket object cannot be converted to JSON due to circular references."';
   }
 }
 

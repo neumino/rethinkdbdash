@@ -5,6 +5,19 @@ import * as util from 'util';
 // Experimental, but should work fine.
 export class TransformStream extends Transform {
   _flushCallback;
+  _writableState;
+  _sequence;
+  _insertOptions;
+  _highWaterMark;
+  _connection;
+  _delayed;
+  _inserting;
+  _ended;
+  _pendingCallback;
+  _cache;
+  _options;
+  _r;
+  _table;
 
   _flush(done) {
     this._ended = true;
@@ -24,23 +37,23 @@ export class TransformStream extends Transform {
 
   _insert() {
     var self = this;
-    self._inserting = true;
+    this._inserting = true;
 
-    var cache = self._cache;
-    self._cache = [];
+    var cache = this._cache;
+    this._cache = [];
 
-    if (Array.isArray(self._sequence)) {
-      self._sequence.push(cache.length);
+    if (Array.isArray(this._sequence)) {
+      this._sequence.push(cache.length);
     }
 
-    var pendingCallback = self._pendingCallback;
-    self._pendingCallback = null;
+    var pendingCallback = this._pendingCallback;
+    this._pendingCallback = null;
     if (typeof pendingCallback === 'function') {
       pendingCallback();
     }
 
-    var query = self._table.insert(cache, self._insertOptions);
-    if (self._options.format === 'primaryKey') {
+    var query = this._table.insert(cache, this._insertOptions);
+    if (this._options.format === 'primaryKey') {
       query = query.do(result => this._r.branch(
         result('errors').eq(0),
         this._table.config()('primary_key').do(primaryKey => result('changes')('new_val')(primaryKey)),
@@ -48,7 +61,7 @@ export class TransformStream extends Transform {
       ));
     }
 
-    query.run(self._connection).then(result => {
+    query.run(this._connection).then(result => {
       this._inserting = false;
       if (this._options.format === 'primaryKey') {
         for(var i=0; i<result.length; i++) {
@@ -120,7 +133,7 @@ export class TransformStream extends Transform {
             var self = this;
             this._delayed = true;
             setImmediate(() => {
-              self._next(value, encoding, done);
+              this._next(value, encoding, done);
             });
           }
 
@@ -144,7 +157,7 @@ export class TransformStream extends Transform {
           var self = this;
           this._delayed = true;
           setImmediate(() => {
-            self._next(value, encoding, done);
+            this._next(value, encoding, done);
           });
         }
       }
@@ -169,19 +182,6 @@ export class TransformStream extends Transform {
     this._cache.push(value);
     this._next(value, encoding, done);
   }
-
-  _sequence;
-  _insertOptions;
-  _highWaterMark;
-  _connection;
-  _delayed;
-  _inserting;
-  _ended;
-  _pendingCallback;
-  _cache;
-  _options;
-  _r;
-  _table;
 
   constructor(table, options, connection) {
     super();

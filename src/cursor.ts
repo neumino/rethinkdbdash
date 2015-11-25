@@ -37,7 +37,7 @@ export class Cursor {
   close(callback) {
     var self = this;
 
-    self._closed = true;
+    this._closed = true;
 
     var p = new Promise((resolve, reject) => {
       if ((this._canFetch === false) && (this._fetching === false)) {
@@ -222,7 +222,7 @@ export class Cursor {
       }
       return null;
     });
-    self._next().then(resolve).error(error => {
+    this._next().then(resolve).error(error => {
       // We can silence error when the cursor is closed as this 
       if ((error.message !== 'You cannot retrieve data from a cursor that is closed.') &&
         (error.message.match(/You cannot call `next` on a closed/) === null)) {
@@ -266,7 +266,7 @@ export class Cursor {
       }
       return null;
     };
-    self._next().then(resolve).error(error => {
+    this._next().then(resolve).error(error => {
       // We can silence error when the cursor is closed as this 
       if ((error.message !== 'You cannot retrieve data from a cursor that is closed.') &&
         (error.message.match(/You cannot call `next` on a closed/) === null)) {
@@ -293,18 +293,18 @@ export class Cursor {
     return p;
   }
 
-  _next(callback) {
+  _next(callback?) {
     var self = this;
     var p = new Promise(function (resolve, reject) {
-      if (self._closed === true) {
+      if (this._closed === true) {
         reject(new Err.ReqlDriverError('You cannot call `next` on a closed ' + this._type));
       }
-      else if ((self._data.length === 0) && (self._canFetch === false)) {
-        reject(new Err.ReqlDriverError('No more rows in the ' + self._type.toLowerCase()).setOperational());
+      else if ((this._data.length === 0) && (this._canFetch === false)) {
+        reject(new Err.ReqlDriverError('No more rows in the ' + this._type.toLowerCase()).setOperational());
       }
       else {
-        if ((self._data.length > 0) && (self._data[0].length > self._index)) {
-          var result = self._data[0][self._index++];
+        if ((this._data.length > 0) && (this._data[0].length > this._index)) {
+          var result = this._data[0][this._index++];
           if (result instanceof Error) {
             reject(result);
           }
@@ -312,20 +312,20 @@ export class Cursor {
             resolve(result);
 
             // This could be possible if we get back batch with just one document?
-            if (self._data[0].length === self._index) {
-              self._index = 0;
-              self._data.shift();
-              if ((self._data.length === 1)
-                && (self._canFetch === true)
-                && (self._closed === false)
-                && (self._fetching === false)) {
-                self._fetch();
+            if (this._data[0].length === this._index) {
+              this._index = 0;
+              this._data.shift();
+              if ((this._data.length === 1)
+                && (this._canFetch === true)
+                && (this._closed === false)
+                && (this._fetching === false)) {
+                this._fetch();
               }
             }
           }
         }
         else {
-          self._pendingPromises.push({ resolve: resolve, reject: reject });
+          this._pendingPromises.push({ resolve: resolve, reject: reject });
         }
       }
     }).nodeify(callback);
@@ -349,21 +349,21 @@ for(var i=0; i<methods.length; i++) {
     var method = methods[n];
     Cursor.prototype[method] = function() {
       var self = this;
-      if (self._eventEmitter == null) {
-        self._makeEmitter();
+      if (this._eventEmitter == null) {
+        this._makeEmitter();
         setImmediate(function() {
-          if ((self._type === 'feed') || (self._type === 'atomFeed')) {
-            self._each(self._eachCb.bind(self));
+          if ((this._type === 'feed') || (this._type === 'atomFeed')) {
+            this._each(this._eachCb.bind(self));
           }
           else {
-            self._each(self._eachCb.bind(self), function() {
-              self._eventEmitter.emit('end');
+            this._each(this._eachCb.bind(self), function() {
+              this._eventEmitter.emit('end');
             });
           }
         });
       }
       var _len = arguments.length;var _args = new Array(_len); for(var _i = 0; _i < _len; _i++) {_args[_i] = arguments[_i];}
-      self._eventEmitter[method].apply(self._eventEmitter, _args);
+      this._eventEmitter[method].apply(this._eventEmitter, _args);
     };
   })(i);
 }

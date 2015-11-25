@@ -12,8 +12,8 @@ export class Pool extends events.EventEmitter {
 
   drain() {
     var self = this;
-    self._log('Draining the pool connected to ' + this.getAddress());
-    self.emit('draining');
+    this._log('Draining the pool connected to ' + this.getAddress());
+    this.emit('draining');
     var p = new Promise((resolve, reject) => {
       var connection = this._pool.pop();
       this.emit('available-size', this._pool.getLength());
@@ -43,10 +43,10 @@ export class Pool extends events.EventEmitter {
   drainLocalhost() {
     var self = this;
     // All the connections are to localhost, let's create new ones (not to localhost)
-    self._connectionToReplace = self._numConnections;
+    this._connectionToReplace = this._numConnections;
     ;
-    for (var i = 0, numConnections = self._numConnections; i < numConnections; i++) {
-      self.createConnection().finally(() => {
+    for (var i = 0, numConnections = this._numConnections; i < numConnections; i++) {
+      this.createConnection().finally(() => {
         this._localhostToDrain++;
         this._connectionToReplace--;
         if ((this._connectionToReplace === 0) && (this._localhostToDrain > 0)) {
@@ -104,15 +104,15 @@ export class Pool extends events.EventEmitter {
 
   createConnection() {
     var self = this;
-    self._increaseNumConnections();
-    self._openingConnections++;
+    this._increaseNumConnections();
+    this._openingConnections++;
 
-    self.emit('creating-connection', self);
-    if (self._draining) {
+    this.emit('creating-connection', self);
+    if (this._draining) {
       return; // Do not create a new connection if we are draining the pool.
     }
 
-    return self._r.connect(self.options.connection).then(connection => {
+    return this._r.connect(this.options.connection).then(connection => {
       this.emit('created-connection', this);
 
       this._openingConnections--;
@@ -122,7 +122,7 @@ export class Pool extends events.EventEmitter {
         this._slowlyGrowing = true;
         this.timeoutReconnect = setTimeout(function () {
           this.createConnection();
-          //self._expandBuffer();
+          //this._expandBuffer();
         }, (1 << Math.min(this.options.maxExponent, this._consecutiveFails)) * this.options.timeoutError);
       }
       // Need another flag
@@ -209,7 +209,7 @@ export class Pool extends events.EventEmitter {
       if (this._openingConnections === 0) {
         this._consecutiveFails++;
         this.timeoutReconnect = setTimeout(function () {
-          //self._expandBuffer();
+          //this._expandBuffer();
           this.createConnection();
         }, (1 << Math.min(this.options.maxExponent, this._consecutiveFails)) * this.options.timeoutError);
       }
@@ -218,26 +218,26 @@ export class Pool extends events.EventEmitter {
 
   putConnection(connection) {
     var self = this;
-    if (self._empty === true) {
-      self._empty = false;
+    if (this._empty === true) {
+      this._empty = false;
       // We emit not-empty only we have at least one opened connection
-      self.emit('not-empty');
+      this.emit('not-empty');
     }
-    if ((self._localhostToDrain > 0) && (helper.localhostAliases.hasOwnProperty(connection.host))) {
-      self._localhostToDrain--;
+    if ((this._localhostToDrain > 0) && (helper.localhostAliases.hasOwnProperty(connection.host))) {
+      this._localhostToDrain--;
       connection.close();
       clearTimeout(connection.timeout);
-      self.createConnection();
+      this.createConnection();
     }
-    else if (self._draining !== null) {
+    else if (this._draining !== null) {
       connection.close();
       clearTimeout(connection.timeout);
-      if (self.getLength() === 0) {
-        self._draining.resolve();
+      if (this.getLength() === 0) {
+        this._draining.resolve();
       }
     }
-    else if (self._extraConnections > 0) {
-      self._extraConnections--;
+    else if (this._extraConnections > 0) {
+      this._extraConnections--;
       connection.close().error(error => {
         this._log('Fail to properly close a connection. Error:' + JSON.stringify(error));
       });
@@ -245,20 +245,20 @@ export class Pool extends events.EventEmitter {
     }
     /*
     // We let the pool garbage collect these connections
-    else if (self.getAvailableLength()+1 > self.options.buffer) { // +1 for the connection we may put back
+    else if (this.getAvailableLength()+1 > this.options.buffer) { // +1 for the connection we may put back
       // Note that because we have available connections here, the pool master has no pending
       // queries.
       connection.close().error(function(error) {
-        self._log('Fail to properly close a connection. Error:'+JSON.stringify(error));
+        this._log('Fail to properly close a connection. Error:'+JSON.stringify(error));
       });
       clearTimeout(connection.timeout);
     }
     */
     else {
-      self._pool.push(connection);
-      self.emit('available-size', self._pool.getLength());
-      self.emit('available-size-diff', 1);
-      self.emit('new-connection', connection);
+      this._pool.push(connection);
+      this.emit('available-size', this._pool.getLength());
+      this.emit('available-size-diff', 1);
+      this.emit('new-connection', connection);
 
       clearTimeout(connection.timeout);
       var timeoutCb = () => {
@@ -277,7 +277,7 @@ export class Pool extends events.EventEmitter {
           connection.timeout = setTimeout(timeoutCb, this.options.timeoutGb);
         }
       };
-      connection.timeout = setTimeout(timeoutCb, self.options.timeoutGb);
+      connection.timeout = setTimeout(timeoutCb, this.options.timeoutGb);
     }
   }
 

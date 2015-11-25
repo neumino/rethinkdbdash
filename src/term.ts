@@ -5,7 +5,7 @@ var termTypes = protodef.Term.TermType;
 import * as Error from './error';
 import * as helper from './helper';
 import {ReadableStream} from './stream';
-import {WriteableStream} from './writable_stream';
+import {WritableStream} from './writable_stream';
 import {TransformStream} from './transform_stream';
 
 export class Term {
@@ -469,8 +469,8 @@ export class Term {
       term._error = error;
       term._frames = [];
     }
-
-    //  return term;
+    
+    return term;
   }
 
   setIntersection(other) {
