@@ -216,7 +216,7 @@ export class Term {
       return new TransformStream(this, options, connection);
     }
     else {
-      return new TransformStream(this, connection);
+      return new TransformStream(this, {}, connection);
     }
   }
 
@@ -229,7 +229,7 @@ export class Term {
       return new WritableStream(this, options, connection);
     }
     else {
-      return new WritableStream(this, connection);
+      return new WritableStream(this, {}, connection);
     }
   }
 
