@@ -18,6 +18,34 @@ export class TransformStream extends Transform {
   _options;
   _r;
   _table;
+  
+  constructor(table, options, connection) {
+    super();
+    this._table = table;
+    this._r = table._r;
+    this._options = options;
+    this._cache = [];
+    this._pendingCallback = null;
+    this._ended = false;
+    this._inserting = false;
+    this._delayed = false;
+    this._connection = connection;
+    this._highWaterMark = options.highWaterMark || 100;
+    this._insertOptions = {};
+    this._insertOptions.durability = options.durability || 'hard';
+    this._insertOptions.conflict = options.conflict || 'error';
+    this._insertOptions.returnChanges = options.returnChanges || true;
+
+    // Internal option to run some tests
+    if (options.debug === true) {
+      this._sequence = [];
+    }
+
+    Transform.call(this, {
+      objectMode: true,
+      highWaterMark: this._highWaterMark
+    });
+  }
 
   _flush(done) {
     this._ended = true;
@@ -181,34 +209,6 @@ export class TransformStream extends Transform {
   _transform(value, encoding, done) {
     this._cache.push(value);
     this._next(value, encoding, done);
-  }
-
-  constructor(table, options, connection) {
-    super();
-    this._table = table;
-    this._r = table._r;
-    this._options = options;
-    this._cache = [];
-    this._pendingCallback = null;
-    this._ended = false;
-    this._inserting = false;
-    this._delayed = false;
-    this._connection = connection;
-    this._highWaterMark = options.highWaterMark || 100;
-    this._insertOptions = {};
-    this._insertOptions.durability = options.durability || 'hard';
-    this._insertOptions.conflict = options.conflict || 'error';
-    this._insertOptions.returnChanges = options.returnChanges || true;
-
-    // Internal option to run some tests
-    if (options.debug === true) {
-      this._sequence = [];
-    }
-
-    Transform.call(this, {
-      objectMode: true,
-      highWaterMark: this._highWaterMark
-    });
   }
 };
 

@@ -11,6 +11,37 @@ import {TransformStream} from './transform_stream';
 export class Term {
   _frames;
   _error;
+  _query;
+  _r;
+  _nestingLevel;
+  _arrayLimit;
+
+  constructor(r, value?, error?) {
+    var self = this;
+    var term_func = function (field) {
+      if (Term.prototype._fastArity(arguments.length, 1) === false) {
+        var _len = arguments.length; var _args = new Array(_len); for (var _i = 0; _i < _len; _i++) { _args[_i] = arguments[_i]; }
+        Term.prototype._arity(_args, 1, '(...)', self);
+      }
+      return term.bracket(field);
+    };
+    var term = helper.changeProto<Term>(term_func, self);
+
+    if (value === undefined) {
+      term._query = [];
+    }
+    else {
+      term._query = value;
+    }
+    term._r = r; // Keep a reference to r for global settings
+
+    if (error !== undefined) {
+      term._error = error;
+      term._frames = [];
+    }
+    
+    return term;
+  }
 
   indexStatus() {
     var _len = arguments.length; var _args = new Array(_len); for (var _i = 0; _i < _len; _i++) { _args[_i] = arguments[_i]; }
@@ -272,7 +303,7 @@ export class Term {
     }
   }
 
-  run(connection, options, callback):any {
+  run(connection?, options?, callback?):any {
     // run([connection][, options][, callback])
     var self = this;
 
@@ -444,33 +475,6 @@ export class Term {
     //if (options.noreply) return self; // Do not return a promise if the user ask for no reply.
 
     return p;
-  }
-
-  constructor(r, value, error) {
-    var self = this;
-    var term = (field) => {
-      if (Term.prototype._fastArity(arguments.length, 1) === false) {
-        var _len = arguments.length; var _args = new Array(_len); for (var _i = 0; _i < _len; _i++) { _args[_i] = arguments[_i]; }
-        Term.prototype._arity(_args, 1, '(...)', self);
-      }
-      return term.bracket(field);
-    };
-    helper.changeProto(term, self);
-
-    if (value === undefined) {
-      term._query = [];
-    }
-    else {
-      term._query = value;
-    }
-    term._r = r; // Keep a reference to r for global settings
-
-    if (error !== undefined) {
-      term._error = error;
-      term._frames = [];
-    }
-    
-    return term;
   }
 
   setIntersection(other) {
@@ -2619,7 +2623,7 @@ export class Term {
     return term;
   }
 
-  expr(expression, nestingLevel) {
+  expr(expression, nestingLevel?):Term {
     var self = this;
     this._noPrefix(self, 'expr');
     if (this._fastArityRange(arguments.length, 1, 2) === false) {
@@ -2834,7 +2838,7 @@ export class Term {
   }
   toJSON() { return this.toJsonString() }
 
-  range(start, end) {
+  range(start, end?) {
     this._noPrefix(this, 'range');
     if (this._fastArityRange(arguments.length, 1, 2) === false) {
       var _len = arguments.length; var _args = new Array(_len); for (var _i = 0; _i < _len; _i++) { _args[_i] = arguments[_i]; }
@@ -3081,5 +3085,58 @@ export class Term {
   
   _fastArityRange(len, min, max) {
     return ((len >= min) && (len <= max));
+  }
+}
+
+function translateOptions(options) {
+    var translatedOpt = {};
+    helper.loopKeys(options, function(options, key) {
+        var keyServer = Term.prototype._translateArgs[key] || key;
+        translatedOpt[keyServer] = options[key];
+    });
+    return translatedOpt;
+}
+
+// Datums
+class Func extends Term {
+  nextVarId = 1
+  
+  constructor(r, func) {
+    // We can retrieve the names of the arguments with
+    // func.toString().match(/\(([^\)]*)\)/)[1].split(/\s*,\s*/)
+
+    super(r);
+    this._query.push(termTypes.FUNC);
+    var args = [];
+    var argVars = [];
+    var argNums = [];
+
+    for(var i=0; i<func.length; i++) {
+        argVars.push(new Var(r, r.nextVarId));
+        argNums.push(r.nextVarId);
+
+        if (r.nextVarId === 9007199254740992) { // That seems like overdoing it... but well maybe...
+            r.nextVarId = 0;
+        }
+        else {
+            r.nextVarId++;
+        }
+    }
+
+    var body = func.apply(func, argVars);
+    if (body === undefined) throw new Error.ReqlDriverError('Annonymous function returned `undefined`. Did you forget a `return`? In:\n'+func.toString(), this._query);
+    body = new Term(r).expr(body);
+    args.push(new Term(r).expr(argNums));
+    args.push(body);
+
+    this._fillArgs(args);
+  }
+}
+
+class Var extends Term {
+  constructor(r, id) {
+    super(r);
+    this._query.push(termTypes.VAR);
+    this._query.push([new Term(r).expr(id)._query]);
   }
 }

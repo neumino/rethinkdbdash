@@ -20,11 +20,75 @@ class r {
   _authKey = '';
   _port = 28015;
   _host = 'localhost';
-  Error = Error;
   _poolMaster;
+  Error = Error;
   nestingLevel;
   arrayLimit;
+  
+  row;
+  monday;
+  tuesday;
+  wednesday;
+  thursday;
+  friday;
+  saturday;
+  sunday;
+  january;
+  february;
+  march;
+  april;
+  may;
+  june;
+  july;
+  august;
+  september;
+  october;
+  november;
+  december;
+  minval;
+  maxval;
+  
+  nextVarId;
+  _Term;
 
+  constructor(options?) {
+    var self = this;
+    var _r_term = x => new Term(_r).expr(x);
+    var _r = helper.changeProto<r>(_r_term, self);
+
+    Term.prototype._setNestingLevel(r.prototype.nestingLevel);
+    Term.prototype._setArrayLimit(r.prototype.arrayLimit);
+
+    _r.row = new Term(_r).row();
+
+    _r.monday = new Term(_r).monday();
+    _r.tuesday = new Term(_r).tuesday();
+    _r.wednesday = new Term(_r).wednesday();
+    _r.thursday = new Term(_r).thursday();
+    _r.friday = new Term(_r).friday();
+    _r.saturday = new Term(_r).saturday();
+    _r.sunday =  new Term(_r).sunday();
+
+    _r.january = new Term(_r).january();
+    _r.february = new Term(_r).february();
+    _r.march = new Term(_r).march();
+    _r.april = new Term(_r).april();
+    _r.may = new Term(_r).may();
+    _r.june = new Term(_r).june();
+    _r.july = new Term(_r).july();
+    _r.august = new Term(_r).august();
+    _r.september = new Term(_r).september();
+    _r.october = new Term(_r).october();
+    _r.november = new Term(_r).november();
+    _r.december = new Term(_r).december();
+    _r.minval = new Term(_r).minval();
+    _r.maxval = new Term(_r).maxval();
+
+    _r.nextVarId = 1;
+    _r._Term = Term;
+    return _r;
+  }
+  
   getPool(i) {
     if (i === undefined) {
       if (this.getPoolMaster().getPools().length === 1) {
@@ -67,44 +131,6 @@ class r {
   setNestingLevel(nestingLevel) {
     if (typeof nestingLevel !== 'number') throw new Error.ReqlDriverError('The first argument of `setNestingLevel` must be a number.');
     this.nestingLevel = nestingLevel;
-  }
-
-  getHandle(options) {
-    var self = this;
-    var _r = x => new Term(_r).expr(x);
-    helper.changeProto(_r, self);
-
-    Term.prototype._setNestingLevel(r.prototype.nestingLevel);
-    Term.prototype._setArrayLimit(r.prototype.arrayLimit);
-
-    _r.row = new Term(_r).row();
-
-    _r.monday = new Term(_r).monday();
-    _r.tuesday = new Term(_r).tuesday();
-    _r.wednesday = new Term(_r).wednesday();
-    _r.thursday = new Term(_r).thursday();
-    _r.friday = new Term(_r).friday();
-    _r.saturday = new Term(_r).saturday();
-    _r.sunday =  new Term(_r).sunday();
-
-    _r.january = new Term(_r).january();
-    _r.february = new Term(_r).february();
-    _r.march = new Term(_r).march();
-    _r.april = new Term(_r).april();
-    _r.may = new Term(_r).may();
-    _r.june = new Term(_r).june();
-    _r.july = new Term(_r).july();
-    _r.august = new Term(_r).august();
-    _r.september = new Term(_r).september();
-    _r.october = new Term(_r).october();
-    _r.november = new Term(_r).november();
-    _r.december = new Term(_r).december();
-    _r.minval = new Term(_r).minval();
-    _r.maxval = new Term(_r).maxval();
-
-    _r.nextVarId = 1;
-    _r._Term = Term;
-    return _r;
   }
 
   typeOf(value) {

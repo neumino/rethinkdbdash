@@ -99,8 +99,9 @@ export function makeSequence(response, options) {
   return convertPseudoType(response.r, options);
 }
 
-export function changeProto(object, other) {
+export function changeProto<T>(object, other):T {
   object.__proto__ = other.__proto__;
+  return object;
 }
 
 // Try to extract the most global address
