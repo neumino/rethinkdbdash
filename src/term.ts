@@ -289,16 +289,16 @@ export class Term {
         options = {};
       }
       if (options.readable === true) {
-        return this._toReadableStream(options);
+        return this._toReadableStream(connection, options);
       }
       else if (options.writable === true) {
-        return this._toWritableStream(options);
+        return this._toWritableStream(connection, options);
       }
       else if (options.transform === true) {
-        return this._toTransformStream(options);
+        return this._toTransformStream(connection, options);
       }
       else {
-        return this._toReadableStream(options);
+        return this._toReadableStream(connection, options);
       }
     }
   }
