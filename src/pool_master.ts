@@ -10,6 +10,97 @@ var UNKNOWN_POOLS = 'unknownPools';
 var SEPARATOR = 'feedSeparator';
 
 export class PoolMaster extends events.EventEmitter {
+  _timeout;
+  _servers;
+  _seed;
+  _maxExponent;
+  _timeoutError;
+  _consecutiveFails;
+  _feed;
+  _hasPrintWarningLocalhost;
+  _numAvailableConnections;
+  _numConnections;
+  _draining;
+  _log;
+  _options;
+  _discovery;
+  _indexUnknown;
+  _index;
+  _init;
+  _healthy;
+  _healthyPools;
+  _pools;
+  _line;
+  _r;
+
+  constructor(r, options) {
+    super();
+    var self = this;
+    var options = options || {};
+    var lineLength = options.buffer || 50;
+
+    this._r = r;
+    this._line = new Dequeue(lineLength);
+    this._pools = {};
+    this._pools[UNKNOWN_POOLS] = []; // pools for which we do not know the server'id
+    this._healthyPools = [];
+    this._healthy = false;
+    this._init = false;
+    this._index = 0; // next pool to used
+    this._indexUnknown = 0; // next unknown pool to used
+    this._discovery = (typeof options.discovery === 'boolean') ? options.discovery : false; // Whether the pool master is in discovery mode or not
+    //this._refresh = (typeof options.refresh === 'number') ? options.refresh: 1000*60*60; // Refresh rate for the list of servers
+    this._options = options;
+    this._options.buffer = options.buffer || 50;
+    this._options.max = options.max || 1000;
+    this._log = helper.createLogger(self, options.silent || false);
+    this._draining = false;
+    this._numConnections = 0;
+    this._numAvailableConnections = 0;
+    this._hasPrintWarningLocalhost = false;
+    this._feed = null;
+    this._consecutiveFails = -1;
+    this._timeoutError = options.timeoutError || 1000; // How long should we wait before recreating a connection that failed?
+    this._maxExponent = options.maxExponent || 6; // Maximum timeout is 2^maxExponent*timeoutError
+
+    //TODO
+    //this._usingPool = true; // If we have used the pool
+    this._seed = 0;
+
+    var pool;
+    if (Array.isArray(options.servers) && options.servers.length > 0) {
+      this._servers = options.servers;
+      for (var i = 0; i < options.servers.length; i++) {
+        var settings = this.createPoolSettings(options, options.servers[i], this._log);
+        pool = new Pool(this._r, settings);
+        this._pools[UNKNOWN_POOLS].push(pool);
+        // A pool is considered healthy by default such that people can do
+        // var = require(...)(); query.run();
+        this._healthyPools.push(pool);
+        this.emitStatus();
+      }
+    }
+    else {
+      this._servers = [{
+        host: options.host || 'localhost',
+        port: options.port || 28015
+      }];
+      var settings = this.createPoolSettings(options, {}, this._log);
+      pool = new Pool(this._r, settings);
+      this._pools[UNKNOWN_POOLS].push(pool);
+      this._healthyPools.push(pool);
+      this.emitStatus();
+    }
+
+    // Initialize all the pools - bind listeners
+    for (var i = 0; i < this._pools[UNKNOWN_POOLS].length; i++) {
+      this.initPool(this._pools[UNKNOWN_POOLS][i]);
+    }
+    if ((this._discovery === true)) {
+      this._timeout = setTimeout(() => { this.fetchServers() }, 0);
+    }
+  }
+  
   emitStatus() {
     // Emit the healthy event with a boolean indicating whether the pool master
     // is healthy or not
@@ -156,7 +247,7 @@ export class PoolMaster extends events.EventEmitter {
     });
   }
 
-  fetchServers(useSeeds) {
+  fetchServers(useSeeds?) {
     //  Create the feed on server_status and bind the listener to the feed
     var self = this;
     var query = this._r.db('rethinkdb').table('server_status')
@@ -468,96 +559,5 @@ export class PoolMaster extends events.EventEmitter {
       }
     });
     return result;
-  }
-
-  _timeout;
-  _servers;
-  _seed;
-  _maxExponent;
-  _timeoutError;
-  _consecutiveFails;
-  _feed;
-  _hasPrintWarningLocalhost;
-  _numAvailableConnections;
-  _numConnections;
-  _draining;
-  _log;
-  _options;
-  _discovery;
-  _indexUnknown;
-  _index;
-  _init;
-  _healthy;
-  _healthyPools;
-  _pools;
-  _line;
-  _r;
-
-  constructor(r, options) {
-    super();
-    var self = this;
-    var options = options || {};
-    var lineLength = options.buffer || 50;
-
-    this._r = r;
-    this._line = new Dequeue(lineLength);
-    this._pools = {};
-    this._pools[UNKNOWN_POOLS] = []; // pools for which we do not know the server'id
-    this._healthyPools = [];
-    this._healthy = false;
-    this._init = false;
-    this._index = 0; // next pool to used
-    this._indexUnknown = 0; // next unknown pool to used
-    this._discovery = (typeof options.discovery === 'boolean') ? options.discovery : false; // Whether the pool master is in discovery mode or not
-    //this._refresh = (typeof options.refresh === 'number') ? options.refresh: 1000*60*60; // Refresh rate for the list of servers
-    this._options = options;
-    this._options.buffer = options.buffer || 50;
-    this._options.max = options.max || 1000;
-    this._log = helper.createLogger(self, options.silent || false);
-    this._draining = false;
-    this._numConnections = 0;
-    this._numAvailableConnections = 0;
-    this._hasPrintWarningLocalhost = false;
-    this._feed = null;
-    this._consecutiveFails = -1;
-    this._timeoutError = options.timeoutError || 1000; // How long should we wait before recreating a connection that failed?
-    this._maxExponent = options.maxExponent || 6; // Maximum timeout is 2^maxExponent*timeoutError
-
-    //TODO
-    //this._usingPool = true; // If we have used the pool
-    this._seed = 0;
-
-    var pool;
-    if (Array.isArray(options.servers) && options.servers.length > 0) {
-      this._servers = options.servers;
-      for (var i = 0; i < options.servers.length; i++) {
-        var settings = this.createPoolSettings(options, options.servers[i], this._log);
-        pool = new Pool(this._r, settings);
-        this._pools[UNKNOWN_POOLS].push(pool);
-        // A pool is considered healthy by default such that people can do
-        // var = require(...)(); query.run();
-        this._healthyPools.push(pool);
-        this.emitStatus();
-      }
-    }
-    else {
-      this._servers = [{
-        host: options.host || 'localhost',
-        port: options.port || 28015
-      }];
-      var settings = this.createPoolSettings(options, {}, this._log);
-      pool = new Pool(this._r, settings);
-      this._pools[UNKNOWN_POOLS].push(pool);
-      this._healthyPools.push(pool);
-      this.emitStatus();
-    }
-
-    // Initialize all the pools - bind listeners
-    for (var i = 0; i < this._pools[UNKNOWN_POOLS].length; i++) {
-      this.initPool(this._pools[UNKNOWN_POOLS][i]);
-    }
-    if ((this._discovery === true)) {
-      this._timeout = setTimeout(() => { this.fetchServers() }, 0);
-    }
   }
 }

@@ -10,7 +10,7 @@ import {Cursor} from './cursor';
 import {ReadableStream} from './stream';
 import {Metadata} from './metadata';
 
-import protodef from './protodef';
+import protodef = require('./protodef');
 var responseTypes = protodef.Response.ResponseType;
 
 export class Connection extends events.EventEmitter {

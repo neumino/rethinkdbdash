@@ -6,6 +6,76 @@ import * as events from 'events';
 import * as util from 'util';
 
 export class Pool extends events.EventEmitter {
+  id;
+  options;
+  timeoutReconnect;
+  _empty;
+  _extraConnections;
+  _slowlyGrowing;
+  _slowGrowth;
+  _consecutiveFails;
+  _openingConnections;
+  _numConnections;
+  _connectionToReplace;
+  _localhostToDrain;
+  _draining;
+  _pool;
+  _log;
+  _r;
+
+  constructor(r, options) {
+    super();
+    this._r = r;
+
+    if (!helper.isPlainObject(options)) options = {};
+    this.options = {};
+    this.options.max = options.max || 1000; // 4000 is about the maximum the kernel can take
+    var buffer = (typeof options.buffer === 'number') ? options.buffer : 50;
+    this.options.buffer = (buffer < this.options.max) ? buffer : this.options.max;
+    this.options.timeoutError = options.timeoutError || 1000; // How long should we wait before recreating a connection that failed?
+    this.options.timeoutGb = options.timeoutGb || 60 * 60 * 1000; // Default timeout for TCP connection is 2 hours on Linux, we time out after one hour.
+    this.options.maxExponent = options.maxExponent || 6; // Maximum timeout is 2^maxExponent*timeoutError
+
+    this.options.silent = options.silent || false;
+
+    this.options.connection = {
+      host: options.host || this._r._host,
+      port: options.port || this._r._port,
+      db: options.db || this._r._db,
+      timeout: options.timeout || this._r._timeoutConnect,
+      authKey: options.authKey || this._r._authKey,
+      cursor: options.cursor || false,
+      stream: options.stream || false,
+      ssl: options.ssl || false
+    };
+    this._log = options._log;
+
+    this._pool = new Dequeue(this.options.buffer + 1);
+    this._draining = null;
+    this._localhostToDrain = 0; // number of connections to "localhost" to remove
+    this._connectionToReplace = 0; // number of connections to "localhost" to remove
+
+    this._numConnections = 0;
+    this._openingConnections = 0; // Number of connections being opened
+    this._consecutiveFails = 0;   // In slow growth, the number of consecutive failures to open a connection
+    this._slowGrowth = false;     // Opening one connection at a time
+    this._slowlyGrowing = false;  // The next connection to be returned is one opened in slowGrowth mode
+    this._extraConnections = 0; // Number of extra connections being opened that we should eventually close
+
+    this._empty = true;
+
+    // So we can let the pool master bind listeners
+    setTimeout(() => {
+      for (var i = 0; i < this.options.buffer; i++) {
+        if (this.getLength() < this.options.max) {
+          this.createConnection();
+        }
+      }
+    }, 0);
+    this.id = Math.floor(Math.random() * 100000);
+    this._log('Creating a pool connected to ' + this.getAddress());
+  }
+  
   getAddress() {
     return this.options.connection.host + ':' + this.options.connection.port;
   }
@@ -187,8 +257,8 @@ export class Pool extends events.EventEmitter {
         this._decreaseNumConnections();
         this._expandBuffer();
       });
-      connection.on('release', () => {
-        if (this._isOpen()) this.putConnection(this);
+      connection.on('release', function() {
+        if (this._isOpen()) self.putConnection(this);
       });
       this.putConnection(connection);
       return null;
@@ -330,76 +400,6 @@ export class Pool extends events.EventEmitter {
 
     });
     return p;
-  }
-
-  id;
-  _empty;
-  _extraConnections;
-  _slowlyGrowing;
-  _slowGrowth;
-  _consecutiveFails;
-  _openingConnections;
-  _numConnections;
-  _connectionToReplace;
-  _localhostToDrain;
-  _draining;
-  _pool;
-  _log;
-  options;
-  timeoutReconnect;
-  _r;
-
-  constructor(r, options) {
-    super();
-    this._r = r;
-
-    if (!helper.isPlainObject(options)) options = {};
-    this.options = {};
-    this.options.max = options.max || 1000; // 4000 is about the maximum the kernel can take
-    var buffer = (typeof options.buffer === 'number') ? options.buffer : 50;
-    this.options.buffer = (buffer < this.options.max) ? buffer : this.options.max;
-    this.options.timeoutError = options.timeoutError || 1000; // How long should we wait before recreating a connection that failed?
-    this.options.timeoutGb = options.timeoutGb || 60 * 60 * 1000; // Default timeout for TCP connection is 2 hours on Linux, we time out after one hour.
-    this.options.maxExponent = options.maxExponent || 6; // Maximum timeout is 2^maxExponent*timeoutError
-
-    this.options.silent = options.silent || false;
-
-    this.options.connection = {
-      host: options.host || this._r._host,
-      port: options.port || this._r._port,
-      db: options.db || this._r._db,
-      timeout: options.timeout || this._r._timeoutConnect,
-      authKey: options.authKey || this._r._authKey,
-      cursor: options.cursor || false,
-      stream: options.stream || false,
-      ssl: options.ssl || false
-    };
-    this._log = options._log;
-
-    this._pool = new Dequeue(this.options.buffer + 1);
-    this._draining = null;
-    this._localhostToDrain = 0; // number of connections to "localhost" to remove
-    this._connectionToReplace = 0; // number of connections to "localhost" to remove
-
-    this._numConnections = 0;
-    this._openingConnections = 0; // Number of connections being opened
-    this._consecutiveFails = 0;   // In slow growth, the number of consecutive failures to open a connection
-    this._slowGrowth = false;     // Opening one connection at a time
-    this._slowlyGrowing = false;  // The next connection to be returned is one opened in slowGrowth mode
-    this._extraConnections = 0; // Number of extra connections being opened that we should eventually close
-
-    this._empty = true;
-
-    // So we can let the pool master bind listeners
-    setTimeout(() => {
-      for (var i = 0; i < this.options.buffer; i++) {
-        if (this.getLength() < this.options.max) {
-          this.createConnection();
-        }
-      }
-    }, 0);
-    this.id = Math.floor(Math.random() * 100000);
-    this._log('Creating a pool connected to ' + this.getAddress());
   }
 }
 

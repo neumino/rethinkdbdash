@@ -3,10 +3,10 @@ import Promise = require('bluebird');
 import * as helper from './helper';
 import {Connection} from './connection';
 import {Term} from './term';
-import * as Error from './error';
+import * as Err from './error';
 import {PoolMaster} from './pool_master';
 
-import protodef from './protodef';
+import protodef = require('./protodef');
 var termTypes = protodef.Term.TermType;
 
 class r {
@@ -21,7 +21,7 @@ class r {
   _port = 28015;
   _host = 'localhost';
   _poolMaster;
-  Error = Error;
+  _options;
   nestingLevel;
   arrayLimit;
   
@@ -50,11 +50,13 @@ class r {
   
   nextVarId;
   _Term;
+  Error = Err;
 
   constructor(options?) {
     var self = this;
-    var _r_term = x => new Term(_r).expr(x);
-    var _r = helper.changeProto<r>(_r_term, self);
+    var _r = this;
+    // var _r_term = x => new Term(_r_term).expr(x);
+    // var _r = helper.changeProto<r>(_r_term, this);
 
     Term.prototype._setNestingLevel(r.prototype.nestingLevel);
     Term.prototype._setArrayLimit(r.prototype.arrayLimit);
@@ -124,12 +126,12 @@ class r {
   }
 
   setArrayLimit(arrayLimit) {
-    if (typeof arrayLimit !== 'number') throw new Error.ReqlDriverError('The first argument of `setArrayLimit` must be a number.');
+    if (typeof arrayLimit !== 'number') throw new Err.ReqlDriverError('The first argument of `setArrayLimit` must be a number.');
     this.arrayLimit = arrayLimit;
   }
 
   setNestingLevel(nestingLevel) {
-    if (typeof nestingLevel !== 'number') throw new Error.ReqlDriverError('The first argument of `setNestingLevel` must be a number.');
+    if (typeof nestingLevel !== 'number') throw new Err.ReqlDriverError('The first argument of `setNestingLevel` must be a number.');
     this.nestingLevel = nestingLevel;
   }
 
@@ -615,4 +617,4 @@ function main(options) {
   }
   return _r;
 }
-export default main;
+export = main;

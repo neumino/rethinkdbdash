@@ -3,7 +3,7 @@ var INDENT = 4;
 var LIMIT = 80;
 var IS_OPERATIONAL = 'isOperational';
 
-import protodef from './protodef';
+import protodef = require('./protodef');
 
 var responseTypes = protodef.Response.ResponseType;
 var termTypes = protodef.Term.TermType;
@@ -840,13 +840,20 @@ var _specialType = {
     }
     return result;
   },
-  TABLE_CREATE: _specialType.TABLE,
-  TABLE_DROP: _specialType.TABLE,
-  TABLE_LIST: _specialType.TABLE,
-  RECONFIGURE: _specialType.WAIT,
-  REBALANCE: _specialType.WAIT,
-  BRACKET: _specialType.GET_FIELD,
+  TABLE_CREATE: null,
+  TABLE_DROP: null,
+  TABLE_LIST: null,
+  RECONFIGURE: null,
+  REBALANCE: null,
+  BRACKET: null,
 };
+
+_specialType.TABLE_CREATE = _specialType.TABLE;
+_specialType.TABLE_DROP = _specialType.TABLE;
+_specialType.TABLE_LIST = _specialType.TABLE;
+_specialType.RECONFIGURE = _specialType.WAIT;
+_specialType.REBALANCE = _specialType.WAIT;
+_specialType.BRACKET = _specialType.GET_FIELD;
 
 var specialType = {};
 for(var key in _specialType) {
@@ -873,7 +880,7 @@ function makeOptargs(term, index, father, frames, options, currentFrame) {
     str: '',
     car: ''
   };
-  var backtrace, currentFrame, underline;
+  var backtrace, currentFrame, underline:boolean;
 
   if (helper.isPlainObject(term[2])) {
     //if ((currentFrame != null) && (frames != null)) frames.unshift(currentFrame);
@@ -906,7 +913,7 @@ function generateNormalBacktrace(term, index, father, frames, options) {
     str: '',
     car: ''
   };
-  var backtrace, currentFrame, underline;
+  var backtrace, currentFrame, underline:boolean;
 
   //if (term[1]) {
     var underline:boolean = Array.isArray(frames) && (frames.length === 0);
@@ -976,7 +983,7 @@ function generateWithoutPrefixBacktrace(term, index, father, frames, options) {
     str: '',
     car: ''
   };
-  var backtrace, currentFrame, underline;
+  var backtrace, currentFrame, underline:boolean;
 
   var underline:boolean = Array.isArray(frames) && (frames.length === 0);
   if (Array.isArray(frames)) currentFrame = frames.shift();
@@ -1013,12 +1020,12 @@ function generateWithoutPrefixBacktrace(term, index, father, frames, options) {
   return result;
 }
 
-function generateBacktrace(term, index, father, frames, options) {
+export function generateBacktrace(term, index, father, frames, options) {
   var result = {
     str: '',
     car: ''
   };
-  var backtrace, currentFrame, underline;
+  var backtrace, currentFrame, underline:boolean;
 
   // frames = null -> do not underline
   // frames = [] -> underline

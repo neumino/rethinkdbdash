@@ -1,4 +1,4 @@
-import protodef from './protodef';
+import protodef = require('./protodef');
 var termTypes = protodef.Term.TermType;
 var datumTypes = protodef.Datum.DatumType;
 import * as net from 'net';

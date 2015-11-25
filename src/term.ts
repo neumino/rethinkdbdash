@@ -1,5 +1,5 @@
 import Promise = require('bluebird');
-import protodef from './protodef';
+import protodef = require('./protodef');
 var termTypes = protodef.Term.TermType;
 
 import * as Error from './error';
@@ -555,7 +555,7 @@ export class Term {
     return term;
   }
 
-  literal(obj) {
+  literal(obj?) {
     this._noPrefix(this, 'literal');
     // The test for arity is performed in r.literal
 
