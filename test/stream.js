@@ -147,10 +147,10 @@ It('get().changes() should return a stream', function* (done) {
 It('`table` should return a stream - testing empty SUCCESS_COMPLETE', function* (done) {
   var i=0;
   try {
-    var connection = yield r.connect({max_batch_rows: 1, host: config.host, port: config.port, authKey: config.authKey});
+    var connection = yield r.connect({host: config.host, port: config.port, authKey: config.authKey});
     assert(connection);
 
-    stream = yield r.db(dbName).table(tableName).run(connection, {stream: true});
+    stream = yield r.db(dbName).table(tableName).run(connection, {stream: true, maxBatchRows: 1});
     assert(stream);
     assert(stream instanceof Readable);
     stream.close();
@@ -165,10 +165,10 @@ It('`table` should return a stream - testing empty SUCCESS_COMPLETE', function* 
 It('Test flowing - event data', function* (done) {
   var i=0;
   try {
-    var connection = yield r.connect({max_batch_rows: 1, host: config.host, port: config.port, authKey: config.authKey});
+    var connection = yield r.connect({host: config.host, port: config.port, authKey: config.authKey});
     assert(connection);
 
-    stream = yield r.db(dbName).table(tableName).run(connection, {stream: true});
+    stream = yield r.db(dbName).table(tableName).run(connection, {stream: true, maxBatchRows: 1});
     var count = 0;
     stream.on('data', function() {
       count++;
@@ -184,10 +184,10 @@ It('Test flowing - event data', function* (done) {
 
 It('Test read', function* (done) {
   try {
-    var connection = yield r.connect({max_batch_rows: 1, host: config.host, port: config.port, authKey: config.authKey});
+    var connection = yield r.connect({host: config.host, port: config.port, authKey: config.authKey});
     assert(connection);
 
-    stream = yield r.db(dbName).table(tableName).run(connection, {stream: true});
+    stream = yield r.db(dbName).table(tableName).run(connection, {stream: true, maxBatchRows: 1});
     stream.once('readable', function() {
       var doc = stream.read();
       if (doc === null) {
@@ -210,10 +210,10 @@ It('Test read', function* (done) {
 It('Test flowing - event data', function* (done) {
   var i=0;
   try {
-    var connection = yield r.connect({max_batch_rows: 1, host: config.host, port: config.port, authKey: config.authKey});
+    var connection = yield r.connect({host: config.host, port: config.port, authKey: config.authKey});
     assert(connection);
 
-    stream = yield r.db(dbName).table(tableName).run(connection, {stream: true});
+    stream = yield r.db(dbName).table(tableName).run(connection, {stream: true, maxBatchRows: 1});
     var count = 0;
     stream.on('data', function() {
       count++;
@@ -234,10 +234,10 @@ It('Test flowing - event data', function* (done) {
 
 It('Test read with null value', function* (done) {
   try {
-    var connection = yield r.connect({max_batch_rows: 1, host: config.host, port: config.port, authKey: config.authKey});
+    var connection = yield r.connect({host: config.host, port: config.port, authKey: config.authKey});
     assert(connection);
 
-    stream = yield r.db(dbName).table(tableName).limit(10).union([null]).union(r.db(dbName).table(tableName).limit(10)).run(connection, {stream: true});
+    stream = yield r.db(dbName).table(tableName).limit(10).union([null]).union(r.db(dbName).table(tableName).limit(10)).run(connection, {stream: true, maxBatchRows: 1});
     stream.once('readable', function() {
       var count = 0;
       stream.on('data', function(data) {
@@ -258,10 +258,10 @@ It('Test read with null value', function* (done) {
 
 It('Test read', function* (done) {
   try {
-    var connection = yield r.connect({max_batch_rows: 1, host: config.host, port: config.port, authKey: config.authKey});
+    var connection = yield r.connect({host: config.host, port: config.port, authKey: config.authKey});
     assert(connection);
 
-    stream = yield r.db(dbName).table(tableName).run(connection, {stream: true});
+    stream = yield r.db(dbName).table(tableName).run(connection, {stream: true, maxBatchRows: 1});
     stream.once('readable', function() {
       var doc = stream.read();
       if (doc === null) {

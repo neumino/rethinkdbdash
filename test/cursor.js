@@ -101,6 +101,41 @@ It('`each` should work', function* (done) {
     done(e);
   }
 })
+It('`eachAsync` should work', function* (done) {
+  try {
+    cursor = yield r.db(dbName).table(tableName).run({cursor: true});
+    assert(cursor);
+    var history = [];
+    var count = 0;
+    var promisesWait = 0;
+    cursor.eachAsync(function(err, result) {
+      history.push(count);
+      count++;
+      return new Promise(function(resolve, reject) {
+        setTimeout(function() {
+          history.push(promisesWait);
+          promisesWait--;
+
+          if (count === numDocs) {
+            var expected = [];
+            for(var i=0; i<numDocs; i++) {
+              expected.push(i);
+              expected.push(-1*i);
+            }
+            assert.deepEqual(history, expected)
+            done();
+          }
+
+          resolve();
+
+        }, 1);
+      });
+    })
+  }
+  catch(e) {
+    done(e);
+  }
+})
 It('`each` should work - onFinish - reach end', function* (done) {
   try {
     cursor = yield r.db(dbName).table(tableName).run({cursor: true});
@@ -205,7 +240,7 @@ It('`next` should work -- testing common pattern', function* (done) {
         i++;
       }
       catch(e) {
-        if (e.message === "No more rows in the Cursor.") {
+        if (e.message === "No more rows in the cursor.") {
           assert.equal(smallNumDocs, i);
           done();
           break;
@@ -277,10 +312,10 @@ It('Remove the field `val` in some docs', function* (done) {
 It('`toArray` with multiple batches - testing empty SUCCESS_COMPLETE', function* (done) {
   var i=0;
   try {
-    var connection = yield r.connect({max_batch_rows: 1, host: config.host, port: config.port, authKey: config.authKey});
+    var connection = yield r.connect({host: config.host, port: config.port, authKey: config.authKey});
     assert(connection);
 
-    cursor = yield r.db(dbName).table(tableName).run(connection, {cursor: true});
+    cursor = yield r.db(dbName).table(tableName).run(connection, {cursor: true, maxBatchRows: 1});
 
     assert(cursor);
     result = yield cursor.toArray();
@@ -293,10 +328,10 @@ It('`toArray` with multiple batches - testing empty SUCCESS_COMPLETE', function*
 It('Automatic coercion from cursor to table with multiple batches', function* (done) {
   var i=0;
   try {
-    var connection = yield r.connect({max_batch_rows: 1, host: config.host, port: config.port, authKey: config.authKey});
+    var connection = yield r.connect({host: config.host, port: config.port, authKey: config.authKey});
     assert(connection);
 
-    result = yield r.db(dbName).table(tableName).run(connection);
+    result = yield r.db(dbName).table(tableName).run(connection, {maxBatchRows: 1});
     assert(result.length > 0);
     done();
   }
@@ -307,10 +342,10 @@ It('Automatic coercion from cursor to table with multiple batches', function* (d
 It('`next` with multiple batches', function* (done) {
   var i=0;
   try {
-    var connection = yield r.connect({max_batch_rows: 10, host: config.host, port: config.port, authKey: config.authKey});
+    var connection = yield r.connect({host: config.host, port: config.port, authKey: config.authKey});
     assert(connection);
 
-    cursor = yield r.db(dbName).table(tableName).run(connection, {cursor: true});
+    cursor = yield r.db(dbName).table(tableName).run(connection, {cursor: true, maxBatchRows: 1});
 
     assert(cursor);
     while(true) {
@@ -319,7 +354,7 @@ It('`next` with multiple batches', function* (done) {
         i++;
       }
       catch(e) {
-        if ((i > 0) && (e.message === "No more rows in the Cursor.")) {
+        if ((i > 0) && (e.message === "No more rows in the cursor.")) {
           connection.close();
           done()
         }
@@ -337,13 +372,13 @@ It('`next` with multiple batches', function* (done) {
 It('`next` should error when hitting an error -- not on the first batch', function* (done) {
   var i=0;
   try {
-    var connection = yield r.connect({max_batch_rows: 10, host: config.host, port: config.port, authKey: config.authKey});
+    var connection = yield r.connect({host: config.host, port: config.port, authKey: config.authKey});
     assert(connection);
 
     var cursor = yield r.db(dbName).table(tableName)
       .orderBy({index: "id"})
       .map(r.row("val").add(1))
-      .run(connection, {cursor: true});
+      .run(connection, {cursor: true, maxBatchRows: 10});
 
     assert(cursor);
     while(true) {
@@ -444,7 +479,7 @@ It('`next` should work on a feed', function* (done) {
 It('`next` should work on an atom feed', function* (done) {
   try {
     var idValue = uuid();
-    feed = yield r.db(dbName).table(tableName2).get(idValue).changes().run();
+    feed = yield r.db(dbName).table(tableName2).get(idValue).changes({includeInitial: true}).run();
     setTimeout(function() {
       r.db(dbName).table(tableName2).insert({id: idValue}).run();
     }, 100)
@@ -552,7 +587,7 @@ It('`next`, `each`, `toArray` should be deactivated if the EventEmitter interfac
     assert.throws(function() {
       feed.next();
     }, function(e) {
-      if (e.message === 'You cannot called `next` once you have bound listeners on the Feed.') {
+      if (e.message === 'You cannot call `next` once you have bound listeners on the Feed.') {
         feed.close().then(function() {
           done();
         }).error(function(error) {
@@ -679,7 +714,7 @@ It('events should not return an error if the feed is closed - 2', function* (don
 })
 It('`includeStates` should work', function* (done) {
   try {
-    feed = yield r.db(dbName).table(tableName).orderBy({index: 'id'}).limit(10).changes({includeStates: true}).run();
+    feed = yield r.db(dbName).table(tableName).orderBy({index: 'id'}).limit(10).changes({includeStates: true, includeInitial: true}).run();
     var i = 0;
     feed.each(function(err, change) {
       i++;

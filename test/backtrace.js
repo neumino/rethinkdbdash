@@ -1046,33 +1046,32 @@ It('Test backtrace for r.expr([1,2,3]).withFields("foo", "bar").add(1)', functio
 
 /*
 Frames:
-[ { type: 'POS', pos: 0 } ]
+[ 0, 1 ]
 
 Error:
 Cannot convert NUMBER to SEQUENCE in:
 r.expr([1, 2, 3]).concatMap(function(var_1) {
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  return var_1
-  ^^^^^^^^^^^^
+                            ^^^^^^^^^^^^^^^^^
+    return var_1
+    ^^^^^^^^^^^^
 }).add(1)
-^^
+^
 */
 It('Test backtrace for r.expr([1,2,3]).concatMap(function(v) { return v}).add(1)', function* (done) {
-  try {
-    r.nextVarId=1;
-    yield r.expr([1,2,3]).concatMap(function(v) { return v}).add(1).run()
-    done(new Error("Should have thrown an error"))
-  }
-  catch(e) {
-    if (e.message === "Cannot convert NUMBER to SEQUENCE in:\nr.expr([1, 2, 3]).concatMap(function(var_1) {\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    return var_1\n    ^^^^^^^^^^^^\n}).add(1)\n^^       \n") {
-      done()
+    try {
+        r.nextVarId=1;
+        yield r.expr([1,2,3]).concatMap(function(v) { return v}).add(1).run()
+        done(new Error("Should have thrown an error"))
     }
-    else {
-      console.log(e.message); done(e);
+    catch(e) {
+        if (e.message === "Cannot convert NUMBER to SEQUENCE in:\nr.expr([1, 2, 3]).concatMap(function(var_1) {\n                            ^^^^^^^^^^^^^^^^^\n    return var_1\n    ^^^^^^^^^^^^\n}).add(1)\n^        \n") {
+            done()
+        }
+        else {
+            done(e);
+        }
     }
-  }
 })
-
 
 
 /*
@@ -5124,6 +5123,40 @@ It('Test backtrace for r.ceil("hello")', function* (done) {
     }
     catch(e) {
         if (e.message === "Expected type NUMBER but found STRING in:\nr.expr(\"hello\").ceil()\n^^^^^^^^^^^^^^^       \n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+
+/*
+Frames:
+[]
+
+Error:
+Expected type ARRAY but found NUMBER in:
+r.expr({
+^^^^^^^^
+    a: 1,
+    ^^^^^
+    b: 2,
+    ^^^^^
+    c: 3
+    ^^^^
+}).values().add(2)
+^^^^^^^^^^^^^^^^^^
+*/
+It('Test backtrace for r.expr({a:1, b:2, c: 3}).values().add(2)', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.expr({a:1, b:2, c: 3}).values().add(2).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Expected type ARRAY but found NUMBER in:\nr.expr({\n^^^^^^^^\n    a: 1,\n    ^^^^^\n    b: 2,\n    ^^^^^\n    c: 3\n    ^^^^\n}).values().add(2)\n^^^^^^^^^^^^^^^^^^\n") {
             done()
         }
         else {
