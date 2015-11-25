@@ -53,7 +53,7 @@ export class Cursor {
 
     this._closed = true;
 
-    var p = new Promise((resolve, reject) => {
+    var p = new Promise<any>((resolve, reject) => {
       if ((this._canFetch === false) && (this._fetching === false)) {
         resolve();
       }
@@ -292,9 +292,9 @@ export class Cursor {
     return p;
   }
 
-  _next(callback?) {
+  _next(callback?:(err: any, value?: any) => void) {
     var self = this;
-    var p = new Promise((resolve, reject) => {
+    var p = new Promise<any|Error>((resolve, reject) => {
       if (this._closed === true) {
         reject(new Err.ReqlDriverError('You cannot call `next` on a closed ' + this._type));
       }

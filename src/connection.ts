@@ -53,11 +53,11 @@ export class Connection extends events.EventEmitter {
     return true;
   }
 
-  noreplyWait(callback?) {
+  noreplyWait(callback?:(err: any, value?: any) => void) {
     var self = this;
     var token = this._getToken();
 
-    var p = new Promise((resolve, reject) => {
+    var p = new Promise<any>((resolve, reject) => {
       var query = [protodef.Query.QueryType.NOREPLY_WAIT];
 
       this._send(query, token, resolve, reject);
@@ -69,12 +69,12 @@ export class Connection extends events.EventEmitter {
     throw new Err.ReqlDriverError('Did you mean to use `noreplyWait` instead of `noReplyWait`?');
   }
 
-  close(options?, callback?) {
+  close(options?, callback?:(err: any, value?: any) => void) {
     if (typeof options === 'function') {
       callback = options;
       options = {};
     }
-    var p = new Promise((resolve, reject) => {
+    var p = new Promise<any>((resolve, reject) => {
       if (!helper.isPlainObject(options)) options = {};
       if (options.noreplyWait === true) {
         this.noreplyWait().then((r) => {
@@ -163,7 +163,7 @@ export class Connection extends events.EventEmitter {
 
   }
 
-  reconnect(options, callback) {
+  reconnect(options, callback?:(err: any, value?: any) => void) {
     var self = this;
 
     if (typeof options === 'function') {
@@ -174,7 +174,7 @@ export class Connection extends events.EventEmitter {
     if (!helper.isPlainObject(options)) options = {};
 
     if (options.noreplyWait === true) {
-      var p = new Promise((resolve, reject) => {
+      var p = new Promise<any>((resolve, reject) => {
         this.close(options).then(() => {
           this.r.connect({
             host: this.host,
@@ -245,7 +245,7 @@ export class Connection extends events.EventEmitter {
         delete this.metadata[token];
       }
       else if (token === -1) { // This should not happen now since 1.13 took the token out of the query
-        var error = new Err.ReqlClientError(helper.makeAtom(response) + '\nClosing all outstanding queries...');
+        var error:Error = new Err.ReqlClientError(helper.makeAtom(response) + '\nClosing all outstanding queries...');
         this.emit('error', error);
         // We don't want a function to yield forever, so we just reject everything
         helper.loopKeys(this.rejectMap, (rejectMap, key) => {
@@ -264,7 +264,7 @@ export class Connection extends events.EventEmitter {
         currentResolve = this.metadata[token].resolve;
         currentReject = this.metadata[token].reject;
         this.metadata[token].removeCallbacks();
-        var error = new Err.ReqlRuntimeError(helper.makeAtom(response), this.metadata[token].query, response);
+        var error:Error = new Err.ReqlRuntimeError(helper.makeAtom(response), this.metadata[token].query, response);
         error.setName(response.e);
         currentReject(error);
         if (typeof this.metadata[token].endReject !== 'function') {
