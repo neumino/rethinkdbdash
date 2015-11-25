@@ -13,7 +13,7 @@ var Metadata = require('./metadata.js');
 var protodef = require('./protodef.js');
 var responseTypes = protodef.Response.ResponseType;
 
-function Connection(r, options, resolve, reject) {
+module.exports = function Connection(r, options, resolve, reject) {
   var self = this;
   this.r = r;
 
@@ -29,8 +29,7 @@ function Connection(r, options, resolve, reject) {
   this.token = 1;
   this.buffer = new Buffer(0);
 
-  this.metadata = {}
-
+  this.metadata = {};
   this.open = false; // true only if the user can write on the socket
   this.timeout = null;
 
@@ -43,8 +42,7 @@ function Connection(r, options, resolve, reject) {
     host: self.host,
     port: self.port,
     family: family
-  }
-
+  };
   var tlsOptions = options.ssl || false;
   if (tlsOptions === false) {
     self.connection = net.connect(connectionArgs);
@@ -74,7 +72,7 @@ function Connection(r, options, resolve, reject) {
   });
   self.connection.on('close', function(error) {
     // We emit end or close just once
-    clearTimeout(self.timeoutOpen)
+    clearTimeout(self.timeoutOpen);
     self.connection.removeAllListeners();
     self.emit('closed');
     // The connection is fully closed, flush (in case 'end' was not triggered)
@@ -90,15 +88,13 @@ function Connection(r, options, resolve, reject) {
       self.emit('error', error);
     });
 
-    var initBuffer = new Buffer(4)
-    initBuffer.writeUInt32LE(protodef.VersionDummy.Version.V0_4, 0)
-
-    var authBuffer = new Buffer(self.authKey, 'ascii')
+    var initBuffer = new Buffer(4);
+    initBuffer.writeUInt32LE(protodef.VersionDummy.Version.V0_4, 0);
+    var authBuffer = new Buffer(self.authKey, 'ascii');
     var lengthBuffer = new Buffer(4);
-    lengthBuffer.writeUInt32LE(authBuffer.length, 0)
-
-    var protocolBuffer = new Buffer(4)
-    protocolBuffer.writeUInt32LE(protodef.VersionDummy.Protocol.JSON, 0)
+    lengthBuffer.writeUInt32LE(authBuffer.length, 0);
+    var protocolBuffer = new Buffer(4);
+    protocolBuffer.writeUInt32LE(protodef.VersionDummy.Protocol.JSON, 0);
     helper.tryCatch(function() {
       self.connection.write(Buffer.concat([initBuffer, lengthBuffer, authBuffer, protocolBuffer]));
     }, function(err) {
@@ -118,7 +114,7 @@ function Connection(r, options, resolve, reject) {
     if (self.open == false) {
       for(var i=0; i<self.buffer.length; i++) {
         if (buffer[i] === 0) {
-          clearTimeout(self.timeoutOpen)
+          clearTimeout(self.timeoutOpen);
           var connectionStatus = buffer.slice(0, i).toString();
           if (connectionStatus === 'SUCCESS') {
             self.open = true;
@@ -156,13 +152,11 @@ function Connection(r, options, resolve, reject) {
   self.connection.on('timeout', function(buffer) {
     self.connection.open = false;
     self.emit('timeout');
-  })
+  });
   self.connection.toJSON = function() { // We want people to be able to jsonify a cursor
-    return '"A socket object cannot be converted to JSON due to circular references."'
-  }
+    return '"A socket object cannot be converted to JSON due to circular references."';
+  };
 }
-
-util.inherits(Connection, events.EventEmitter);
 
 Connection.prototype._processResponse = function(response, token) {
   //console.log('Connection.prototype._processResponse: '+token);
@@ -183,7 +177,7 @@ Connection.prototype._processResponse = function(response, token) {
       self.metadata[token].reject(new Err.ReqlCompileError(helper.makeAtom(response), self.metadata[token].query, response));
     }
 
-    delete self.metadata[token]
+    delete self.metadata[token];
   }
   else if (type === responseTypes.CLIENT_ERROR) {
     self.emit('release');
@@ -195,7 +189,7 @@ Connection.prototype._processResponse = function(response, token) {
       currentReject(new Err.ReqlClientError(helper.makeAtom(response), self.metadata[token].query, response));
       if (typeof self.metadata[token].endReject !== 'function') {
         // No pending STOP query, we can delete
-        delete self.metadata[token]
+        delete self.metadata[token];
       }
     }
     else if (typeof self.metadata[token].endResolve === 'function') {
@@ -203,7 +197,7 @@ Connection.prototype._processResponse = function(response, token) {
       currentReject = self.metadata[token].endReject;
       self.metadata[token].removeEndCallbacks();
       currentReject(new Err.ReqlClientError(helper.makeAtom(response), self.metadata[token].query, response));
-      delete self.metadata[token]
+      delete self.metadata[token];
     }
     else if (token === -1) { // This should not happen now since 1.13 took the token out of the query
       var error = new Err.ReqlClientError(helper.makeAtom(response)+'\nClosing all outstanding queries...');
@@ -213,7 +207,7 @@ Connection.prototype._processResponse = function(response, token) {
         rejectMap[key](error);
       });
       self.close();
-      delete self.metadata[token]
+      delete self.metadata[token];
     }
   }
   else if (type === responseTypes.RUNTIME_ERROR) {
@@ -230,7 +224,7 @@ Connection.prototype._processResponse = function(response, token) {
       currentReject(error);
       if (typeof self.metadata[token].endReject !== 'function') {
         // No pending STOP query, we can delete
-        delete self.metadata[token]
+        delete self.metadata[token];
       }
     }
     else if (typeof self.metadata[token].endResolve === 'function') {
@@ -238,7 +232,7 @@ Connection.prototype._processResponse = function(response, token) {
       currentReject = self.metadata[token].endReject;
       self.metadata[token].removeEndCallbacks();
       currentReject(new Err.ReqlRuntimeError(helper.makeAtom(response), self.metadata[token].query, response));
-      delete self.metadata[token]
+      delete self.metadata[token];
     }
   }
   else if (type === responseTypes.SUCCESS_ATOM) {
@@ -283,7 +277,7 @@ Connection.prototype._processResponse = function(response, token) {
         result = {
           profile: response.p,
           result: cursor || datum
-        }
+        };
       }
       else {
         result = datum;
@@ -385,7 +379,7 @@ Connection.prototype._processResponse = function(response, token) {
           else {
             currentResolve(result);
           }
-        }).error(currentReject)
+        }).error(currentReject);
       }
       cursor._push({done: false, response: response});
     }
@@ -451,7 +445,7 @@ Connection.prototype._processResponse = function(response, token) {
             currentResolve(result);
           }
           delete self.metadata[token];
-        }).error(currentReject)
+        }).error(currentReject);
       }
       cursor._push({done: true, response: response});
     }
@@ -472,8 +466,7 @@ Connection.prototype._processResponse = function(response, token) {
     delete self.metadata[token];
   }
 
-}
-
+};
 Connection.prototype.reconnect = function(options, callback) {
   var self = this;
 
@@ -498,8 +491,8 @@ Connection.prototype.reconnect = function(options, callback) {
           reject(e);
         });
       }).error(function(e) {
-        reject(e)
-      })
+        reject(e);
+      });
     }).nodeify(callback);
   }
   else {
@@ -512,8 +505,7 @@ Connection.prototype.reconnect = function(options, callback) {
   }
 
   return p;
-}
-
+};
 Connection.prototype._send = function(query, token, resolve, reject, originalQuery, options, end) {
   //console.log('Connection.prototype._send: '+token);
   //console.log(JSON.stringify(query, null, 2));
@@ -524,9 +516,8 @@ Connection.prototype._send = function(query, token, resolve, reject, originalQue
   var querySize = Buffer.byteLength(queryStr);
 
   var buffer = new Buffer(8+4+querySize);
-  buffer.writeUInt32LE(token & 0xFFFFFFFF, 0)
-  buffer.writeUInt32LE(Math.floor(token / 0xFFFFFFFF), 4)
-
+  buffer.writeUInt32LE(token & 0xFFFFFFFF, 0);
+  buffer.writeUInt32LE(Math.floor(token / 0xFFFFFFFF), 4);
   buffer.writeUInt32LE(querySize, 8);
 
   buffer.write(queryStr, 12);
@@ -553,7 +544,7 @@ Connection.prototype._send = function(query, token, resolve, reject, originalQue
     self.connection.write(buffer);
   }, function(err) {
     self.metadata[token].reject(err);
-    delete self.metadata[token]
+    delete self.metadata[token];
   });
 
 };
@@ -561,31 +552,27 @@ Connection.prototype._send = function(query, token, resolve, reject, originalQue
 Connection.prototype._continue = function(token, resolve, reject) {
   var query = [protodef.Query.QueryType.CONTINUE];
   this._send(query, token, resolve, reject);
-}
+};
 Connection.prototype._end = function(token, resolve, reject) {
   var query = [protodef.Query.QueryType.STOP];
   this._send(query, token, resolve, reject, undefined, undefined, true);
-}
-
-
+};
 Connection.prototype.use = function(db) {
-  if (typeof db !== 'string') throw new Err.ReqlDriverError('First argument of `use` must be a string')
+  if (typeof db !== 'string') throw new Err.ReqlDriverError('First argument of `use` must be a string');
   this.db = db;
-}
-
+};
 Connection.prototype.server = function(callback) {
   var self = this;
   return new Promise(function(resolve, reject) {
     var query = [protodef.Query.QueryType.SERVER_INFO];
     self._send(query, self._getToken(), resolve, reject, undefined, undefined, true);
   }).nodeify(callback);
-}
+};
 
 // Return the next token and update it.
 Connection.prototype._getToken = function() {
   return this.token++;
-}
-
+};
 Connection.prototype.close = function(options, callback) {
   if (typeof options === 'function') {
     callback = options;
@@ -598,10 +585,10 @@ Connection.prototype.close = function(options, callback) {
     if (options.noreplyWait === true) {
       self.noreplyWait().then(function(r) {
         self.open = false;
-        self.connection.end()
+        self.connection.end();
         resolve(r);
       }).error(function(e) {
-        reject(e)
+        reject(e);
       });
     }
     else{
@@ -615,8 +602,8 @@ Connection.prototype.close = function(options, callback) {
 
 
 Connection.prototype.noReplyWait = function() {
-  throw new Err.ReqlDriverError('Did you mean to use `noreplyWait` instead of `noReplyWait`?')
-}
+  throw new Err.ReqlDriverError('Did you mean to use `noreplyWait` instead of `noReplyWait`?');
+};
 Connection.prototype.noreplyWait = function(callback) {
   var self = this;
   var token = self._getToken();
@@ -627,14 +614,13 @@ Connection.prototype.noreplyWait = function(callback) {
     self._send(query, token, resolve, reject);
   }).nodeify(callback);
   return p;
-}
+};
 Connection.prototype._isConnection = function() {
   return true;
-}
+};
 Connection.prototype._isOpen = function() {
   return this.open;
-}
-
+};
 Connection.prototype._flush = function() {
   helper.loopKeys(this.metadata, function(metadata, key) {
     if (typeof metadata[key].reject === 'function') {
@@ -649,6 +635,5 @@ Connection.prototype._flush = function() {
     }
   });
   this.metadata = {};
-}
-
-module.exports = Connection
+};
+util.inherits(Connection, events.EventEmitter);
