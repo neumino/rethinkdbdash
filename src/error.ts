@@ -1,9 +1,10 @@
-var helper = require('./helper.js');
+import * as helper from './helper';
 var INDENT = 4;
 var LIMIT = 80;
 var IS_OPERATIONAL = 'isOperational';
 
-var protodef = require('./protodef.js');
+import protodef from './protodef';
+
 var responseTypes = protodef.Response.ResponseType;
 var termTypes = protodef.Term.TermType;
 var datumTypes = protodef.Datum.DatumType;
@@ -23,7 +24,7 @@ export class ReqlDriverError extends Error {
   static ReqlRuntimeError = ReqlRuntimeError;
   static ReqlServerError = ReqlServerError;
 
-  constructor(message, query, secondMessage) {
+  constructor(message, query?, secondMessage?) {
     super(message);
     Error.captureStackTrace(this, ReqlDriverError);
     this.message = message;
@@ -50,7 +51,7 @@ export class ReqlServerError extends Error {
   name = 'ReqlServerError';
   static IS_OPERATIONAL = true;
 
-  constructor(message, query) {
+  constructor(message, query?) {
     super(message);
     Error.captureStackTrace(this, ReqlServerError);
     this.message = message;
@@ -103,7 +104,7 @@ export class ReqlRuntimeError extends Error {
   message;
   name = 'ReqlRuntimeError';
 
-  constructor(message, query, frames) {
+  constructor(message, query?, frames?) {
     super(message);
     Error.captureStackTrace(this, ReqlRuntimeError);
     this.message = message;
@@ -146,7 +147,7 @@ export class ReqlCompileError extends Error {
   message;
   name = 'ReqlCompileError';
 
-  constructor(message, query, frames) {
+  constructor(message, query?, frames?) {
     super(message);
     Error.captureStackTrace(this, ReqlCompileError);
     this.message = message;

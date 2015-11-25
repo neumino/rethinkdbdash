@@ -1,7 +1,6 @@
-import stream = require('stream');
-var Transform = stream.Transform;
-var Cursor = require('./cursor.js');
-var util = require('util');
+import {Transform} from 'stream';
+import {Cursor} from './cursor';
+import * as util from 'util';
 
 // Experimental, but should work fine.
 export class TransformStream extends Transform {

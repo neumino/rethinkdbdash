@@ -1,5 +1,5 @@
 // Metadata we keep per query
-class Metadata {
+export class Metadata {
   endReject;
   endResolve;
 
@@ -41,5 +41,3 @@ class Metadata {
     this.cursor = false;
   }
 }
-
-export = Metadata;

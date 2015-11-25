@@ -1,19 +1,19 @@
-var net = require('net');
-var tls = require('tls');
-var Promise = require('bluebird');
-var events = require('events');
-var util = require('util');
+import * as net from 'net';
+import * as tls from 'tls';
+import Promise = require('bluebird');
+import * as events from 'events';
+import * as util from 'util';
 
-var helper = require('./helper.js');
-var Err = require('./error.js');
-var Cursor = require('./cursor.js');
-var ReadableStream = require('./stream.js');
-var Metadata = require('./metadata.js');
+import * as helper from './helper';
+import * as Err from './error';
+import {Cursor} from './cursor';
+import {ReadableStream} from './stream';
+import {Metadata} from './metadata';
 
-var protodef = require('./protodef.js');
+import protodef from './protodef';
 var responseTypes = protodef.Response.ResponseType;
 
-class Connection extends events.EventEmitter {
+export class Connection extends events.EventEmitter {
   _flush() {
     helper.loopKeys(this.metadata, (metadata, key) => {
       if (typeof metadata[key].reject === 'function') {
@@ -38,7 +38,7 @@ class Connection extends events.EventEmitter {
     return true;
   }
 
-  noreplyWait(callback) {
+  noreplyWait(callback?) {
     var self = this;
     var token = self._getToken();
 
@@ -105,7 +105,7 @@ class Connection extends events.EventEmitter {
     this._send(query, token, resolve, reject);
   }
 
-  _send(query, token, resolve, reject, originalQuery, options, end) {
+  _send(query, token, resolve, reject, originalQuery?, options?, end?) {
     //console.log('Connection.prototype._send: '+token);
     //console.log(JSON.stringify(query, null, 2));
 
@@ -509,6 +509,7 @@ class Connection extends events.EventEmitter {
   port;
   host;
   r;
+  connection;
 
   constructor(r, options, resolve, reject) {
     super();
@@ -656,4 +657,3 @@ class Connection extends events.EventEmitter {
 }
 
 // Return the next token and update it.
-export = Connection;

@@ -1,7 +1,7 @@
-var Promise = require('bluebird');
-var Err = require('./error.js');
-var helper = require('./helper.js');
-var EventEmitter = require('events').EventEmitter;
+import * as helper from './helper';
+import Promise = require('bluebird');
+import * as Err from './error';
+import {EventEmitter} from 'events';
 
 export class Cursor {
   _eventEmitter;

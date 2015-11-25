@@ -1,8 +1,7 @@
-import stream = require('stream');
-var Readable = stream.Readable;
-var util = require('util');
+import {Readable} from 'stream';
+import * as util from 'util';
 
-class ReadableStream extends Readable {
+export class ReadableStream extends Readable {
   _recursion;
 
   close() {
@@ -132,9 +131,11 @@ class ReadableStream extends Readable {
   _index;
   _pending;
   _cursor;
+  _count;
 
   constructor(options, cursor) {
 // Experimental, but should work fine.
+    super();
     if (cursor) this._cursor = cursor;
     this._pending = 0; // How many time we called _read while no cursor was available
     this._index = 0;
@@ -149,4 +150,3 @@ class ReadableStream extends Readable {
 };
 
 //TODO: Refactor with _fetch?
-export = ReadableStream;

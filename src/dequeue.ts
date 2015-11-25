@@ -1,7 +1,7 @@
 // Implement a dequeue with a circular buffer
 // The buffer can expand but currently doesn't automatically shrink
 // as it is not a desired behavior. We may want to explicitly resize it though.
-class Dequeue {
+export class Dequeue {
   getLength() {
     if (this.start <= this.end) {
       return this.end-this.start;
@@ -153,5 +153,3 @@ class Dequeue {
     this.buffer = new Array(size);
   }
 }
-
-export = Dequeue;

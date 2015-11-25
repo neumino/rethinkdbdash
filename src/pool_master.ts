@@ -1,14 +1,15 @@
-var util = require('util');
-var events = require('events');
-var Promise = require('bluebird');
-var Dequeue = require('./dequeue.js');
-var Pool = require('./pool.js');
-var helper = require('./helper.js');
-var Err = require('./error.js');
+import * as util from 'util';
+import * as events from 'events';
+import Promise = require('bluebird');
+import {Dequeue} from './dequeue';
+import {Pool} from './pool';
+import * as helper from './helper';
+import * as Err from './error';
+
 var UNKNOWN_POOLS = 'unknownPools';
 var SEPARATOR = 'feedSeparator';
 
-class PoolMaster extends events.EventEmitter {
+export class PoolMaster extends events.EventEmitter {
   emitStatus() {
     // Emit the healthy event with a boolean indicating whether the pool master
     // is healthy or not
@@ -310,7 +311,7 @@ class PoolMaster extends events.EventEmitter {
 
   createPoolSettings(globalOptions, serverOptions, log) {
     // Create the settings for a given pool. Merge the global options + the servers's one.
-    var settings = {};
+    var settings:any = {};
     var numServers = Array.isArray(globalOptions.servers) ? globalOptions.servers.length : 1;
     helper.loopKeys(globalOptions, (options, key) => {
       if ((key === 'buffer') || (key === 'max')) {
@@ -493,6 +494,7 @@ class PoolMaster extends events.EventEmitter {
   _r;
 
   constructor(r, options) {
+    super();
     var self = this;
     var options = options || {};
     var lineLength = options.buffer || 50;
@@ -559,6 +561,3 @@ class PoolMaster extends events.EventEmitter {
     }
   }
 }
-
-util.inherits(PoolMaster, events.EventEmitter);
-export = PoolMaster;

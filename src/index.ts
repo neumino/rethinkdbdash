@@ -1,13 +1,13 @@
-/*
-var Promise = require('bluebird');
+import Promise = require('bluebird');
 
-var helper = require('./helper.js');
-var Connection = require('./connection.js');
-var Term = require('./term.js');
-var Error = require('./error.js');
-var PoolMaster = require('./pool_master.js');
-var termTypes = require('./protodef.js').Term.TermType;
-*/
+import * as helper from './helper';
+import {Connection} from './connection';
+import {Term} from './term';
+import * as Error from './error';
+import {PoolMaster} from './pool_master';
+
+import protodef from './protodef';
+var termTypes = protodef.Term.TermType;
 
 class r {
   _profile = false;
@@ -573,7 +573,7 @@ class r {
   }
 };
 
-export function main(options) {
+function main(options) {
   var _r = new r();
 
   if (!helper.isPlainObject(options)) options = {};
@@ -589,3 +589,4 @@ export function main(options) {
   }
   return _r;
 }
+export default main;

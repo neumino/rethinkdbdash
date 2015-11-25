@@ -1,11 +1,11 @@
-var Promise = require('bluebird');
-var Dequeue = require('./dequeue.js');
-var helper = require('./helper.js');
-var Err = require('./error.js');
-var events = require('events');
-var util = require('util');
+import Promise = require('bluebird');
+import {Dequeue} from './dequeue';
+import * as helper from './helper';
+import * as Err from './error';
+import * as events from 'events';
+import * as util from 'util';
 
-class Pool extends events.EventEmitter {
+export class Pool extends events.EventEmitter {
   getAddress() {
     return this.options.connection.host + ':' + this.options.connection.port;
   }
@@ -133,8 +133,6 @@ class Pool extends events.EventEmitter {
         this._slowlyGrowing = false;
         this._aggressivelyExpandBuffer();
       }
-
-
 
       connection.on('error', function (e) {
         // We are going to close connection, but we don't want another process to use it before
@@ -348,9 +346,11 @@ class Pool extends events.EventEmitter {
   _pool;
   _log;
   options;
+  timeoutReconnect;
   _r;
 
   constructor(r, options) {
+    super();
     this._r = r;
 
     if (!helper.isPlainObject(options)) options = {};
@@ -410,4 +410,3 @@ class Pool extends events.EventEmitter {
  *  - size(number of connections) // the size of the pool changed
  *  - available-size(available size) // the number of AVAILABLE conncetions of the pool changed
  */
-export = Pool;

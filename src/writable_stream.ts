@@ -1,10 +1,9 @@
-import stream = require('stream');
-var Writable = stream.Writable;
-var Cursor = require('./cursor.js');
-var util = require('util');
+import {Writable} from 'stream';
+import {Cursor} from './cursor';
+import * as util from 'util';
 
 // Experimental, but should work fine.
-class WritableStream extends Writable {
+export class WritableStream extends Writable {
   _insert() {
     var self = this;
     self._inserting = true;
@@ -109,8 +108,10 @@ class WritableStream extends Writable {
   _cache;
   _options;
   _table;
+  _writableState;
 
   constructor(table, options, connection) {
+    super();
     this._table = table;
     this._options = options;
     this._cache = [];

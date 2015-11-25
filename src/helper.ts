@@ -1,7 +1,7 @@
-var protodef = require('./protodef.js');
+import protodef from './protodef';
 var termTypes = protodef.Term.TermType;
 var datumTypes = protodef.Datum.DatumType;
-var net = require('net');
+import * as net from 'net';
 
 
 export function createLogger(poolMaster, silent) {
@@ -87,7 +87,7 @@ export function convertPseudoType(obj, options) {
   }
   return obj;
 }
-export function makeAtom(response, options) {
+export function makeAtom(response, options?) {
   options = options || {};
   return convertPseudoType(response.r[0], options);
 }

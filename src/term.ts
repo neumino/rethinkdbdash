@@ -1,12 +1,12 @@
-var Promise = require('bluebird');
-var protodef = require('./protodef.js');
+import Promise = require('bluebird');
+import protodef from './protodef';
 var termTypes = protodef.Term.TermType;
 
-var Error = require('./error.js');
-var helper = require('./helper.js');
-var ReadableStream = require('./stream.js');
-var WritableStream = require('./writable_stream.js');
-var TransformStream = require('./transform_stream.js');
+import * as Error from './error';
+import * as helper from './helper';
+import {ReadableStream} from './stream';
+import {WriteableStream} from './writable_stream';
+import {TransformStream} from './transform_stream';
 
 export class Term {
   _frames;
@@ -272,7 +272,7 @@ export class Term {
     }
   }
 
-  run(connection, options, callback) {
+  run(connection, options, callback):any {
     // run([connection][, options][, callback])
     var self = this;
 
@@ -2997,9 +2997,11 @@ export class Term {
       throw new Error.ReqlDriverError('`' + method + '` is not defined', term._query);
     }
   }
+  
   toString() {
     return Error.generateBacktrace(this._query, 0, null, [], { indent: 0, extra: 0 }).str;
   }
+  
   _translateArgs = {
     returnChanges: 'return_changes',
     includeInitial: 'include_initial',
@@ -3028,6 +3030,7 @@ export class Term {
     maxBatchSeconds: 'max_batch_seconds',
     firstBatchScaledownFactor: 'first_batch_scaledown_factor'
   };
+  
   _wrap() {
     var self = this;
     if (helper.hasImplicit(this._query)) {
@@ -3041,6 +3044,7 @@ export class Term {
       return self;
     }
   };
+  
   _fillArgs(args) {
     var foundError = false;
     var internalArgs = [];
@@ -3068,7 +3072,7 @@ export class Term {
   _setArrayLimit(arrayLimit) {
     Term.prototype._arrayLimit = arrayLimit;
   };
-  _fastArit(len, num) {
+  _fastArity(len, num) {
     // Cheap arity check. If it fails, return false, and then we are expected to call _arity/_arityRange
     return (len === num);
   };
