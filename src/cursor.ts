@@ -210,7 +210,7 @@ export class Cursor {
         callback(err);
       }
     };
-    var resolve = data => callback(null, data).then(() => {
+    var resolve = data => callback(data).then(() => {
       if (this._closed === false) {
         return this._next().then(resolve).error(error => {
           if ((error.message !== 'You cannot retrieve data from a cursor that is closed.') &&
@@ -221,7 +221,7 @@ export class Cursor {
       }
       return null;
     });
-    this._next().then(resolve).error(error => {
+    return this._next().then(resolve).error(error => {
       // We can silence error when the cursor is closed as this 
       if ((error.message !== 'You cannot retrieve data from a cursor that is closed.') &&
         (error.message.match(/You cannot call `next` on a closed/) === null)) {
