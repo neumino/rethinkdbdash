@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "listFiles": true,
+    "outDir": "lib",
+    "declaration": true,
+    "inlineSourceMap": true
+  },
+  "exclude": [
+    "lib",
+    "long_test",
+    "test",
+    "tool",
+    "node_modules"
+  ]
+}

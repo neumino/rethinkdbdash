@@ -1,0 +1,40 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "Launch",
+			"type": "node",
+			"request": "launch",
+			"program": "lib/index.js",
+			"stopOnEntry": false,
+			"args": [],
+			"cwd": ".",
+			"runtimeExecutable": null,
+			"runtimeArgs": [
+				"--nolazy"
+			],
+			"env": {
+				"NODE_ENV": "development"
+			},
+			"externalConsole": false,
+			"sourceMaps": false,
+			"outDir": null
+		},
+    {
+      "name": "Unit tests",
+      "type": "node",
+      "program": ".vscode/mocha.js",
+      "stopOnEntry": true,
+      "args": ["test"],
+      "cwd": ".",
+      "runtimeExecutable": null,
+      "env": { 
+				"NODE_ENV": "development",
+				"WERCKER_RETHINKDB_HOST": "192.168.99.100",
+				"WERCKER_RETHINKDB_PORT": "32775"
+      },
+			"sourceMaps": true,
+      "outDir": "lib"
+    }
+	]
+}
