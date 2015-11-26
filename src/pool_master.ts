@@ -100,7 +100,7 @@ export class PoolMaster extends events.EventEmitter {
       this._timeout = setTimeout(() => { this.fetchServers() }, 0);
     }
   }
-  
+
   emitStatus() {
     // Emit the healthy event with a boolean indicating whether the pool master
     // is healthy or not
@@ -184,65 +184,65 @@ export class PoolMaster extends events.EventEmitter {
     // Bind listeners on the pools
     var self = this;
 
-    pool.on('size-diff', (diff) => {
-      this._numConnections += diff;
-      this.emit('size', this._numConnections);
+    pool.on('size-diff', function(diff) {
+      self._numConnections += diff;
+      self.emit('size', self._numConnections)
     });
-    pool.on('available-size-diff', (diff) => {
-      this._numAvailableConnections += diff;
-      this.emit('available-size', this._numAvailableConnections);
+    pool.on('available-size-diff', function(diff) {
+      self._numAvailableConnections += diff;
+      self.emit('available-size', self._numAvailableConnections)
     });
 
-    pool.on('new-connection', () => {
-      if (this._line.getLength() > 0) {
-        var p = this._line.shift();
+    pool.on('new-connection', function() {
+      if (self._line.getLength() > 0) {
+        var p = self._line.shift();
         this.getConnection().then(p.resolve).error(p.reject);
-        this.emit('queueing', this._line.getLength());
+        self.emit('queueing', self._line.getLength())
       }
     });
-    pool.on('not-empty', () => {
-      if (this._draining === false) {
+    pool.on('not-empty', function() {
+      if (self._draining === false) {
         var found = false;
-        for (var i = 0; i < this._healthyPools.length; i++) {
-          if (this._healthyPools[i] === this) {
-            this._healthyPools.length;
+        for(var i=0; i<self._healthyPools.length; i++) {
+          if (self._healthyPools[i] === this) {
+            self._healthyPools.length;
             found = true;
             break;
           }
         }
         if (found === false) {
-          this._healthyPools.push(this);
-          this.emitStatus();
-          this.resetBufferParameters();
+          self._healthyPools.push(this);
+          self.emitStatus();
+          self.resetBufferParameters();
         }
       }
     });
-    pool.on('empty', () => {
+    pool.on('empty', function() {
       // A pool that become empty is considered unhealthy
-      for (var i = 0; i < this._healthyPools.length; i++) {
-        if (this._healthyPools[i] === this) {
-          this._healthyPools.splice(i, 1);
-          this.emitStatus();
+      for(var i=0; i<self._healthyPools.length; i++) {
+        if (self._healthyPools[i] === this) {
+          self._healthyPools.splice(i, 1);
+          self.emitStatus();
           break;
         }
       }
-      if (this._healthyPools.length === 0) {
-        this._flushErrors();
+      if (self._healthyPools.length === 0) {
+        self._flushErrors();
       }
 
-      this.resetBufferParameters();
+      self.resetBufferParameters();
     });
-    pool.on('draining', () => {
-      for (var i = 0; i < this._healthyPools.length; i++) {
-        if (this._healthyPools[i] === this) {
-          this._healthyPools.splice(i, 1);
-          this.emitStatus();
+    pool.on('draining', function() {
+      for(var i=0; i<self._healthyPools.length; i++) {
+        if (self._healthyPools[i] === this) {
+          self._healthyPools.splice(i, 1);
+          self.emitStatus();
           break;
         }
       }
 
-      if (this._healthyPools === 0) {
-        this._flushErrors();
+      if (self._healthyPools === 0) {
+        self._flushErrors();
       }
     });
   }
@@ -436,7 +436,7 @@ export class PoolMaster extends events.EventEmitter {
         var found = false;
         for (var j = 0; j < this._pools[UNKNOWN_POOLS].length; j++) {
           if (found) break;
-          var pool = this._pools[UNKNOWN_POOLS][j]; 
+          var pool = this._pools[UNKNOWN_POOLS][j];
           // If a pool is created with localhost, it will probably match the first server even though it may not the the one
           // So it gets an id
           for (var k = 0; k < server.network.canonical_addresses.length; k++) {

@@ -294,37 +294,37 @@ export class Cursor {
 
   _next(callback?:(err: any, value?: any) => void) {
     var self = this;
-    var p = new Promise<any|Error>((resolve, reject) => {
-      if (this._closed === true) {
-        reject(new Err.ReqlDriverError('You cannot call `next` on a closed ' + this._type));
+    var p = new Promise<any|Error>(function(resolve, reject) {
+      if (self._closed === true) {
+        reject(new Err.ReqlDriverError('You cannot call `next` on a closed '+this._type));
       }
-      else if ((this._data.length === 0) && (this._canFetch === false)) {
-        reject(new Err.ReqlDriverError('No more rows in the ' + this._type.toLowerCase()).setOperational());
+      else if ((self._data.length === 0) && (self._canFetch === false)) {
+        reject(new Err.ReqlDriverError('No more rows in the '+self._type.toLowerCase()).setOperational());
       }
       else {
-        if ((this._data.length > 0) && (this._data[0].length > this._index)) {
-          var result = this._data[0][this._index++];
+        if ((self._data.length > 0) && (self._data[0].length > self._index)) {
+          var result = self._data[0][self._index++];
           if (result instanceof Error) {
             reject(result);
           }
           else {
             resolve(result);
-
+  
             // This could be possible if we get back batch with just one document?
-            if (this._data[0].length === this._index) {
-              this._index = 0;
-              this._data.shift();
-              if ((this._data.length === 1)
-                && (this._canFetch === true)
-                && (this._closed === false)
-                && (this._fetching === false)) {
-                this._fetch();
+            if (self._data[0].length === self._index) {
+              self._index = 0;
+              self._data.shift();
+              if ((self._data.length === 1)
+                && (self._canFetch === true)
+                && (self._closed === false)
+                && (self._fetching === false)) {
+                  self._fetch();
               }
             }
           }
         }
         else {
-          this._pendingPromises.push({ resolve: resolve, reject: reject });
+          self._pendingPromises.push({resolve: resolve, reject: reject});
         }
       }
     }).nodeify(callback);
@@ -343,26 +343,26 @@ var methods = [
   'emit'
 ];
 
-for (var i=0; i<methods.length; i++) {
-  ((n) => {
+for(var i=0; i<methods.length; i++) {
+  (function(n) {
     var method = methods[n];
-    Cursor.prototype[method] = () => {
+    Cursor.prototype[method] = function() {
       var self = this;
-      if (this._eventEmitter == null) {
-        this._makeEmitter();
-        setImmediate(() => {
-          if ((this._type === 'feed') || (this._type === 'atomFeed')) {
-            this._each(this._eachCb.bind(self));
+      if (self._eventEmitter == null) {
+        self._makeEmitter();
+        setImmediate(function() {
+          if ((self._type === 'feed') || (self._type === 'atomFeed')) {
+            self._each(self._eachCb.bind(self));
           }
           else {
-            this._each(this._eachCb.bind(self), () => {
-              this._eventEmitter.emit('end');
+            self._each(self._eachCb.bind(self), function() {
+              self._eventEmitter.emit('end');
             });
           }
         });
       }
       var _len = arguments.length;var _args = new Array(_len); for(var _i = 0; _i < _len; _i++) {_args[_i] = arguments[_i];}
-      this._eventEmitter[method].apply(this._eventEmitter, _args);
+      self._eventEmitter[method].apply(self._eventEmitter, _args);
     };
   })(i);
 }

@@ -22,6 +22,7 @@ class r {
   _host = 'localhost';
   _poolMaster;
   _options;
+  _Term;
   nestingLevel;
   arrayLimit;
   
@@ -49,18 +50,28 @@ class r {
   maxval;
   
   nextVarId;
-  _Term;
-  Error = Err;
+  Error;
 
   constructor(options?) {
     var self = this;
-    var _r = this;
-    // var _r_term = x => new Term(_r_term).expr(x);
-    // var _r = helper.changeProto<r>(_r_term, this);
-
+    var _r_term = x => new Term(_r_term).expr(x);
+    var _r = helper.changeProto<r>(_r_term, this);
+    
+    _r._profile = false;
+    _r._timeFormat = 'native';
+    _r._useOutdated = false;
+    _r._db = 'test';
+    _r._arrayLimit = 100000;
+    _r._nestingLevel = 100;
+    _r._timeoutConnect = 20;
+    _r._authKey = '';
+    _r._port = 28015;
+    _r._host = 'localhost';
+    _r.Error = Err;
+    
     Term.prototype._setNestingLevel(r.prototype.nestingLevel);
     Term.prototype._setArrayLimit(r.prototype.arrayLimit);
-
+    
     _r.row = new Term(_r).row();
 
     _r.monday = new Term(_r).monday();

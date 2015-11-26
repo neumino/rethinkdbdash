@@ -5,24 +5,20 @@ var IS_OPERATIONAL = 'isOperational';
 
 import protodef = require('./protodef');
 
+var protoErrorType = protodef.Response.ErrorType;
 var responseTypes = protodef.Response.ResponseType;
 var termTypes = protodef.Term.TermType;
 var datumTypes = protodef.Datum.DatumType;
 var frameTypes = protodef.Frame.FrameType;
 
-
 export class ReqlDriverError extends Error {
+  IS_OPERATIONAL;
   setOperational() {
     this[IS_OPERATIONAL] = true;
     return this;
   };
   message;
   name = 'ReqlDriverError';
-  static generateBacktrace = generateBacktrace;
-  static ReqlClientError = ReqlClientError;
-  static ReqlCompileError = ReqlCompileError;
-  static ReqlRuntimeError = ReqlRuntimeError;
-  static ReqlServerError = ReqlServerError;
 
   constructor(message, query?, secondMessage?) {
     super(message);
@@ -45,11 +41,16 @@ export class ReqlDriverError extends Error {
     if (secondMessage) this.message += '\n' + secondMessage;
   }
 };
+ReqlDriverError.prototype.name = 'ReqlDriverError';
+ReqlDriverError.prototype.setOperational = function() {
+  this[IS_OPERATIONAL] = true;
+  return this;
+};
 
 export class ReqlServerError extends Error {
   message;
   name = 'ReqlServerError';
-  static IS_OPERATIONAL = true;
+  IS_OPERATIONAL = true;
 
   constructor(message, query?) {
     super(message);
@@ -72,9 +73,11 @@ export class ReqlServerError extends Error {
     }
   }
 };
+ReqlServerError.prototype.name = 'ReqlServerError';
+ReqlServerError.prototype[IS_OPERATIONAL] = true;
 
 export class ReqlRuntimeError extends Error {
-  static IS_OPERATIONAL = true;
+  IS_OPERATIONAL = true;
   setName(type) {
     switch(type) {
     case this.protoErrorType.INTERNAL:
@@ -140,9 +143,34 @@ export class ReqlRuntimeError extends Error {
     //this.query = JSON.stringify(query, null, 2);
   }
 };
+ReqlRuntimeError.prototype.name = 'ReqlRuntimeError';
+ReqlRuntimeError.prototype.setName = function(type) {
+  switch(type) {
+    case protoErrorType.INTERNAL:
+      this.name = 'ReqlInternalError';
+      break;
+    case protoErrorType.RESOURCE_LIMIT:
+      this.name = 'ReqlResourceError';
+      break;
+    case protoErrorType.QUERY_LOGIC:
+      this.name = 'ReqlLogicError';
+      break;
+    case protoErrorType.OP_FAILED:
+      this.name = 'ReqlOpFailedError';
+      break;
+    case protoErrorType.OP_INDETERMINATE:
+      this.name = 'ReqlOpIndeterminateError';
+      break;
+    case protoErrorType.USER:
+      this.name = 'ReqlUserError';
+      break;
+    //default: // Do nothing
+  }
+}
+ReqlRuntimeError.prototype[IS_OPERATIONAL] = true;
 
 export class ReqlCompileError extends Error {
-  static IS_OPERATIONAL = true;
+  IS_OPERATIONAL = true;
   frames;
   message;
   name = 'ReqlCompileError';
@@ -183,11 +211,13 @@ export class ReqlCompileError extends Error {
     }
   }
 };
+ReqlCompileError.prototype.name = 'ReqlCompileError';
+ReqlCompileError.prototype[IS_OPERATIONAL] = true;
 
 export class ReqlClientError extends Error {
   message;
   name = 'ReqlClientError';
-  static IS_OPERATIONAL = true;
+  IS_OPERATIONAL = true;
 
   constructor(message) {
     super(message);
@@ -195,6 +225,8 @@ export class ReqlClientError extends Error {
     this.message = message;
   }
 };
+ReqlClientError.prototype.name = 'ReqlClientError';
+ReqlClientError.prototype[IS_OPERATIONAL] = true;
 
 var _constants = {
   MONDAY: true,

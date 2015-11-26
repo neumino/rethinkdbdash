@@ -2837,7 +2837,8 @@ export class Term {
     term._fillArgs(args);
     return term;
   }
-  toJSON() { return this.toJsonString() }
+  
+  toJSON;
 
   range(start, end?) {
     this._noPrefix(this, 'range');
@@ -3007,34 +3008,7 @@ export class Term {
     return Error.generateBacktrace(this._query, 0, null, [], { indent: 0, extra: 0 }).str;
   }
   
-  _translateArgs = {
-    returnChanges: 'return_changes',
-    includeInitial: 'include_initial',
-    primaryKey: 'primary_key',
-    readMode: 'read_mode',
-    nonAtomic: 'non_atomic',
-    leftBound: 'left_bound',
-    rightBound: 'right_bound',
-    defaultTimezone: 'default_timezone',
-    noReply: 'noreply',
-    resultFormat: 'result_format',
-    pageLimit: 'page_limit',
-    arrayLimit: 'array_limit',
-    numVertices: 'num_vertices',
-    geoSystem: 'geo_system',
-    maxResults: 'max_results',
-    maxDist: 'max_dist',
-    dryRun: 'dry_run',
-    waitFor: 'wait_for',
-    includeStates: 'include_states',
-    primaryReplicaTag: 'primary_replica_tag',
-    emergencyRepair: 'emergency_repair',
-    minBatchRows: 'min_batch_rows',
-    maxBatchRows: 'max_batch_rows',
-    maxBatchBytes: 'max_batch_bytes',
-    maxBatchSeconds: 'max_batch_seconds',
-    firstBatchScaledownFactor: 'first_batch_scaledown_factor'
-  }
+  _translateArgs;
   
   _wrap() {
     var self = this;
@@ -3089,6 +3063,37 @@ export class Term {
   }
 }
 
+Term.prototype.toJSON = Term.prototype.toJsonString;
+
+Term.prototype._translateArgs = {
+  returnChanges: 'return_changes',
+  includeInitial: 'include_initial',
+  primaryKey: 'primary_key',
+  readMode: 'read_mode',
+  nonAtomic: 'non_atomic',
+  leftBound: 'left_bound',
+  rightBound: 'right_bound',
+  defaultTimezone: 'default_timezone',
+  noReply: 'noreply',
+  resultFormat: 'result_format',
+  pageLimit: 'page_limit',
+  arrayLimit: 'array_limit',
+  numVertices: 'num_vertices',
+  geoSystem: 'geo_system',
+  maxResults: 'max_results',
+  maxDist: 'max_dist',
+  dryRun: 'dry_run',
+  waitFor: 'wait_for',
+  includeStates: 'include_states',
+  primaryReplicaTag: 'primary_replica_tag',
+  emergencyRepair: 'emergency_repair',
+  minBatchRows: 'min_batch_rows',
+  maxBatchRows: 'max_batch_rows',
+  maxBatchBytes: 'max_batch_bytes',
+  maxBatchSeconds: 'max_batch_seconds',
+  firstBatchScaledownFactor: 'first_batch_scaledown_factor'
+};
+
 function translateOptions(options) {
     var translatedOpt = {};
     helper.loopKeys(options, function(options, key) {
@@ -3100,14 +3105,15 @@ function translateOptions(options) {
 
 // Datums
 class Func extends Term {
-  nextVarId = 1
+  nextVarId;
   
   constructor(r, func) {
     // We can retrieve the names of the arguments with
     // func.toString().match(/\(([^\)]*)\)/)[1].split(/\s*,\s*/)
 
-    super(r);
-    this._query.push(termTypes.FUNC);
+    var term = super(r);
+    term.nextVarId = 1;
+    term._query.push(termTypes.FUNC);
     var args = [];
     var argVars = [];
     var argNums = [];
@@ -3130,14 +3136,16 @@ class Func extends Term {
     args.push(new Term(r).expr(argNums));
     args.push(body);
 
-    this._fillArgs(args);
+    term._fillArgs(args);
+    return term;
   }
 }
 
 class Var extends Term {
   constructor(r, id) {
-    super(r);
-    this._query.push(termTypes.VAR);
-    this._query.push([new Term(r).expr(id)._query]);
+    var term = super(r);
+    term._query.push(termTypes.VAR);
+    term._query.push([new Term(r).expr(id)._query]);
+    return term;
   }
 }
