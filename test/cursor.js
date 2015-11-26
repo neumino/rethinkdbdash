@@ -108,7 +108,7 @@ It('`eachAsync` should work', function* (done) {
     var history = [];
     var count = 0;
     var promisesWait = 0;
-    cursor.eachAsync(function(err, result) {
+    cursor.eachAsync(function(result) {
       history.push(count);
       count++;
       return new Promise(function(resolve, reject) {
@@ -123,14 +123,11 @@ It('`eachAsync` should work', function* (done) {
               expected.push(-1*i);
             }
             assert.deepEqual(history, expected)
-            done();
           }
-
           resolve();
-
         }, 1);
       });
-    })
+    }).then(done);
   }
   catch(e) {
     done(e);
