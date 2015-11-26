@@ -1,0 +1,38 @@
+import Promise = require('bluebird');
+export declare class Cursor {
+    _eventEmitter: any;
+    _setIncludesStates: any;
+    _type: any;
+    _closed: any;
+    _pendingPromises: any;
+    _canFetch: any;
+    _fetching: any;
+    _data: any;
+    _index: any;
+    next: any;
+    eachAsync: any;
+    each: any;
+    options: any;
+    token: any;
+    connection: any;
+    _eachCb(err: any, data: any): void;
+    _makeEmitter(): void;
+    close(callback: any): void;
+    _set(ar: any): void;
+    _done(): void;
+    _pushError(error: any): void;
+    _flush(): void;
+    _push(data: any): void;
+    _fetch(): void;
+    hasNext(): void;
+    toJSON(): void;
+    getType(): any;
+    includesStates(): any;
+    setIncludesStates(): void;
+    toString(): string;
+    constructor(connection: any, token: any, options: any, type: any);
+    _eachAsync(callback: any, onFinish: any): any;
+    _each(callback: any, onFinish: any): any;
+    toArray(callback: any): void;
+    _next(callback?: (err: any, value?: any) => void): Promise<any>;
+}

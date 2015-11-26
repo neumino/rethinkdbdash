@@ -1,0 +1,162 @@
+import protodef = require('./protodef');
+var termTypes = protodef.Term.TermType;
+var datumTypes = protodef.Datum.DatumType;
+import * as net from 'net';
+
+
+export function createLogger(poolMaster, silent) {
+  return (message) => {
+    if (silent !== true) {
+      console.error(message);
+    }
+    poolMaster.emit('log', message);
+  };
+}
+
+export function isPlainObject(obj) {
+  return Object.prototype.toString.call(obj) === '[object Object]';
+}
+
+export function toArray(args) {
+  return Array.prototype.slice.call(args);
+}
+
+export function hasImplicit(arg) {
+  if (Array.isArray(arg)) {
+    if (arg[0] === termTypes.IMPLICIT_VAR) return true;
+
+    if (Array.isArray(arg[1])) {
+      for(var i=0; i<arg[1].length; i++) {
+        if (hasImplicit(arg[1][i])) return true;
+      }
+    }
+    if (isPlainObject(arg[2])) {
+      for(var key in arg[2]) {
+        if (hasImplicit(arg[2][key])) return true;
+      }
+    }
+  }
+  else if (isPlainObject(arg)) {
+    for(var key in arg) {
+      if (hasImplicit(arg[key])) return true;
+    }
+  }
+  return false;
+}
+
+export function loopKeys(obj, fn) {
+  var keys = Object.keys(obj);
+  var result;
+  var keysLength = keys.length;
+  for(var i=0; i<keysLength; i++) {
+    result = fn(obj, keys[i]);
+    if (result === false) return;
+  }
+}
+
+export function convertPseudoType(obj, options) {
+  if (Array.isArray(obj)) {
+    for(var i=0; i<obj.length; i++) {
+      obj[i] = convertPseudoType(obj[i], options);
+    }
+  }
+  else if (isPlainObject(obj)) {
+    if ((options.timeFormat != 'raw') && (obj.$reql_type$ === 'TIME')) {
+      obj = new Date(obj.epoch_time*1000);
+    }
+    else if ((options.binaryFormat != 'raw') && (obj.$reql_type$ === 'BINARY')) {
+      obj = new Buffer(obj.data, 'base64');
+    }
+    else if ((options.groupFormat != 'raw') && (obj.$reql_type$ === 'GROUPED_DATA')) {
+      var result = [];
+      for(var i=0; i<obj.data.length; i++) {
+        result.push({
+          group: obj.data[i][0],
+          reduction: obj.data[i][1],
+        });
+      }
+      obj = result;
+    }
+    else{
+      for(var key in obj) {
+        if (obj.hasOwnProperty(key)) {
+          obj[key] = convertPseudoType(obj[key], options);
+        }
+      }
+    }
+  }
+  return obj;
+}
+export function makeAtom(response, options?) {
+  options = options || {};
+  return convertPseudoType(response.r[0], options);
+}
+
+export function makeSequence(response, options) {
+  var result = [];
+  options = options || {};
+
+  return convertPseudoType(response.r, options);
+}
+
+export function changeProto<T>(object, other):T {
+  object.__proto__ = other.__proto__;
+  return object;
+}
+
+// Try to extract the most global address
+// Note: Mutate the input
+export function getCanonicalAddress(addresses) {
+  // We suppose that the addresses are all valid, and therefore use loose regex
+  for(var i=0; i<addresses.length; i++) {
+    var addresse = addresses[i];
+    if ((/^127(\.\d{1,3}){3}$/.test(addresse.host)) || (/0?:?0?:?0?:?0?:?0?:?0?:0?:1/.test(addresse.host))) {
+      addresse.value = 0;
+    }
+    else if ((net.isIPv6(addresse.host)) && (/^[fF]|[eE]80:.*\:.*\:/.test(addresse.host))) {
+      addresse.value = 1;
+    }
+    else if (/^169\.254\.\d{1,3}\.\d{1,3}$/.test(addresse.host)) {
+      addresse.value = 2;
+    }
+    else if (/^192\.168\.\d{1,3}\.\d{1,3}$/.test(addresse.host)) {
+      addresse.value = 3;
+    }
+    else if (/^172\.(1\d|2\d|30|31)\.\d{1,3}\.\d{1,3}$/.test(addresse.host)) {
+      addresse.value = 4;
+    }
+    else if (/^10(\.\d{1,3}){3}$/.test(addresse.host)) {
+      addresse.value = 5;
+    }
+    else if ((net.isIPv6(addresse.host)) && (/^[fF]|[cCdD].*\:.*\:/.test('addresse.host'))) {
+      addresse.value = 6;
+    }
+    else {
+      addresse.value = 7;
+    }
+  }
+  var result = addresses[0];
+  var max = addresses[0].value;
+  for(var i=0; i<addresses.length; i++) {
+    if (addresses[i].value > max) {
+      result = addresses[i];
+      max = addresses[i].value;
+    }
+  }
+  return result;
+}
+
+export const localhostAliases = {
+  'localhost': true,
+  '127.0.0.1': true,
+  '::1': true
+};
+
+export function tryCatch(toTry, handleError) {
+  try{
+  toTry();
+  }
+  catch(err) {
+  handleError(err);
+  }
+};

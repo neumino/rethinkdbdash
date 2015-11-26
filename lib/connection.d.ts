@@ -1,0 +1,33 @@
+import Promise = require('bluebird');
+import * as events from 'events';
+export declare class Connection extends events.EventEmitter {
+    rejectMap: any;
+    timeout: any;
+    open: any;
+    metadata: any;
+    buffer: any;
+    token: any;
+    db: any;
+    timeoutConnect: any;
+    authKey: any;
+    port: any;
+    host: any;
+    r: any;
+    connection: any;
+    timeoutOpen: any;
+    constructor(r: any, options: any, resolve: any, reject: any);
+    _flush(): void;
+    _isOpen(): any;
+    _isConnection(): boolean;
+    noreplyWait(callback?: (err: any, value?: any) => void): Promise<any>;
+    noReplyWait(): void;
+    close(options?: any, callback?: (err: any, value?: any) => void): Promise<any>;
+    _getToken(): number;
+    server(callback: any): void;
+    use(db: any): void;
+    _end(token: any, resolve: any, reject: any): void;
+    _continue(token: any, resolve: any, reject: any): void;
+    _send(query: any, token: any, resolve: any, reject: any, originalQuery?: any, options?: any, end?: any): void;
+    reconnect(options: any, callback?: (err: any, value?: any) => void): any;
+    _processResponse(response: any, token: any): void;
+}
