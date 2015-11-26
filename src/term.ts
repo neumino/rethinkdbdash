@@ -216,7 +216,7 @@ export class Term {
       return new TransformStream(this, options, connection);
     }
     else {
-      return new TransformStream(this, {}, connection);
+      return new TransformStream(this, connection);
     }
   }
 
@@ -229,7 +229,7 @@ export class Term {
       return new WritableStream(this, options, connection);
     }
     else {
-      return new WritableStream(this, {}, connection);
+      return new WritableStream(this, connection);
     }
   }
 
@@ -289,16 +289,16 @@ export class Term {
         options = {};
       }
       if (options.readable === true) {
-        return this._toReadableStream(connection, options);
+        return this._toReadableStream(options);
       }
       else if (options.writable === true) {
-        return this._toWritableStream(connection, options);
+        return this._toWritableStream(options);
       }
       else if (options.transform === true) {
-        return this._toTransformStream(connection, options);
+        return this._toTransformStream(options);
       }
       else {
-        return this._toReadableStream(connection, options);
+        return this._toReadableStream(options);
       }
     }
   }
