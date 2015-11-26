@@ -77,7 +77,7 @@ export declare class Term {
     changes(options: any): Term;
     indexRename(oldName: any, newName: any, options: any): Term;
     indexWait(): Term;
-    indexesOf(predicate: any): Term;
+    indexesOf: any;
     default(expression: any): Term;
     forEach(func: any): Term;
     branch(trueBranch: any, falseBranch: any): Term;

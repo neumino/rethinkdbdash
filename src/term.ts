@@ -1459,8 +1459,8 @@ export class Term {
     term._fillArgs(args);
     return term;
   }
-
-  indexesOf(predicate) { return this.offsetsOf(predicate) }
+  
+  indexesOf;
   
   default(expression) {
     if (this._fastArity(arguments.length, 1) === false) {
@@ -3064,6 +3064,7 @@ export class Term {
 }
 
 Term.prototype.toJSON = Term.prototype.toJsonString;
+Term.prototype.indexesOf = Term.prototype.offsetsOf
 
 Term.prototype._translateArgs = {
   returnChanges: 'return_changes',
