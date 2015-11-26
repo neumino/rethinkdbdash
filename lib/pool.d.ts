@@ -1,0 +1,34 @@
+import Promise = require('bluebird');
+import * as events from 'events';
+export declare class Pool extends events.EventEmitter {
+    id: any;
+    options: any;
+    timeoutReconnect: any;
+    _empty: any;
+    _extraConnections: any;
+    _slowlyGrowing: any;
+    _slowGrowth: any;
+    _consecutiveFails: any;
+    _openingConnections: any;
+    _numConnections: any;
+    _connectionToReplace: any;
+    _localhostToDrain: any;
+    _draining: any;
+    _pool: any;
+    _log: any;
+    _r: any;
+    constructor(r: any, options: any);
+    getAddress(): string;
+    drain(): Promise<any>;
+    drainLocalhost(): void;
+    setOptions(options: any): any;
+    getAvailableLength(): any;
+    getLength(): any;
+    _expandBuffer(): void;
+    _aggressivelyExpandBuffer(): void;
+    createConnection(): any;
+    putConnection(connection: any): void;
+    _increaseNumConnections(): void;
+    _decreaseNumConnections(): void;
+    getConnection(): Promise<{}>;
+}
