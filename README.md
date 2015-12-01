@@ -541,3 +541,11 @@ Tests are also being run on [wercker](http://wercker.com/):
 
   Feel free to send a pull request. If you want to implement a new feature, please open
   an issue first, especially if it's a non backward compatible one.
+
+### Browserify
+
+To build the browser version of rethinkdbdash, run:
+
+```
+node browserify.js
+```
