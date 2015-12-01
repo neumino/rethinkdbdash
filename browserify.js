@@ -2,7 +2,7 @@ var browserify = require('browserify');
 var fs = require('fs');
 
 var REQUIRE_FILES = [
-	'connection.js',
+  'connection.js',
   'cursor.js',
   'dequeue.js',
   'error.js',
