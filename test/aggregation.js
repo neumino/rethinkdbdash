@@ -143,6 +143,20 @@ It('`groupFormat` should work -- with raw', function* (done) {
   }
 })
 
+It('`group` results should be properly parsed ', function* (done) {
+  try {
+    var result = yield r.expr([{name: "Michel", date: r.now()},{name: "Laurent", date: r.now()},
+        {name: "Sophie", date: r.now().sub(1000)}]).group('date').run();
+    assert.equal(result.length, 2);
+    assert(result[0].group instanceof Date);
+    assert(result[0].reduction[0].date instanceof Date);
+    done();
+  }
+  catch(e) {
+    done(e);
+  }
+})
+
 
 It('`ungroup` should work ', function* (done) {
   try {
