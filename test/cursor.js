@@ -725,3 +725,16 @@ It('`includeStates` should work', function* (done) {
     done(e);
   }
 })
+It('`each` should return an error if the connection dies', function* (done) {
+  var connection = yield r.connect({host: config.host, port: config.port, authKey: config.authKey});
+  assert(connection);
+
+  var feed = yield r.db(dbName).table(tableName).changes().run(connection);
+  feed.each(function(err, change) {
+    assert(err.message.match(/^The connection was closed before the query could be completed for/))
+    done();
+  });
+  // Kill the TCP connection
+  connection.connection.end()
+})
+
