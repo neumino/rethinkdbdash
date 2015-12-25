@@ -59,6 +59,15 @@ It('`branch` should work', function* (done) {
     result = yield r.branch(false, 1, 2).run();
     assert.equal(result, 2);
 
+    result = yield r.expr(false).branch('foo', false, 'bar', 'lol').run()
+    assert.equal(result, 'lol');
+
+    result = yield r.expr(true).branch('foo', false, 'bar', 'lol').run()
+    assert.equal(result, 'foo');
+
+    result = yield r.expr(false).branch('foo', true, 'bar', 'lol').run()
+    assert.equal(result, 'bar');
+
     done();
   }
   catch(e) {
@@ -70,7 +79,7 @@ It('`branch` should throw if no argument has been given', function* (done) {
     var result = yield r.branch().run();
   }
   catch(e) {
-    if (e.message.match(/^`r.branch` takes 3 arguments, 0 provided/)) {
+    if (e.message.match(/^`r.branch` takes at least 3 arguments, 0 provided/)) {
       done()
     }
     else {
@@ -83,7 +92,7 @@ It('`branch` should throw if just one argument has been given', function* (done)
     var result = yield r.branch(true).run();
   }
   catch(e) {
-    if (e.message.match(/^`r.branch` takes 3 arguments, 1 provided/)) {
+    if (e.message.match(/^`r.branch` takes at least 3 arguments, 1 provided/)) {
       done()
     }
     else {
@@ -96,7 +105,7 @@ It('`branch` should throw if just two arguments have been given', function* (don
     var result = yield r.branch(true, true).run();
   }
   catch(e) {
-    if (e.message.match(/^`r.branch` takes 3 arguments, 2 provided/)) {
+    if (e.message.match(/^`r.branch` takes at least 3 arguments, 2 provided/)) {
       done()
     }
     else {
