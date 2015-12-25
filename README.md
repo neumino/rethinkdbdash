@@ -491,8 +491,8 @@ npm test
 Longer tests for the pool:
 
 ```
-mocha --harmony-generators long_test/discovery.js -t 50000
-mocha --harmony-generators long_test/static.js -t 50000
+mocha long_test/discovery.js -t 50000
+mocha long_test/static.js -t 50000
 ```
 
 
