@@ -737,4 +737,17 @@ It('`each` should return an error if the connection dies', function* (done) {
   // Kill the TCP connection
   connection.connection.end()
 })
+It('`eachAync` should return an error if the connection dies', function* (done) {
+  var connection = yield r.connect({host: config.host, port: config.port, authKey: config.authKey});
+  assert(connection);
+
+  var feed = yield r.db(dbName).table(tableName).changes().run(connection);
+  feed.eachAsync(function(change) {}).error(function(err) {
+    assert(err.message.match(/^The connection was closed before the query could be completed for/))
+    done();
+  });
+  // Kill the TCP connection
+  connection.connection.end()
+})
+
 
