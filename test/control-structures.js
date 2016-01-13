@@ -453,7 +453,7 @@ It('`http` should throw with an unrecognized option', function* (done) {
     done(new Error("Expecting error..."));
   }
   catch(e) {
-    if (e.message === "Unrecognized option `foo` in `http`. Available options are reattemps <number>, redirects <number>, verify <boolean>, resultFormat: <string>, method: <string>, auth: <object>, params: <object>, header: <string>, data: <string>, page: <string/function>, pageLimit: <number>.") {
+    if (e.message === "Unrecognized option `foo` in `http`. Available options are attempts <number>, redirects <number>, verify <boolean>, resultFormat: <string>, method: <string>, auth: <object>, params: <object>, header: <string>, data: <string>, page: <string/function>, pageLimit: <number>.") {
       done()
     }
     else {
