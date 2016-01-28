@@ -57,7 +57,9 @@ if (clientConfig.host === 'localhost') {
     //server.on('clientError', console.log);
 
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = "1"; // do not ignore self-signed certificates (default)
-    clientConfig.ssl = tlsOpts;
+    clientConfig.ssl = {
+      ca: tlsOpts.ca
+    }
     var r = require('../lib')(clientConfig);
 
     try {
@@ -81,7 +83,9 @@ if (clientConfig.host === 'localhost') {
     //server.on('clientError', console.log);
 
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = "1"; // do not ignore self-signed certificates (default)
-    clientConfig.ssl = tlsOpts;
+    clientConfig.ssl = {
+      ca: tlsOpts.ca
+    }
     clientConfig.servers = [{
       host: clientConfig.host,
       port: clientConfig.port
