@@ -200,7 +200,8 @@ RethinkDB to connect to.
 In case of a single instance, you can directly pass `host` and `port` in the top level parameters.
 
 Examples:
-```
+
+```js
 // connect to localhost:8080, and let the driver find other instances
 var r = require('rethinkdbdash')({
     discovery: true
