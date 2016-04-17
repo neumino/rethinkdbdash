@@ -114,15 +114,18 @@ It('`wait` should work with options', function* (done) {
 })
 
 
-It('`r.wait` should work', function* (done) {
+It('`r.wait` should throw', function* (done) {
   try {
     result = yield r.wait().run();
-    assert(result.hasOwnProperty('ready'));
-
-    done();
+    done(new Error('r.wait is expected to throw'));
   }
   catch(e) {
-    done(e);
+    if (e.message.match(/^`wait` can only be called on a table or a database since 2.3./)) {
+      done();
+    }
+    else {
+      done(e);
+    }
   }
 })
 
@@ -164,16 +167,19 @@ It('`reconfigure` should work - 2 - dryRun', function* (done) {
     done(e);
   }
 })
-It('`r.reconfigure` should work', function* (done) {
-  try {
-    result = yield r.reconfigure({shards: 1, replicas: 1}).run();
-    assert.deepEqual(result, {});
 
-    done();
+It('`r.reconfigure` should throw', function* (done) {
+  try {
+    result = yield r.reconfigure().run();
+    done(new Error('r.reconfigure is expected to throw'));
   }
   catch(e) {
-console.log(e);
-    done(e);
+    if (e.message.match(/^`reconfigure` can only be called on a table or a database since 2.3./)) {
+      done();
+    }
+    else {
+      done(e);
+    }
   }
 })
 
@@ -224,15 +230,19 @@ console.log(e);
     done(e);
   }
 })
-It('`r.rebalance` should work', function* (done) {
+
+It('`r.rebalance` should throw', function* (done) {
   try {
     result = yield r.rebalance().run();
-    assert.deepEqual(result, {});
-
-    done();
+    done(new Error('r.rebalance is expected to throw'));
   }
   catch(e) {
-    done(e);
+    if (e.message.match(/^`rebalance` can only be called on a table or a database since 2.3./)) {
+      done();
+    }
+    else {
+      done(e);
+    }
   }
 })
 

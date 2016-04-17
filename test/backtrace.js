@@ -4580,34 +4580,6 @@ It('Test backtrace for r.db(dbName).table(tableName).wait().do(function(x) { ret
 
 /*
 Frames:
-[ 0, 1 ]
-
-Error:
-Expected type NUMBER but found OBJECT in:
-r.wait().do(function(var_1) {
-  return var_1.add(4)
-       ^^^^^^^^^^^^
-})
-*/
-It('Test backtrace for r.wait().do(function(x) { return x.add(4) })', function* (done) {
-  try {
-    r.nextVarId=1;
-    yield r.wait().do(function(x) { return x.add(4) }).run()
-    done(new Error("Should have thrown an error"))
-  }
-  catch(e) {
-    if (e.message === "Expected type NUMBER but found OBJECT in:\nr.wait().do(function(var_1) {\n    return var_1.add(4)\n           ^^^^^^^^^^^^\n})\n") {
-      done()
-    }
-    else {
-      done(e);
-    }
-  }
-})
-
-
-/*
-Frames:
 [ 1 ]
 
 Error:
@@ -4638,69 +4610,6 @@ It('Test backtrace for r.db(dbName).table(tableName).reconfigure({ shards: 1 }).
     }
   }
 })
-
-
-
-/*
-Frames:
-[ 1 ]
-
-Error:
-Missing required argument `replicas` in:
-r.reconfigure({
-^^^^^^^^^^^^^^^
-  shards: 1
-  ^^^^^^^^^
-}).do(function(var_1) {
-^^                     
-  return var_1.add(4)
-})
-*/
-It('Test backtrace for r.reconfigure({ shards: 1 }).do(function(x) { return x.add(4) })', function* (done) {
-  try {
-    r.nextVarId=1;
-    yield r.reconfigure({ shards: 1 }).do(function(x) { return x.add(4) }).run()
-    done(new Error("Should have thrown an error"))
-  }
-  catch(e) {
-    if (e.message === "Missing required argument `replicas` in:\nr.reconfigure({\n^^^^^^^^^^^^^^^\n    shards: 1\n    ^^^^^^^^^\n}).do(function(var_1) {\n^^                     \n    return var_1.add(4)\n})\n") {
-      done()
-    }
-    else {
-      done(e);
-    }
-  }
-})
-
-
-
-/*
-Frames:
-[ 0, 1 ]
-
-Error:
-Expected type NUMBER but found OBJECT in:
-r.rebalance().do(function(var_1) {
-  return var_1.add(4)
-       ^^^^^^^^^^^^
-})
-*/
-It('Test backtrace for r.rebalance().do(function(x) { return x.add(4) })', function* (done) {
-  try {
-    r.nextVarId=1;
-    yield r.rebalance().do(function(x) { return x.add(4) }).run()
-    done(new Error("Should have thrown an error"))
-  }
-  catch(e) {
-    if (e.message === "Expected type NUMBER but found OBJECT in:\nr.rebalance().do(function(var_1) {\n    return var_1.add(4)\n           ^^^^^^^^^^^^\n})\n") {
-      done()
-    }
-    else {
-      done(e);
-    }
-  }
-})
-
 
 
 /*
