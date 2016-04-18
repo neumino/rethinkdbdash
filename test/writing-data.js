@@ -215,6 +215,35 @@ It('`insert` should throw if non valid option', function* (done) {
     }
   }
 })
+
+It('`insert` with a conflict method', function* (done) {
+  try{
+    var result = yield r.db(dbName).table(tableName).insert({
+      count: 7
+    }).run();
+    savedId = result.generated_keys[0];
+    var result = yield r.db(dbName).table(tableName).insert({
+      id: savedId,
+      count: 10
+    }, {
+      conflict: function(id, oldDoc, newDoc) {
+        return newDoc.merge({
+          count: newDoc('count').add(oldDoc('count'))
+        })
+      }
+    }).run();
+    result = yield r.db(dbName).table(tableName).get(savedId)
+    assert.deepEqual(result, {
+      id: savedId,
+      count: 17
+    })
+    done();
+  }
+  catch(e) {
+    done(e);
+  }
+})
+
 It('`replace` should throw if no argument is given', function* (done) {
   try{
     var result = yield r.db(dbName).table(tableName).replace().run();
