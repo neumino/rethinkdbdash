@@ -135,6 +135,29 @@ It('`getAll` should work with multiple values - primary key', function* (done) {
     done(e);
   }
 })
+
+It('`getAll` should work with no argument - primary key', function* (done) {
+  try {
+    var result = yield r.db(dbName).table(tableName).getAll().run();
+    assert.equal(result.length, 0);
+    done();
+  }
+  catch(e) {
+    done(e);
+  }
+})
+
+It('`getAll` should work with no argument - index', function* (done) {
+  try {
+    var result = yield r.db(dbName).table(tableName).getAll({index: 'id'}).run();
+    assert.equal(result.length, 0);
+    done();
+  }
+  catch(e) {
+    done(e);
+  }
+})
+
 It('`getAll` should work with multiple values - secondary index 1', function* (done) {
   try {
     var result = yield r.db(dbName).table(tableName).update({field: 0}).run();
@@ -199,21 +222,6 @@ It('`getAll` should work with multiple values - secondary index 2', function* (d
   }
   catch(e) {
     done(e);
-  }
-})
-It('`getAll` should throw if no argument is passed', function* (done) {
-  try {
-    var result = yield r.db(dbName).table(tableName).getAll().run();
-  }
-  catch(e) {
-    assert(e instanceof r.Error.ReqlDriverError);
-    assert(e instanceof Error);
-    if (e.message === '`getAll` takes at least 1 argument, 0 provided after:\nr.db("'+dbName+'").table("'+tableName+'")') {
-      done();
-    }
-    else{
-      done(e);
-    }
   }
 })
 
