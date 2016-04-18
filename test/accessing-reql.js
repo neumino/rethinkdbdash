@@ -368,6 +368,49 @@ It('`server` should work', function* (done) {
   }
 })
 
+It('`grant` should work', function* (done) {
+  try{
+    connection = yield r.connect(config);
+    assert(connection);
+
+    var restrictedDbName = uuid();
+    var restrictedTableName = uuid();
+
+    result = yield r.dbCreate(restrictedDbName).run(connection);
+    assert.equal(result.config_changes.length, 1);
+    assert.equal(result.dbs_created, 1);
+    result = yield r.db(restrictedDbName).tableCreate(restrictedTableName).run(connection);
+    assert.equal(result.tables_created, 1);
+
+    var user = uuid();
+    var password = uuid();
+    result = yield r.db('rethinkdb').table('users').insert({
+      id: user,
+      password: password
+    }).run(connection);
+    result = yield r.db(restrictedDbName).table(restrictedTableName).grant(user, {
+      read: true, write: true, config: true
+    }).run(connection);
+    console.log(JSON.stringify(result, null, 2));
+    assert.deepEqual(result, {
+      granted: 1,
+      permissions_changes: [{
+        new_val: {
+          config: true,
+        read: true,
+        write: true
+        },
+        old_val: null
+      }]
+    });
+
+    done();
+  }
+  catch(e) {
+    done(e);
+  }
+})
+
 /* Since 1.13, the token is stored oustide the query, so this error shouldn't happen anymore
 It('`connection` should extend events.Emitter and emit an error if the server failed to parse the protobuf message', function* (done) {
   try{
