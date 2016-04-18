@@ -462,10 +462,10 @@ It('`changes` with `includeOffsets` should work', function* (done) {
       assert(typeof change.new_offset === 'number');
       if (counter >= 2) {
         assert(typeof change.old_offset === 'number');
+        feed.close().then(function() {
+          done();
+        }).error(done);
       }
-      feed.close().then(function() {
-        done();
-      }).error(done);
       counter++;
     });
 
@@ -477,6 +477,34 @@ It('`changes` with `includeOffsets` should work', function* (done) {
     done(e);
   }
 })
+
+It('`changes` with `includeTypes` should work', function* (done) {
+  try {
+    feed = yield r.db(dbName).table(tableName).orderBy({index: 'id'}).limit(2).changes({
+      includeTypes: true,
+      includeInitial: true
+    }).run();
+
+    var counter = 0;
+    feed.each(function(error, change) {
+      assert(typeof change.type === 'string');
+      if (counter > 0) {
+        feed.close().then(function() {
+          done();
+        }).error(done);
+      }
+      counter++;
+    });
+
+    yield r.db(dbName).table(tableName).insert({id: 0});
+
+    //done();
+  }
+  catch(e) {
+    done(e);
+  }
+})
+
 
 It('`next` should work on a feed', function* (done) {
   try {

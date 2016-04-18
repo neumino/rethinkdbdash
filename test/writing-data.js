@@ -221,7 +221,7 @@ It('`insert` with a conflict method', function* (done) {
     var result = yield r.db(dbName).table(tableName).insert({
       count: 7
     }).run();
-    savedId = result.generated_keys[0];
+    var savedId = result.generated_keys[0];
     var result = yield r.db(dbName).table(tableName).insert({
       id: savedId,
       count: 10
