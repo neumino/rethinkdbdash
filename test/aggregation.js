@@ -251,10 +251,30 @@ It('`avg` should work ', function* (done) {
     done(e);
   }
 })
+It('`r.avg` should work ', function* (done) {
+  try{
+    var result = yield r.avg([1,2,3]).run();
+    assert.equal(result, 2);
+    done();
+  }
+  catch(e) {
+    done(e);
+  }
+})
 
 It('`avg` should work with a field', function* (done) {
   try {
     var result = yield r.expr([{a: 2}, {a: 10}, {a: 9}]).avg('a').run();
+    assert.equal(result, 7);
+    done();
+  }
+  catch(e) {
+    done(e);
+  }
+})
+It('`r.avg` should work with a field', function* (done) {
+  try {
+    var result = yield r.avg([{a: 2}, {a: 10}, {a: 9}], 'a').run();
     assert.equal(result, 7);
     done();
   }
@@ -273,6 +293,16 @@ It('`min` should work ', function* (done) {
     done(e);
   }
 })
+It('`r.min` should work ', function* (done) {
+  try{
+    var result = yield r.min([1,2,3]).run();
+    assert.equal(result, 1);
+    done();
+  }
+  catch(e) {
+    done(e);
+  }
+})
 
 It('`min` should work with a field', function* (done) {
   try {
@@ -284,10 +314,30 @@ It('`min` should work with a field', function* (done) {
     done(e);
   }
 })
+It('`r.min` should work with a field', function* (done) {
+  try {
+    var result = yield r.min([{a: 2}, {a: 10}, {a: 9}], 'a').run();
+    assert.deepEqual(result, {a: 2});
+    done();
+  }
+  catch(e) {
+    done(e);
+  }
+})
 
 It('`max` should work ', function* (done) {
   try{
     var result = yield r.expr([1,2,3]).max().run();
+    assert.equal(result, 3);
+    done();
+  }
+  catch(e) {
+    done(e);
+  }
+})
+It('`r.max` should work ', function* (done) {
+  try{
+    var result = yield r.max([1,2,3]).run();
     assert.equal(result, 3);
     done();
   }
@@ -307,6 +357,18 @@ It('`distinct` should work', function* (done) {
     done(e);
   }
 })
+It('`r.distinct` should work', function* (done) {
+  try {
+    var result = yield r.distinct([1,2,3,1,2,1,3,2,2,1,4]).orderBy(r.row).run();
+    assert.deepEqual(result, [1,2,3,4]);
+    done();
+  }
+  catch(e) {
+    console.log(e);
+    done(e);
+  }
+})
+
 It('`distinct` should work with an index', function* (done) {
   try {
     var result = yield r.db(dbName).table(tableName).distinct({index: "id"}).count().run();
