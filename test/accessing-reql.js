@@ -391,7 +391,6 @@ It('`grant` should work', function* (done) {
     result = yield r.db(restrictedDbName).table(restrictedTableName).grant(user, {
       read: true, write: true, config: true
     }).run(connection);
-    console.log(JSON.stringify(result, null, 2));
     assert.deepEqual(result, {
       granted: 1,
       permissions_changes: [{
