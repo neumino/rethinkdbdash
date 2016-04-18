@@ -292,17 +292,14 @@ It('`and` should work', function* (done) {
     done(e);
   }
 })
-It('`and` should throw if no argument has been passed -- r.and', function* (done) {
+It('`and` should work if no argument has been passed -- r.and', function* (done) {
   try {
     var result = yield r.and().run();
+    assert.equal(result, true);
+    done();
   }
   catch(e) {
-    if (e.message === "`r.and` takes at least 1 argument, 0 provided.") {
-      done();
-    }
-    else {
-      done(e);
-    }
+    done(e);
   }
 })
 It('`or` should work', function* (done) {
@@ -328,17 +325,14 @@ It('`or` should work', function* (done) {
     done(e);
   }
 })
-It('`or` should throw if no argument has been passed -- r.or', function* (done) {
+It('`or` should work if no argument has been passed -- r.or', function* (done) {
   try {
     var result = yield r.or().run();
+    assert.equal(result, false);
+    done();
   }
   catch(e) {
-    if (e.message === "`r.or` takes at least 1 argument, 0 provided.") {
-      done();
-    }
-    else {
-      done(e);
-    }
+    done(e);
   }
 })
 
