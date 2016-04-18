@@ -52,6 +52,53 @@ It('`reduce` should throw if no argument has been passed', function* (done) {
   }
 })
 
+It('`fold` should work', function* (done) {
+  try {
+    var result = yield r.expr([1,2,3]).fold(10, function(left, right) { return left.add(right) }).run();
+    assert.equal(result, 16);
+    done();
+  }
+  catch(e) {
+    done(e);
+  }
+})
+It('`fold` should work -- with emit', function* (done) {
+  try {
+    var result = yield r.expr(['foo', 'bar', 'buzz', 'hello', 'world']).fold(0, function(acc, row) {
+      return acc.add(1);
+    }, {
+      emit: function(oldAcc, element, newAcc) {
+        return [oldAcc, element, newAcc];
+      }
+    }).run();
+    assert.deepEqual(result, [0, 'foo', 1, 1, 'bar', 2, 2, 'buzz', 3, 3, 'hello', 4, 4, 'world', 5]);
+    done();
+  }
+  catch(e) {
+    done(e);
+  }
+})
+It('`fold` should work -- with emit and finalEmit', function* (done) {
+  try {
+    var result = yield r.expr(['foo', 'bar', 'buzz', 'hello', 'world']).fold(0, function(acc, row) {
+      return acc.add(1);
+    }, {
+      emit: function(oldAcc, element, newAcc) {
+        return [oldAcc, element, newAcc];
+      },
+      finalEmit: function(acc) {
+        return [acc]
+      }
+    }).run();
+    assert.deepEqual(result, [0, 'foo', 1, 1, 'bar', 2, 2, 'buzz', 3, 3, 'hello', 4, 4, 'world', 5, 5]);
+    done();
+  }
+  catch(e) {
+    done(e);
+  }
+})
+
+
 It('`count` should work -- no arg ', function* (done) {
   try {
     var result = yield r.expr([0, 1, 2, 3, 4, 5]).count().run();
