@@ -189,6 +189,7 @@ keep a list of updated hosts, default `false`
 - `buffer`: `<number>` - Minimum number of connections available in the pool, default `50`
 - `max`: `<number>` - Maximum number of connections available in the pool, default `1000`
 - `timeout`: `<number>` - The number of seconds for a connection to be opened, default `20`
+- `pingInterval`: <number> - if `> 0`, the connection will be pinged every `pingInterval` seconds, default `-1`
 - `timeoutError`: `<number>` - Wait time before reconnecting in case of an error (in ms), default 1000
 - `timeoutGb`: `<number>` - How long the pool keep a connection that hasn't been used (in ms), default 60\*60\*1000
 - `maxExponent`: `<number>` - The maximum timeout before trying to reconnect is 2^maxExponent x timeoutError, default 6 (~60 seconds for the longest wait)
@@ -241,6 +242,12 @@ and not arrays by default.
 _Note_: The option `{stream: true}` that asynchronously returns a stream is deprecated. Use `toStream` instead.
 
 _Note_: The option `{optionalRun: false}` will disable the optional run for all instances of the driver.
+
+_Note_: Connections are created with TCP keep alive turned on, but some routers seem to ignore this setting. To make
+sure that your connections are kept alive, set the `pingInterval` to the interval in seconds you want the
+driver to ping the connection.
+
+_Note_: The error `__rethinkdbdash_ping__` is used for internal purposes (ping). Do not use it.
 
 #### Connection pool
 
