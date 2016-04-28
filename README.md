@@ -183,6 +183,8 @@ a default connection pool (except if you pass `{pool: false}`. The options you
 can pass are:
 
 - `db`: `<string>` - The default database to use if none is mentioned.
+- `user`: `<string>` - The RethinkDB user, default value is admin.
+- `password`: `<string>` - The password for the user, default value is an empty string.
 - `discovery`: `<boolean>` - When true, the driver will regularly pull data from the table `server_status` to
 keep a list of updated hosts, default `false`
 - `pool`: `<boolean>` - Set it to `false`, if you do not want to use a connection pool.
