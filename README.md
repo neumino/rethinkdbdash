@@ -198,7 +198,6 @@ keep a list of updated hosts, default `false`
 - `silent`: <boolean> - console.error errors, default `false`
 - `servers`: an array of objects `{host: <string>, port: <number>}` representing RethinkDB nodes to connect to
 - `optionalRun`: <boolean> - if `false`, yielding a query will not run it, default `true`
-RethinkDB to connect to.
 
 In case of a single instance, you can directly pass `host` and `port` in the top level parameters.
 
