@@ -270,7 +270,7 @@ It('`eqJoin` should throw with a non valid key', function* (done) {
     var result = yield r.expr([1,2,3]).eqJoin(r.row, r.db(dbName).table(tableName), {nonValidKey: "val"}).run();
   }
   catch(e) {
-    if (e.message === "Unrecognized option `nonValidKey` in `eqJoin` after:\nr.expr([1, 2, 3])\nAvailable option is index <string>") {
+    if (e.message === "Unrecognized option `nonValidKey` in `eqJoin` after:\nr.expr([1, 2, 3])\nAvailable options are index <string>, ordered <boolean>") {
       done();
     }
     else {
