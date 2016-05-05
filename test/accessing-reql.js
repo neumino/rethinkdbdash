@@ -410,6 +410,17 @@ It('`grant` should work', function* (done) {
   }
 })
 
+It('If `servers` is specified, it cannot be empty', function* (done) {
+  try{
+    var r = require(__dirname+'/../lib')({
+      servers: []
+    });
+  } catch(e) {
+    assert.equal(e.message, 'If `servers` is an array, it must contain at least one server.');
+    done();
+  }
+})
+
 /* Since 1.13, the token is stored oustide the query, so this error shouldn't happen anymore
 It('`connection` should extend events.Emitter and emit an error if the server failed to parse the protobuf message', function* (done) {
   try{
