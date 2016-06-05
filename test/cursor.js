@@ -133,6 +133,30 @@ It('`eachAsync` should work', function* (done) {
     done(e);
   }
 })
+
+It('`eachAsync` should work - callback style', function* (done) {
+  try {
+    cursor = yield r.db(dbName).table(tableName).run({cursor: true});
+    assert(cursor);
+    var count = 0;
+    var now = Date.now();
+    var timeout = 10;
+    cursor.eachAsync(function(result, onRowFinished) {
+      count++;
+      setTimeout(function() {
+        onRowFinished();
+      }, timeout)
+    }).then(function() {
+      var elapsed = Date.now()-now;
+      assert(elapsed >= timeout*count);
+      done();
+    });
+  }
+  catch(e) {
+    done(e);
+  }
+})
+
 It('`each` should work - onFinish - reach end', function* (done) {
   try {
     cursor = yield r.db(dbName).table(tableName).run({cursor: true});
