@@ -252,7 +252,7 @@ _Note_: The error `__rethinkdbdash_ping__` is used for internal purposes (ping).
 
 #### Connection pool
 
-As mentionned before, `rethinkdbdash` has a connection pool and manage all the connections
+As mentioned before, `rethinkdbdash` has a connection pool and manage all the connections
 itself. The connection pool is initialized as soon as you execute the module.
 
 You should never have to worry about connections in rethinkdbdash. Connections are created
