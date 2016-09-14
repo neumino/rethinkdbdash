@@ -300,6 +300,18 @@ It('`cursor.close` should return a promise', function* (done) {
     done(e);
   }
 })
+It('`cursor.close` should still return a promise if the cursor was closed', function* (done) {
+  try {
+    var cursor = yield r.db(dbName).table(tableName2).changes().run();
+    yield cursor.close();
+    yield cursor.close();
+    done();
+  }
+  catch(e) {
+    done(e);
+  }
+})
+
 It('cursor shouldn\'t throw if the user try to serialize it in JSON', function* (done) {
   try {
     var cursor = yield r.db(dbName).table(tableName).run({cursor: true});
