@@ -10,7 +10,7 @@ var devnull = require('dev-null');
 var uuid = util.uuid;
 var It = util.It
 
-var dbName, tableName, tableName2, stream, result, pks, feed;
+var dbName, tableName, tableName2, stream, result, pks, feed, dumpTable;
 
 var numDocs = 100; // Number of documents in the "big table" used to test the SUCCESS_PARTIAL 
 
