@@ -167,3 +167,13 @@ It('Testing cursor.close with a callback', function* (done) {
     });
   })
 })
+It('Testing cursor.close with a callback when already closed', function* (done) {
+  r_.expr([1,2,3]).run({cursor: true}, function(err, cursor) {
+    assert.equal(err, null);
+    cursor.close(function(err, result) {
+      cursor.close(function(err, result) {
+        done();
+      });
+    });
+  })
+})
