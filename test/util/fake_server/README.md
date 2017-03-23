@@ -1,4 +1,4 @@
-This is a fork of [reqlite](https://github.com/neumino/github).
+This is a fork of [reqlite](https://github.com/neumino/reqlite).
 
 The project was not totally complete, and this fork includes hacks to:
 - simulate network/query latency in a predicatable way
