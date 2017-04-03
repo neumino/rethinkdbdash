@@ -179,7 +179,7 @@ Rethinkdbdash ships with a few interesting features.
 #### Importing the driver
 
 When you import the driver, as soon as you execute the module, you will create
-a default connection pool (except if you pass `{pool: false}`. The options you
+a default connection pool (except if you pass `{pool: false}`). The options you
 can pass are:
 
 - `db`: `<string>` - The default database to use if none is mentioned.
