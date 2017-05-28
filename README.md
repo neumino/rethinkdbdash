@@ -198,6 +198,7 @@ keep a list of updated hosts, default `false`
 - `silent`: <boolean> - console.error errors, default `false`
 - `servers`: an array of objects `{host: <string>, port: <number>}` representing RethinkDB nodes to connect to
 - `optionalRun`: <boolean> - if `false`, yielding a query will not run it, default `true`
+- `log`: <function> - will be called with the log events by the pool master
 
 In case of a single instance, you can directly pass `host` and `port` in the top level parameters.
 
@@ -271,11 +272,16 @@ r.getPoolMaster().drain();
 ```
 
 The pool master by default will log all errors/new states on `stderr`. If you do not
-want to pollute `stderr`, pass `silent: true` when you import the driver. You can retrieve the
-logs by binding a listener for the `log` event on the pool master.
+want to pollute `stderr`, pass `silent: true` when you import the driver and
+provide your own `log` method.
 
 ```js
-r.getPoolMaster().on('log', console.log);
+r = require('rethinkdbdash')({
+  silent: true,
+  log: function(message) {
+    console.log(message);
+  }
+});
 ```
 
 ##### Advanced details about the pool
