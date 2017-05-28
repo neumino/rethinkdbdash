@@ -110,7 +110,7 @@ here are the few things to do:
   ```js
   query.run().then(function(result) {
     // console.log(result);
-  });
+  }).error(handleError);
   ```
 
 3. Remove the methods related to the cursor. This typically involves
