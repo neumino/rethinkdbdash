@@ -25,7 +25,7 @@
   "bugs": {
     "url": "https://github.com/neumino/rethinkdbdash/issues"
   },
-  "dependencies":{
+  "dependencies": {
     "bluebird": ">= 3.0.1"
   },
   "devDependencies": {

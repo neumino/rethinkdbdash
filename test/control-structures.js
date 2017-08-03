@@ -27,26 +27,23 @@ It('`r.do` should work', function* (done) {
     result = yield r.do(1, 2, function(a, b) { return b }).run();
     assert.equal(result, 2);
 
+    result = yield r.do(3).run();
+    assert.equal(result, 3);
+
+    result = yield r.expr(4).do().run();
+    assert.equal(result, 4);
+
+    result = yield r.do(1, 2).run()
+    assert.deepEqual(result, 2);
+
+    result = yield r.do(r.args([ r.expr(3), r.expr(4) ])).run()
+    assert.deepEqual(result, 3);
+
     done();
   }
   catch(e) {
     console.log(e)
     done(e);
-  }
-})
-
-
-It('`do` should throw if no argument has been given', function* (done) {
-  try{
-    var result = yield r.expr(1).do().run();
-  }
-  catch(e) {
-    if (e.message.match(/^`do` takes at least 1 argument, 0 provided after:/)) {
-      done()
-    }
-    else {
-      done(e);
-    }
   }
 })
 
