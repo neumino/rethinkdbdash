@@ -159,6 +159,8 @@ It('`merge` should work', function* (done) {
     assert.equal(result.a, 1)
     assert(result.date instanceof Date)
 
+    result = yield r.expr({a: 1}).merge({nested: r.row}, {b: 2}).run();
+    assert.deepEqual(result, {a: 1, nested: {a: 1}, b: 2})
 
     done();
   }
@@ -215,7 +217,7 @@ It('`merge` should throw if no argument has been passed', function* (done) {
     var result = yield r.db(dbName).table(tableName).merge().run();
   }
   catch(e) {
-    if (e.message === "`merge` takes 1 argument, 0 provided after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
+    if (e.message === "`merge` takes at least 1 argument, 0 provided after:\nr.db(\""+dbName+"\").table(\""+tableName+"\")") {
       done();
     }
     else {
@@ -615,6 +617,18 @@ It('`keys` throw on a string', function* (done) {
     }
   }
 })
+It('`values` should work', function* (done) {
+  try {
+    var result = yield r.expr({a:0, b:1, c:2}).values().orderBy(r.row).run();
+    assert.deepEqual(result, [0, 1, 2]);
+
+    done()
+  }
+  catch(e) {
+    done(e);
+  }
+})
+
 It('`object` should work', function* (done) {
   try {
     var result = yield r.object("a", 1, r.expr("2"), "foo").run();

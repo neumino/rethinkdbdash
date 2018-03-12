@@ -1046,33 +1046,32 @@ It('Test backtrace for r.expr([1,2,3]).withFields("foo", "bar").add(1)', functio
 
 /*
 Frames:
-[ { type: 'POS', pos: 0 } ]
+[ 0, 1 ]
 
 Error:
 Cannot convert NUMBER to SEQUENCE in:
 r.expr([1, 2, 3]).concatMap(function(var_1) {
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  return var_1
-  ^^^^^^^^^^^^
+                            ^^^^^^^^^^^^^^^^^
+    return var_1
+    ^^^^^^^^^^^^
 }).add(1)
-^^
+^
 */
 It('Test backtrace for r.expr([1,2,3]).concatMap(function(v) { return v}).add(1)', function* (done) {
-  try {
-    r.nextVarId=1;
-    yield r.expr([1,2,3]).concatMap(function(v) { return v}).add(1).run()
-    done(new Error("Should have thrown an error"))
-  }
-  catch(e) {
-    if (e.message === "Cannot convert NUMBER to SEQUENCE in:\nr.expr([1, 2, 3]).concatMap(function(var_1) {\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    return var_1\n    ^^^^^^^^^^^^\n}).add(1)\n^^       \n") {
-      done()
+    try {
+        r.nextVarId=1;
+        yield r.expr([1,2,3]).concatMap(function(v) { return v}).add(1).run()
+        done(new Error("Should have thrown an error"))
     }
-    else {
-      console.log(e.message); done(e);
+    catch(e) {
+        if (e.message === "Cannot convert NUMBER to SEQUENCE in:\nr.expr([1, 2, 3]).concatMap(function(var_1) {\n                            ^^^^^^^^^^^^^^^^^\n    return var_1\n    ^^^^^^^^^^^^\n}).add(1)\n^        \n") {
+            done()
+        }
+        else {
+            done(e);
+        }
     }
-  }
 })
-
 
 
 /*
@@ -4581,34 +4580,6 @@ It('Test backtrace for r.db(dbName).table(tableName).wait().do(function(x) { ret
 
 /*
 Frames:
-[ 0, 1 ]
-
-Error:
-Expected type NUMBER but found OBJECT in:
-r.wait().do(function(var_1) {
-  return var_1.add(4)
-       ^^^^^^^^^^^^
-})
-*/
-It('Test backtrace for r.wait().do(function(x) { return x.add(4) })', function* (done) {
-  try {
-    r.nextVarId=1;
-    yield r.wait().do(function(x) { return x.add(4) }).run()
-    done(new Error("Should have thrown an error"))
-  }
-  catch(e) {
-    if (e.message === "Expected type NUMBER but found OBJECT in:\nr.wait().do(function(var_1) {\n    return var_1.add(4)\n           ^^^^^^^^^^^^\n})\n") {
-      done()
-    }
-    else {
-      done(e);
-    }
-  }
-})
-
-
-/*
-Frames:
 [ 1 ]
 
 Error:
@@ -4639,69 +4610,6 @@ It('Test backtrace for r.db(dbName).table(tableName).reconfigure({ shards: 1 }).
     }
   }
 })
-
-
-
-/*
-Frames:
-[ 1 ]
-
-Error:
-Missing required argument `replicas` in:
-r.reconfigure({
-^^^^^^^^^^^^^^^
-  shards: 1
-  ^^^^^^^^^
-}).do(function(var_1) {
-^^                     
-  return var_1.add(4)
-})
-*/
-It('Test backtrace for r.reconfigure({ shards: 1 }).do(function(x) { return x.add(4) })', function* (done) {
-  try {
-    r.nextVarId=1;
-    yield r.reconfigure({ shards: 1 }).do(function(x) { return x.add(4) }).run()
-    done(new Error("Should have thrown an error"))
-  }
-  catch(e) {
-    if (e.message === "Missing required argument `replicas` in:\nr.reconfigure({\n^^^^^^^^^^^^^^^\n    shards: 1\n    ^^^^^^^^^\n}).do(function(var_1) {\n^^                     \n    return var_1.add(4)\n})\n") {
-      done()
-    }
-    else {
-      done(e);
-    }
-  }
-})
-
-
-
-/*
-Frames:
-[ 0, 1 ]
-
-Error:
-Expected type NUMBER but found OBJECT in:
-r.rebalance().do(function(var_1) {
-  return var_1.add(4)
-       ^^^^^^^^^^^^
-})
-*/
-It('Test backtrace for r.rebalance().do(function(x) { return x.add(4) })', function* (done) {
-  try {
-    r.nextVarId=1;
-    yield r.rebalance().do(function(x) { return x.add(4) }).run()
-    done(new Error("Should have thrown an error"))
-  }
-  catch(e) {
-    if (e.message === "Expected type NUMBER but found OBJECT in:\nr.rebalance().do(function(var_1) {\n    return var_1.add(4)\n           ^^^^^^^^^^^^\n})\n") {
-      done()
-    }
-    else {
-      done(e);
-    }
-  }
-})
-
 
 
 /*
@@ -5124,6 +5032,40 @@ It('Test backtrace for r.ceil("hello")', function* (done) {
     }
     catch(e) {
         if (e.message === "Expected type NUMBER but found STRING in:\nr.expr(\"hello\").ceil()\n^^^^^^^^^^^^^^^       \n") {
+            done()
+        }
+        else {
+            done(e);
+        }
+    }
+})
+
+
+/*
+Frames:
+[]
+
+Error:
+Expected type ARRAY but found NUMBER in:
+r.expr({
+^^^^^^^^
+    a: 1,
+    ^^^^^
+    b: 2,
+    ^^^^^
+    c: 3
+    ^^^^
+}).values().add(2)
+^^^^^^^^^^^^^^^^^^
+*/
+It('Test backtrace for r.expr({a:1, b:2, c: 3}).values().add(2)', function* (done) {
+    try {
+        r.nextVarId=1;
+        yield r.expr({a:1, b:2, c: 3}).values().add(2).run()
+        done(new Error("Should have thrown an error"))
+    }
+    catch(e) {
+        if (e.message === "Expected type ARRAY but found NUMBER in:\nr.expr({\n^^^^^^^^\n    a: 1,\n    ^^^^^\n    b: 2,\n    ^^^^^\n    c: 3\n    ^^^^\n}).values().add(2)\n^^^^^^^^^^^^^^^^^^\n") {
             done()
         }
         else {

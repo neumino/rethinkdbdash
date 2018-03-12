@@ -2,3 +2,5 @@
 npm-debug.log
 node_modules
 test.js
+rethinkdbdash.js
+rethinkdbdash_datadir*

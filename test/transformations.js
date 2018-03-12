@@ -517,8 +517,10 @@ It('`isEmpty` should work', function* (done) {
 It('`union` should work - 1', function* (done) {
   try{
     result = yield r.expr([0, 1, 2]).union([3, 4, 5]).run();
-    assert.deepEqual(result, [0, 1, 2, 3, 4, 5]);
-
+    assert.deepEqual(result.length, 6);
+    for(var i=0; i<6; i++) {
+      assert(result.indexOf(i) >= 0);
+    }
     done()
   }
   catch(e) {
@@ -528,8 +530,10 @@ It('`union` should work - 1', function* (done) {
 It('`union` should work - 2', function* (done) {
   try{
     result = yield r.union([0, 1, 2], [3, 4, 5], [6, 7]).run();
-    assert.deepEqual(result, [0, 1, 2, 3, 4, 5, 6, 7]);
-
+    assert.deepEqual(result.length, 8);
+    for(var i=0; i<8; i++) {
+      assert(result.indexOf(i) >= 0);
+    }
     done()
   }
   catch(e) {
@@ -540,6 +544,34 @@ It('`union` should work - 3', function* (done) {
   try{
     result = yield r.union().run();
     assert.deepEqual(result, []);
+    done()
+  }
+  catch(e) {
+    done(e);
+  }
+})
+It('`union` should work with interleave - 1', function* (done) {
+  try{
+    result = yield r.expr([0, 1, 2]).union([3, 4, 5], {interleave: false}).run();
+    assert.deepEqual(result, [0, 1, 2, 3, 4, 5]);
+
+    done()
+  }
+  catch(e) {
+    done(e);
+  }
+})
+It('`union` should work with interleave - 1', function* (done) {
+  try{
+    result = yield r.expr([{name: 'Michel'}, {name: 'Sophie'}, {name: 'Laurent'}]).orderBy('name')
+      .union(r.expr([{name: 'Moo'}, {name: 'Bar'}]).orderBy('name'), {interleave: 'name'}).run();
+    assert.deepEqual(result, [
+        {name: 'Bar'},
+        {name: 'Laurent'},
+        {name: 'Michel'},
+        {name: 'Moo'},
+        {name: 'Sophie'}
+    ]);
 
     done()
   }

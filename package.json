@@ -1,13 +1,14 @@
 {
   "name": "rethinkdbdash",
-  "version": "2.1.6",
+  "version": "2.3.31",
   "description": "A Node.js driver for RethinkDB with promises and a connection pool",
   "main": "lib/index.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "test": "mocha --check-leaks --harmony-generators -t 20000"
+    "test": "mocha --check-leaks -t 20000",
+    "browserify": "node browserify.js"
   },
   "repository": {
     "type": "git",
@@ -24,8 +25,8 @@
   "bugs": {
     "url": "https://github.com/neumino/rethinkdbdash/issues"
   },
-  "dependencies":{
-    "bluebird": ">= 2.0.0"
+  "dependencies": {
+    "bluebird": ">= 3.0.1"
   },
   "devDependencies": {
     "mocha": ">= 1.20.0",

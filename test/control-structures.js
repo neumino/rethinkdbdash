@@ -27,26 +27,23 @@ It('`r.do` should work', function* (done) {
     result = yield r.do(1, 2, function(a, b) { return b }).run();
     assert.equal(result, 2);
 
+    result = yield r.do(3).run();
+    assert.equal(result, 3);
+
+    result = yield r.expr(4).do().run();
+    assert.equal(result, 4);
+
+    result = yield r.do(1, 2).run()
+    assert.deepEqual(result, 2);
+
+    result = yield r.do(r.args([ r.expr(3), r.expr(4) ])).run()
+    assert.deepEqual(result, 3);
+
     done();
   }
   catch(e) {
     console.log(e)
     done(e);
-  }
-})
-
-
-It('`do` should throw if no argument has been given', function* (done) {
-  try{
-    var result = yield r.expr(1).do().run();
-  }
-  catch(e) {
-    if (e.message.match(/^`do` takes at least 1 argument, 0 provided after:/)) {
-      done()
-    }
-    else {
-      done(e);
-    }
   }
 })
 
@@ -59,6 +56,15 @@ It('`branch` should work', function* (done) {
     result = yield r.branch(false, 1, 2).run();
     assert.equal(result, 2);
 
+    result = yield r.expr(false).branch('foo', false, 'bar', 'lol').run()
+    assert.equal(result, 'lol');
+
+    result = yield r.expr(true).branch('foo', false, 'bar', 'lol').run()
+    assert.equal(result, 'foo');
+
+    result = yield r.expr(false).branch('foo', true, 'bar', 'lol').run()
+    assert.equal(result, 'bar');
+
     done();
   }
   catch(e) {
@@ -70,7 +76,7 @@ It('`branch` should throw if no argument has been given', function* (done) {
     var result = yield r.branch().run();
   }
   catch(e) {
-    if (e.message.match(/^`r.branch` takes 3 arguments, 0 provided/)) {
+    if (e.message.match(/^`r.branch` takes at least 3 arguments, 0 provided/)) {
       done()
     }
     else {
@@ -83,7 +89,7 @@ It('`branch` should throw if just one argument has been given', function* (done)
     var result = yield r.branch(true).run();
   }
   catch(e) {
-    if (e.message.match(/^`r.branch` takes 3 arguments, 1 provided/)) {
+    if (e.message.match(/^`r.branch` takes at least 3 arguments, 1 provided/)) {
       done()
     }
     else {
@@ -96,7 +102,7 @@ It('`branch` should throw if just two arguments have been given', function* (don
     var result = yield r.branch(true, true).run();
   }
   catch(e) {
-    if (e.message.match(/^`r.branch` takes 3 arguments, 2 provided/)) {
+    if (e.message.match(/^`r.branch` takes at least 3 arguments, 2 provided/)) {
       done()
     }
     else {
@@ -444,7 +450,7 @@ It('`http` should throw with an unrecognized option', function* (done) {
     done(new Error("Expecting error..."));
   }
   catch(e) {
-    if (e.message === "Unrecognized option `foo` in `http`. Available options are reattemps <number>, redirects <number>, verify <boolean>, resultFormat: <string>, method: <string>, auth: <object>, params: <object>, header: <string>, data: <string>, page: <string/function>, pageLimit: <number>.") {
+    if (e.message === "Unrecognized option `foo` in `http`. Available options are attempts <number>, redirects <number>, verify <boolean>, resultFormat: <string>, method: <string>, auth: <object>, params: <object>, header: <string>, data: <string>, page: <string/function>, pageLimit: <number>.") {
       done()
     }
     else {
@@ -457,6 +463,17 @@ It('`r.uuid` should work', function* (done) {
     var result = yield r.uuid().run();
     assert.equal(typeof result, 'string');
 
+    done();
+  }
+  catch(e) {
+    done(e)
+  }
+})
+
+It('`r.uuid("foo")` should work', function* (done) {
+  try {
+    var result = yield r.uuid("rethinkdbdash").run();
+    assert.equal(result, '291a8039-bc4b-5472-9b2a-f133254e3283');
     done();
   }
   catch(e) {

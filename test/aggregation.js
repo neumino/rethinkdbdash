@@ -52,6 +52,53 @@ It('`reduce` should throw if no argument has been passed', function* (done) {
   }
 })
 
+It('`fold` should work', function* (done) {
+  try {
+    var result = yield r.expr([1,2,3]).fold(10, function(left, right) { return left.add(right) }).run();
+    assert.equal(result, 16);
+    done();
+  }
+  catch(e) {
+    done(e);
+  }
+})
+It('`fold` should work -- with emit', function* (done) {
+  try {
+    var result = yield r.expr(['foo', 'bar', 'buzz', 'hello', 'world']).fold(0, function(acc, row) {
+      return acc.add(1);
+    }, {
+      emit: function(oldAcc, element, newAcc) {
+        return [oldAcc, element, newAcc];
+      }
+    }).run();
+    assert.deepEqual(result, [0, 'foo', 1, 1, 'bar', 2, 2, 'buzz', 3, 3, 'hello', 4, 4, 'world', 5]);
+    done();
+  }
+  catch(e) {
+    done(e);
+  }
+})
+It('`fold` should work -- with emit and finalEmit', function* (done) {
+  try {
+    var result = yield r.expr(['foo', 'bar', 'buzz', 'hello', 'world']).fold(0, function(acc, row) {
+      return acc.add(1);
+    }, {
+      emit: function(oldAcc, element, newAcc) {
+        return [oldAcc, element, newAcc];
+      },
+      finalEmit: function(acc) {
+        return [acc]
+      }
+    }).run();
+    assert.deepEqual(result, [0, 'foo', 1, 1, 'bar', 2, 2, 'buzz', 3, 3, 'hello', 4, 4, 'world', 5, 5]);
+    done();
+  }
+  catch(e) {
+    done(e);
+  }
+})
+
+
 It('`count` should work -- no arg ', function* (done) {
   try {
     var result = yield r.expr([0, 1, 2, 3, 4, 5]).count().run();
@@ -136,6 +183,20 @@ It('`groupFormat` should work -- with raw', function* (done) {
 
     assert.deepEqual(result, { "$reql_type$": "GROUPED_DATA", "data": [ [ false, [ { "grownUp": false, "name": "Luke" }, { "grownUp": false, "name": "Mino" } ] ], [ true, [ { "grownUp": true, "name": "Michel" }, { "grownUp": true, "name": "Laurent" }, { "grownUp": true, "name": "Sophie" } ] ] ] })
 
+    done();
+  }
+  catch(e) {
+    done(e);
+  }
+})
+
+It('`group` results should be properly parsed ', function* (done) {
+  try {
+    var result = yield r.expr([{name: "Michel", date: r.now()},{name: "Laurent", date: r.now()},
+        {name: "Sophie", date: r.now().sub(1000)}]).group('date').run();
+    assert.equal(result.length, 2);
+    assert(result[0].group instanceof Date);
+    assert(result[0].reduction[0].date instanceof Date);
     done();
   }
   catch(e) {
@@ -237,10 +298,30 @@ It('`avg` should work ', function* (done) {
     done(e);
   }
 })
+It('`r.avg` should work ', function* (done) {
+  try{
+    var result = yield r.avg([1,2,3]).run();
+    assert.equal(result, 2);
+    done();
+  }
+  catch(e) {
+    done(e);
+  }
+})
 
 It('`avg` should work with a field', function* (done) {
   try {
     var result = yield r.expr([{a: 2}, {a: 10}, {a: 9}]).avg('a').run();
+    assert.equal(result, 7);
+    done();
+  }
+  catch(e) {
+    done(e);
+  }
+})
+It('`r.avg` should work with a field', function* (done) {
+  try {
+    var result = yield r.avg([{a: 2}, {a: 10}, {a: 9}], 'a').run();
     assert.equal(result, 7);
     done();
   }
@@ -259,6 +340,16 @@ It('`min` should work ', function* (done) {
     done(e);
   }
 })
+It('`r.min` should work ', function* (done) {
+  try{
+    var result = yield r.min([1,2,3]).run();
+    assert.equal(result, 1);
+    done();
+  }
+  catch(e) {
+    done(e);
+  }
+})
 
 It('`min` should work with a field', function* (done) {
   try {
@@ -270,10 +361,30 @@ It('`min` should work with a field', function* (done) {
     done(e);
   }
 })
+It('`r.min` should work with a field', function* (done) {
+  try {
+    var result = yield r.min([{a: 2}, {a: 10}, {a: 9}], 'a').run();
+    assert.deepEqual(result, {a: 2});
+    done();
+  }
+  catch(e) {
+    done(e);
+  }
+})
 
 It('`max` should work ', function* (done) {
   try{
     var result = yield r.expr([1,2,3]).max().run();
+    assert.equal(result, 3);
+    done();
+  }
+  catch(e) {
+    done(e);
+  }
+})
+It('`r.max` should work ', function* (done) {
+  try{
+    var result = yield r.max([1,2,3]).run();
     assert.equal(result, 3);
     done();
   }
@@ -293,6 +404,18 @@ It('`distinct` should work', function* (done) {
     done(e);
   }
 })
+It('`r.distinct` should work', function* (done) {
+  try {
+    var result = yield r.distinct([1,2,3,1,2,1,3,2,2,1,4]).orderBy(r.row).run();
+    assert.deepEqual(result, [1,2,3,4]);
+    done();
+  }
+  catch(e) {
+    console.log(e);
+    done(e);
+  }
+})
+
 It('`distinct` should work with an index', function* (done) {
   try {
     var result = yield r.db(dbName).table(tableName).distinct({index: "id"}).count().run();

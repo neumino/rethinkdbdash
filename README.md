@@ -183,24 +183,28 @@ a default connection pool (except if you pass `{pool: false}`. The options you
 can pass are:
 
 - `db`: `<string>` - The default database to use if none is mentioned.
+- `user`: `<string>` - The RethinkDB user, default value is admin.
+- `password`: `<string>` - The password for the user, default value is an empty string.
 - `discovery`: `<boolean>` - When true, the driver will regularly pull data from the table `server_status` to
 keep a list of updated hosts, default `false`
 - `pool`: `<boolean>` - Set it to `false`, if you do not want to use a connection pool.
 - `buffer`: `<number>` - Minimum number of connections available in the pool, default `50`
 - `max`: `<number>` - Maximum number of connections available in the pool, default `1000`
-- `timeout`: `<number> - The number of seconds for a connection to be opened, default `20`
+- `timeout`: `<number>` - The number of seconds for a connection to be opened, default `20`
+- `pingInterval`: <number> - if `> 0`, the connection will be pinged every `pingInterval` seconds, default `-1`
 - `timeoutError`: `<number>` - Wait time before reconnecting in case of an error (in ms), default 1000
-- `timeoutGb`: `<number>` - How long the pool keep a connection that hasn't been used (in ms), default 60*60*1000
+- `timeoutGb`: `<number>` - How long the pool keep a connection that hasn't been used (in ms), default 60\*60\*1000
 - `maxExponent`: `<number>` - The maximum timeout before trying to reconnect is 2^maxExponent x timeoutError, default 6 (~60 seconds for the longest wait)
 - `silent`: <boolean> - console.error errors, default `false`
-- `servers`: an of objects `{host: <string>, port: <number>}` representing instances of
+- `servers`: an array of objects `{host: <string>, port: <number>}` representing RethinkDB nodes to connect to
 - `optionalRun`: <boolean> - if `false`, yielding a query will not run it, default `true`
-RethinkDB to connect to.
+- `log`: <function> - will be called with the log events by the pool master
 
 In case of a single instance, you can directly pass `host` and `port` in the top level parameters.
 
 Examples:
-```
+
+```js
 // connect to localhost:8080, and let the driver find other instances
 var r = require('rethinkdbdash')({
     discovery: true
@@ -222,7 +226,7 @@ var r = require('rethinkdbdash')({
 });
 
 // Connect to a cluster containing `192.168.0.100`, `192.168.0.100`, `192.168.0.102` and
-use a maximum of 3000 connections and try to keep 300 connections available at all time.
+// use a maximum of 3000 connections and try to keep 300 connections available at all time.
 var r = require('rethinkdbdash')({
     servers: [
         {host: '192.168.0.100', port: 28015},
@@ -241,9 +245,15 @@ _Note_: The option `{stream: true}` that asynchronously returns a stream is depr
 
 _Note_: The option `{optionalRun: false}` will disable the optional run for all instances of the driver.
 
+_Note_: Connections are created with TCP keep alive turned on, but some routers seem to ignore this setting. To make
+sure that your connections are kept alive, set the `pingInterval` to the interval in seconds you want the
+driver to ping the connection.
+
+_Note_: The error `__rethinkdbdash_ping__` is used for internal purposes (ping). Do not use it.
+
 #### Connection pool
 
-As mentionned before, `rethinkdbdash` has a connection pool and manage all the connections
+As mentioned before, `rethinkdbdash` has a connection pool and manage all the connections
 itself. The connection pool is initialized as soon as you execute the module.
 
 You should never have to worry about connections in rethinkdbdash. Connections are created
@@ -262,11 +272,16 @@ r.getPoolMaster().drain();
 ```
 
 The pool master by default will log all errors/new states on `stderr`. If you do not
-want to pollute `stderr`, pass `silent: true` when you import the driver. You can retrieve the
-logs by binding a listener for the `log` event on the pool master.
+want to pollute `stderr`, pass `silent: true` when you import the driver and
+provide your own `log` method.
 
 ```js
-r.getPoolMaster().on('log', console.log);
+r = require('rethinkdbdash')({
+  silent: true,
+  log: function(message) {
+    console.log(message);
+  }
+});
 ```
 
 ##### Advanced details about the pool
@@ -304,6 +319,25 @@ You can access all the pools with:
 ```js
 r.getPoolMaster().getPools();
 ```
+
+The pool master emits the `healthy` when its state change. Its state is defined as:
+- healthy when at least one pool is healthy: Queries can be immediately executed or will be queued.
+- not healthy when no pool is healthy: Queries will immediately fail.
+
+A pool being healthy is it has at least one available connection, or it was just
+created and opening a connection hasn't failed.
+
+```js
+r.getPoolMaster().on('healthy', function(healthy) {
+  if (healthy === true) {
+    console.log('We can run queries.');
+  }
+  else {
+    console.log('No queries can be run.');
+  }
+});
+```
+
 
 ##### Note about connections
 
@@ -472,8 +506,8 @@ npm test
 Longer tests for the pool:
 
 ```
-mocha --harmony-generators long_test/discovery.js -t 50000
-mocha --harmony-generators long_test/static.js -t 50000
+mocha long_test/discovery.js -t 50000
+mocha long_test/static.js -t 50000
 ```
 
 
@@ -522,3 +556,11 @@ Tests are also being run on [wercker](http://wercker.com/):
 
   Feel free to send a pull request. If you want to implement a new feature, please open
   an issue first, especially if it's a non backward compatible one.
+
+### Browserify
+
+To build the browser version of rethinkdbdash, run:
+
+```
+node browserify.js
+```

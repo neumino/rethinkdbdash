@@ -9,6 +9,7 @@ var It = util.It;
 var connection; // global connection
 var dbName, tableName, result;
 
+
 It('Testing `run` without connection', function* (done) {
   try {
     r.expr(1).run()
@@ -354,9 +355,71 @@ It('Test timeout', function* (done) {
   }
 })
 
+It('`server` should work', function* (done) {
+  try{
+    connection = yield r.connect(config);
+    var response = yield connection.server();
+    assert(typeof response.name === 'string');
+    assert(typeof response.id === 'string');
+    done();
+  }
+  catch(e) {
+    done(e);
+  }
+})
 
+It('`grant` should work', function* (done) {
+  try{
+    connection = yield r.connect(config);
+    assert(connection);
 
+    var restrictedDbName = uuid();
+    var restrictedTableName = uuid();
 
+    result = yield r.dbCreate(restrictedDbName).run(connection);
+    assert.equal(result.config_changes.length, 1);
+    assert.equal(result.dbs_created, 1);
+    result = yield r.db(restrictedDbName).tableCreate(restrictedTableName).run(connection);
+    assert.equal(result.tables_created, 1);
+
+    var user = uuid();
+    var password = uuid();
+    result = yield r.db('rethinkdb').table('users').insert({
+      id: user,
+      password: password
+    }).run(connection);
+    result = yield r.db(restrictedDbName).table(restrictedTableName).grant(user, {
+      read: true, write: true, config: true
+    }).run(connection);
+    assert.deepEqual(result, {
+      granted: 1,
+      permissions_changes: [{
+        new_val: {
+          config: true,
+        read: true,
+        write: true
+        },
+        old_val: null
+      }]
+    });
+
+    done();
+  }
+  catch(e) {
+    done(e);
+  }
+})
+
+It('If `servers` is specified, it cannot be empty', function* (done) {
+  try{
+    var r = require(__dirname+'/../lib')({
+      servers: []
+    });
+  } catch(e) {
+    assert.equal(e.message, 'If `servers` is an array, it must contain at least one server.');
+    done();
+  }
+})
 
 /* Since 1.13, the token is stored oustide the query, so this error shouldn't happen anymore
 It('`connection` should extend events.Emitter and emit an error if the server failed to parse the protobuf message', function* (done) {

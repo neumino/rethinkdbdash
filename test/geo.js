@@ -145,6 +145,17 @@ It('`distance` should work - 1', function* (done) {
     done(e);
   }
 })
+It('`r.distance` should work - 1', function* (done) {
+  try {
+    var result = yield r.distance(r.point(0, 0), r.point(1,1)).run();
+    assert.equal(Math.floor(result), 156899);
+    done();
+  }
+  catch(e) {
+    done(e);
+  }
+})
+
 It('`distance` should work - 2', function* (done) {
   try {
     var result = yield r.point(0, 0).distance(r.point(1,1), {unit: "km"}).run();
