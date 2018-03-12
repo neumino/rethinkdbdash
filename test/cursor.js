@@ -2,6 +2,7 @@ var config = require('./config.js');
 var r = require('../lib')(config);
 var util = require(__dirname+'/util/common.js');
 var assert = require('assert');
+var iterall = require('iterall');
 
 var uuid = util.uuid;
 var It = util.It
@@ -841,5 +842,35 @@ It('`eachAync` should return an error if the connection dies', function* (done) 
   // Kill the TCP connection
   connection.connection.end()
 })
+It('`asyncIterator` should return an async iterator', function* (done) {
+  try {
+    var connection = yield r.connect({host: config.host, port: config.port, authKey: config.authKey});
+    assert(connection);
 
-
+    var feed = yield r.db(dbName).table(tableName).changes().run(connection);
+    var iterator = feed.asyncIterator();
+    assert(iterall.isAsyncIterable(iterator))
+    connection.connection.end()
+    done();
+  } catch(err) {
+    done(err);
+  }
+})
+It('`asyncIterator` should have a working `next`method', function* (done) {
+  try {
+    feed = yield r.db(dbName).table(tableName2).changes().run();
+    var value = 1;
+    setTimeout(function() {
+      r.db(dbName).table(tableName2).update({foo: value}).run();
+    }, 100)
+    assert(feed);
+    var iterator = feed.asyncIterator();
+    assert(iterator);
+    var i=0;
+    var result = yield iterator.next();
+    assert(result.value.new_val.foo === value);
+    done();
+  } catch(err) {
+    done(err);
+  }
+})
