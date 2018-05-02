@@ -471,3 +471,14 @@ It('`epochTime` should work', function* (done) {
     done(e);
   }
 })
+
+It('`ISO8601` run parameter should work', function* (done) {
+  try {
+    result = yield r.time(2018,5,2,13,0,"-03:00").run({timeFormat: "ISO8601"});
+    assert.equal(result, "2018-05-02T13:00:00-03:00")
+    done();
+  }
+  catch(e) {
+    done(e);
+  }
+})
