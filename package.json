@@ -26,7 +26,9 @@
     "url": "https://github.com/neumino/rethinkdbdash/issues"
   },
   "dependencies": {
-    "bluebird": ">= 3.0.1"
+    "bluebird": ">= 3.0.1",
+    "luxon": "1.2.0",
+    "iterall": "^1.2.2"
   },
   "devDependencies": {
     "mocha": ">= 1.20.0",
