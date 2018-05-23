@@ -1090,7 +1090,7 @@ It('Test backtrace for r.expr([1,2,3]).orderBy("foo").add(1)', function* (done) 
     done(new Error("Should have thrown an error"))
   }
   catch(e) {
-    if (e.message === "Cannot perform get_field on a non-object non-sequence `2` in:\nr.expr([1, 2, 3]).orderBy(\"foo\").add(1)\n                          ^^^^^        \n") {
+    if (e.message === "Cannot perform get_field on a non-object non-sequence `3` in:\nr.expr([1, 2, 3]).orderBy(\"foo\").add(1)\n                          ^^^^^        \n") {
       done()
     }
     else {
@@ -3164,7 +3164,52 @@ It('Test backtrace for r.table("foo").add(1).add(1).add("hello-super-long-string
     done(new Error("Should have thrown an error"))
   }
   catch(e) {
-    if (e.message === "Table `test.foo` does not exist in:\nr.table(\"foo\").add(1).add(1).add(\"hello-super-long-string\").add(\"another-long-string\")\n^^^^^^^^^^^^^^                                                                        \n    .add(\"one-last-string\").map(function(var_1) {\n        return r.expr([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]).map(function(var_2) {\n            return var_2(\"b\").add(\"hello-super-long-string\").add(\"another-long-string\").add(\"one-last-string\")\n                .add(\"hello-super-long-string\").add(\"another-long-string\").add(\"one-last-string\")\n                .add(\"hello-super-long-string\").add(\"another-long-string\").add(\"one-last-string\")\n                .add(\"hello-super-long-string\").add(\"another-long-string\").add(\"one-last-string\")\n                .add(\"hello-super-long-string\").add(\"another-long-string\").add(\"one-last-string\")\n                .mul(var_2(\"b\")).merge({\n                    firstName: \"xxxxxx\",\n                    lastName: \"yyyy\",\n                    email: \"xxxxx@yyyy.com\",\n                    phone: \"xxx-xxx-xxxx\"\n                })\n        }).add(2).map(function(var_3) {\n            return var_3.add(\"hello-super-long-string\").add(\"another-long-string\").add(\"one-last-string\")\n                .add(\"hello-super-long-string\").add(\"another-long-string\").add(\"one-last-string\")\n                .add(\"hello-super-long-string\").add(\"another-long-string\").add(\"one-last-string\")\n                .add(\"hello-super-long-string\").add(\"another-long-string\").add(\"one-last-string\")\n                .add(\"hello-super-long-string\").add(\"another-long-string\").add(\"one-last-string\")\n        })\n    })\n") {
+    if (e.message === `Database \`test\` does not exist in:
+r.table("foo").add(1).add(1).add("hello-super-long-string").add("another-long-string")
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    .add("one-last-string").map(function(var_1) {
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        return r.expr([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]).map(function(var_2) {
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            return var_2("b").add("hello-super-long-string").add("another-long-string").add("one-last-string")
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                .add("hello-super-long-string").add("another-long-string").add("one-last-string")
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                .add("hello-super-long-string").add("another-long-string").add("one-last-string")
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                .add("hello-super-long-string").add("another-long-string").add("one-last-string")
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                .add("hello-super-long-string").add("another-long-string").add("one-last-string")
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                .mul(var_2("b")).merge({
+                ^^^^^^^^^^^^^^^^^^^^^^^^
+                    firstName: "xxxxxx",
+                    ^^^^^^^^^^^^^^^^^^^^
+                    lastName: "yyyy",
+                    ^^^^^^^^^^^^^^^^^
+                    email: "xxxxx@yyyy.com",
+                    ^^^^^^^^^^^^^^^^^^^^^^^^
+                    phone: "xxx-xxx-xxxx"
+                    ^^^^^^^^^^^^^^^^^^^^^
+                })
+                ^^
+        }).add(2).map(function(var_3) {
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            return var_3.add("hello-super-long-string").add("another-long-string").add("one-last-string")
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                .add("hello-super-long-string").add("another-long-string").add("one-last-string")
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                .add("hello-super-long-string").add("another-long-string").add("one-last-string")
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                .add("hello-super-long-string").add("another-long-string").add("one-last-string")
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                .add("hello-super-long-string").add("another-long-string").add("one-last-string")
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        })
+        ^^
+    })
+    ^^
+`) {
       done()
     }
     else {
