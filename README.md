@@ -6,9 +6,14 @@ rethinkdbdash
 A Node.js driver for RethinkDB with more advanced features.
 
 ### Install
+#### Using NPM
 
 ```
 npm install rethinkdbdash
+```
+#### Using YARN
+```
+yarn add rethinkdbdash
 ```
 
 _Note_: The `rethinkdbdash-unstable` package is a relic from the past (rethinkdb < 1.13).
@@ -501,6 +506,10 @@ Update `test/config.js` if your RethinkDB instance doesn't run on the default pa
 Make sure you run a version of Node that supports generators and run:
 ```
 npm test
+```
+or
+```
+yarn test
 ```
 
 Longer tests for the pool:
